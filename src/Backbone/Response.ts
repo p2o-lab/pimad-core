@@ -4,8 +4,8 @@ export interface IResponse {
 }
 
 abstract class Response implements IResponse {
-    protected message: string = null;
-    protected content: object = null;
+    protected message: string = "";
+    protected content: object = {};
 
     constructor(message: string, content: object) {
         this.message = message;

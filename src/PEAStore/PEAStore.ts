@@ -1,4 +1,4 @@
-import { IResponse } from "../Backbone/Response"
+import { IResponse, SuccessResponseFactory, ErrorResponseFactory } from "../Backbone/Response"
 interface IPEAStore {
     addPEA(any: object): IResponse;
     deletePEA(tag: string): IResponse;
@@ -6,30 +6,55 @@ interface IPEAStore {
 }
 
 abstract class PEAStore implements IPEAStore {
-    protected importerChainFirstElement;
-    protected PEAs;
+    protected importerChainFirstElement = null;
+    protected PEAs = null;
+    protected successResponseFactory: SuccessResponseFactory
+    protected errorSuccessFactory: ErrorResponseFactory
 
-    abstract addPEA(any: object);
-    abstract deletePEA(tag: string);
-    abstract getPEA(tag: string);
+    constructor() {
+        this.successResponseFactory = new SuccessResponseFactory();
+        this.errorSuccessFactory = new ErrorResponseFactory();
+    }
+
+    abstract addPEA(any: object): IResponse;
+    abstract deletePEA(tag: string): IResponse;
+    abstract getPEA(tag: string): IResponse;
 }
 
 class WebPEAStore extends PEAStore {
-    addPEA(any: object) {}
-    deletePEA(tag: string) {}
-    getPEA(tag: string) {}
+    addPEA(any: object): IResponse {
+        return this.successResponseFactory.create("", {})
+    }
+    deletePEA(tag: string) {
+        return this.successResponseFactory.create("", {})
+    }
+    getPEA(tag: string) {
+        return this.successResponseFactory.create("", {})
+    }
 }
 
 class CommandLinePEAStore extends PEAStore {
-    addPEA(any: object) {}
-    deletePEA(tag: string) {}
-    getPEA(tag: string) {}
+    addPEA(any: object) {
+        return this.successResponseFactory.create("", {})
+    }
+    deletePEA(tag: string) {
+        return this.successResponseFactory.create("", {})
+    }
+    getPEA(tag: string) {
+        return this.successResponseFactory.create("", {})
+    }
 }
 
 class DependencyPEAStore extends PEAStore {
-    addPEA(any: object) {}
-    deletePEA(tag: string) {}
-    getPEA(tag: string) {}
+    addPEA(any: object) {
+        return this.successResponseFactory.create("", {})
+    }
+    deletePEA(tag: string) {
+        return this.successResponseFactory.create("", {})
+    }
+    getPEA(tag: string) {
+        return this.successResponseFactory.create("", {})
+    }
 }
 
 abstract class PEAStoreFactory {
