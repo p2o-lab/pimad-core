@@ -1,8 +1,8 @@
-
+import { IResponse } from "../Backbone/Response"
 interface IPEAStore {
-    addPEA(any: object);
-    deletePEA(tag: string);
-    getPEA(tag: string);
+    addPEA(any: object): IResponse;
+    deletePEA(tag: string): IResponse;
+    getPEA(tag: string): IResponse;
 }
 
 abstract class PEAStore implements IPEAStore {
