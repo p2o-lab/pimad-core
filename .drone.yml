@@ -1,0 +1,11 @@
+clone:
+  git:
+    image: plugins/git
+    skip_verify: true
+
+pipeline:
+  build:
+    image: node:8-jessie
+    commands:
+      - npm install
+      - npm run build
