@@ -13,6 +13,7 @@ abstract class Response implements IResponse {
 
     initialize(message: string, content: object): boolean {
         if (!this.initialized) {
+            this.initialized = true;
             this.message = message;
             this.content = content;
             return (this.message == message && JSON.stringify(this.content) == JSON.stringify(content));
