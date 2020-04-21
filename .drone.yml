@@ -9,3 +9,6 @@ pipeline:
     commands:
       - npm install
       - npm run build
+  test:
+    commands:
+      - npm run test

@@ -1,4 +1,4 @@
-import { SuccessResponse, ErrorResponse } from './Response';
+import {SuccessResponse, ErrorResponse, FSuccessResponse, FErrorResponse} from './Response';
 import { expect } from 'chai';
 import 'mocha';
 
@@ -11,5 +11,19 @@ describe('class: SuccessResponse', () => {
         const obj = {hello: 'test'}
         expect(response.initialize(msg, obj)).is.true
         expect(response.initialize(msg, obj)).is.false
+    });
+});
+
+describe('class: FSuccessResponse', () => {
+    it('method: create()', () => {
+        const factory = new FSuccessResponse();
+        expect(typeof factory.create()).is.equal(typeof new SuccessResponse())
+    });
+});
+
+describe('class: FErrorResponse', () => {
+    it('method: create()', () => {
+        const factory = new FErrorResponse();
+        expect(typeof factory.create()).is.equal(typeof new ErrorResponse())
     });
 });

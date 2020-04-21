@@ -39,26 +39,22 @@ export class ErrorResponse extends Response {
 
 }
 
-export interface IResponseFactory {
-    create(message: string, content: object): IResponse;
+export interface IFResponse {
+    create(): IResponse;
 }
 
-export abstract class ResponseFactory implements IResponseFactory {
-    abstract create(message: string, content: object): IResponse;
+export abstract class FResponse implements IFResponse {
+    abstract create(): IResponse;
 }
 
-export class SuccessResponseFactory extends ResponseFactory {
-    create(message: string, content: object): IResponse {
-        let response = new SuccessResponse();
-        response.initialize(message, content)
-        return response;
+export class FSuccessResponse extends FResponse {
+    create(): IResponse {
+        return new SuccessResponse();
     }
 }
 
-export class ErrorResponseFactory extends ResponseFactory {
-    create(message: string, content: object): IResponse {
-        let response = new ErrorResponse();
-        response.initialize(message, content)
-        return response;
+export class FErrorResponse extends FResponse {
+    create(): IResponse {
+        return new ErrorResponse();
     }
 }
