@@ -1,6 +1,11 @@
 # PiMAd-core
 
 ## build
-```bash
+```shell script
 npm run build
+```
+
+## test
+```shell script
+npm run test
 ```
