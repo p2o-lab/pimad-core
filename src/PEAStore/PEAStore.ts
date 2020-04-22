@@ -6,11 +6,14 @@ interface IPEAStore {
     addPEA(any: object): IResponse;
     deletePEA(tag: string): IResponse;
     getPEA(tag: string): IResponse;
+    initialize(firstChainElement: IImporter): boolean;
 }
 
 abstract class PEAStore implements IPEAStore {
+    private initialized: boolean = false;
     protected importerChainFirstElement: IImporter | undefined;
     protected PEAs: IPEA[]
+    // TODO: Need ResponseBuilder
     protected successResponseFactory: FSuccessResponse
     protected errorResponseFactory: FErrorResponse
 
@@ -19,6 +22,16 @@ abstract class PEAStore implements IPEAStore {
         this.errorResponseFactory = new FErrorResponse();
         this.PEAs = []
         this.importerChainFirstElement = undefined;
+    }
+
+    initialize(firstChainElement: IImporter): boolean {
+        if (!this.initialized) {
+            this.initialized = true;
+            this.importerChainFirstElement = firstChainElement;
+            return (JSON.stringify(this.importerChainFirstElement) == JSON.stringify(firstChainElement))
+        } else {
+            return false;
+        }
     }
 
     abstract addPEA(any: object): IResponse;

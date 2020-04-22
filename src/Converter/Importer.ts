@@ -21,7 +21,7 @@ abstract class Importer implements  IImporter {
             this.nextImporter = nextImporter;
             return (JSON.stringify(this.nextImporter) == JSON.stringify(nextImporter))
         } else {
-            return true;
+            return false;
         }
     };
 }
