@@ -1,4 +1,6 @@
 import { IResponse, FSuccessResponse, FErrorResponse } from "../Backbone/Response"
+import { IPEA } from "../ModuleAutomation/PEA"
+
 interface IPEAStore {
     addPEA(any: object): IResponse;
     deletePEA(tag: string): IResponse;
@@ -7,13 +9,14 @@ interface IPEAStore {
 
 abstract class PEAStore implements IPEAStore {
     protected importerChainFirstElement = null;
-    protected PEAs = null;
+    protected PEAs: IPEA[]
     protected successResponseFactory: FSuccessResponse
     protected errorSuccessFactory: FErrorResponse
 
     constructor() {
         this.successResponseFactory = new FSuccessResponse();
         this.errorSuccessFactory = new FErrorResponse();
+        this.PEAs = []
     }
 
     abstract addPEA(any: object): IResponse;
