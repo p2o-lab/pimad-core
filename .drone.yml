@@ -9,3 +9,7 @@ pipeline:
     commands:
       - npm install
       - npm run build
+  test:
+    image: node:8-jessie
+    commands:
+      - npm run test
