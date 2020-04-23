@@ -5,11 +5,14 @@ export interface IResponse {
 }
 
 abstract class Response implements IResponse {
-    protected message: string = '';
-    protected content: object = {};
-    protected initialized: boolean = false;
+    protected message: string;
+    protected content: object;
+    private initialized: boolean = false;
 
-    constructor() {}
+    constructor() {
+        this.message = "";
+        this.content = {};
+    }
 
     initialize(message: string, content: object): boolean {
         if (!this.initialized) {
@@ -43,7 +46,7 @@ export interface IFResponse {
     create(): IResponse;
 }
 
-export abstract class FResponse implements IFResponse {
+abstract class FResponse implements IFResponse {
     abstract create(): IResponse;
 }
 
@@ -56,5 +59,21 @@ export class FSuccessResponse extends FResponse {
 export class FErrorResponse extends FResponse {
     create(): IResponse {
         return new ErrorResponse();
+    }
+}
+
+export class ResponseVendor {
+    private fErrorResponse: IFResponse;
+    private fSuccessResponse: IFResponse;
+
+    constructor() {
+        this.fErrorResponse = new FErrorResponse();
+        this.fSuccessResponse = new FSuccessResponse();
+    }
+    public buyErrorResponse(): IResponse {
+        return this.fErrorResponse.create()
+    }
+    public buySuccessResponse(): IResponse {
+        return this.fSuccessResponse.create()
     }
 }

@@ -26,7 +26,7 @@ abstract class Importer implements  IImporter {
     };
 }
 
-class LastChainElementImporter extends Importer {
+class LastChainLinkImporter extends Importer {
     convertFrom(source: object): IResponse {
         return this.errorResponseFactory.create();
     }
@@ -48,7 +48,7 @@ abstract class FImporter implements IFImporter {
 
 class FLastChainElementImporter extends FImporter {
     create(): IImporter {
-        return new LastChainElementImporter();
+        return new LastChainLinkImporter();
     }
 }
 
