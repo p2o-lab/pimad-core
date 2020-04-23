@@ -46,7 +46,7 @@ abstract class FImporter implements IFImporter {
     abstract create(): IImporter;
 }
 
-class FLastChainElementImporter extends FImporter {
+export class FLastChainElementImporter extends FImporter {
     create(): IImporter {
         return new LastChainLinkImporter();
     }

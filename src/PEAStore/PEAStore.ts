@@ -1,4 +1,4 @@
-import {IResponse, FSuccessResponse, FErrorResponse} from "../Backbone/Response"
+import {IResponse, FSuccessResponse, FErrorResponse, ResponseVendor} from "../Backbone/Response"
 import {IPEA} from "../ModuleAutomation/PEA"
 import {IImporter} from "../Converter/Importer"
 
@@ -13,6 +13,7 @@ abstract class PEAStore implements IPEAStore {
     private initialized: boolean = false;
     protected importerChainFirstElement: IImporter | undefined;
     protected PEAs: IPEA[]
+    //protected responseVendor: ResponseVendor;
     // TODO: Need ResponseBuilder
     protected successResponseFactory: FSuccessResponse
     protected errorResponseFactory: FErrorResponse
@@ -39,7 +40,7 @@ abstract class PEAStore implements IPEAStore {
     abstract getPEA(tag: string): IResponse;
 }
 
-class WebPEAStore extends PEAStore {
+export class WebPEAStore extends PEAStore {
     addPEA(any: object): IResponse {
         return this.errorResponseFactory.create()
     }
@@ -51,7 +52,7 @@ class WebPEAStore extends PEAStore {
     }
 }
 
-class CommandLinePEAStore extends PEAStore {
+export class CommandLinePEAStore extends PEAStore {
     addPEA(any: object) {
         return this.errorResponseFactory.create()
     }
@@ -63,7 +64,7 @@ class CommandLinePEAStore extends PEAStore {
     }
 }
 
-class DependencyPEAStore extends PEAStore {
+export class DependencyPEAStore extends PEAStore {
     addPEA(any: object) {
         return this.errorResponseFactory.create()
     }
@@ -79,6 +80,6 @@ class DependencyPEAStore extends PEAStore {
 
 abstract class PEAStoreFactory {}
 
-class WebPEAStoreFactory extends PEAStoreFactory {}
-class CommandLinePEAStoreFactory extends PEAStoreFactory {}
-class DependencyPEAStoreFactory extends PEAStoreFactory {}
+export class WebPEAStoreFactory extends PEAStoreFactory {}
+export class CommandLinePEAStoreFactory extends PEAStoreFactory {}
+export class DependencyPEAStoreFactory extends PEAStoreFactory {}
