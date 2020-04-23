@@ -19,9 +19,11 @@ describe('class: ErrorResponse', () => {
         let response = new ErrorResponse();
         expect(response.getMessage()).to.equal('');
         expect(JSON.stringify(response.getContent())).to.equal(JSON.stringify({}));
-        const msg = 'This is a test message!';
-        const obj = {hello: 'test'}
+        let msg = 'This is a test message!';
+        let obj = {hello: 'test'}
         expect(response.initialize(msg, obj)).is.true
+        msg = 'This is a nother test message';
+        obj = {hello: 'hello'};
         expect(response.initialize(msg, obj)).is.false
     });
 });
