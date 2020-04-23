@@ -26,13 +26,14 @@ abstract class Importer implements  IImporter {
     };
 }
 
-class LastChainLinkImporter extends Importer {
+export class LastChainLinkImporter extends Importer {
     convertFrom(source: object): IResponse {
         return this.errorResponseFactory.create();
     }
+    /*
     initialize(nextImporter: IImporter, gate: IGate): boolean {
         return false;
-    }
+    }*/
 }
 
 export interface IImporter {
