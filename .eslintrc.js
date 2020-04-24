@@ -14,6 +14,7 @@ module.exports =  {
         sourceType: "module"
     },
     rules: {
-        "tsdoc/syntax": "warn"
+        "tsdoc/syntax": "warn",
+        "quotes": [2, "single", "avoid-escape"]
     }
 };

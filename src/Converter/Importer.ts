@@ -1,5 +1,5 @@
-import {FErrorResponse, FSuccessResponse, IResponse} from "../Backbone/Response";
-import {IGate} from "./Gate";
+import {FErrorResponse, FSuccessResponse, IResponse} from '../Backbone/Response';
+import {IGate} from './Gate';
 
 abstract class Importer implements  IImporter {
 
