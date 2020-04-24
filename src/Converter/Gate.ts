@@ -28,12 +28,12 @@ export class MTPGate implements Gate {
 
 /* Factory */
 
-export class FMTPGate implements FGate {
+export class FMTPGate implements GateFactory {
     create(): Gate {
         return new MTPGate();
     }
 }
 
-export interface FGate {
+export interface GateFactory {
     create(): Gate;
 }

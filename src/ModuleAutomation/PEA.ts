@@ -34,6 +34,6 @@ export interface Sensor extends ProcessValue {
 
 /* Factories */
 
-export interface FPEA {
+export interface PEAFactory {
     create(): PEA;
 }

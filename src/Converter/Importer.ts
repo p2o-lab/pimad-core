@@ -43,16 +43,16 @@ export interface Importer {
 
 /* Factory */
 
-abstract class AFImporter implements FImporter {
+abstract class AImporterFactory implements ImporterFactory {
     abstract create(): Importer;
 }
 
-export class FLastChainElementImporter extends AFImporter {
+export class FLastChainElementImporter extends AImporterFactory {
     create(): Importer {
         return new LastChainLinkImporter();
     }
 }
 
-export interface FImporter {
+export interface ImporterFactory {
     create(): Importer;
 }

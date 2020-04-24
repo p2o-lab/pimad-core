@@ -43,29 +43,31 @@ export class ErrorResponse extends AResponse {
 
 }
 
-export interface FResponse {
+/* Factories */
+
+export interface ResponseFactory {
     create(): Response;
 }
 
-abstract class AFResponse implements FResponse {
+abstract class AResponseFactory implements ResponseFactory {
     abstract create(): Response;
 }
 
-export class FSuccessResponse extends AFResponse {
+export class FSuccessResponse extends AResponseFactory {
     create(): Response {
         return new SuccessResponse();
     }
 }
 
-export class FErrorResponse extends AFResponse {
+export class FErrorResponse extends AResponseFactory {
     create(): Response {
         return new ErrorResponse();
     }
 }
 
 export class ResponseVendor {
-    private fErrorResponse: FResponse;
-    private fSuccessResponse: FResponse;
+    private fErrorResponse: ResponseFactory;
+    private fSuccessResponse: ResponseFactory;
 
     constructor() {
         this.fErrorResponse = new FErrorResponse();
