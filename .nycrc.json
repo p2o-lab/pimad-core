@@ -10,8 +10,10 @@
   ],
   "exclude": [
     "coverage/**",
+    "docs/**",
     "node_modules/**",
     "build/**",
+    ".eslintrc.js",
     "**/*.d.ts",
     "**/*.test.ts"
   ],

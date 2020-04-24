@@ -1,10 +1,10 @@
 import {FErrorResponse, FSuccessResponse, IResponse} from '../Backbone/Response';
 import {IGate} from './Gate';
 
-abstract class Importer implements  IImporter {
+abstract class AImporter implements  Importer {
 
     private initialized: boolean;
-    protected nextImporter: IImporter | undefined;
+    protected nextImporter: Importer | undefined;
     protected successResponseFactory: FSuccessResponse
     protected errorResponseFactory: FErrorResponse
 
@@ -15,7 +15,7 @@ abstract class Importer implements  IImporter {
         this.errorResponseFactory = new FErrorResponse();
     }
     abstract convertFrom(source: object): IResponse;
-    initialize(nextImporter: IImporter, gate: IGate): boolean {
+    initialize(nextImporter: Importer, gate: IGate): boolean {
         if (!this.initialized) {
             this.initialized = true;
             this.nextImporter = nextImporter;
@@ -26,7 +26,7 @@ abstract class Importer implements  IImporter {
     };
 }
 
-export class LastChainLinkImporter extends Importer {
+export class LastChainLinkImporter extends AImporter {
     convertFrom(source: object): IResponse {
         return this.errorResponseFactory.create();
     }
@@ -36,23 +36,23 @@ export class LastChainLinkImporter extends Importer {
     }*/
 }
 
-export interface IImporter {
+export interface Importer {
     convertFrom(source: object): IResponse;
-    initialize(nextImporter: IImporter, gate: IGate): boolean;
+    initialize(nextImporter: Importer, gate: IGate): boolean;
 }
 
 /* Factory */
 
 abstract class FImporter implements IFImporter {
-    abstract create(): IImporter;
+    abstract create(): Importer;
 }
 
 export class FLastChainElementImporter extends FImporter {
-    create(): IImporter {
+    create(): Importer {
         return new LastChainLinkImporter();
     }
 }
 
 export interface IFImporter {
-    create(): IImporter;
+    create(): Importer;
 }

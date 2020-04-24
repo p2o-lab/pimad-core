@@ -10,7 +10,7 @@ abstract class Response implements IResponse {
     private initialized: boolean = false;
 
     constructor() {
-        this.message = "";
+        this.message = '';
         this.content = {};
     }
 

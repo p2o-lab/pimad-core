@@ -1,17 +1,17 @@
-import {IResponse, FSuccessResponse, FErrorResponse, ResponseVendor} from "../Backbone/Response"
-import {IPEA} from "../ModuleAutomation/PEA"
-import {IImporter} from "../Converter/Importer"
+import {IResponse, FSuccessResponse, FErrorResponse, ResponseVendor} from '../Backbone/Response'
+import {IPEA} from '../ModuleAutomation/PEA'
+import {Importer} from '../Converter/Importer'
 
 interface IPEAStore {
     addPEA(any: object): IResponse;
     deletePEA(tag: string): IResponse;
     getPEA(tag: string): IResponse;
-    initialize(firstChainElement: IImporter): boolean;
+    initialize(firstChainElement: Importer): boolean;
 }
 
 abstract class PEAStore implements IPEAStore {
     private initialized: boolean = false;
-    protected importerChainFirstElement: IImporter | undefined;
+    protected importerChainFirstElement: Importer | undefined;
     protected PEAs: IPEA[]
     //protected responseVendor: ResponseVendor;
     // TODO: Need ResponseBuilder
@@ -25,7 +25,7 @@ abstract class PEAStore implements IPEAStore {
         this.importerChainFirstElement = undefined;
     }
 
-    initialize(firstChainElement: IImporter): boolean {
+    initialize(firstChainElement: Importer): boolean {
         if (!this.initialized) {
             this.initialized = true;
             this.importerChainFirstElement = firstChainElement;
