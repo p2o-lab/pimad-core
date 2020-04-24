@@ -1,5 +1,5 @@
-import {FErrorResponse, FSuccessResponse, IResponse} from '../Backbone/Response';
-import {IGate} from './Gate';
+import {FErrorResponse, FSuccessResponse, Response} from '../Backbone/Response';
+import {Gate} from './Gate';
 
 abstract class AImporter implements  Importer {
 
@@ -14,8 +14,8 @@ abstract class AImporter implements  Importer {
         this.successResponseFactory = new FSuccessResponse();
         this.errorResponseFactory = new FErrorResponse();
     }
-    abstract convertFrom(source: object): IResponse;
-    initialize(nextImporter: Importer, gate: IGate): boolean {
+    abstract convertFrom(source: object): Response;
+    initialize(nextImporter: Importer, gate: Gate): boolean {
         if (!this.initialized) {
             this.initialized = true;
             this.nextImporter = nextImporter;
@@ -27,7 +27,7 @@ abstract class AImporter implements  Importer {
 }
 
 export class LastChainLinkImporter extends AImporter {
-    convertFrom(source: object): IResponse {
+    convertFrom(source: object): Response {
         return this.errorResponseFactory.create();
     }
     /*
@@ -37,22 +37,22 @@ export class LastChainLinkImporter extends AImporter {
 }
 
 export interface Importer {
-    convertFrom(source: object): IResponse;
-    initialize(nextImporter: Importer, gate: IGate): boolean;
+    convertFrom(source: object): Response;
+    initialize(nextImporter: Importer, gate: Gate): boolean;
 }
 
 /* Factory */
 
-abstract class FImporter implements IFImporter {
+abstract class AFImporter implements FImporter {
     abstract create(): Importer;
 }
 
-export class FLastChainElementImporter extends FImporter {
+export class FLastChainElementImporter extends AFImporter {
     create(): Importer {
         return new LastChainLinkImporter();
     }
 }
 
-export interface IFImporter {
+export interface FImporter {
     create(): Importer;
 }

@@ -3,7 +3,7 @@ import {FMTPGate, MTPGate} from './Gate';
 
 describe('class MTPGate', () => {
     const factory = new FMTPGate()
-    let gate = factory.create()
+    const gate = factory.create()
     it('method: initialize', () => {
         expect(gate.initialize()).is.false;
     })

@@ -6,7 +6,7 @@ import {ErrorResponse} from '../Backbone/Response';
 
 describe('class: WebPEAStore', () => {
     const fImporter = new FLastChainElementImporter()
-    let store = new WebPEAStore();
+    const store = new WebPEAStore();
     it('method: initialize(firstChainElement: Importer)', () => {
         expect(store.initialize(fImporter.create())).is.true;
         expect(store.initialize(fImporter.create())).is.false;
@@ -24,7 +24,7 @@ describe('class: WebPEAStore', () => {
 
 describe('class: CommandLinePEAStore', () => {
     const fImporter = new FLastChainElementImporter()
-    let store = new CommandLinePEAStore();
+    const store = new CommandLinePEAStore();
     it('method: initialize(firstChainElement: Importer)', () => {
         expect(store.initialize(fImporter.create())).is.true;
         expect(store.initialize(fImporter.create())).is.false;
@@ -42,7 +42,7 @@ describe('class: CommandLinePEAStore', () => {
 
 describe('class: DependencyPEAStore', () => {
     const fImporter = new FLastChainElementImporter()
-    let store = new DependencyPEAStore();
+    const store = new DependencyPEAStore();
     it('method: initialize(firstChainElement: Importer)', () => {
         expect(store.initialize(fImporter.create())).is.true;
         expect(store.initialize(fImporter.create())).is.false;

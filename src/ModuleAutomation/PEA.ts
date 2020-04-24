@@ -1,29 +1,39 @@
 
-abstract class Actuator {}
-abstract class Sensor {}
+abstract class AActuator {}
+abstract class ASensor {}
 
-export interface IPEA {
-    getAllActuators(): IActuator[];
-    getAllFEAs(): IFEA[];
-    getAllProcessValues(): IProcessValue[];
-    getAllSensors(): ISensor[];
-    getAllServices(): IService[];
-    getActuator(tag: string): IActuator;
-    getFEA(tag: string): IFEA;
-    getProcessValue(tag: string): IProcessValue;
-    getSensor(tag: string): ISensor;
-    getService(tag: string): IService;
+export interface PEA {
+    getAllActuators(): Actuator[];
+    getAllFEAs(): FEA[];
+    getAllProcessValues(): ProcessValue[];
+    getAllSensors(): Sensor[];
+    getAllServices(): Service[];
+    getActuator(tag: string): Actuator;
+    getFEA(tag: string): FEA;
+    getProcessValue(tag: string): ProcessValue;
+    getSensor(tag: string): Sensor;
+    getService(tag: string): Service;
     initialize(): boolean;
 }
 
-export interface IFEA {}
-export interface IProcessValue {}
-export interface IService {}
-export interface ISensor extends IProcessValue {}
-export interface IActuator extends IProcessValue {}
+export interface FEA {
+    initialize(): boolean;
+}
+export interface ProcessValue {
+    initialize(): boolean;
+}
+export interface Service {
+    initialize(): boolean;
+}
+export interface Actuator extends ProcessValue {
+    initialize(): boolean;
+}
+export interface Sensor extends ProcessValue {
+    initialize(): boolean;
+}
 
 /* Factories */
 
-export interface IFPEA {
-    create(): IPEA;
+export interface FPEA {
+    create(): PEA;
 }

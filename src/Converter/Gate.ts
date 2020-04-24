@@ -1,4 +1,4 @@
-export interface IGate {
+export interface Gate {
     send(): any;
     receive(): any;
     open(): any;
@@ -6,7 +6,7 @@ export interface IGate {
     initialize(): boolean;
 }
 
-export class MTPGate implements IGate {
+export class MTPGate implements Gate {
     private file: any;
 
     send(): any {
@@ -28,12 +28,12 @@ export class MTPGate implements IGate {
 
 /* Factory */
 
-export class FMTPGate implements IFGate {
-    create(): IGate {
+export class FMTPGate implements FGate {
+    create(): Gate {
         return new MTPGate();
     }
 }
 
-export interface IFGate {
-    create(): IGate;
+export interface FGate {
+    create(): Gate;
 }

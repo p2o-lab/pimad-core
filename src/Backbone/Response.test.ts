@@ -4,7 +4,7 @@ import 'mocha';
 
 describe('class: SuccessResponse', () => {
     it('method: initialize()', () => {
-        let response = new SuccessResponse();
+        const response = new SuccessResponse();
         expect(response.getMessage()).to.equal('');
         expect(JSON.stringify(response.getContent())).to.equal(JSON.stringify({}));
         const msg = 'This is a test message!';
@@ -16,7 +16,7 @@ describe('class: SuccessResponse', () => {
 
 describe('class: ErrorResponse', () => {
     it('method: initialize()', () => {
-        let response = new ErrorResponse();
+        const response = new ErrorResponse();
         expect(response.getMessage()).to.equal('');
         expect(JSON.stringify(response.getContent())).to.equal(JSON.stringify({}));
         let msg = 'This is a test message!';

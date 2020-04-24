@@ -1,15 +1,16 @@
-export interface IResponse {
-    getMessage(): string
-    getContent(): object
-    initialize(message: string, content: object): boolean
+export interface Response {
+    getMessage(): string;
+    getContent(): object;
+    initialize(message: string, content: object): boolean;
 }
 
-abstract class Response implements IResponse {
+abstract class AResponse implements Response {
     protected message: string;
     protected content: object;
-    private initialized: boolean = false;
+    private initialized: boolean;
 
     constructor() {
+        this.initialized = false;
         this.message = '';
         this.content = {};
     }
@@ -34,46 +35,46 @@ abstract class Response implements IResponse {
     }
 }
 
-export class SuccessResponse extends Response {
+export class SuccessResponse extends AResponse {
 
 }
 
-export class ErrorResponse extends Response {
+export class ErrorResponse extends AResponse {
 
 }
 
-export interface IFResponse {
-    create(): IResponse;
+export interface FResponse {
+    create(): Response;
 }
 
-abstract class FResponse implements IFResponse {
-    abstract create(): IResponse;
+abstract class AFResponse implements FResponse {
+    abstract create(): Response;
 }
 
-export class FSuccessResponse extends FResponse {
-    create(): IResponse {
+export class FSuccessResponse extends AFResponse {
+    create(): Response {
         return new SuccessResponse();
     }
 }
 
-export class FErrorResponse extends FResponse {
-    create(): IResponse {
+export class FErrorResponse extends AFResponse {
+    create(): Response {
         return new ErrorResponse();
     }
 }
 
 export class ResponseVendor {
-    private fErrorResponse: IFResponse;
-    private fSuccessResponse: IFResponse;
+    private fErrorResponse: FResponse;
+    private fSuccessResponse: FResponse;
 
     constructor() {
         this.fErrorResponse = new FErrorResponse();
         this.fSuccessResponse = new FSuccessResponse();
     }
-    public buyErrorResponse(): IResponse {
+    public buyErrorResponse(): Response {
         return this.fErrorResponse.create()
     }
-    public buySuccessResponse(): IResponse {
+    public buySuccessResponse(): Response {
         return this.fSuccessResponse.create()
     }
 }
