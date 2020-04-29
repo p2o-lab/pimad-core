@@ -36,7 +36,7 @@ describe('class: BasicSemanticVersion', () => {
         semVer2.initialize(1, 0, 1);
         semVer3.initialize(1, 1, 0);
         semVer4.initialize(2, 0, 0);
-        
+
         expect(semVer1.compatibility(semVer1)).is.true
         expect(semVer1.compatibility(semVer2)).is.false
         expect(semVer1.compatibility(semVer3)).is.false
@@ -79,14 +79,14 @@ describe('class: BasicSemanticVersion', () => {
         expect(semVer.getPatch()).is.equal(2)
     });
 });
-/*
+
 describe('class: BasicSemanticVersionFactory', () => {
     it('method: create()', () => {
         const factory = new BasicSemanticVersionFactory();
         expect(typeof factory.create()).is.equal(typeof new BasicSemanticVersion())
     });
 });
-
+/*
 describe('class: SemanticVersionVendor', () => {
     it('method: buyBasicSemanticVersion()', () => {
         const vendor = new SemanticVersionVendor();

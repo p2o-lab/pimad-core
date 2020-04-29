@@ -52,12 +52,18 @@ abstract class ASemanticVersion implements SemanticVersion {
     }
 }
 
+abstract class ASemanticVersionFactory implements SemanticVersionFactory {
+    abstract create(): SemanticVersion;
+}
+
 export class BasicSemanticVersion extends ASemanticVersion {
 
 }
 
-export class BasicSemanticVersionFactory {
-
+export class BasicSemanticVersionFactory extends ASemanticVersionFactory{
+    create(): SemanticVersion {
+        return new BasicSemanticVersion();
+    }
 }
 
 export class SemanticVersionVendor {
