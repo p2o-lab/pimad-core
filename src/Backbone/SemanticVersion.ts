@@ -71,7 +71,7 @@ export class SemanticVersionVendor {
     constructor() {
         this.basicSemanticVersionFactory = new BasicSemanticVersionFactory();
     }
-    buyBasicSemanticVersion() {
+    buyBasicSemanticVersion(): SemanticVersion {
         return this.basicSemanticVersionFactory.create();
     }
 }
@@ -82,8 +82,8 @@ export interface SemanticVersion {
     getMajor(): number;
     getMinor(): number;
     getPatch(): number;
-    initialize(major: number, minor: number, patch: number): boolean
+    initialize(major: number, minor: number, patch: number): boolean;
 }
 export interface SemanticVersionFactory {
-    create():SemanticVersion;
+    create(): SemanticVersion;
 }
