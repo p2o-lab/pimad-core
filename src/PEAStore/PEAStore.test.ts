@@ -1,4 +1,4 @@
-import {WebPEAStore, CommandLinePEAStore, DependencyPEAStore} from './PEAStore';
+import {WebPEAStore, CommandLinePEAStore, DependencyPEAStore, CommandLinePEAStoreFactory, DependencyPEAStoreFactory, WebPEAStoreFactory} from './PEAStore';
 import {FLastChainElementImporter} from '../Converter/Importer'
 
 import {expect} from 'chai';
@@ -57,3 +57,24 @@ describe('class: DependencyPEAStore', () => {
         expect(typeof store.getPEA('')).is.equal(typeof new ErrorResponse())
     })
 });
+
+describe('class: CommandLinePEAStoreFactory', () => {
+    it('method: create()', () => {
+        const factory = new CommandLinePEAStoreFactory();
+        expect(typeof factory.create()).is.equal(typeof new CommandLinePEAStore())
+    });
+})
+
+describe('class: DependencyPEAStoreFactory', () => {
+    it('method: create()', () => {
+        const factory = new DependencyPEAStoreFactory();
+        expect(typeof factory.create()).is.equal(typeof new DependencyPEAStore())
+    });
+})
+
+describe('class: WebPEAStoreFactory', () => {
+    it('method: create()', () => {
+        const factory = new WebPEAStoreFactory();
+        expect(typeof factory.create()).is.equal(typeof new WebPEAStore())
+    });
+})

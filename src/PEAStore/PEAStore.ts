@@ -79,8 +79,26 @@ interface PEAStore {
 
 /* Factory */
 
-abstract class PEAStoreFactory {}
+abstract class APEAStoreFactory implements PEAStoreFactory {
+    abstract create(): PEAStore;
+}
 
-export class WebPEAStoreFactory extends PEAStoreFactory {}
-export class CommandLinePEAStoreFactory extends PEAStoreFactory {}
-export class DependencyPEAStoreFactory extends PEAStoreFactory {}
+export class WebPEAStoreFactory extends APEAStoreFactory {
+    create(): PEAStore {
+        return new WebPEAStore();
+    }
+}
+export class CommandLinePEAStoreFactory extends APEAStoreFactory {
+    create(): PEAStore {
+        return new CommandLinePEAStore();
+    }
+}
+export class DependencyPEAStoreFactory extends APEAStoreFactory {
+    create(): PEAStore {
+        return new DependencyPEAStore();
+    };
+}
+
+interface PEAStoreFactory {
+    create(): PEAStore;
+}
