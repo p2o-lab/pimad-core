@@ -1,22 +1,18 @@
-import {Response, FSuccessResponse, FErrorResponse, ResponseVendor} from '../Backbone/Response'
+import {Response, ResponseVendor} from '../Backbone/Response'
 import {PEA} from '../ModuleAutomation/PEA'
 import {Importer} from '../Converter/Importer'
 
 abstract class APEAStore implements PEAStore {
     private initialized: boolean;
     protected importerChainFirstElement: Importer | undefined;
-    protected PEAs: PEA[]
-    //protected responseVendor: ResponseVendor;
-    // TODO: Need ResponseBuilder
-    protected successResponseFactory: FSuccessResponse
-    protected errorResponseFactory: FErrorResponse
+    protected peas: PEA[]
+    protected responseVendor: ResponseVendor;
 
     constructor() {
         this.initialized = false;
-        this.successResponseFactory = new FSuccessResponse();
-        this.errorResponseFactory = new FErrorResponse();
-        this.PEAs = []
+        this.peas = []
         this.importerChainFirstElement = undefined;
+        this.responseVendor = new ResponseVendor();
     }
 
     initialize(firstChainElement: Importer): boolean {
@@ -36,37 +32,37 @@ abstract class APEAStore implements PEAStore {
 
 export class WebPEAStore extends APEAStore {
     addPEA(any: object): Response {
-        return this.errorResponseFactory.create()
+        return this.responseVendor.buyErrorResponse();
     }
     deletePEA(tag: string) {
-        return this.errorResponseFactory.create()
+        return this.responseVendor.buyErrorResponse();
     }
     getPEA(tag: string) {
-        return this.errorResponseFactory.create()
+        return this.responseVendor.buyErrorResponse();
     }
 }
 
 export class CommandLinePEAStore extends APEAStore {
     addPEA(any: object) {
-        return this.errorResponseFactory.create()
+        return this.responseVendor.buyErrorResponse();
     }
     deletePEA(tag: string) {
-        return this.errorResponseFactory.create()
+        return this.responseVendor.buyErrorResponse();
     }
     getPEA(tag: string) {
-        return this.errorResponseFactory.create()
+        return this.responseVendor.buyErrorResponse();
     }
 }
 
 export class DependencyPEAStore extends APEAStore {
     addPEA(any: object) {
-        return this.errorResponseFactory.create()
+        return this.responseVendor.buyErrorResponse();
     }
     deletePEA(tag: string) {
-        return this.errorResponseFactory.create()
+        return this.responseVendor.buyErrorResponse();
     }
     getPEA(tag: string) {
-        return this.errorResponseFactory.create()
+        return this.responseVendor.buyErrorResponse();
     }
 }
 
