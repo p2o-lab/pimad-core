@@ -67,7 +67,13 @@ export class BasicSemanticVersionFactory extends ASemanticVersionFactory{
 }
 
 export class SemanticVersionVendor {
-
+    private basicSemanticVersionFactory: SemanticVersionFactory;
+    constructor() {
+        this.basicSemanticVersionFactory = new BasicSemanticVersionFactory();
+    }
+    buyBasicSemanticVersion() {
+        return this.basicSemanticVersionFactory.create();
+    }
 }
 
 export interface SemanticVersion {

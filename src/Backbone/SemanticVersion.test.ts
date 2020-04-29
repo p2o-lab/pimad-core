@@ -86,10 +86,10 @@ describe('class: BasicSemanticVersionFactory', () => {
         expect(typeof factory.create()).is.equal(typeof new BasicSemanticVersion())
     });
 });
-/*
+
 describe('class: SemanticVersionVendor', () => {
     it('method: buyBasicSemanticVersion()', () => {
         const vendor = new SemanticVersionVendor();
         expect(typeof vendor.buyBasicSemanticVersion()).is.equal(typeof new BasicSemanticVersion())
     });
-})*/
+})
