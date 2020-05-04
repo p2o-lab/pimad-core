@@ -1,12 +1,31 @@
-export interface Gate {
-    send(): any;
-    receive(): any;
-    open(): any;
-    close(): any;
-    initialize(): boolean;
+abstract class AGate implements Gate {
+    protected initialized: boolean;
+    protected gateAddress: string | undefined;
+
+    constructor() {
+        this.initialized = false;
+        this.gateAddress = undefined;
+    }
+
+    abstract send(): any;
+    abstract receive(): any;
+    abstract open(): any;
+    abstract close(): any;
+    getGateAddress(): string | undefined {
+        return this.gateAddress;
+    };
+    initialize(address: string): boolean {
+        if (!this.initialized) {
+            this.initialized = true;
+            this.gateAddress = address;
+            return true;
+        } else {
+            return false;
+        }
+    };
 }
 
-export class MTPGate implements Gate {
+export class FileSystemGate extends AGate {
     private file: any;
 
     send(): any {
@@ -21,16 +40,22 @@ export class MTPGate implements Gate {
     close(): any {
         return false
     };
-    initialize(): boolean {
-        return false
-    };
+}
+
+export interface Gate {
+    send(): any;
+    receive(): any;
+    open(): any;
+    close(): any;
+    getGateAddress(): string | undefined;
+    initialize(address: string): boolean;
 }
 
 /* Factory */
 
-export class FMTPGate implements GateFactory {
+export class FileSystemGateFactory implements GateFactory {
     create(): Gate {
-        return new MTPGate();
+        return new FileSystemGate();
     }
 }
 

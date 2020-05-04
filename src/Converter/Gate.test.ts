@@ -1,11 +1,13 @@
 import { expect } from 'chai';
-import {FMTPGate, MTPGate} from './Gate';
+import {FileSystemGateFactory, FileSystemGate} from './Gate';
 
-describe('class MTPGate', () => {
-    const factory = new FMTPGate()
+describe('class FileSystemGate', () => {
+    const factory = new FileSystemGateFactory()
     const gate = factory.create()
     it('method: initialize', () => {
-        expect(gate.initialize()).is.false;
+        const address = 'Test-Address';
+        expect(gate.initialize(address)).is.true;
+        expect(gate.initialize(address)).is.false;
     })
     it('method: send', () => {
         expect(gate.send()).is.false;
@@ -19,11 +21,16 @@ describe('class MTPGate', () => {
     it('method: close', () => {
         expect(gate.close()).is.false;
     })
+    it('method: getGateAddress', () => {
+        const address = 'Test-Address';
+        gate.initialize(address)
+        expect(gate.getGateAddress()).is.equal(address);
+    })
 })
 
 describe('class: FMTPGate', () => {
-    const factory = new FMTPGate();
+    const factory = new FileSystemGateFactory();
     it('method: create()', () => {
-        expect(typeof factory.create()).is.equal(typeof new MTPGate())
+        expect(typeof factory.create()).is.equal(typeof new FileSystemGate())
     })
 });
