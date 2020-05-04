@@ -1,15 +1,20 @@
+import {Response, ResponseVendor} from '../Backbone/Response';
+import fs from 'fs'
+
 abstract class AGate implements Gate {
     protected initialized: boolean;
     protected gateAddress: string | undefined;
+    protected responseVendor: ResponseVendor
 
     constructor() {
         this.initialized = false;
         this.gateAddress = undefined;
+        this.responseVendor = new ResponseVendor();
     }
 
     abstract send(): any;
     abstract receive(): any;
-    abstract open(): any;
+    abstract open(): Response;
     abstract close(): any;
     getGateAddress(): string | undefined {
         return this.gateAddress;
@@ -34,8 +39,8 @@ export class FileSystemGate extends AGate {
     receive(): any {
         return false
     };
-    open(): any {
-        return false
+    open(): Response {
+        return this.responseVendor.buyErrorResponse()
     };
     close(): any {
         return false
@@ -45,7 +50,7 @@ export class FileSystemGate extends AGate {
 export interface Gate {
     send(): any;
     receive(): any;
-    open(): any;
+    open(): Response;
     close(): any;
     getGateAddress(): string | undefined;
     initialize(address: string): boolean;

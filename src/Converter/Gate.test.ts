@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import {FileSystemGateFactory, FileSystemGate} from './Gate';
+import {ErrorResponse} from '../Backbone/Response';
 
 describe('class FileSystemGate', () => {
     const factory = new FileSystemGateFactory()
@@ -16,7 +17,8 @@ describe('class FileSystemGate', () => {
         expect(gate.receive()).is.false;
     })
     it('method: open', () => {
-        expect(gate.open()).is.false;
+        const response = gate.open();
+        expect(typeof response).is.equal(typeof new ErrorResponse());
     })
     it('method: close', () => {
         expect(gate.close()).is.false;
