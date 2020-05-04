@@ -2,7 +2,7 @@
   "name": "PiMAd-core",
   "version": "0.0.1",
   "description": "",
-  "main": "build/index.js",
+  "main": "lib.ts",
   "scripts": {
     "prebuild": "npm run lint",
     "build": "tsc",
