@@ -1,6 +1,6 @@
 import {BasePEAFactory, BasePEA} from './PEA'
-import {expect} from "chai";
-import {ErrorResponse} from "../Backbone/Response";
+import {expect} from 'chai';
+import {ErrorResponse} from '../Backbone/Response';
 
 describe('class: BasePEA', () => {
     let pea: BasePEA;

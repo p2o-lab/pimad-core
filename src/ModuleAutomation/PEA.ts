@@ -1,7 +1,7 @@
-import {Actuator, DataAssembly, Sensor} from "./DataAssembly";
-import {FEA} from "./FEA";
-import {Service} from "./Service";
-import {Response, ResponseVendor} from "../Backbone/Response";
+import {Actuator, DataAssembly, Sensor} from './DataAssembly';
+import {FEA} from './FEA';
+import {Service} from './Service';
+import {Response, ResponseVendor} from '../Backbone/Response';
 
 abstract class APEA implements PEA {
     protected dataAssemblies: DataAssembly[];

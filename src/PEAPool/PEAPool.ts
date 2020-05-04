@@ -100,28 +100,6 @@ export class DependencyPEAPool extends APEAPool {
     }
 }
 
-export class PEAPoolVendor {
-    private commandlinePEAPoolFactory: CommandLinePEAPoolFactory;
-    private dependencyPEAPoolFactory: DependencyPEAPoolFactory;
-    private webPEAPoolFactory: WebPEAPoolFactory;
-
-    constructor() {
-        this.commandlinePEAPoolFactory = new CommandLinePEAPoolFactory();
-        this.dependencyPEAPoolFactory = new DependencyPEAPoolFactory();
-        this.webPEAPoolFactory = new WebPEAPoolFactory();
-    }
-
-    buyCommandLInePEAPool(): PEAPool {
-        return new CommandLinePEAPool();
-    }
-    buyDependencyPEAPool(): PEAPool {
-        return new  DependencyPEAPool();
-    }
-    buyWebPEAPool(): PEAPool {
-        return new WebPEAPool();
-    }
-}
-
 interface PEAPool {
     addPEA(any: object): Response;
     deletePEA(tag: string): Response;
@@ -155,4 +133,28 @@ export class DependencyPEAPoolFactory extends APEAPoolFactory {
 
 interface PEAPoolFactory {
     create(): PEAPool;
+}
+
+/* Vendor */
+
+export class PEAPoolVendor {
+    private commandlinePEAPoolFactory: CommandLinePEAPoolFactory;
+    private dependencyPEAPoolFactory: DependencyPEAPoolFactory;
+    private webPEAPoolFactory: WebPEAPoolFactory;
+
+    constructor() {
+        this.commandlinePEAPoolFactory = new CommandLinePEAPoolFactory();
+        this.dependencyPEAPoolFactory = new DependencyPEAPoolFactory();
+        this.webPEAPoolFactory = new WebPEAPoolFactory();
+    }
+
+    buyCommandLInePEAPool(): PEAPool {
+        return new CommandLinePEAPool();
+    }
+    buyDependencyPEAPool(): PEAPool {
+        return new  DependencyPEAPool();
+    }
+    buyWebPEAPool(): PEAPool {
+        return new WebPEAPool();
+    }
 }
