@@ -1,4 +1,4 @@
-import {BasePEAFactory, BasePEA} from './PEA'
+import {BasePEAFactory, BasePEA} from './PEA';
 import {expect} from 'chai';
 import {ErrorResponse} from '../Backbone/Response';
 
