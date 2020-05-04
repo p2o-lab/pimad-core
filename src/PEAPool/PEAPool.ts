@@ -2,7 +2,7 @@ import {Response, ResponseVendor} from '../Backbone/Response'
 import {PEA} from '../ModuleAutomation/PEA'
 import {Importer} from '../Converter/Importer'
 
-abstract class APEAStore implements PEAStore {
+abstract class APEAPool implements PEAPool {
     private initialized: boolean;
     protected running: boolean;
     protected importerChainFirstElement: Importer | undefined;
@@ -51,7 +51,7 @@ abstract class APEAStore implements PEAStore {
     };
 }
 
-export class WebPEAStore extends APEAStore {
+export class WebPEAPool extends APEAPool {
     addPEA(any: object): Response {
         return this.responseVendor.buyErrorResponse();
     }
@@ -63,7 +63,7 @@ export class WebPEAStore extends APEAStore {
     }
 }
 
-export class CommandLinePEAStore extends APEAStore {
+export class CommandLinePEAPool extends APEAPool {
     addPEA(any: object) {
         return this.responseVendor.buyErrorResponse();
     }
@@ -75,7 +75,7 @@ export class CommandLinePEAStore extends APEAStore {
     }
 }
 
-export class DependencyPEAStore extends APEAStore {
+export class DependencyPEAPool extends APEAPool {
     addPEA(any: object) {
         return this.responseVendor.buyErrorResponse();
     }
@@ -87,7 +87,7 @@ export class DependencyPEAStore extends APEAStore {
     }
 }
 
-interface PEAStore {
+interface PEAPool {
     addPEA(any: object): Response;
     deletePEA(tag: string): Response;
     getPEA(tag: string): Response;
@@ -98,26 +98,26 @@ interface PEAStore {
 
 /* Factory */
 
-abstract class APEAStoreFactory implements PEAStoreFactory {
-    abstract create(): PEAStore;
+abstract class APEAPoolFactory implements PEAPoolFactory {
+    abstract create(): PEAPool;
 }
 
-export class WebPEAStoreFactory extends APEAStoreFactory {
-    create(): PEAStore {
-        return new WebPEAStore();
+export class WebPEAPoolFactory extends APEAPoolFactory {
+    create(): PEAPool {
+        return new WebPEAPool();
     }
 }
-export class CommandLinePEAStoreFactory extends APEAStoreFactory {
-    create(): PEAStore {
-        return new CommandLinePEAStore();
+export class CommandLinePEAPoolFactory extends APEAPoolFactory {
+    create(): PEAPool {
+        return new CommandLinePEAPool();
     }
 }
-export class DependencyPEAStoreFactory extends APEAStoreFactory {
-    create(): PEAStore {
-        return new DependencyPEAStore();
+export class DependencyPEAPoolFactory extends APEAPoolFactory {
+    create(): PEAPool {
+        return new DependencyPEAPool();
     };
 }
 
-interface PEAStoreFactory {
-    create(): PEAStore;
+interface PEAPoolFactory {
+    create(): PEAPool;
 }

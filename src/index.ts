@@ -1,6 +1,6 @@
-import {WebPEAStoreFactory, WebPEAStore} from './PEAPool/PEAStore'
+import {WebPEAPoolFactory} from './PEAPool/PEAPool'
 
-const factory = new WebPEAStoreFactory();
+const factory = new WebPEAPoolFactory();
 const pool = factory.create()
 
 while (true) {

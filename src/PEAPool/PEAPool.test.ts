@@ -1,4 +1,4 @@
-import {WebPEAStore, CommandLinePEAStore, DependencyPEAStore, CommandLinePEAStoreFactory, DependencyPEAStoreFactory, WebPEAStoreFactory} from './PEAStore';
+import {WebPEAPool, CommandLinePEAPool, DependencyPEAPool, CommandLinePEAPoolFactory, DependencyPEAPoolFactory, WebPEAPoolFactory} from './PEAPool';
 import {FLastChainElementImporter} from '../Converter/Importer'
 
 import {expect} from 'chai';
@@ -6,9 +6,9 @@ import {ErrorResponse, SuccessResponse} from '../Backbone/Response';
 
 describe('class: WebPEAStore', () => {
     const fImporter = new FLastChainElementImporter()
-    let store: WebPEAStore;
+    let store: WebPEAPool;
     beforeEach(function () {
-        store = new WebPEAStore();
+        store = new WebPEAPool();
     });
     it('method: initialize(firstChainElement: Importer)', () => {
         expect(store.initialize(fImporter.create())).is.true;
@@ -38,7 +38,7 @@ describe('class: WebPEAStore', () => {
 
 describe('class: CommandLinePEAStore', () => {
     const fImporter = new FLastChainElementImporter()
-    const store = new CommandLinePEAStore();
+    const store = new CommandLinePEAPool();
     it('method: initialize(firstChainElement: Importer)', () => {
         expect(store.initialize(fImporter.create())).is.true;
         expect(store.initialize(fImporter.create())).is.false;
@@ -67,7 +67,7 @@ describe('class: CommandLinePEAStore', () => {
 
 describe('class: DependencyPEAStore', () => {
     const fImporter = new FLastChainElementImporter()
-    const store = new DependencyPEAStore();
+    const store = new DependencyPEAPool();
     it('method: initialize(firstChainElement: Importer)', () => {
         expect(store.initialize(fImporter.create())).is.true;
         expect(store.initialize(fImporter.create())).is.false;
@@ -96,21 +96,21 @@ describe('class: DependencyPEAStore', () => {
 
 describe('class: CommandLinePEAStoreFactory', () => {
     it('method: create()', () => {
-        const factory = new CommandLinePEAStoreFactory();
-        expect(typeof factory.create()).is.equal(typeof new CommandLinePEAStore())
+        const factory = new CommandLinePEAPoolFactory();
+        expect(typeof factory.create()).is.equal(typeof new CommandLinePEAPool())
     });
 })
 
 describe('class: DependencyPEAStoreFactory', () => {
     it('method: create()', () => {
-        const factory = new DependencyPEAStoreFactory();
-        expect(typeof factory.create()).is.equal(typeof new DependencyPEAStore())
+        const factory = new DependencyPEAPoolFactory();
+        expect(typeof factory.create()).is.equal(typeof new DependencyPEAPool())
     });
 })
 
 describe('class: WebPEAStoreFactory', () => {
     it('method: create()', () => {
-        const factory = new WebPEAStoreFactory();
-        expect(typeof factory.create()).is.equal(typeof new WebPEAStore())
+        const factory = new WebPEAPoolFactory();
+        expect(typeof factory.create()).is.equal(typeof new WebPEAPool())
     });
 })
