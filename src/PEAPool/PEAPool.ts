@@ -61,6 +61,19 @@ export class WebPEAPool extends APEAPool {
     getPEA(tag: string) {
         return this.responseVendor.buyErrorResponse();
     }
+    start(): Response {
+        if (!this.running) {
+            /* all start logic here */
+            console.log('Hello world, I am a WebPEAPool!');
+            this.running = true;
+            return this.responseVendor.buySuccessResponse();
+        } else {
+            return this.responseVendor.buyErrorResponse();
+        }
+    }
+    stop(): Response {
+        return super.stop();
+    }
 }
 
 export class CommandLinePEAPool extends APEAPool {
@@ -84,6 +97,28 @@ export class DependencyPEAPool extends APEAPool {
     }
     getPEA(tag: string) {
         return this.responseVendor.buyErrorResponse();
+    }
+}
+
+export class PEAPoolVendor {
+    private commandlinePEAPoolFactory: CommandLinePEAPoolFactory;
+    private dependencyPEAPoolFactory: DependencyPEAPoolFactory;
+    private webPEAPoolFactory: WebPEAPoolFactory;
+
+    constructor() {
+        this.commandlinePEAPoolFactory = new CommandLinePEAPoolFactory();
+        this.dependencyPEAPoolFactory = new DependencyPEAPoolFactory();
+        this.webPEAPoolFactory = new WebPEAPoolFactory();
+    }
+
+    buyCommandLInePEAPool(): PEAPool {
+        return new CommandLinePEAPool();
+    }
+    buyDependencyPEAPool(): PEAPool {
+        return new  DependencyPEAPool();
+    }
+    buyWebPEAPool(): PEAPool {
+        return new WebPEAPool();
     }
 }
 

@@ -1,4 +1,12 @@
-import {WebPEAPool, CommandLinePEAPool, DependencyPEAPool, CommandLinePEAPoolFactory, DependencyPEAPoolFactory, WebPEAPoolFactory} from './PEAPool';
+import {
+    WebPEAPool,
+    CommandLinePEAPool,
+    DependencyPEAPool,
+    CommandLinePEAPoolFactory,
+    DependencyPEAPoolFactory,
+    WebPEAPoolFactory,
+    PEAPoolVendor
+} from './PEAPool';
 import {FLastChainElementImporter} from '../Converter/Importer'
 
 import {expect} from 'chai';
@@ -112,5 +120,18 @@ describe('class: WebPEAStoreFactory', () => {
     it('method: create()', () => {
         const factory = new WebPEAPoolFactory();
         expect(typeof factory.create()).is.equal(typeof new WebPEAPool())
+    });
+})
+
+describe('class: PEAStoreVendor', () => {
+    const vendor = new PEAPoolVendor();
+    it('method: buyCommandLInePEAPool()', () => {
+        expect(typeof vendor.buyCommandLInePEAPool()).is.equal(typeof new CommandLinePEAPool())
+    });
+    it('method: buyDependencyPEAPool()', () => {
+        expect(typeof vendor.buyDependencyPEAPool()).is.equal(typeof new DependencyPEAPool())
+    });
+    it('method: buyWebPEAPool()', () => {
+        expect(typeof vendor.buyWebPEAPool()).is.equal(typeof new WebPEAPool())
     });
 })
