@@ -1,8 +1,8 @@
-import {WebPEAPoolFactory} from './PEAPool/PEAPool'
+#!/usr/bin/env node
 
-const factory = new WebPEAPoolFactory();
+import {DependencyPEAPoolFactory} from './PEAPool/PEAPool'
+
+const factory = new DependencyPEAPoolFactory();
 const pool = factory.create()
 
-while (true) {
-    pool.start();
-}
+pool.start()
