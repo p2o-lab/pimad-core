@@ -2,14 +2,28 @@ import {WebPEAStore, CommandLinePEAStore, DependencyPEAStore, CommandLinePEAStor
 import {FLastChainElementImporter} from '../Converter/Importer'
 
 import {expect} from 'chai';
-import {ErrorResponse} from '../Backbone/Response';
+import {ErrorResponse, SuccessResponse} from '../Backbone/Response';
 
 describe('class: WebPEAStore', () => {
     const fImporter = new FLastChainElementImporter()
-    const store = new WebPEAStore();
+    let store: WebPEAStore;
+    beforeEach(function () {
+        store = new WebPEAStore();
+    });
     it('method: initialize(firstChainElement: Importer)', () => {
         expect(store.initialize(fImporter.create())).is.true;
         expect(store.initialize(fImporter.create())).is.false;
+    });
+    it('method: start()', () => {
+        expect(typeof (store.start())).is.equal(typeof new SuccessResponse());
+        const response = store.start();
+        expect(typeof response).is.equal(typeof new ErrorResponse());
+    });
+    it('method: stop()', () => {
+        store.start();
+        expect(typeof (store.stop())).is.equal(typeof new SuccessResponse());
+        const response = store.stop();
+        expect(typeof response).is.equal(typeof new ErrorResponse());
     });
     it('method: addPEA(any: object)', () => {
         expect(typeof store.addPEA({})).is.equal(typeof new ErrorResponse())
@@ -29,6 +43,17 @@ describe('class: CommandLinePEAStore', () => {
         expect(store.initialize(fImporter.create())).is.true;
         expect(store.initialize(fImporter.create())).is.false;
     });
+    it('method: start()', () => {
+        expect(typeof (store.start())).is.equal(typeof new SuccessResponse());
+        const response = store.start();
+        expect(typeof response).is.equal(typeof new ErrorResponse());
+    });
+    it('method: stop()', () => {
+        store.start();
+        expect(typeof (store.stop())).is.equal(typeof new SuccessResponse());
+        const response = store.stop();
+        expect(typeof response).is.equal(typeof new ErrorResponse());
+    });
     it('method: addPEA(any: object)', () => {
         expect(typeof store.addPEA({})).is.equal(typeof new ErrorResponse())
     })
@@ -46,6 +71,17 @@ describe('class: DependencyPEAStore', () => {
     it('method: initialize(firstChainElement: Importer)', () => {
         expect(store.initialize(fImporter.create())).is.true;
         expect(store.initialize(fImporter.create())).is.false;
+    });
+    it('method: start()', () => {
+        expect(typeof (store.start())).is.equal(typeof new SuccessResponse());
+        const response = store.start();
+        expect(typeof response).is.equal(typeof new ErrorResponse());
+    });
+    it('method: stop()', () => {
+        store.start();
+        expect(typeof (store.stop())).is.equal(typeof new SuccessResponse());
+        const response = store.stop();
+        expect(typeof response).is.equal(typeof new ErrorResponse());
     });
     it('method: addPEA(any: object)', () => {
         expect(typeof store.addPEA({})).is.equal(typeof new ErrorResponse())
