@@ -12,10 +12,8 @@ abstract class AGate implements Gate {
         this.gateAddress = undefined;
         this.responseVendor = new ResponseVendor();
     }
-    abstract send(instructions: {}, callback: (error: {}, data: {}) => void): void;
-    abstract receive(instructions: {
-        source: string;
-    }, callback: (response: Response) => void): void;
+    abstract send(instructions: object, callback: (response: Response) => void): void;
+    abstract receive(instructions: object, callback: (response: Response) => void): void;
     abstract open(): Response;
     abstract close(): any;
     getGateAddress(): string | undefined {
@@ -38,8 +36,10 @@ abstract class AFileSystemGate extends AGate {
 
 export class XMLGate extends AFileSystemGate {
 
-    send(instructions: {}, callback: (error: {}, data: {}) => void): void {
-        callback(true, {})
+    send(instructions: object, callback: (response: Response) => void): void {
+        const localResponse = this.responseVendor.buyErrorResponse()
+        localResponse.initialize('Not implemented yet!', {})
+        callback(localResponse)
     };
     receive(instructions: {
         source: string;
@@ -70,15 +70,13 @@ export interface Gate {
      * @param instructions
      * @param callback
      */
-    send(instructions: {}, callback: (error: {}, data: {}) => void): void;
+    send(instructions: {}, callback: (response: Response) => void): void;
     /**
      * Asynchronous: Send a request to the source and receive theirs answer.
      * @param instructions
      * @param callback
      */
-    receive(instructions: {
-        source: string;
-    }, callback: (response: Response) => void): void;
+    receive(instructions: object, callback: (response: Response) => void): void;
     // TODO: What to do with open()/close() ???
     open(): Response;
     close(): Response;

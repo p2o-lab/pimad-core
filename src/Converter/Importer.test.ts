@@ -1,7 +1,7 @@
-import { expect } from 'chai';
+import {expect} from 'chai';
 import {FLastChainElementImporter, LastChainLinkImporter} from './Importer';
 import {ErrorResponse} from '../Backbone/Response';
-import {XMLGate} from "./Gate";
+import {XMLGate} from './Gate';
 
 describe('class: LastChainElementImporter', () => {
     const importer = new LastChainLinkImporter();
