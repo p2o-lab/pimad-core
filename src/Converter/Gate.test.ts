@@ -1,38 +1,83 @@
 import { expect } from 'chai';
-import {FileSystemGateFactory, FileSystemGate} from './Gate';
-import {ErrorResponse} from '../Backbone/Response';
+import {XMLGateFactory} from './Gate';
+import {ErrorResponse, Response, SuccessResponse} from '../Backbone/Response';
 
+/*
 describe('class FileSystemGate', () => {
     const factory = new FileSystemGateFactory()
     const gate = factory.create()
-    it('method: initialize', () => {
+    it('method: initialize()', () => {
         const address = 'Test-Address';
         expect(gate.initialize(address)).is.true;
         expect(gate.initialize(address)).is.false;
     })
-    it('method: send', () => {
-        expect(gate.send()).is.false;
+    it('method: send()', () => {
+        gate.send({},(error, data) => {
+            expect(error).is.true
+        })
     })
-    it('method: receive', () => {
-        expect(gate.receive()).is.false;
+    it('method: receive()', () => {
+
+        gate.receive({source: 'tes/Converter/test.xml'},(error, data) => {
+            expect(error).is.false
+        })
     })
-    it('method: open', () => {
+    it('method: open()', () => {
         const response = gate.open();
         expect(typeof response).is.equal(typeof new ErrorResponse());
     })
-    it('method: close', () => {
+    it('method: close()', () => {
         expect(gate.close()).is.false;
     })
-    it('method: getGateAddress', () => {
+    it('method: getGateAddress()', () => {
+        const address = 'Test-Address';
+        gate.initialize(address)
+        expect(gate.getGateAddress()).is.equal(address);
+    })
+}) */
+
+describe('class XMLGate', () => {
+    const factory = new XMLGateFactory()
+    const gate = factory.create()
+    it('method: initialize()', () => {
+        const address = 'Test-Address';
+        expect(gate.initialize(address)).is.true;
+        expect(gate.initialize(address)).is.false;
+    })
+    it('method: send()', () => {
+        gate.send({},(error, data) => {
+            expect(error).is.true
+        })
+    })
+    it('method: receive()', () => {
+        const xml2jsonTest = JSON.stringify({'test':{'title':{'value':'PiMAd-XML-Gate-Test'},'greeting':'Hello, World !'}});
+        gate.receive({source: 'test/Converter/test.xml'},(response: Response) => {
+            // TODO: General way to go? Handle simple typing? Without modeling fucking a lot classes.
+            const content: { data?: {}} = response.getContent()
+            expect(typeof response).is.equal(typeof new SuccessResponse())
+            expect(JSON.stringify(content.data)).is.equal(xml2jsonTest)
+        });
+        gate.receive({source: 'this/is/a/wrong/path'},(response: Response) => {
+            expect(typeof response).is.equal(typeof new ErrorResponse())
+        });
+    })
+    it('method: open()', () => {
+        const response = gate.open();
+        expect(typeof response).is.equal(typeof new ErrorResponse());
+    })
+    it('method: close()', () => {
+        expect(typeof gate.close()).is.equal(typeof new ErrorResponse());
+    })
+    it('method: getGateAddress()', () => {
         const address = 'Test-Address';
         gate.initialize(address)
         expect(gate.getGateAddress()).is.equal(address);
     })
 })
 
-describe('class: FMTPGate', () => {
-    const factory = new FileSystemGateFactory();
+describe('class: XMLGateFactory', () => {
+    const factory = new XMLGateFactory();
     it('method: create()', () => {
-        expect(typeof factory.create()).is.equal(typeof new FileSystemGate())
+        expect(typeof factory.create()).is.equal(typeof new XMLGateFactory())
     })
 });

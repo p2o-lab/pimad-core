@@ -1,18 +1,18 @@
-import {FErrorResponse, FSuccessResponse, Response} from '../Backbone/Response';
+import {ErrorResponseFactory, SuccessResponseFactory, Response} from '../Backbone/Response';
 import {Gate} from './Gate';
 
 abstract class AImporter implements  Importer {
 
     private initialized: boolean;
     protected nextImporter: Importer | undefined;
-    protected successResponseFactory: FSuccessResponse
-    protected errorResponseFactory: FErrorResponse
+    protected successResponseFactory: SuccessResponseFactory
+    protected errorResponseFactory: ErrorResponseFactory
 
     constructor() {
         this.nextImporter = undefined;
         this.initialized = false;
-        this.successResponseFactory = new FSuccessResponse();
-        this.errorResponseFactory = new FErrorResponse();
+        this.successResponseFactory = new SuccessResponseFactory();
+        this.errorResponseFactory = new ErrorResponseFactory();
     }
     abstract convertFrom(source: object): Response;
     initialize(nextImporter: Importer, gate: Gate): boolean {
