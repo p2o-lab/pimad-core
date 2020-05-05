@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import {XMLGateFactory} from './Gate';
+import {MockGateFactory, XMLGateFactory} from './Gate';
 import {ErrorResponse, Response, SuccessResponse} from '../Backbone/Response';
 
 describe('class XMLGate', () => {
@@ -42,9 +42,42 @@ describe('class XMLGate', () => {
     })
 })
 
+describe('class: MockGateFactory', () => {
+    const factory = new MockGateFactory()
+    const gate = factory.create()
+    // TODO
+    /*
+    it('method: send()', () => {
+        gate.send({},(response) => {
+            expect(typeof response).is.equal(typeof new ErrorResponse());
+            expect(response.getMessage()).is.equal('Not implemented yet!');
+        })
+    });
+    it('method: receive()', () => {
+        const xml2jsonTest = JSON.stringify({'test':{'title':{'value':'PiMAd-XML-Gate-Test'},'greeting':'Hello, World !'}});
+        gate.receive({source: 'test/Converter/test.xml'},(response: Response) => {
+            // TODO: General way to go? Handle simple typing? Without modeling fucking a lot classes.
+            const content: { data?: {}} = response.getContent();
+            expect(typeof response).is.equal(typeof new SuccessResponse());
+            expect(JSON.stringify(content.data)).is.equal(xml2jsonTest);
+        });
+        gate.receive({source: 'this/is/a/wrong/path'},(response: Response) => {
+            expect(typeof response).is.equal(typeof new ErrorResponse());
+        });
+    });
+    */
+})
+
 describe('class: XMLGateFactory', () => {
     const factory = new XMLGateFactory();
     it('method: create()', () => {
         expect(typeof factory.create()).is.equal(typeof new XMLGateFactory())
+    })
+});
+
+describe('class: MockGateFactory', () => {
+    const factory = new MockGateFactory();
+    it('method: create()', () => {
+        expect(typeof factory.create()).is.equal(typeof new MockGateFactory())
     })
 });

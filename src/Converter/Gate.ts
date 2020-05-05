@@ -15,7 +15,7 @@ abstract class AGate implements Gate {
     abstract send(instructions: object, callback: (response: Response) => void): void;
     abstract receive(instructions: object, callback: (response: Response) => void): void;
     abstract open(): Response;
-    abstract close(): any;
+    abstract close(): Response;
     getGateAddress(): string | undefined {
         return this.gateAddress;
     };
@@ -63,14 +63,29 @@ export class XMLGate extends AFileSystemGate {
     };
 }
 
+export class MockGate extends AGate {
+
+    send(instructions: object, callback: (response: Response) => void) {
+        console.log('wasd');
+    };
+    receive(instructions: object, callback: (response: Response) => void) {
+        console.log('wasd');
+    };
+    open(): Response {
+        return this.responseVendor.buyErrorResponse();
+    };
+    close(): Response {
+        return this.responseVendor.buyErrorResponse();
+    };
+}
+
 export interface Gate {
-    // TODO: Time for callbacks, async!!
     /**
      * Write data to the source via the gate.
      * @param instructions
      * @param callback
      */
-    send(instructions: {}, callback: (response: Response) => void): void;
+    send(instructions: object, callback: (response: Response) => void): void;
     /**
      * Asynchronous: Send a request to the source and receive theirs answer.
      * @param instructions
@@ -89,6 +104,12 @@ export interface Gate {
 export class XMLGateFactory implements GateFactory {
     create(): Gate {
         return new XMLGate();
+    }
+}
+
+export class MockGateFactory implements GateFactory {
+    create(): Gate {
+        return new MockGate();
     }
 }
 
