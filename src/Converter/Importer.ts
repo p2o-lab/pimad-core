@@ -3,7 +3,7 @@ import {Gate} from './Gate';
 
 abstract class AImporter implements  Importer {
 
-    private initialized: boolean;
+    protected initialized: boolean;
     protected nextImporter: Importer | undefined;
     protected successResponseFactory: SuccessResponseFactory
     protected errorResponseFactory: ErrorResponseFactory
@@ -15,7 +15,7 @@ abstract class AImporter implements  Importer {
         this.errorResponseFactory = new ErrorResponseFactory();
     }
     abstract convertFrom(source: object): Response;
-    initialize(nextImporter: Importer, gate: Gate): boolean {
+    initialize(nextImporter: Importer | undefined, gate: Gate): boolean {
         if (!this.initialized) {
             this.initialized = true;
             this.nextImporter = nextImporter;
@@ -30,10 +30,14 @@ export class LastChainLinkImporter extends AImporter {
     convertFrom(source: object): Response {
         return this.errorResponseFactory.create();
     }
-    /*
-    initialize(nextImporter: IImporter, gate: IGate): boolean {
-        return false;
-    }*/
+    initialize(nextImporter: Importer, gate: Gate): boolean {
+        if (!this.initialized) {
+            this.initialized = true;
+            return true
+        } else {
+            return false;
+        }
+    };
 }
 
 export interface Importer {
