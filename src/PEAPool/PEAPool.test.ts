@@ -1,12 +1,12 @@
 import {
     BasePEAPool,
-    DependencyPEAPoolFactory,
+    BasePEAPoolFactory,
     PEAPoolVendor
 } from './PEAPool';
 import {FLastChainElementImporter} from '../Converter/Importer'
 
 import {expect} from 'chai';
-import {ErrorResponse, SuccessResponse} from '../Backbone/Response';
+import {ErrorResponse} from '../Backbone/Response';
 
 describe('class: BasePEAStore', () => {
     const fImporter = new FLastChainElementImporter()
@@ -26,9 +26,9 @@ describe('class: BasePEAStore', () => {
     })
 });
 
-describe('class: DependencyPEAStoreFactory', () => {
+describe('class: BasePEAPoolFactory', () => {
     it('method: create()', () => {
-        const factory = new DependencyPEAPoolFactory();
+        const factory = new BasePEAPoolFactory();
         expect(typeof factory.create()).is.equal(typeof new BasePEAPool())
     });
 })

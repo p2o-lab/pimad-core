@@ -1,6 +1,7 @@
-import {Response, ResponseVendor} from '../Backbone/Response'
-import {PEA} from '../ModuleAutomation/PEA'
-import {Importer} from '../Converter/Importer'
+import {Response, ResponseVendor} from '../Backbone/Response';
+import {PEA} from '../ModuleAutomation/PEA';
+import {Importer} from '../Converter/Importer';
+import {logger} from '../Utils/Logger'
 
 abstract class APEAPool implements PEAPool {
     private initialized: boolean;
@@ -55,8 +56,9 @@ abstract class APEAPoolFactory implements PEAPoolFactory {
     abstract create(): PEAPool;
 }
 
-export class DependencyPEAPoolFactory extends APEAPoolFactory {
+export class BasePEAPoolFactory extends APEAPoolFactory {
     create(): PEAPool {
+        logger.debug('BasePEAPool generated via Factory')
         return new BasePEAPool();
     };
 }
@@ -69,10 +71,10 @@ interface PEAPoolFactory {
 
 export class PEAPoolVendor {
 
-    private dependencyPEAPoolFactory: DependencyPEAPoolFactory;
+    private dependencyPEAPoolFactory: BasePEAPoolFactory;
 
     constructor() {
-        this.dependencyPEAPoolFactory = new DependencyPEAPoolFactory();
+        this.dependencyPEAPoolFactory = new BasePEAPoolFactory();
     }
     buyDependencyPEAPool(): PEAPool {
         return new  BasePEAPool();
