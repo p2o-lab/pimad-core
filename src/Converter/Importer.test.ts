@@ -1,20 +1,19 @@
 import {expect} from 'chai';
 import {FLastChainElementImporter, LastChainLinkImporter} from './Importer';
-import {ErrorResponse} from '../Backbone/Response';
-import {XMLGate} from './Gate';
+import {ErrorResponse, Response} from '../Backbone/Response';
 
 describe('class: LastChainElementImporter', () => {
     const importer = new LastChainLinkImporter();
     it('method: initialize(nextImporter: Importer, gate: IGate)', () => {
-        let gate = new XMLGate();
         let localImporter = new LastChainLinkImporter();
-        expect(importer.initialize(localImporter, gate)).is.true;
-        gate = new XMLGate();
+        expect(importer.initialize(localImporter)).is.true;
         localImporter = new LastChainLinkImporter();
-        expect(importer.initialize(localImporter, gate)).is.false;
+        expect(importer.initialize(localImporter)).is.false;
     })
     it('method: convertFrom(source: object)', () => {
-        expect(typeof importer.convertFrom({})).is.equal(typeof new ErrorResponse());
+        importer.convertFrom({}, (response: Response) => {
+            expect(typeof response).is.equal(typeof new ErrorResponse());
+        })
     })
 });
 

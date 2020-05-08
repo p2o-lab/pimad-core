@@ -14,8 +14,8 @@ abstract class AImporter implements  Importer {
         this.successResponseFactory = new SuccessResponseFactory();
         this.errorResponseFactory = new ErrorResponseFactory();
     }
-    abstract convertFrom(source: object): Response;
-    initialize(nextImporter: Importer | undefined, gate: Gate): boolean {
+    abstract convertFrom(instructions: object, callback: (response: Response) => void): void;
+    initialize(nextImporter: Importer): boolean {
         if (!this.initialized) {
             this.initialized = true;
             this.nextImporter = nextImporter;
@@ -26,11 +26,25 @@ abstract class AImporter implements  Importer {
     };
 }
 
+/**
+ * Last link of every importer chain. Cleans up and build a meaningful answer why the import has failed.
+ */
 export class LastChainLinkImporter extends AImporter {
-    convertFrom(source: object): Response {
-        return this.errorResponseFactory.create();
-    }
-    initialize(nextImporter: Importer, gate: Gate): boolean {
+    /**
+     * All prioritized importers could not perform the import. Error message with debug information is created and
+     * returned to the calling one.
+     * @param instructions A set of instructions. Configuring the importer.
+     * @param callback Passing the result back via a callback function.
+     */
+    convertFrom(instructions: object, callback: (response: Response) => void): void {
+        callback(this.errorResponseFactory.create())
+    };
+    /**
+     * Initializing the LastChainLink.
+     * @param nextImporter The next Importer element in the chain, but this is already the last element! Therefore the
+     * object will not be stored. You could also pass an 'undefined' here.
+     */
+    initialize(nextImporter: Importer | undefined): boolean {
         if (!this.initialized) {
             this.initialized = true;
             return true
@@ -41,8 +55,8 @@ export class LastChainLinkImporter extends AImporter {
 }
 
 export interface Importer {
-    convertFrom(source: object): Response;
-    initialize(nextImporter: Importer, gate: Gate): boolean;
+    convertFrom(instructions: object, callback: (response: Response) => void): void;
+    initialize(nextImporter: Importer): boolean;
 }
 
 /* Factory */
