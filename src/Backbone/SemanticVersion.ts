@@ -1,3 +1,4 @@
+import {logger} from '../Utils/Logger';
 
 abstract class ASemanticVersion implements SemanticVersion {
     protected major: number;
@@ -62,7 +63,9 @@ export class BasicSemanticVersion extends ASemanticVersion {
 
 export class BasicSemanticVersionFactory extends ASemanticVersionFactory{
     create(): SemanticVersion {
-        return new BasicSemanticVersion();
+        const semver = new BasicSemanticVersion()
+        logger.debug(this.constructor.name + ' creates a ' + semver.constructor.name);
+        return semver;
     }
 }
 
