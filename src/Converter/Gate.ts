@@ -14,8 +14,8 @@ abstract class AGate implements Gate {
     }
     abstract send(instructions: object, callback: (response: Response) => void): void;
     abstract receive(instructions: object, callback: (response: Response) => void): void;
-    abstract open(): Response;
-    abstract close(): Response;
+    /*abstract open(): Response;
+    abstract close(): Response;*/
     getGateAddress(): string | undefined {
         return this.gateAddress;
     };
@@ -55,28 +55,33 @@ export class XMLGate extends AFileSystemGate {
             }
         })
     };
-    open(): Response {
+    /*open(): Response {
         return this.responseVendor.buyErrorResponse();
     };
     close(): Response {
         return this.responseVendor.buyErrorResponse();
-    };
+    };*/
 }
 
 export class MockGate extends AGate {
 
     send(instructions: object, callback: (response: Response) => void) {
-        console.log('wasd');
+        const response = this.responseVendor.buySuccessResponse();
+        response.initialize('This is a send-response of a mock gate.', instructions)
+        callback(response);
     };
     receive(instructions: object, callback: (response: Response) => void) {
-        console.log('wasd');
+        const response = this.responseVendor.buySuccessResponse();
+        response.initialize('This is a receive-response of a mock gate.', instructions)
+        callback(response);
     };
+    /*
     open(): Response {
         return this.responseVendor.buyErrorResponse();
     };
     close(): Response {
         return this.responseVendor.buyErrorResponse();
-    };
+    };*/
 }
 
 export interface Gate {
@@ -93,8 +98,8 @@ export interface Gate {
      */
     receive(instructions: object, callback: (response: Response) => void): void;
     // TODO: What to do with open()/close() ???
-    open(): Response;
-    close(): Response;
+    //open(): Response;
+    //close(): Response;
     getGateAddress(): string | undefined;
     initialize(address: string): boolean;
 }
