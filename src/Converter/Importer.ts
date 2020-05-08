@@ -33,19 +33,22 @@ export class LastChainLinkImporter extends AImporter {
     /**
      * All prioritized importers could not perform the import. Error message with debug information is created and
      * returned to the calling one.
-     * @param instructions A set of instructions. Configuring the importer.
-     * @param callback Passing the result back via a callback function.
+     * @param instructions - A set of instructions. Configuring the importer.
+     * @param callback - Passing the result back via a callback function.
      */
     convertFrom(instructions: object, callback: (response: Response) => void): void {
         callback(this.errorResponseFactory.create())
     };
     /**
      * Initializing the LastChainLink.
-     * @param nextImporter The next Importer element in the chain, but this is already the last element! Therefore the
+     * @param nextImporter - The next Importer element in the chain, but this is already the last element! Therefore the
      * object will not be stored. You could also pass an 'undefined' here.
      */
     initialize(nextImporter: Importer | undefined): boolean {
         if (!this.initialized) {
+            if(nextImporter == undefined) {
+                console.warn('You pass an Importer to a LastChainLinkImporter. That is not necessary. Use undefined instead.');
+            }
             this.initialized = true;
             return true
         } else {
