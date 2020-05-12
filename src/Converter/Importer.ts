@@ -1,26 +1,34 @@
-import {ErrorResponseFactory, SuccessResponseFactory, Response} from '../Backbone/Response';
+import {Response, ResponseVendor} from '../Backbone/Response';
 import {Gate} from './Gate';
 import {logger} from '../Utils/Logger';
+import {BasicSemanticVersion, SemanticVersion} from '../Backbone/SemanticVersion';
 
 abstract class AImporter implements  Importer {
 
+    protected gate: Gate[];
     protected initialized: boolean;
+    protected metaModelVersion: SemanticVersion;
     protected nextImporter: Importer | undefined;
-    protected successResponseFactory: SuccessResponseFactory
-    protected errorResponseFactory: ErrorResponseFactory
+    protected responseVendor: ResponseVendor;
 
     constructor() {
-        this.nextImporter = undefined;
         this.initialized = false;
-        this.successResponseFactory = new SuccessResponseFactory();
-        this.errorResponseFactory = new ErrorResponseFactory();
+        this.gate = []
+        this.metaModelVersion = new BasicSemanticVersion();
+        this.nextImporter = undefined;
+        this.responseVendor = new ResponseVendor();
+
+        this.metaModelVersion.initialize(0,0,1);
     }
     abstract convertFrom(instructions: object, callback: (response: Response) => void): void;
+    getMetaModelVersion(): SemanticVersion {
+        return this.metaModelVersion;
+    };
     initialize(nextImporter: Importer): boolean {
         if (!this.initialized) {
-            this.initialized = true;
             this.nextImporter = nextImporter;
-            return (JSON.stringify(this.nextImporter) == JSON.stringify(nextImporter))
+            this.initialized = (JSON.stringify(this.nextImporter) == JSON.stringify(nextImporter));
+            return this.initialized;
         } else {
             return false;
         }
@@ -38,7 +46,7 @@ export class LastChainLinkImporter extends AImporter {
      * @param callback - Passing the result back via a callback function.
      */
     convertFrom(instructions: object, callback: (response: Response) => void): void {
-        callback(this.errorResponseFactory.create())
+        callback(this.responseVendor.buyErrorResponse())
     };
     /**
      * Initializing the LastChainLink.
@@ -48,7 +56,7 @@ export class LastChainLinkImporter extends AImporter {
     initialize(nextImporter: Importer | undefined): boolean {
         if (!this.initialized) {
             if(nextImporter == undefined) {
-                console.warn('You pass an Importer to a LastChainLinkImporter. That is not necessary. Use undefined instead.');
+                logger.warn('You pass an Importer to a LastChainLinkImporter. That is not necessary. Use undefined instead.');
             }
             this.initialized = true;
             return true
@@ -61,6 +69,7 @@ export class LastChainLinkImporter extends AImporter {
 export interface Importer {
     convertFrom(instructions: object, callback: (response: Response) => void): void;
     initialize(nextImporter: Importer): boolean;
+    getMetaModelVersion(): SemanticVersion;
 }
 
 /* Factory */
