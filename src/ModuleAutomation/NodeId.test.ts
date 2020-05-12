@@ -168,7 +168,7 @@ describe('class: NumericNodeIdFactory', () => {
         factory = new NumericNodeIdFactory();
     })
     it('method: create(): NodeId', () => {
-        expect(typeof factory.create()).is.equal(new NumericNodeId())
+        expect(typeof factory.create()).is.equal(typeof new NumericNodeId())
     });
 })
 
@@ -178,7 +178,7 @@ describe('class: QpaqueNodeIdFactory', () => {
         factory = new QpaqueNodeIdFactory();
     })
     it('method: create(): NodeId', () => {
-        expect(typeof factory.create()).is.equal(new QpaqueNodeId())
+        expect(typeof factory.create()).is.equal(typeof new QpaqueNodeId())
     });
 })
 
@@ -188,16 +188,16 @@ describe('class: StringNodeIdFactory', () => {
         factory = new StringNodeIdFactory();
     })
     it('method: create(): NodeId', () => {
-        expect(typeof factory.create()).is.equal(new StringNodeId())
+        expect(typeof factory.create()).is.equal(typeof new StringNodeId())
     });
 })
 
-describe('class: GUIDNodeId', () => {
+describe('class: GUIDNodeIdFactory', () => {
     let factory: GUIDNodeIdFactory;
     beforeEach(() => {
         factory = new GUIDNodeIdFactory();
     })
     it('method: create(): NodeId', () => {
-        expect(typeof factory.create()).is.equal(new GUIDNodeId())
+        expect(typeof factory.create()).is.equal(typeof new GUIDNodeId())
     });
 })
