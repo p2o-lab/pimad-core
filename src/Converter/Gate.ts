@@ -69,13 +69,13 @@ export class XMLGate extends AFileSystemGate {
 
 export class MockGate extends AGate {
 
-    send(instructions: object, callback: (response: Response) => void) {
+    send(instructions: object, callback: (response: Response) => void): void {
         logger.debug('Send ' + instructions + ' to ' + this.getGateAddress());
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('This is a send-response of a mock gate.', instructions)
         callback(response);
     };
-    receive(instructions: object, callback: (response: Response) => void) {
+    receive(instructions: object, callback: (response: Response) => void): void {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('This is a receive-response of a mock gate.', instructions)
         callback(response);
@@ -89,14 +89,14 @@ export class MockGate extends AGate {
 export interface Gate {
     /**
      * Write data to the source via the gate.
-     * @param instructions
-     * @param callback
+     * @param instructions - A set of instructions, configuring the gate while sending.
+     * @param callback - Concerning asynchronous behaviour, return data via a callback function.
      */
     send(instructions: object, callback: (response: Response) => void): void;
     /**
      * Asynchronous: Send a request to the source and receive theirs answer.
-     * @param instructions
-     * @param callback
+     * @param instructions - A set of instructions, configuring the gate while receiving.
+     * @param callback - Concerning asynchronous behaviour, return data via a callback function.
      */
     receive(instructions: object, callback: (response: Response) => void): void;
     // TODO: What to do with open()/close() ???

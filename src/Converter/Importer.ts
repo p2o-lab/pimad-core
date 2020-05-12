@@ -42,7 +42,7 @@ export class LastChainLinkImporter extends AImporter {
     /**
      * All prioritized importers could not perform the import. Error message with debug information is created and
      * returned to the calling one.
-     * @param instructions - A set of instructions. Configuring the importer.
+     * @param instructions - A set of instructions, configuring the importer.
      * @param callback - Passing the result back via a callback function.
      */
     convertFrom(instructions: object, callback: (response: Response) => void): void {
