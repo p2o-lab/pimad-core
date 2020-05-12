@@ -6,7 +6,7 @@ import {
     QpaqueNodeId, QpaqueNodeIdFactory,
     StringNodeId,
     StringNodeIdFactory
-} from "./NodeId";
+} from './NodeId';
 import {expect} from 'chai';
 import {ErrorResponse, Response, SuccessResponse} from '../Backbone/Response';
 
