@@ -1,5 +1,6 @@
 import {ErrorResponseFactory, SuccessResponseFactory, Response} from '../Backbone/Response';
 import {Gate} from './Gate';
+import {logger} from '../Utils/Logger';
 
 abstract class AImporter implements  Importer {
 
@@ -68,9 +69,11 @@ abstract class AImporterFactory implements ImporterFactory {
     abstract create(): Importer;
 }
 
-export class FLastChainElementImporter extends AImporterFactory {
+export class LastChainElementImporterFactory extends AImporterFactory {
     create(): Importer {
-        return new LastChainLinkImporter();
+        const importer = new LastChainLinkImporter();
+        logger.debug(this.constructor.name + ' creates a ' + importer.constructor.name);
+        return importer;
     }
 }
 

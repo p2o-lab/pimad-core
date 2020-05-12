@@ -1,6 +1,7 @@
 import {Response, ResponseVendor} from '../Backbone/Response';
 import fileSystem = require('fs');
 import xml2jsonParser = require('xml2json');
+import {logger} from '../Utils/Logger';
 
 abstract class AGate implements Gate {
     protected initialized: boolean;
@@ -61,11 +62,16 @@ export class XMLGate extends AFileSystemGate {
     close(): Response {
         return this.responseVendor.buyErrorResponse();
     };*/
+    constructor() {
+        super();
+        this.gateAddress = 'Valinor';
+    }
 }
 
 export class MockGate extends AGate {
 
     send(instructions: object, callback: (response: Response) => void) {
+        logger.debug('Send ' + instructions + ' to ' + this.getGateAddress());
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('This is a send-response of a mock gate.', instructions)
         callback(response);
@@ -108,13 +114,17 @@ export interface Gate {
 
 export class XMLGateFactory implements GateFactory {
     create(): Gate {
-        return new XMLGate();
+        const gate = new XMLGate();
+        logger.debug(this.constructor.name + ' creates a ' + gate.constructor.name);
+        return gate;
     }
 }
 
 export class MockGateFactory implements GateFactory {
     create(): Gate {
-        return new MockGate();
+        const gate = new MockGate();
+        logger.debug(this.constructor.name + ' creates a ' + gate.constructor.name);
+        return gate;
     }
 }
 

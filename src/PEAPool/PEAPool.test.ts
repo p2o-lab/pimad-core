@@ -3,13 +3,13 @@ import {
     BasePEAPoolFactory,
     PEAPoolVendor
 } from './PEAPool';
-import {FLastChainElementImporter} from '../Converter/Importer'
+import {LastChainElementImporterFactory} from '../Converter/Importer'
 
 import {expect} from 'chai';
 import {ErrorResponse} from '../Backbone/Response';
 
 describe('class: BasePEAStore', () => {
-    const fImporter = new FLastChainElementImporter()
+    const fImporter = new LastChainElementImporterFactory()
     const store = new BasePEAPool();
     it('method: initialize(firstChainElement: Importer)', () => {
         expect(store.initialize(fImporter.create())).is.true;

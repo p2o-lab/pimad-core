@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {FLastChainElementImporter, LastChainLinkImporter} from './Importer';
+import {LastChainElementImporterFactory, LastChainLinkImporter} from './Importer';
 import {ErrorResponse, Response} from '../Backbone/Response';
 
 describe('class: LastChainElementImporter', () => {
@@ -18,7 +18,7 @@ describe('class: LastChainElementImporter', () => {
 });
 
 describe('class: FLastChainElementImporter', () => {
-    const factory = new FLastChainElementImporter();
+    const factory = new LastChainElementImporterFactory();
     it('method: create', () => {
         expect(typeof factory.create()).is.equal(typeof new LastChainLinkImporter());
     })

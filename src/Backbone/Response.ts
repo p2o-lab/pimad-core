@@ -1,3 +1,5 @@
+import {logger} from '../Utils/Logger';
+
 abstract class AResponse implements Response {
     protected message: string;
     protected content: object;
@@ -55,13 +57,17 @@ abstract class AResponseFactory implements ResponseFactory {
 
 export class SuccessResponseFactory extends AResponseFactory {
     create(): Response {
-        return new SuccessResponse();
+        const response = new SuccessResponse()
+        logger.debug(this.constructor.name + ' creates a ' + response.constructor.name);
+        return response;
     }
 }
 
 export class ErrorResponseFactory extends AResponseFactory {
     create(): Response {
-        return new ErrorResponse();
+        const response = new ErrorResponse()
+        logger.debug(this.constructor.name + ' creates a ' + response.constructor.name);
+        return response;
     }
 }
 
