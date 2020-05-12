@@ -8,7 +8,7 @@ abstract class AGate implements Gate {
     protected gateAddress: string | undefined;
     protected responseVendor: ResponseVendor;
 
-    constructor() {
+    protected constructor() {
         this.initialized = false;
         this.gateAddress = undefined;
         this.responseVendor = new ResponseVendor();
@@ -22,9 +22,9 @@ abstract class AGate implements Gate {
     };
     initialize(address: string): boolean {
         if (!this.initialized) {
-            this.initialized = true;
             this.gateAddress = address;
-            return true;
+            this.initialized = (this.gateAddress == address);
+            return this.initialized;
         } else {
             return false;
         }
@@ -64,7 +64,6 @@ export class XMLGate extends AFileSystemGate {
     };*/
     constructor() {
         super();
-        this.gateAddress = 'Valinor';
     }
 }
 
@@ -81,13 +80,10 @@ export class MockGate extends AGate {
         response.initialize('This is a receive-response of a mock gate.', instructions)
         callback(response);
     };
-    /*
-    open(): Response {
-        return this.responseVendor.buyErrorResponse();
-    };
-    close(): Response {
-        return this.responseVendor.buyErrorResponse();
-    };*/
+    constructor() {
+        super();
+        this.gateAddress = 'Valinor';
+    }
 }
 
 export interface Gate {
@@ -112,7 +108,11 @@ export interface Gate {
 
 /* Factory */
 
-export class XMLGateFactory implements GateFactory {
+abstract class AGateFactory implements GateFactory {
+    abstract create(): Gate;
+}
+
+export class XMLGateFactory extends AGateFactory {
     create(): Gate {
         const gate = new XMLGate();
         logger.debug(this.constructor.name + ' creates a ' + gate.constructor.name);
@@ -120,7 +120,7 @@ export class XMLGateFactory implements GateFactory {
     }
 }
 
-export class MockGateFactory implements GateFactory {
+export class MockGateFactory extends AGateFactory {
     create(): Gate {
         const gate = new MockGate();
         logger.debug(this.constructor.name + ' creates a ' + gate.constructor.name);
