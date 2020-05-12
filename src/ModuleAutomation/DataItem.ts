@@ -1,4 +1,5 @@
 //import { CommunicationInterfaceData } from './CommunicationInterfaceData';
+import {logger} from '../Utils/Logger';
 import {Response, ResponseVendor} from '../Backbone/Response';
 
 export interface DataItem {
@@ -8,14 +9,12 @@ export interface DataItem {
 
 abstract class ADataItem implements DataItem {
 
-    protected logger: any; //not defined yet
     protected cIData: any; //CommunicationInterfaceData
     protected name: string;
     protected initialized: boolean;
     protected responseVendor: ResponseVendor;
 
     constructor() {
-        this.logger=null; //new Logger();
         this.cIData=null;
         this.name='';
         this.initialized = false;
@@ -44,5 +43,8 @@ abstract class ADataItemFactory implements DataItemFactory {
     abstract create(): DataItem;
 }
 export class BaseDataItemFactory extends ADataItemFactory {
-    create(): DataItem{return new BaseDataItem();}
+    create(): DataItem{
+        const dataItem = new BaseDataItem();
+        logger.debug(this.constructor.name + ' creates a ' + dataItem.constructor.name);
+        return dataItem;}
 }

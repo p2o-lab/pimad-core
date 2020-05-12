@@ -1,5 +1,6 @@
 import {DataItem} from './DataItem';
 import {Response, ResponseVendor} from '../Backbone/Response';
+import {logger} from '../Utils/Logger';
 
 export interface DataAssembly {
     getInterfaceClass(): Response; //any; //not defined yet
@@ -11,7 +12,6 @@ export interface DataAssembly {
 
 abstract class ADataAssembly implements DataAssembly{
 
-    protected logger: any; //not defined yet
     protected dataItems: DataItem[];
     protected tagDescription: string;
     protected tagName: string;
@@ -19,7 +19,6 @@ abstract class ADataAssembly implements DataAssembly{
     protected responseVendor: ResponseVendor;
 
     constructor() {
-        this.logger=null; //new Logger();
         this.dataItems= [];
         this.tagDescription='';
         this.tagName='';
@@ -54,7 +53,10 @@ abstract class ADataAssemblyFactory implements DataAssemblyFactory {
     abstract create(): DataAssembly;
 }
 export class BaseDataAssemblyFactory extends ADataAssemblyFactory {
-    create(): DataAssembly{return new BaseDataAssembly();}
+    create(): DataAssembly{
+        const dataAssembly = new BaseDataAssembly();
+        logger.debug(this.constructor.name + ' creates a ' + dataAssembly.constructor.name);
+        return dataAssembly;}
 }
 
 

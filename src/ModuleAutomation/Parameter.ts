@@ -1,4 +1,5 @@
 //import { CommunicationInterfaceData } from './CommunicationInterfaceData';
+import {logger} from '../Utils/Logger';
 import {Response, ResponseVendor} from '../Backbone/Response';
 
 export interface Parameter {
@@ -12,7 +13,6 @@ export interface Parameter {
 abstract class AParameter implements Parameter {
     protected communication: any; //CommunicationInterfaceData[];
     protected interfaceClass: any; //not defined yet
-    protected logger: any; //not defined yet
     protected name: string;
     protected initialized: boolean;
     protected responseVendor: ResponseVendor;
@@ -20,7 +20,6 @@ abstract class AParameter implements Parameter {
     constructor() {
         this.communication=[];
         this.interfaceClass= null;
-        this.logger=null; //new Logger();
         this.name='';
         this.initialized = false;
         this.responseVendor = new ResponseVendor();
@@ -60,5 +59,8 @@ abstract class AParameterFactory implements ParameterFactory {
     abstract create(): Parameter;
 }
 export class BaseParameterFactory extends AParameterFactory {
-    create(): Parameter{return new BaseParameter();}
+    create(): Parameter{
+            const parameter = new BaseParameter();
+            logger.debug(this.constructor.name + ' creates a ' + parameter.constructor.name);
+        return parameter;}
 }
