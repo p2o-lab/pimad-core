@@ -42,6 +42,7 @@
   },
   "dependencies": {
     "pino": "^6.2.1",
+    "rxjs": "^6.5.5",
     "xml2json": "^0.12.0"
   }
 }
