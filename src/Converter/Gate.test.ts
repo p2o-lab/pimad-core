@@ -29,12 +29,6 @@ describe('class XMLGate', () => {
             expect(typeof response).is.equal(typeof new ErrorResponse());
         });
     })
-    /*it('method: open()', () => {
-        expect(typeof gate.open()).is.equal(typeof new ErrorResponse());
-    })
-    it('method: close()', () => {
-        expect(typeof gate.close()).is.equal(typeof new ErrorResponse());
-    })*/
     it('method: getGateAddress()', () => {
         const address = 'Test-Address';
         gate.initialize(address)
