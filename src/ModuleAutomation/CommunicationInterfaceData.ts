@@ -1,65 +1,64 @@
-import {NodeId} from "./NodeId";
+import {NodeId, NumericNodeId} from './NodeId';
+import {logger} from '../Utils/Logger';
 
 export interface CommunicationInterfaceData {
-    getDescription(): string; //TODO: Data type needs checking
-    initialize(): boolean;
+    getDescription(): object;
+    initialize(ciObject: object): boolean;
 }
 
 abstract class ACommunicationInterfaceData implements CommunicationInterfaceData {
-    //protected logger: ???
     protected name: string;
     protected initialized: boolean;
 
     protected constructor() {
-        this.name = 'name';
+        this.name = '';
         this.initialized = false;
     };
 
-    abstract getDescription(): string;
-    //ToDo: This line needs some fixing...
-    // abstract initialize(name: string, serverURL?: string, nameSpaceIndex?: number, nodeId?:NodeId, dataType?:string): boolean;
+    abstract getDescription(): object;
+    abstract initialize(ciObject: object): boolean;
 }
 
 export class OPCUAServerCommunication extends ACommunicationInterfaceData {
     protected serverURL: string;
 
-    getDescription(): string {
-        return "This is OPC UA Server Communication";
-    };
+    constructor() {
+        super();
+        this.serverURL = '';
+    }
 
-    initialize(name: string, serverURL: string): boolean {
+    getDescription(): object{
+        return {name:this.name, serverURL:this.serverURL};
+    }
+
+    initialize(ciObject: {name: string ; serverURL: string}): boolean {
         if (!this.initialized) {
-            this.name = name;
-            this.serverURL = serverURL;
-            this.initialized = (this.name == name && this.serverURL == serverURL);
+            this.name = ciObject.name;
+            this.serverURL = ciObject.serverURL;
+            this.initialized = (this.name == ciObject.name && this.serverURL == ciObject.serverURL);
             return this.initialized;
         } else {
             return false;
         }
     };
 
-    constructor() {
-        super();
-        this.serverURL = 'test'
-    }
-
 }
 export class OPCUANodeCommunication extends ACommunicationInterfaceData {
-    protected namespaceIndex: number;
+    protected namespaceIndex: number|string;
     protected nodeId: NodeId;
     protected dataType: string;
 
-    getDescription(): string {
-        return "This is OPC UA Node Communication";
+    getDescription(): object {
+        return {name:this.name, namespaceIndex:this.namespaceIndex, nodeId:this.nodeId, dataType: this.dataType};
     };
 
-    initialize(name: string, namespaceIndex: number, nodeId: NodeId, dataType: string): boolean {
+    initialize(ciObject: {name: string; namespaceIndex: number|string; nodeId: NodeId; dataType: string}): boolean {
         if (!this.initialized) {
-            this.name = name;
-            this.namespaceIndex = namespaceIndex;
-            this.nodeId = nodeId;
-            this.dataType = dataType;
-            this.initialized = (this.name == name && this.namespaceIndex == namespaceIndex && this.nodeId == nodeId && this.dataType == dataType);
+            this.name = ciObject.name;
+            this.namespaceIndex = ciObject.namespaceIndex;
+            this.nodeId = ciObject.nodeId;
+            this.dataType = ciObject.dataType;
+            this.initialized = (this.name == ciObject.name && this.namespaceIndex == ciObject.namespaceIndex && this.nodeId == ciObject.nodeId && this.dataType == ciObject.dataType);
             return this.initialized;
         } else {
             return false;
@@ -69,13 +68,27 @@ export class OPCUANodeCommunication extends ACommunicationInterfaceData {
     constructor() {
         super();
         this.namespaceIndex = -1;
-        //this.nodeId = any;
+        this.nodeId = new NumericNodeId();
         this.dataType = '';
     }
 }
 
 /*  Factory */
-
 export interface CommunicationInterfaceDataFactory {
     create(): CommunicationInterfaceData;
+}
+abstract class ACommunicationInterfaceDataFactory implements CommunicationInterfaceDataFactory {
+    abstract create(): CommunicationInterfaceData;
+}
+export class OPCUANodeCommunicationFactory extends ACommunicationInterfaceDataFactory {
+    create(): CommunicationInterfaceData{
+        const communicationInterfaceData = new OPCUANodeCommunication();
+        logger.debug(this.constructor.name + ' creates a ' + communicationInterfaceData.constructor.name);
+        return communicationInterfaceData;}
+}
+export class OPCUAServerCommunicationFactory extends ACommunicationInterfaceDataFactory {
+    create(): CommunicationInterfaceData{
+        const communicationInterfaceData = new OPCUAServerCommunication();
+        logger.debug(this.constructor.name + ' creates a ' + communicationInterfaceData.constructor.name);
+        return communicationInterfaceData;}
 }
