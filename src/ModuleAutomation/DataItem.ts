@@ -1,35 +1,44 @@
-//import { CommunicationInterfaceData } from './CommunicationInterfaceData';
 import {logger} from '../Utils/Logger';
 import {Response, ResponseVendor} from '../Backbone/Response';
+import {CommunicationInterfaceData, OPCUANodeCommunication} from './CommunicationInterfaceData';
 
 export interface DataItem {
-    getCommunicationInterfaceData(tag: string): Response; //CommunicationInterfaceData;
+    getCommunicationInterfaceData(): CommunicationInterfaceData;
     getDataType(): Response; //string;
+    initialize(name: string, ciData: CommunicationInterfaceData): boolean;
 }
 
 abstract class ADataItem implements DataItem {
 
-    protected cIData: any; //CommunicationInterfaceData
+    protected cIData: CommunicationInterfaceData;
     protected name: string;
     protected initialized: boolean;
     protected responseVendor: ResponseVendor;
 
     constructor() {
-        this.cIData=null;
+        this.cIData= new OPCUANodeCommunication(); //TODO: Add BaseCommunicationInterfaceData
         this.name='';
         this.initialized = false;
         this.responseVendor = new ResponseVendor();
     }
 
-    getCommunicationInterfaceData(tag: string): Response{
-        // returns CommunicationInterfaceData
-        // add Operations for InterfaceData by tag : CommunicationInterfaceData
-        //select specific CommunicationInterfaceData out of CommunicationInterfaceData[] where CommunicationInterfaceData.name equals tag?
-        //missing method for CommunicationInterfaceData?
-        return this.responseVendor.buyErrorResponse();
+    getCommunicationInterfaceData(): CommunicationInterfaceData{
+        return this.cIData;
     }
     getDataType(): Response{
+        //TODO: Datatype of OPCUAServerCommunication definition
     return this.responseVendor.buyErrorResponse();
+    }
+    initialize(name: string, ciData: CommunicationInterfaceData): boolean {
+        if (!this.initialized) {
+            //TODO: much more checking
+            this.name = name;
+            this.cIData = ciData;
+            this.initialized = (this.name == name && this.cIData == ciData);
+            return this.initialized;
+        } else {
+            return false;
+        }
     }
 }
 

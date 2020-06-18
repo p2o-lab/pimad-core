@@ -1,6 +1,7 @@
 import {BaseDataItemFactory, BaseDataItem} from './DataItem';
 import {expect} from 'chai';
 import {ErrorResponse} from '../Backbone/Response';
+import {OPCUANodeCommunication} from './CommunicationInterfaceData';
 
 describe('class: BaseDataItem', () => {
     let dataItem: BaseDataItem;
@@ -12,7 +13,12 @@ describe('class: BaseDataItem', () => {
     });
 
     it('method: getCommunicationInterfaceData()', () => {
-        expect(typeof dataItem.getCommunicationInterfaceData('test')).is.equal(typeof new ErrorResponse());
+        //TODO: OPCServerCommunication as option
+        expect(dataItem.getCommunicationInterfaceData()).to.be.instanceOf(OPCUANodeCommunication)
+    });
+    it('method: initialize()', () => {
+        expect(dataItem.initialize('', new OPCUANodeCommunication())).is.true;
+        expect(dataItem.initialize('', new OPCUANodeCommunication())).is.false;
     });
 });
 describe('class: BaseDataItemFactory', () => {
