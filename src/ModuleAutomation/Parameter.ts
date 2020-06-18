@@ -1,18 +1,18 @@
-//import { CommunicationInterfaceData } from './CommunicationInterfaceData';
+import {CommunicationInterfaceData, OPCUANodeCommunication} from './CommunicationInterfaceData';
 import {logger} from '../Utils/Logger';
 import {Response, ResponseVendor} from '../Backbone/Response';
 
 export interface Parameter {
-    getAllCommunicationInterfaceData(): Response;//CommunicationInterfaceData[];
+    getAllCommunicationInterfaceData(): CommunicationInterfaceData[];
     getName(): string;
-    getInterfaceClass(): Response; //any; //not defined yet
-    getCommunicationInterfaceData(tag: string): Response; //CommunicationInterfaceData;
-    initialize(): boolean;
+    getInterfaceClass(): Response; //TODO: clarify type
+    getCommunicationInterfaceData(tag: string): CommunicationInterfaceData;
+    initialize(name: string, communication: CommunicationInterfaceData[], interfaceClass: any): boolean;
 }
 
 abstract class AParameter implements Parameter {
-    protected communication: any; //CommunicationInterfaceData[];
-    protected interfaceClass: any; //not defined yet
+    protected communication: CommunicationInterfaceData[];
+    protected interfaceClass: any; //TODO: clarify type
     protected name: string;
     protected initialized: boolean;
     protected responseVendor: ResponseVendor;
@@ -24,10 +24,8 @@ abstract class AParameter implements Parameter {
         this.initialized = false;
         this.responseVendor = new ResponseVendor();
     }
-    getAllCommunicationInterfaceData(): Response {
-        // returns CommunicationInterfaceData[]
-        // return this.communication
-        return this.responseVendor.buyErrorResponse();
+    getAllCommunicationInterfaceData(): CommunicationInterfaceData[] {
+        return this.communication;
     }
     getName(): string {
         return this.name;
@@ -35,17 +33,24 @@ abstract class AParameter implements Parameter {
     getInterfaceClass(): Response{
         return this.interfaceClass;
     }
-    getCommunicationInterfaceData(tag: string): Response{
-            // returns CommunicationInterfaceData
+    getCommunicationInterfaceData(tag: string): CommunicationInterfaceData{
+            //TODO: returns CommunicationInterfaceData
             // add Operations for InterfaceData by tag : CommunicationInterfaceData
             //select specific CommunicationInterfaceData out of CommunicationInterfaceData[] where CommunicationInterfaceData.name equals tag?
-            //missing method for CommunicationInterfaceData?
-        return this.responseVendor.buyErrorResponse();
+            //getDescription() --> object contains name
+        return new OPCUANodeCommunication();
     }
-    initialize(): boolean {
-        //add INIT-Operations here
-        this.initialized=true;
-    return this.initialized;
+    initialize(name: string, communication: CommunicationInterfaceData[], interfaceClass: any): boolean {
+        if (!this.initialized) {
+            //TODO: much more checking
+            this.name = name;
+            this.communication = communication;
+            this.interfaceClass = interfaceClass;
+            this.initialized = (this.name == name && this.communication == communication && this.interfaceClass == interfaceClass);
+            return this.initialized;
+        } else {
+            return false;
+        }
     }
 }
 
