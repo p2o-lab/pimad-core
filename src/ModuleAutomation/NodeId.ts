@@ -47,7 +47,19 @@ abstract class ANodeId implements NodeId {
         return response
     };
 }
-
+export class BaseNodeId extends ANodeId {
+    protected identifier: number;
+    getNodeId(): Response {
+        return this.responseVendor.buyErrorResponse();
+    };
+    initialize(namespaceIndex: number, identifier: number): boolean {
+            return false;
+    }
+    constructor() {
+        super();
+        this.identifier = -1;
+    }
+}
 export class NumericNodeId extends ANodeId {
     protected identifier: number;
     getNodeId(): Response {
@@ -141,6 +153,14 @@ export interface NodeIdFactory {
 
 abstract class ANodeIdFactory implements NodeIdFactory {
     abstract create(): NodeId;
+}
+
+export class BaseNodeIdFactory extends ANodeIdFactory {
+    create(): NodeId {
+        const nodeId = new BaseNodeId();
+        logger.debug(this.constructor.name + ' creates a ' + nodeId.constructor.name);
+        return nodeId;
+    }
 }
 
 export class NumericNodeIdFactory extends ANodeIdFactory {

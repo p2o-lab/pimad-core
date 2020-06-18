@@ -1,4 +1,6 @@
 import {
+    BaseNodeId,
+    BaseNodeIdFactory,
     GUIDNodeId,
     GUIDNodeIdFactory,
     NumericNodeId,
@@ -9,6 +11,37 @@ import {
 } from './NodeId';
 import {expect} from 'chai';
 import {ErrorResponse, Response, SuccessResponse} from '../Backbone/Response';
+
+describe('class: BaseNodeId', () => {
+    let nodeId: BaseNodeId;
+    beforeEach(() => {
+        nodeId = new BaseNodeId();
+    })
+    it('method: getNamespaceIndex()', () => {
+        let response: Response = nodeId.getNamespaceIndex()
+        expect(typeof response).is.equal(typeof new ErrorResponse())
+        nodeId.initialize(3, 12)
+        response = nodeId.getNamespaceIndex()
+        expect(typeof response).is.equal(typeof new SuccessResponse())
+        const content: {namespaceIndex?: number} = response.getContent()
+        expect(content.namespaceIndex).is.undefined
+    });
+    it('method: getIdentifier()', () => {
+        let response: Response = nodeId.getIdentifier()
+        expect(typeof response).is.equal(typeof new ErrorResponse())
+        nodeId.initialize(1, 42)
+        response = nodeId.getIdentifier()
+        expect(typeof response).is.equal(typeof new SuccessResponse())
+        const content: {identifier?: number} = response.getContent()
+        expect(content.identifier).is.undefined
+    });
+    it('method: getNodeId()', () => {
+        expect(typeof nodeId.getNodeId()).is.equal(typeof new ErrorResponse())
+    });
+    it('initialize()', () => {
+        expect(nodeId.initialize(1, 2)).is.false
+    });
+})
 
 describe('class: NumericNodeId', () => {
     let nodeId: NumericNodeId;
@@ -159,6 +192,16 @@ describe('class: GUIDNodeId', () => {
     it('initialize()', () => {
         expect(nodeId.initialize(0, '09087e75-8e5e-499b-954f-f2a9603db28a')).is.true
         expect(nodeId.initialize(1, '09087e75-8e5e-499b-954f-f2a9603db28a')).is.false
+    });
+})
+
+describe('class: BaseNodeIdFactory', () => {
+    let factory: BaseNodeIdFactory;
+    beforeEach(() => {
+        factory = new BaseNodeIdFactory();
+    })
+    it('method: create(): NodeId', () => {
+        expect(typeof factory.create()).is.equal(typeof new BaseNodeId())
     });
 })
 
