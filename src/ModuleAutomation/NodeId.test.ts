@@ -36,8 +36,7 @@ describe('class: BaseNodeId', () => {
         expect(content.identifier).is.undefined
     });
     it('method: getNodeId()', () => {
-        let response: Response = nodeId.getNodeId()
-        expect(typeof response).is.equal(typeof new ErrorResponse())
+        expect(typeof nodeId.getNodeId()).is.equal(typeof new ErrorResponse())
     });
     it('initialize()', () => {
         expect(nodeId.initialize(1, 2)).is.false
