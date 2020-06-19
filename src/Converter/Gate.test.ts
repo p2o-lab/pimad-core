@@ -73,7 +73,10 @@ describe('class ZIPGate', () => {
         })
     })
     it('method: receive()', () => {
-
+        gate.initialize('test/Converter/test-aml.zip')
+        gate.receive({},(response: Response) => {
+            // ???
+        });
     })
     it('method: getGateAddress()', () => {
         const address = 'test.zip';

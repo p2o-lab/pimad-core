@@ -1,7 +1,9 @@
 import {Response, ResponseVendor} from '../Backbone/Response';
-import fileSystem = require('fs-extra');
+import fileSystem = require('fs');
 import xml2jsonParser = require('xml2json');
+import AdmZip = require('adm-zip');
 import {logger} from '../Utils/Logger';
+import {IZipEntry} from 'adm-zip';
 
 abstract class AGate implements Gate {
     protected initialized: boolean;
@@ -50,7 +52,7 @@ export class XMLGate extends AFileSystemGate {
         callback(localResponse)
     }; */
     receive(instructions: {
-        source: string;
+        source: string; //TODO: Quatsch!!! Gibt doch ne GateAddresse!
     }, callback: (response: Response) => void): void {
         this.fileSystem.readFile(instructions.source, (error: NodeJS.ErrnoException | null, data: Buffer) => {
             if (!error) {
@@ -72,8 +74,42 @@ export class XMLGate extends AFileSystemGate {
 }
 
 export class ZIPGate extends AFileSystemGate {
-    receive(instructions: object, callback: (response: Response) => void): void {
+    private xmlGateFactory: XMLGateFactory;
 
+    receive(instructions: object, callback: (response: Response) => void): void {
+        const zipHandler = new AdmZip(this.gateAddress);
+        const zipEntries = zipHandler.getEntries(); // an array of ZipEntry records
+
+        if (zipEntries.length >= 0) {
+            zipEntries.forEach((entry: IZipEntry) => {
+                switch (this.getFileType(entry.entryName)) {
+                    case '.aml':
+                        logger.info('There is a .aml file!');
+                        break;
+                    case '.xml':
+                        logger.info('There is a .xml file!');
+                        break;
+                    default:
+                        logger.warn('There is an unsupported file type. Ignoring...');
+                        break;
+                }
+            })
+            const response = this.responseVendor.buySuccessResponse();
+            response.initialize('Success!', {data: zipEntries});
+            callback(response);
+        } else {
+            callback(this.responseVendor.buyErrorResponse())
+        }
+    }
+
+    private getFileType(fileName: string): string {
+        const fileEnding = fileName.slice(-4);
+        return fileEnding;
+    }
+
+    constructor() {
+        super();
+        this.xmlGateFactory = new XMLGateFactory();
     }
 }
 
