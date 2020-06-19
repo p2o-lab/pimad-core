@@ -1,11 +1,15 @@
 import { expect } from 'chai';
 import {MockGateFactory, XMLGateFactory, ZIPGateFactory} from './Gate';
 import {ErrorResponse, Response, SuccessResponse} from '../Backbone/Response';
+import {BaseNodeId} from '../ModuleAutomation/NodeId';
 
 /* Gates */
 describe('class: MockGate', () => {
     const factory = new MockGateFactory()
-    const gate = factory.create()
+    let gate = factory.create()
+    beforeEach(() => {
+        gate = factory.create()
+    })
     it('method: send()', () => {
         const instruction = {test: 'Test-Instruction for send()'}
         gate.send(instruction,(response) => {
@@ -26,7 +30,10 @@ describe('class: MockGate', () => {
 
 describe('class XMLGate', () => {
     const factory = new XMLGateFactory()
-    const gate = factory.create()
+    let gate = factory.create()
+    beforeEach(() => {
+        gate = factory.create()
+    })
     it('method: initialize()', () => {
         const address = 'Test-Address';
         expect(gate.initialize(address)).is.true;
@@ -59,7 +66,10 @@ describe('class XMLGate', () => {
 
 describe('class ZIPGate', () => {
     const factory = new ZIPGateFactory()
-    const gate = factory.create()
+    let gate = factory.create()
+    beforeEach(() => {
+        gate = factory.create()
+    })
     it('method: initialize()', () => {
         // TODO: Do some regex, checking for the address
         const address = 'Test-Address';
@@ -86,7 +96,7 @@ describe('class ZIPGate', () => {
         });
     }).timeout(500)
     it('method: getGateAddress()', () => {
-        const address = 'test.zip';
+        const address = 'test/Converter/test-xml.zip';
         gate.initialize(address)
         expect(gate.getGateAddress()).is.equal(address);
     })
