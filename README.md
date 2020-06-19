@@ -1,5 +1,5 @@
 # PiMAd-core
-**P**rocess**i**ndustrie-**M**odular-**A**utomation-**d**escription: High level access to automation of modular plants.  
+**P**rocess**i**ndustry-**M**odular-**A**utomation-**d**escription: High level access to automation of modular plants.  
 ## development
 Working so far on Ubuntu 18.04 LTS, 
 ### prerequisites

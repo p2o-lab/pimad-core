@@ -1,7 +1,7 @@
 {
   "name": "PiMAd-core",
   "version": "0.0.1",
-  "description": "",
+  "description": "PiMAd (Process-industry-Modular-Automation-description) High level access to automation of modular plants.",
   "main": "src/index.ts",
   "scripts": {
     "prebuild": "npm run lint",
@@ -16,8 +16,8 @@
     "type": "git",
     "url": "svn@dev.plt.et.tu-dresden.de:modulare-automation/PiMAd-core.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["PiMAd", "Modulare Automation", "PLT/SVT", "Polaris"],
+  "author": "Christoph Jesaja Heidelbach <christoph_jesaja.heidelbach@tu-dresden.de>",
   "license": "ISC",
   "devDependencies": {
     "@types/chai": "^4.2.11",
