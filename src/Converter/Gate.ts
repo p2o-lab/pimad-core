@@ -1,5 +1,5 @@
 import {Response, ResponseVendor} from '../Backbone/Response';
-import fileSystem = require('fs');
+import fileSystem = require('fs-extra');
 import xml2jsonParser = require('xml2json');
 import {logger} from '../Utils/Logger';
 
@@ -13,7 +13,11 @@ abstract class AGate implements Gate {
         this.gateAddress = undefined;
         this.responseVendor = new ResponseVendor();
     }
-    abstract send(instructions: object, callback: (response: Response) => void): void;
+    public send(instructions: object, callback: (response: Response) => void): void {
+        const localResponse = this.responseVendor.buyErrorResponse()
+        localResponse.initialize('Not implemented yet!', {})
+        callback(localResponse)
+    };
     abstract receive(instructions: object, callback: (response: Response) => void): void;
     /*abstract open(): Response;
     abstract close(): Response;*/
@@ -33,15 +37,18 @@ abstract class AGate implements Gate {
 
 abstract class AFileSystemGate extends AGate {
     protected fileSystem = fileSystem;
+    constructor() {
+        super();
+    }
 }
 
 export class XMLGate extends AFileSystemGate {
 
-    send(instructions: object, callback: (response: Response) => void): void {
+    /*send(instructions: object, callback: (response: Response) => void): void {
         const localResponse = this.responseVendor.buyErrorResponse()
         localResponse.initialize('Not implemented yet!', {})
         callback(localResponse)
-    };
+    }; */
     receive(instructions: {
         source: string;
     }, callback: (response: Response) => void): void {
@@ -62,8 +69,11 @@ export class XMLGate extends AFileSystemGate {
     close(): Response {
         return this.responseVendor.buyErrorResponse();
     };*/
-    constructor() {
-        super();
+}
+
+export class ZIPGate extends AFileSystemGate {
+    receive(instructions: object, callback: (response: Response) => void): void {
+
     }
 }
 
@@ -112,6 +122,14 @@ abstract class AGateFactory implements GateFactory {
     abstract create(): Gate;
 }
 
+export class MockGateFactory extends AGateFactory {
+    create(): Gate {
+        const gate = new MockGate();
+        logger.debug(this.constructor.name + ' creates a ' + gate.constructor.name);
+        return gate;
+    }
+}
+
 export class XMLGateFactory extends AGateFactory {
     create(): Gate {
         const gate = new XMLGate();
@@ -120,9 +138,9 @@ export class XMLGateFactory extends AGateFactory {
     }
 }
 
-export class MockGateFactory extends AGateFactory {
+export class ZIPGateFactory extends AGateFactory {
     create(): Gate {
-        const gate = new MockGate();
+        const gate = new ZIPGate();
         logger.debug(this.constructor.name + ' creates a ' + gate.constructor.name);
         return gate;
     }

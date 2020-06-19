@@ -32,6 +32,7 @@
     "@types/node": "^13.13.4",
     "@types/pino": "^6.0.0",
     "@types/xml2json": "^0.11.0",
+    "@types/fs-extra": "^9.0.1",
     "@typescript-eslint/eslint-plugin": "^2.29.0",
     "@typescript-eslint/parser": "^2.29.0",
     "chai": "^4.2.0",
@@ -45,9 +46,11 @@
     "ts-node": "^8.9.0",
     "typedoc": "^0.17.4",
     "typescript": "^3.8.3",
-    "PiMAd-types": "0.0.2-BE"
+    "PiMAd-types": "0.0.2-BE",
+    "fs-extra": "^9.0.1"
   },
   "dependencies": {
+    "@types/fs-extra": "^9.0.1",
     "pino": "^6.2.1",
     "rxjs": "^6.5.5",
     "xml2json": "^0.12.0"

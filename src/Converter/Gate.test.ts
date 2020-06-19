@@ -1,8 +1,29 @@
 import { expect } from 'chai';
-import {MockGateFactory, XMLGateFactory} from './Gate';
+import {MockGateFactory, XMLGateFactory, ZIPGateFactory} from './Gate';
 import {ErrorResponse, Response, SuccessResponse} from '../Backbone/Response';
 
 /* Gates */
+describe('class: MockGate', () => {
+    const factory = new MockGateFactory()
+    const gate = factory.create()
+    it('method: send()', () => {
+        const instruction = {test: 'Test-Instruction for send()'}
+        gate.send(instruction,(response) => {
+            expect(typeof response).is.equal(typeof new SuccessResponse());
+            const content: {test?: string} = response.getContent();
+            expect(JSON.stringify(content)).is.equal(JSON.stringify(instruction));
+        })
+    });
+    it('method: receive()', () => {
+        const instruction = {test: 'Test-Instruction for receive()'}
+        gate.receive(instruction,(response) => {
+            expect(typeof response).is.equal(typeof new SuccessResponse());
+            const content: {test?: string} = response.getContent();
+            expect(JSON.stringify(content)).is.equal(JSON.stringify(instruction));
+        })
+    });
+})
+
 describe('class XMLGate', () => {
     const factory = new XMLGateFactory()
     const gate = factory.create()
@@ -36,31 +57,45 @@ describe('class XMLGate', () => {
     })
 })
 
-describe('class: MockGate', () => {
-    const factory = new MockGateFactory()
+describe('class ZIPGate', () => {
+    const factory = new ZIPGateFactory()
     const gate = factory.create()
+    it('method: initialize()', () => {
+        // TODO: Do some regex, checking for the address
+        const address = 'Test-Address';
+        expect(gate.initialize(address)).is.true;
+        expect(gate.initialize(address)).is.false;
+    })
     it('method: send()', () => {
-        const instruction = {test: 'Test-Instruction for send()'}
-        gate.send(instruction,(response) => {
-            expect(typeof response).is.equal(typeof new SuccessResponse());
-            const content: {test?: string} = response.getContent();
-            expect(JSON.stringify(content)).is.equal(JSON.stringify(instruction));
+        gate.send({},(response) => {
+            expect(typeof response).is.equal(typeof new ErrorResponse());
+            expect(response.getMessage()).is.equal('Not implemented yet!');
         })
-    });
+    })
     it('method: receive()', () => {
-        const instruction = {test: 'Test-Instruction for receive()'}
-        gate.receive(instruction,(response) => {
-            expect(typeof response).is.equal(typeof new SuccessResponse());
-            const content: {test?: string} = response.getContent();
-            expect(JSON.stringify(content)).is.equal(JSON.stringify(instruction));
-        })
-    });
+
+    })
+    it('method: getGateAddress()', () => {
+        const address = 'test.zip';
+        gate.initialize(address)
+        expect(gate.getGateAddress()).is.equal(address);
+    })
 })
+
+
+
 /* Factories */
 describe('class: XMLGateFactory', () => {
     const factory = new XMLGateFactory();
     it('method: create()', () => {
         expect(typeof factory.create()).is.equal(typeof new XMLGateFactory())
+    })
+});
+
+describe('class: ZIPGateFactory', () => {
+    const factory = new ZIPGateFactory();
+    it('method: create()', () => {
+        expect(typeof factory.create()).is.equal(typeof new ZIPGateFactory())
     })
 });
 
