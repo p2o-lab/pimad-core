@@ -16,8 +16,14 @@
     "type": "git",
     "url": "svn@dev.plt.et.tu-dresden.de:modulare-automation/PiMAd-core.git"
   },
-  "keywords": ["PiMAd", "Modulare Automation", "PLT/SVT", "Polaris"],
+  "keywords": [
+    "PiMAd",
+    "Modulare Automation",
+    "PLT/SVT",
+    "Polaris"
+  ],
   "author": "Christoph Jesaja Heidelbach <christoph_jesaja.heidelbach@tu-dresden.de>",
+  "contributors": [],
   "license": "ISC",
   "devDependencies": {
     "@types/chai": "^4.2.11",
@@ -38,7 +44,8 @@
     "pino-pretty": "^4.0.0",
     "ts-node": "^8.9.0",
     "typedoc": "^0.17.4",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "PiMAd-types": "0.0.2-BE"
   },
   "dependencies": {
     "pino": "^6.2.1",
