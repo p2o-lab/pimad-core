@@ -2,6 +2,7 @@ import {Response, ResponseVendor} from '../Backbone/Response';
 import fileSystem = require('fs');
 import xml2jsonParser = require('xml2json');
 import AdmZip = require('adm-zip');
+import rimraf = require('rimraf');
 import {logger} from '../Utils/Logger';
 import {IZipEntry} from 'adm-zip';
 
@@ -85,55 +86,37 @@ export class ZIPGate extends AFileSystemGate {
         if (zipEntries.length >= 0) {
             // Zu diesem Zeitpunkt ist sicher, dass string vorhanden ist. Wollen das Zip-Archiev jedoch in einen
             // normalen Ordner kopieren, deshalb das Ende abschneiden.
-            const folderDestination: string = ('' + this.gateAddress).slice(0,-(zipEntries[0].entryName.length + 4));
-            zipHandler.extractAllTo(folderDestination, true);
+            const folderPath: string = ('' + this.gateAddress).slice(0,-(zipEntries[0].entryName.length + 4));
+            const unzippedFolderPath: string = ('' + this.gateAddress).slice(0,-4);
+            zipHandler.extractAllTo(folderPath, true);
             let responseData: object[] = [];
             zipEntries.forEach((entry: IZipEntry) => {
-                const name = this.getFileType(entry.entryName)
-                if (name == '.aml') {
-                    logger.info('There is a .aml file!');
-                } else if (name == '.xml') {
-                    logger.info('There is a .xml file!');
-                    const xmlGate = this.xmlGateFactory.create();
-                    xmlGate.initialize(folderDestination + '/' + entry.entryName);
-                    xmlGate.receive({source: folderDestination + '/' + entry.entryName}, (response: Response) => {
-                        if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
-                            const content: {} = response.getContent();
-                            responseData.push(content);
-                            if (entry == zipEntries[zipEntries.length-1]) {
-                                const response = this.responseVendor.buySuccessResponse();
-                                response.initialize('Success!', {data: responseData});
-                                callback(response);
-                            }
-                        }
-                    })
-                } else {
-                    logger.warn('There is an unsupported file type. Ignoring...');
-                }
-                /* switch (this.getFileType(entry.entryName)) {
+                switch (this.getFileType(entry.entryName)) {
                     case '.aml':
                         logger.info('There is a .aml file!');
                         break;
                     case '.xml':
                         logger.info('There is a .xml file!');
                         const xmlGate = this.xmlGateFactory.create();
-                        xmlGate.initialize(folderDestination + '/' + entry.entryName);
-                        xmlGate.receive({source: folderDestination + '/' + entry.entryName}, (response: Response) => {
+                        xmlGate.initialize(folderPath + '/' + entry.entryName);
+                        xmlGate.receive({source: folderPath + '/' + entry.entryName}, (response: Response) => {
                             if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
-                                const content: { data?: {}} = response.getContent();
+                                const content: {} = response.getContent();
                                 responseData.push(content);
+                                if (entry == zipEntries[zipEntries.length-1]) {
+                                    const response = this.responseVendor.buySuccessResponse();
+                                    response.initialize('Success!', {data: responseData});
+                                    rimraf(unzippedFolderPath, function () {
+                                        callback(response);
+                                    })
+                                }
                             }
                         })
                         break;
                     default:
                         logger.warn('There is an unsupported file type. Ignoring...');
                         break;
-                }*/
-                /*if (entry == zipEntries[zipEntries.length]) {
-                    const response = this.responseVendor.buySuccessResponse();
-                    response.initialize('Success!', {data: responseData});
-                    callback(response);
-                }*/
+                }
             })
         } else {
             callback(this.responseVendor.buyErrorResponse())

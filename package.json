@@ -35,6 +35,7 @@
     "@types/adm-zip": "^0.4.33",
     "@typescript-eslint/eslint-plugin": "^2.29.0",
     "@typescript-eslint/parser": "^2.29.0",
+    "@types/rimraf": "^3.0.0",
     "chai": "^4.2.0",
     "eslint": "^6.8.0",
     "eslint-config-google": "^0.14.0",
@@ -47,7 +48,8 @@
     "typedoc": "^0.17.4",
     "typescript": "^3.8.3",
     "PiMAd-types": "0.0.2-BE",
-    "adm-zip": "^0.4.14"
+    "adm-zip": "^0.4.14",
+    "rimraf": "^3.0.2"
   },
   "dependencies": {
     "@types/fs-extra": "^9.0.1",
