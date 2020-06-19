@@ -1,8 +1,4 @@
-export interface Response {
-    getMessage(): string;
-    getContent(): object;
-    initialize(message: string, content: object): boolean;
-}
+import {logger} from '../Utils/Logger';
 
 abstract class AResponse implements Response {
     protected message: string;
@@ -15,7 +11,7 @@ abstract class AResponse implements Response {
         this.content = {};
     }
 
-    initialize(message: string, content: object): boolean {
+    initialize(message: string, content: {}): boolean {
         if (!this.initialized) {
             this.initialized = true;
             this.message = message;
@@ -43,6 +39,12 @@ export class ErrorResponse extends AResponse {
 
 }
 
+export interface Response {
+    getMessage(): string;
+    getContent(): object;
+    initialize(message: string, content: object): boolean;
+}
+
 /* Factories */
 
 export interface ResponseFactory {
@@ -53,15 +55,19 @@ abstract class AResponseFactory implements ResponseFactory {
     abstract create(): Response;
 }
 
-export class FSuccessResponse extends AResponseFactory {
+export class SuccessResponseFactory extends AResponseFactory {
     create(): Response {
-        return new SuccessResponse();
+        const response = new SuccessResponse()
+        logger.debug(this.constructor.name + ' creates a ' + response.constructor.name);
+        return response;
     }
 }
 
-export class FErrorResponse extends AResponseFactory {
+export class ErrorResponseFactory extends AResponseFactory {
     create(): Response {
-        return new ErrorResponse();
+        const response = new ErrorResponse()
+        logger.debug(this.constructor.name + ' creates a ' + response.constructor.name);
+        return response;
     }
 }
 
@@ -70,8 +76,8 @@ export class ResponseVendor {
     private fSuccessResponse: ResponseFactory;
 
     constructor() {
-        this.fErrorResponse = new FErrorResponse();
-        this.fSuccessResponse = new FSuccessResponse();
+        this.fErrorResponse = new ErrorResponseFactory();
+        this.fSuccessResponse = new SuccessResponseFactory();
     }
     public buyErrorResponse(): Response {
         return this.fErrorResponse.create()

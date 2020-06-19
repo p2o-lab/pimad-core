@@ -1,17 +1,16 @@
-import {Response, ResponseVendor} from '../Backbone/Response'
-import {PEA} from '../ModuleAutomation/PEA'
-import {Importer} from '../Converter/Importer'
+import {Response, ResponseVendor} from '../Backbone/Response';
+import {PEA} from '../ModuleAutomation/PEA';
+import {Importer} from '../Converter/Importer';
+import {logger} from '../Utils/Logger';
 
 abstract class APEAPool implements PEAPool {
     private initialized: boolean;
-    protected running: boolean;
     protected importerChainFirstElement: Importer | undefined;
     protected peas: PEA[]
     protected responseVendor: ResponseVendor;
 
     constructor() {
         this.initialized = false;
-        this.running = false;
         this.peas = []
         this.importerChainFirstElement = undefined;
         this.responseVendor = new ResponseVendor();
@@ -30,65 +29,9 @@ abstract class APEAPool implements PEAPool {
     abstract addPEA(any: object): Response;
     abstract deletePEA(tag: string): Response;
     abstract getPEA(tag: string): Response;
-    start(): Response {
-        if (!this.running) {
-            /* all start logic here */
-            console.log('Hello world!');
-            this.running = true;
-            return this.responseVendor.buySuccessResponse();
-        } else {
-            return this.responseVendor.buyErrorResponse();
-        }
-    };
-    stop(): Response {
-        if (this.running) {
-            /* all stop logic here */
-            this.running = false;
-            return this.responseVendor.buySuccessResponse();
-        } else {
-            return this.responseVendor.buyErrorResponse();
-        }
-    };
 }
 
-export class WebPEAPool extends APEAPool {
-    addPEA(any: object): Response {
-        return this.responseVendor.buyErrorResponse();
-    }
-    deletePEA(tag: string) {
-        return this.responseVendor.buyErrorResponse();
-    }
-    getPEA(tag: string) {
-        return this.responseVendor.buyErrorResponse();
-    }
-    start(): Response {
-        if (!this.running) {
-            /* all start logic here */
-            console.log('Hello world, I am a WebPEAPool!');
-            this.running = true;
-            return this.responseVendor.buySuccessResponse();
-        } else {
-            return this.responseVendor.buyErrorResponse();
-        }
-    }
-    stop(): Response {
-        return super.stop();
-    }
-}
-
-export class CommandLinePEAPool extends APEAPool {
-    addPEA(any: object) {
-        return this.responseVendor.buyErrorResponse();
-    }
-    deletePEA(tag: string) {
-        return this.responseVendor.buyErrorResponse();
-    }
-    getPEA(tag: string) {
-        return this.responseVendor.buyErrorResponse();
-    }
-}
-
-export class DependencyPEAPool extends APEAPool {
+export class BasePEAPool extends APEAPool {
     addPEA(any: object) {
         return this.responseVendor.buyErrorResponse();
     }
@@ -105,8 +48,6 @@ interface PEAPool {
     deletePEA(tag: string): Response;
     getPEA(tag: string): Response;
     initialize(firstChainElement: Importer): boolean;
-    start(): Response;
-    stop(): Response;
 }
 
 /* Factory */
@@ -115,19 +56,10 @@ abstract class APEAPoolFactory implements PEAPoolFactory {
     abstract create(): PEAPool;
 }
 
-export class WebPEAPoolFactory extends APEAPoolFactory {
+export class BasePEAPoolFactory extends APEAPoolFactory {
     create(): PEAPool {
-        return new WebPEAPool();
-    }
-}
-export class CommandLinePEAPoolFactory extends APEAPoolFactory {
-    create(): PEAPool {
-        return new CommandLinePEAPool();
-    }
-}
-export class DependencyPEAPoolFactory extends APEAPoolFactory {
-    create(): PEAPool {
-        return new DependencyPEAPool();
+        logger.debug('BasePEAPool generated via Factory')
+        return new BasePEAPool();
     };
 }
 
@@ -138,23 +70,13 @@ interface PEAPoolFactory {
 /* Vendor */
 
 export class PEAPoolVendor {
-    private commandlinePEAPoolFactory: CommandLinePEAPoolFactory;
-    private dependencyPEAPoolFactory: DependencyPEAPoolFactory;
-    private webPEAPoolFactory: WebPEAPoolFactory;
+
+    private dependencyPEAPoolFactory: BasePEAPoolFactory;
 
     constructor() {
-        this.commandlinePEAPoolFactory = new CommandLinePEAPoolFactory();
-        this.dependencyPEAPoolFactory = new DependencyPEAPoolFactory();
-        this.webPEAPoolFactory = new WebPEAPoolFactory();
-    }
-
-    buyCommandLInePEAPool(): PEAPool {
-        return new CommandLinePEAPool();
+        this.dependencyPEAPoolFactory = new BasePEAPoolFactory();
     }
     buyDependencyPEAPool(): PEAPool {
-        return new  DependencyPEAPool();
-    }
-    buyWebPEAPool(): PEAPool {
-        return new WebPEAPool();
+        return new  BasePEAPool();
     }
 }

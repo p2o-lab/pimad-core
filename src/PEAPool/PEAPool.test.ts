@@ -1,37 +1,19 @@
 import {
-    WebPEAPool,
-    CommandLinePEAPool,
-    DependencyPEAPool,
-    CommandLinePEAPoolFactory,
-    DependencyPEAPoolFactory,
-    WebPEAPoolFactory,
+    BasePEAPool,
+    BasePEAPoolFactory,
     PEAPoolVendor
 } from './PEAPool';
-import {FLastChainElementImporter} from '../Converter/Importer'
+import {LastChainElementImporterFactory} from '../Converter/Importer'
 
 import {expect} from 'chai';
-import {ErrorResponse, SuccessResponse} from '../Backbone/Response';
+import {ErrorResponse} from '../Backbone/Response';
 
-describe('class: WebPEAStore', () => {
-    const fImporter = new FLastChainElementImporter()
-    let store: WebPEAPool;
-    beforeEach(function () {
-        store = new WebPEAPool();
-    });
+describe('class: BasePEAStore', () => {
+    const fImporter = new LastChainElementImporterFactory()
+    const store = new BasePEAPool();
     it('method: initialize(firstChainElement: Importer)', () => {
         expect(store.initialize(fImporter.create())).is.true;
         expect(store.initialize(fImporter.create())).is.false;
-    });
-    it('method: start()', () => {
-        expect(typeof (store.start())).is.equal(typeof new SuccessResponse());
-        const response = store.start();
-        expect(typeof response).is.equal(typeof new ErrorResponse());
-    });
-    it('method: stop()', () => {
-        store.start();
-        expect(typeof (store.stop())).is.equal(typeof new SuccessResponse());
-        const response = store.stop();
-        expect(typeof response).is.equal(typeof new ErrorResponse());
     });
     it('method: addPEA(any: object)', () => {
         expect(typeof store.addPEA({})).is.equal(typeof new ErrorResponse())
@@ -44,94 +26,16 @@ describe('class: WebPEAStore', () => {
     })
 });
 
-describe('class: CommandLinePEAStore', () => {
-    const fImporter = new FLastChainElementImporter()
-    const store = new CommandLinePEAPool();
-    it('method: initialize(firstChainElement: Importer)', () => {
-        expect(store.initialize(fImporter.create())).is.true;
-        expect(store.initialize(fImporter.create())).is.false;
-    });
-    it('method: start()', () => {
-        expect(typeof (store.start())).is.equal(typeof new SuccessResponse());
-        const response = store.start();
-        expect(typeof response).is.equal(typeof new ErrorResponse());
-    });
-    it('method: stop()', () => {
-        store.start();
-        expect(typeof (store.stop())).is.equal(typeof new SuccessResponse());
-        const response = store.stop();
-        expect(typeof response).is.equal(typeof new ErrorResponse());
-    });
-    it('method: addPEA(any: object)', () => {
-        expect(typeof store.addPEA({})).is.equal(typeof new ErrorResponse())
-    })
-    it('method: deletePEA(tag: string)', () => {
-        expect(typeof store.deletePEA('')).is.equal(typeof new ErrorResponse())
-    })
-    it('method: getPEA(tag: string)', () => {
-        expect(typeof store.getPEA('')).is.equal(typeof new ErrorResponse())
-    })
-});
-
-describe('class: DependencyPEAStore', () => {
-    const fImporter = new FLastChainElementImporter()
-    const store = new DependencyPEAPool();
-    it('method: initialize(firstChainElement: Importer)', () => {
-        expect(store.initialize(fImporter.create())).is.true;
-        expect(store.initialize(fImporter.create())).is.false;
-    });
-    it('method: start()', () => {
-        expect(typeof (store.start())).is.equal(typeof new SuccessResponse());
-        const response = store.start();
-        expect(typeof response).is.equal(typeof new ErrorResponse());
-    });
-    it('method: stop()', () => {
-        store.start();
-        expect(typeof (store.stop())).is.equal(typeof new SuccessResponse());
-        const response = store.stop();
-        expect(typeof response).is.equal(typeof new ErrorResponse());
-    });
-    it('method: addPEA(any: object)', () => {
-        expect(typeof store.addPEA({})).is.equal(typeof new ErrorResponse())
-    })
-    it('method: deletePEA(tag: string)', () => {
-        expect(typeof store.deletePEA('')).is.equal(typeof new ErrorResponse())
-    })
-    it('method: getPEA(tag: string)', () => {
-        expect(typeof store.getPEA('')).is.equal(typeof new ErrorResponse())
-    })
-});
-
-describe('class: CommandLinePEAStoreFactory', () => {
+describe('class: BasePEAPoolFactory', () => {
     it('method: create()', () => {
-        const factory = new CommandLinePEAPoolFactory();
-        expect(typeof factory.create()).is.equal(typeof new CommandLinePEAPool())
-    });
-})
-
-describe('class: DependencyPEAStoreFactory', () => {
-    it('method: create()', () => {
-        const factory = new DependencyPEAPoolFactory();
-        expect(typeof factory.create()).is.equal(typeof new DependencyPEAPool())
-    });
-})
-
-describe('class: WebPEAStoreFactory', () => {
-    it('method: create()', () => {
-        const factory = new WebPEAPoolFactory();
-        expect(typeof factory.create()).is.equal(typeof new WebPEAPool())
+        const factory = new BasePEAPoolFactory();
+        expect(typeof factory.create()).is.equal(typeof new BasePEAPool())
     });
 })
 
 describe('class: PEAStoreVendor', () => {
     const vendor = new PEAPoolVendor();
-    it('method: buyCommandLInePEAPool()', () => {
-        expect(typeof vendor.buyCommandLInePEAPool()).is.equal(typeof new CommandLinePEAPool())
-    });
-    it('method: buyDependencyPEAPool()', () => {
-        expect(typeof vendor.buyDependencyPEAPool()).is.equal(typeof new DependencyPEAPool())
-    });
-    it('method: buyWebPEAPool()', () => {
-        expect(typeof vendor.buyWebPEAPool()).is.equal(typeof new WebPEAPool())
+    it('method: buyBasePEAPool()', () => {
+        expect(typeof vendor.buyDependencyPEAPool()).is.equal(typeof new BasePEAPool())
     });
 })

@@ -1,8 +1,8 @@
 {
   "name": "PiMAd-core",
   "version": "0.0.1",
-  "description": "",
-  "main": "build/index.js",
+  "description": "PiMAd (Process-industry-Modular-Automation-description) High level access to automation of modular plants.",
+  "main": "src/index.ts",
   "scripts": {
     "prebuild": "npm run lint",
     "build": "tsc",
@@ -16,14 +16,16 @@
     "type": "git",
     "url": "svn@dev.plt.et.tu-dresden.de:modulare-automation/PiMAd-core.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["PiMAd", "Modulare Automation", "PLT/SVT", "Polaris"],
+  "author": "Christoph Jesaja Heidelbach <christoph_jesaja.heidelbach@tu-dresden.de>",
   "license": "ISC",
   "devDependencies": {
     "@types/chai": "^4.2.11",
     "@types/express": "^4.17.6",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.13.4",
+    "@types/pino": "^6.0.0",
+    "@types/xml2json": "^0.11.0",
     "@typescript-eslint/eslint-plugin": "^2.29.0",
     "@typescript-eslint/parser": "^2.29.0",
     "chai": "^4.2.0",
@@ -33,10 +35,14 @@
     "eslint-plugin-tsdoc": "^0.2.4",
     "mocha": "^7.1.1",
     "nyc": "^15.0.1",
+    "pino-pretty": "^4.0.0",
     "ts-node": "^8.9.0",
     "typedoc": "^0.17.4",
     "typescript": "^3.8.3"
   },
   "dependencies": {
+    "pino": "^6.2.1",
+    "rxjs": "^6.5.5",
+    "xml2json": "^0.12.0"
   }
 }

@@ -188,3 +188,6 @@ dist
 
 build/
 docs/
+
+# custom code style
+.idea/codeStyles/codeStyleConfig.xml
