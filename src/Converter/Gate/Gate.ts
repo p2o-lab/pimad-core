@@ -66,6 +66,33 @@ export class MockGate extends AGate {
     }
 }
 
+export class AMLGate extends AFileSystemGate {
+    private xmlGateFactory: XMLGateFactory;
+
+    receive(instructions: {
+        source: string; //TODO: Quatsch!!! Gibt doch ne GateAddresse!
+    }, callback: (response: Response) => void): void {
+        const xmlGate = this.xmlGateFactory.create();
+        xmlGate.initialize('' + this.gateAddress);
+        xmlGate.receive(instructions, response => {
+            if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
+                const content: { data?: {}} = response.getContent();
+                const localResponse = this.responseVendor.buySuccessResponse();
+                localResponse.initialize('Success!', {data: content.data});
+                logger.info('Successfully parsed the AML-File at ' + this.gateAddress);
+                callback(localResponse);
+            } else {
+                logger.error('Could not parse the AML-File at ' + this.gateAddress);
+                callback(this.responseVendor.buyErrorResponse())
+            }
+        });
+    };
+    constructor() {
+        super();
+        this.xmlGateFactory = new XMLGateFactory();
+    }
+}
+
 export class XMLGate extends AFileSystemGate {
 
     receive(instructions: {
@@ -79,8 +106,8 @@ export class XMLGate extends AFileSystemGate {
                 logger.info('Successfully parsed the XML-File at ' + this.gateAddress);
                 callback(response);
             } else {
-                callback(this.responseVendor.buyErrorResponse())
                 logger.error('Could not parse the XML-File at ' + this.gateAddress);
+                callback(this.responseVendor.buyErrorResponse())
             }
         })
     };
