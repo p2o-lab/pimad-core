@@ -59,20 +59,27 @@ export class AMLGate extends AFileSystemGate {
     private xmlGateFactory: XMLGateFactory;
 
     receive(instructions: object, callback: (response: Response) => void): void {
-        const xmlGate = this.xmlGateFactory.create();
-        xmlGate.initialize('' + this.gateAddress);
-        xmlGate.receive(instructions, response => {
-            if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
-                const content: { data?: {}} = response.getContent();
-                const localResponse = this.responseVendor.buySuccessResponse();
-                localResponse.initialize('Success!', {data: content.data});
-                logger.info('Successfully parsed the AML-File at ' + this.gateAddress);
-                callback(localResponse);
-            } else {
-                logger.error('Could not parse the AML-File at ' + this.gateAddress);
-                callback(this.responseVendor.buyErrorResponse())
-            }
-        });
+        if(this.initialized) {
+            const xmlGate = this.xmlGateFactory.create();
+            xmlGate.initialize('' + this.gateAddress);
+            xmlGate.receive(instructions, response => {
+                if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
+                    const content: { data?: {}} = response.getContent();
+                    const localResponse = this.responseVendor.buySuccessResponse();
+                    localResponse.initialize('Success!', {data: content.data});
+                    logger.info('Successfully parsed the AML-File at ' + this.gateAddress);
+                    callback(localResponse);
+                } else {
+                    logger.error('Could not parse the AML-File at ' + this.gateAddress);
+                    callback(this.responseVendor.buyErrorResponse())
+                }
+            });
+        } else {
+            const notInitialized = this.responseVendor.buyErrorResponse();
+            logger.error('Use of a non-initialized AML-Gate. This one rejects the Request!');
+            notInitialized.initialize('The Gate is not initialized yet! Aborting ... ', {})
+            callback(notInitialized)
+        }
     };
     constructor() {
         super();
@@ -89,9 +96,16 @@ export class MockGate extends AGate {
         callback(response);
     };
     receive(instructions: object, callback: (response: Response) => void): void {
-        const response = this.responseVendor.buySuccessResponse();
-        response.initialize('This is a receive-response of a mock gate.', instructions)
-        callback(response);
+        if (this.initialized) {
+            const response = this.responseVendor.buySuccessResponse();
+            response.initialize('This is a receive-response of a mock gate.', instructions)
+            callback(response);
+        } else {
+            const notInitialized = this.responseVendor.buyErrorResponse();
+            logger.error('Use of a non-initialized Mock-Gate. This one rejects the Request!');
+            notInitialized.initialize('The Gate is not initialized yet! Aborting ... ', {})
+            callback(notInitialized)
+        }
     };
     constructor() {
         super();
@@ -117,8 +131,9 @@ export class MTPGate extends AFileSystemGate {
             })
         } else {
             const notInitialized = this.responseVendor.buyErrorResponse();
-            logger.error('Use an uninitialized Gate to open a MTP-Archive at ' + this.gateAddress + ' . This one rejects the Request!');
+            logger.error('Use of a non initialized MTP-Gate. This one rejects the Request!');
             notInitialized.initialize('The Gate is not initialized yet! Aborting ... ', {})
+            callback(notInitialized)
         }
     }
 
@@ -131,18 +146,25 @@ export class MTPGate extends AFileSystemGate {
 export class XMLGate extends AFileSystemGate {
 
     receive(instructions: object, callback: (response: Response) => void): void {
-        this.fileSystem.readFile('' + this.gateAddress, (error: NodeJS.ErrnoException | null, data: Buffer) => {
-            if (!error) {
-                const json: {} = xml2jsonParser.toJson(data.toString(), {object: true});
-                const xmlGateResponse = this.responseVendor.buySuccessResponse();
-                xmlGateResponse.initialize('Success!', {data: json});
-                logger.info('Successfully parsed the XML-File at ' + this.gateAddress);
-                callback(xmlGateResponse);
-            } else {
-                logger.error('Could not parse the XML-File at ' + this.gateAddress);
-                callback(this.responseVendor.buyErrorResponse())
-            }
-        })
+        if(this.initialized) {
+            this.fileSystem.readFile('' + this.gateAddress, (error: NodeJS.ErrnoException | null, data: Buffer) => {
+                if (!error) {
+                    const json: {} = xml2jsonParser.toJson(data.toString(), {object: true});
+                    const xmlGateResponse = this.responseVendor.buySuccessResponse();
+                    xmlGateResponse.initialize('Success!', {data: json});
+                    logger.info('Successfully parsed the XML-File at ' + this.gateAddress);
+                    callback(xmlGateResponse);
+                } else {
+                    logger.error('Could not parse the XML-File at ' + this.gateAddress);
+                    callback(this.responseVendor.buyErrorResponse())
+                }
+            })
+        } else {
+            const notInitialized = this.responseVendor.buyErrorResponse();
+            logger.error('Use of a non initialized XML-Gate. This one rejects the Request!');
+            notInitialized.initialize('The Gate is not initialized yet! Aborting ... ', {})
+            callback(notInitialized)
+        }
     };
 }
 
@@ -150,50 +172,58 @@ export class ZIPGate extends AFileSystemGate {
     private xmlGateFactory: XMLGateFactory;
 
     receive(instructions: object, callback: (response: Response) => void): void {
-        const zipHandler = new AdmZip(this.gateAddress);
-        const zipEntries = zipHandler.getEntries(); // an array of ZipEntry records
+        if(this.initialized) {
+            const zipHandler = new AdmZip(this.gateAddress);
+            const zipEntries = zipHandler.getEntries(); // an array of ZipEntry records
 
-        if (zipEntries.length >= 0) {
-            // build the path to the parent and the extracted folder
-            const folderPath: string = ('' + this.gateAddress).slice(0,-(zipEntries[0].entryName.length + 4));
-            const unzippedFolderPath: string = ('' + this.gateAddress).slice(0,-4);
-            // extract the zip
-            zipHandler.extractAllTo(folderPath, true);
-            const responseData: object[] = [];
-            // parse the entries ...
-            zipEntries.forEach((entry: IZipEntry) => {
-                // Supporting different file types
-                switch (ZIPGate.getFileType(entry.entryName)) {
-                    case '.aml':
-                        logger.info('There is a .aml file!');
-                        break;
-                    case '.xml':
-                        logger.info('There is a .xml file!');
-                        const xmlGate = this.xmlGateFactory.create();
-                        xmlGate.initialize(folderPath + '/' + entry.entryName);
-                        xmlGate.receive({source: folderPath + '/' + entry.entryName}, (response: Response) => {
-                            if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
-                                responseData.push(response.getContent());
-                                // Calling the callback in the last loop cycle
-                                if (entry == zipEntries[zipEntries.length-1]) {
-                                    const zipGateResponse = this.responseVendor.buySuccessResponse();
-                                    zipGateResponse.initialize('Success!', {data: responseData});
-                                    // delete the extracted data
-                                    rimraf(unzippedFolderPath, function () {
-                                        callback(zipGateResponse);
-                                    })
+            if (zipEntries.length >= 0) {
+                // build the path to the parent and the extracted folder
+                const folderPath: string = ('' + this.gateAddress).slice(0,-(zipEntries[0].entryName.length + 4));
+                const unzippedFolderPath: string = ('' + this.gateAddress).slice(0,-4);
+                // extract the zip
+                zipHandler.extractAllTo(folderPath, true);
+                const responseData: object[] = [];
+                // parse the entries ...
+                zipEntries.forEach((entry: IZipEntry) => {
+                    // Supporting different file types
+                    switch (ZIPGate.getFileType(entry.entryName)) {
+                        case '.aml':
+                            logger.info('There is a .aml file!');
+                            break;
+                        case '.xml':
+                            logger.info('There is a .xml file!');
+                            const xmlGate = this.xmlGateFactory.create();
+                            xmlGate.initialize(folderPath + '/' + entry.entryName);
+                            xmlGate.receive({source: folderPath + '/' + entry.entryName}, (response: Response) => {
+                                if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
+                                    responseData.push(response.getContent());
+                                    // Calling the callback in the last loop cycle
+                                    if (entry == zipEntries[zipEntries.length-1]) {
+                                        const zipGateResponse = this.responseVendor.buySuccessResponse();
+                                        zipGateResponse.initialize('Success!', {data: responseData});
+                                        // delete the extracted data
+                                        rimraf(unzippedFolderPath, function () {
+                                            callback(zipGateResponse);
+                                        })
+                                    }
                                 }
-                            }
-                        })
-                        break;
-                    default:
-                        logger.warn('There is an unsupported file type. Ignoring...');
-                        break;
-                }
-            })
+                            })
+                            break;
+                        default:
+                            logger.warn('There is an unsupported file type. Ignoring...');
+                            break;
+                    }
+                })
+            } else {
+                callback(this.responseVendor.buyErrorResponse())
+            }
         } else {
-            callback(this.responseVendor.buyErrorResponse())
+            const notInitialized = this.responseVendor.buyErrorResponse();
+            logger.error('Use of a non initialized ZIP-Gate. This one rejects the Request!');
+            notInitialized.initialize('The Gate is not initialized yet! Aborting ... ', {})
+            callback(notInitialized)
         }
+
     }
 
     constructor() {

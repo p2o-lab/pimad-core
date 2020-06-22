@@ -18,6 +18,7 @@ describe('class: MockGate', () => {
     });
     it('method: receive()', () => {
         const instruction = {test: 'Test-Instruction for receive()'}
+        gate.initialize('Test-Address');
         gate.receive(instruction,(response) => {
             expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
             const content: {test?: string} = response.getContent();
