@@ -84,18 +84,23 @@ describe('class XMLGate', () => {
             expect(response.getMessage()).is.equal('Not implemented yet!');
         })
     })
-    it('method: receive()', () => {
-        // TODO: Do some refractor like AMLGate.
-        const xml2jsonTest = JSON.stringify({'test':{'title':{'value':'PiMAd-XML-Gate-Test'},'greeting':'Hello, World !'}});
-        gate.receive({source: 'test/Converter/test.xml'},(response: Response) => {
-            // TODO: General way to go? Handle simple typing? Without modeling fucking a lot classes.
-            const content: { data?: {}} = response.getContent();
-            expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
-            expect(JSON.stringify(content.data)).is.equal(xml2jsonTest);
-        });
-        gate.receive({source: 'this/is/a/wrong/path'},(response: Response) => {
-            expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
-        });
+    describe('method: receive()', () => {
+        it('base functionality', () => {
+            gate.initialize('test/Converter/test.xml');
+            const xml2jsonTest = JSON.stringify({'test':{'title':{'value':'PiMAd-XML-Gate-Test'},'greeting':'Hello, World !'}});
+            gate.receive({source: 'test/Converter/test.xml'},(response: Response) => {
+                // TODO: General way to go? Handle simple typing? Without modeling fucking a lot classes.
+                const content: { data?: {}} = response.getContent();
+                expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
+                expect(JSON.stringify(content.data)).is.equal(xml2jsonTest);
+            });
+        })
+        it('wrong path', () => {
+            gate.initialize('this/is/a/wrong/path');
+            gate.receive({source: 'this/is/a/wrong/path'},(response: Response) => {
+                expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+            });
+        })
     })
     it('method: getGateAddress()', () => {
         const address = 'Test-Address';
