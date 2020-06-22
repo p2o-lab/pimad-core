@@ -1,5 +1,5 @@
 import {Response, ResponseVendor} from '../../Backbone/Response';
-import {XMLGateFactory, ZIPGateFactory} from './GateFactory';
+import {AMLGateFactory, XMLGateFactory, ZIPGateFactory} from './GateFactory';
 import fileSystem = require('fs');
 import xml2jsonParser = require('xml2json');
 import AdmZip = require('adm-zip');
@@ -170,6 +170,7 @@ export class XMLGate extends AFileSystemGate {
 
 export class ZIPGate extends AFileSystemGate {
     private xmlGateFactory: XMLGateFactory;
+    private amlGateFactory: AMLGateFactory;
 
     receive(instructions: object, callback: (response: Response) => void): void {
         if(this.initialized) {
@@ -187,14 +188,29 @@ export class ZIPGate extends AFileSystemGate {
                 zipEntries.forEach((entry: IZipEntry) => {
                     // Supporting different file types
                     switch (ZIPGate.getFileType(entry.entryName)) {
+                        // TODO: Coding > Generic one
                         case '.aml':
-                            logger.info('There is a .aml file!');
+                            const amlGate = this.amlGateFactory.create();
+                            amlGate.initialize(folderPath + '/' + entry.entryName);
+                            amlGate.receive({}, (response: Response) => {
+                                if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
+                                    responseData.push(response.getContent());
+                                    // Calling the callback in the last loop cycle
+                                    if (entry == zipEntries[zipEntries.length-1]) {
+                                        const zipGateResponse = this.responseVendor.buySuccessResponse();
+                                        zipGateResponse.initialize('Success!', {data: responseData});
+                                        // delete the extracted data
+                                        rimraf(unzippedFolderPath, function () {
+                                            callback(zipGateResponse);
+                                        })
+                                    }
+                                }
+                            })
                             break;
                         case '.xml':
-                            logger.info('There is a .xml file!');
                             const xmlGate = this.xmlGateFactory.create();
                             xmlGate.initialize(folderPath + '/' + entry.entryName);
-                            xmlGate.receive({source: folderPath + '/' + entry.entryName}, (response: Response) => {
+                            xmlGate.receive({}, (response: Response) => {
                                 if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
                                     responseData.push(response.getContent());
                                     // Calling the callback in the last loop cycle
@@ -229,6 +245,7 @@ export class ZIPGate extends AFileSystemGate {
     constructor() {
         super();
         this.xmlGateFactory = new XMLGateFactory();
+        this.amlGateFactory = new AMLGateFactory();
     }
 }
 

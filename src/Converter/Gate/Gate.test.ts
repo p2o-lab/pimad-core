@@ -166,19 +166,35 @@ describe('class ZIPGate', () => {
             expect(response.getMessage()).is.equal('Not implemented yet!');
         })
     })
-    it('method: receive()', done => {
-        const xml2jsonTest = JSON.stringify({'data':{'test':{'title':{'value':'PiMAd-XML-Gate-Test'},'greeting':'Hello, World !'}}});
-        gate.initialize('test/Converter/test-xml.zip')
-        gate.receive({},(response: Response) => {
-            const content: {data?: object[]} = response.getContent();
-            if (content.data === undefined) {
-                content.data = []
-            }
-            expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
-            expect(JSON.stringify(content.data[0])).is.equal(xml2jsonTest);
-            done();
-        });
-    }).timeout(500)
+    describe('method: receive()', () => {
+        it('zip-archive with single xml-file', done => {
+            const xml2jsonTest = JSON.stringify({'data':{'test':{'title':{'value':'PiMAd-XML-Gate-Test'},'greeting':'Hello, World !'}}});
+            gate.initialize('test/Converter/test-xml.zip')
+            gate.receive({},(response: Response) => {
+                const content: {data?: object[]} = response.getContent();
+                if (content.data === undefined) {
+                    content.data = []
+                }
+                expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
+                expect(JSON.stringify(content.data[0])).is.equal(xml2jsonTest);
+                done();
+            });
+        }).timeout(500);
+        it('zip-archive with single aml-file', done => {
+            const xml2jsonTest = JSON.stringify({'data':{'test':{'title':{'value':'PiMAd-AML-Gate-Test'},'greeting':'Hello, World !'}}});
+            gate.initialize('test/Converter/test-aml.zip')
+            gate.receive({},(response: Response) => {
+                const content: {data?: object[]} = response.getContent();
+                if (content.data === undefined) {
+                    content.data = []
+                }
+                expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
+                expect(JSON.stringify(content.data[0])).is.equal(xml2jsonTest);
+                done();
+            });
+        }).timeout(500);
+
+    })
     it('method: getGateAddress()', () => {
         const address = 'test/Converter/test-xml.zip';
         gate.initialize(address)
