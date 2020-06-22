@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import {AMLGateFactory, MockGateFactory, XMLGateFactory, ZIPGateFactory} from './GateFactory';
+import {AMLGateFactory, MockGateFactory, MTPGateFactory, XMLGateFactory, ZIPGateFactory} from './GateFactory';
 import {ErrorResponse, Response, SuccessResponse} from '../../Backbone/Response';
 
 describe('class: MockGate', () => {
@@ -24,6 +24,44 @@ describe('class: MockGate', () => {
             expect(JSON.stringify(content)).is.equal(JSON.stringify(instruction));
         })
     });
+})
+
+describe('class MTPGate', () => {
+    const factory = new MTPGateFactory()
+    let gate = factory.create()
+    beforeEach(() => {
+        gate = factory.create()
+    })
+    it('method: initialize()', () => {
+        // TODO: Do some regex, checking for the address
+        const address = 'Test-Address';
+        expect(gate.initialize(address)).is.true;
+        expect(gate.initialize(address)).is.false;
+    })
+    it('method: send()', () => {
+        gate.send({},(response) => {
+            expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+            expect(response.getMessage()).is.equal('Not implemented yet!');
+        })
+    })
+    it('method: receive()', done => {
+        const xml2jsonTest = JSON.stringify({'data':{'test':{'title':{'value':'PiMAd-XML-Gate-Test'},'greeting':'Hello, World !'}}});
+        gate.initialize('test/Converter/test-xml.mtp')
+        gate.receive({},(response: Response) => {
+            const content: {data?: object[]} = response.getContent();
+            if (content.data === undefined) {
+                content.data = []
+            }
+            expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
+            expect(JSON.stringify(content.data[0])).is.equal(xml2jsonTest);
+            done();
+        });
+    }).timeout(500)
+    it('method: getGateAddress()', () => {
+        const address = 'test/Converter/test-xml.mtp';
+        gate.initialize(address)
+        expect(gate.getGateAddress()).is.equal(address);
+    })
 })
 
 describe('class AMLGate', () => {

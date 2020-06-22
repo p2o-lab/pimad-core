@@ -1,5 +1,5 @@
 import {Response, ResponseVendor} from '../../Backbone/Response';
-import {XMLGateFactory} from './GateFactory';
+import {XMLGateFactory, ZIPGateFactory} from './GateFactory';
 import fileSystem = require('fs');
 import xml2jsonParser = require('xml2json');
 import AdmZip = require('adm-zip');
@@ -7,7 +7,6 @@ import rimraf = require('rimraf');
 import {logger} from '../../Utils/Logger';
 import {IZipEntry} from 'adm-zip';
 
-/* Gates */
 abstract class AGate implements Gate {
     protected initialized: boolean;
     protected gateAddress: string | undefined;
@@ -42,8 +41,42 @@ abstract class AGate implements Gate {
 
 abstract class AFileSystemGate extends AGate {
     protected fileSystem = fileSystem;
+
+    /**
+     * This function cuts of the last four characters of the input string. F. ex.: test.xml -\> test
+     * @param fileName - The name of the file as String.
+     */
+    protected static getFileType(fileName: string): string {
+        return fileName.slice(-4);
+    }
+
     constructor() {
         super();
+    }
+}
+
+export class AMLGate extends AFileSystemGate {
+    private xmlGateFactory: XMLGateFactory;
+
+    receive(instructions: object, callback: (response: Response) => void): void {
+        const xmlGate = this.xmlGateFactory.create();
+        xmlGate.initialize('' + this.gateAddress);
+        xmlGate.receive(instructions, response => {
+            if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
+                const content: { data?: {}} = response.getContent();
+                const localResponse = this.responseVendor.buySuccessResponse();
+                localResponse.initialize('Success!', {data: content.data});
+                logger.info('Successfully parsed the AML-File at ' + this.gateAddress);
+                callback(localResponse);
+            } else {
+                logger.error('Could not parse the AML-File at ' + this.gateAddress);
+                callback(this.responseVendor.buyErrorResponse())
+            }
+        });
+    };
+    constructor() {
+        super();
+        this.xmlGateFactory = new XMLGateFactory();
     }
 }
 
@@ -66,30 +99,32 @@ export class MockGate extends AGate {
     }
 }
 
-export class AMLGate extends AFileSystemGate {
-    private xmlGateFactory: XMLGateFactory;
+export class MTPGate extends AFileSystemGate {
+    private zipGateFactory: ZIPGateFactory;
+    receive(instructions: object, callback: (response: Response) => void): void {
+        if(this.initialized) {
+            const zipGate = this.zipGateFactory.create();
+            zipGate.initialize('' + this.gateAddress);
+            zipGate.receive({}, response => {
+                if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
+                    const zipGateResponse: {data?: []} = response.getContent();
+                    const mtpGateResponse = this.responseVendor.buySuccessResponse();
+                    mtpGateResponse.initialize('Success!', {data: zipGateResponse.data});
+                    callback(mtpGateResponse)
+                } else {
+                    callback(this.responseVendor.buyErrorResponse())
+                }
+            })
+        } else {
+            const notInitialized = this.responseVendor.buyErrorResponse();
+            logger.error('Use an uninitialized Gate to open a MTP-Archive at ' + this.gateAddress + ' . This one rejects the Request!');
+            notInitialized.initialize('The Gate is not initialized yet! Aborting ... ', {})
+        }
+    }
 
-    receive(instructions: {
-        source: string; //TODO: Quatsch!!! Gibt doch ne GateAddresse!
-    }, callback: (response: Response) => void): void {
-        const xmlGate = this.xmlGateFactory.create();
-        xmlGate.initialize('' + this.gateAddress);
-        xmlGate.receive(instructions, response => {
-            if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
-                const content: { data?: {}} = response.getContent();
-                const localResponse = this.responseVendor.buySuccessResponse();
-                localResponse.initialize('Success!', {data: content.data});
-                logger.info('Successfully parsed the AML-File at ' + this.gateAddress);
-                callback(localResponse);
-            } else {
-                logger.error('Could not parse the AML-File at ' + this.gateAddress);
-                callback(this.responseVendor.buyErrorResponse())
-            }
-        });
-    };
     constructor() {
         super();
-        this.xmlGateFactory = new XMLGateFactory();
+        this.zipGateFactory = new ZIPGateFactory();
     }
 }
 
@@ -101,10 +136,10 @@ export class XMLGate extends AFileSystemGate {
         this.fileSystem.readFile(instructions.source, (error: NodeJS.ErrnoException | null, data: Buffer) => {
             if (!error) {
                 const json: {} = xml2jsonParser.toJson(data.toString(), {object: true});
-                const response = this.responseVendor.buySuccessResponse();
-                response.initialize('Success!', {data: json});
+                const xmlGateResponse = this.responseVendor.buySuccessResponse();
+                xmlGateResponse.initialize('Success!', {data: json});
                 logger.info('Successfully parsed the XML-File at ' + this.gateAddress);
-                callback(response);
+                callback(xmlGateResponse);
             } else {
                 logger.error('Could not parse the XML-File at ' + this.gateAddress);
                 callback(this.responseVendor.buyErrorResponse())
@@ -143,11 +178,11 @@ export class ZIPGate extends AFileSystemGate {
                                 responseData.push(response.getContent());
                                 // Calling the callback in the last loop cycle
                                 if (entry == zipEntries[zipEntries.length-1]) {
-                                    const response = this.responseVendor.buySuccessResponse();
-                                    response.initialize('Success!', {data: responseData});
+                                    const zipGateResponse = this.responseVendor.buySuccessResponse();
+                                    zipGateResponse.initialize('Success!', {data: responseData});
                                     // delete the extracted data
                                     rimraf(unzippedFolderPath, function () {
-                                        callback(response);
+                                        callback(zipGateResponse);
                                     })
                                 }
                             }
@@ -161,14 +196,6 @@ export class ZIPGate extends AFileSystemGate {
         } else {
             callback(this.responseVendor.buyErrorResponse())
         }
-    }
-
-    /**
-     * This function cuts of the last four characters of the input string. F. ex.: test.xml -> test
-     * @param fileName - The name of the file as String.
-     */
-    private static getFileType(fileName: string): string {
-        return fileName.slice(-4);
     }
 
     constructor() {

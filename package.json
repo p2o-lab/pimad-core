@@ -7,10 +7,10 @@
     "prebuild": "npm run lint",
     "build": "tsc",
     "build-gdocs": "typedoc --out docs src",
-    "lint": "eslint -f pretty src/**/*.ts",
+    "lint": "eslint -f pretty 'src/**/*.ts'",
     "prestart": "npm run build",
     "start": "node .",
-    "test": "nyc mocha -r ts-node/register src/**/*.ts"
+    "test": "nyc mocha -r ts-node/register 'src/**/*.ts'"
   },
   "repository": {
     "type": "git",
