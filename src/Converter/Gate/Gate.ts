@@ -1,9 +1,10 @@
-import {Response, ResponseVendor} from '../Backbone/Response';
+import {Response, ResponseVendor} from '../../Backbone/Response';
+import {XMLGateFactory} from './GateFactory';
 import fileSystem = require('fs');
 import xml2jsonParser = require('xml2json');
 import AdmZip = require('adm-zip');
 import rimraf = require('rimraf');
-import {logger} from '../Utils/Logger';
+import {logger} from '../../Utils/Logger';
 import {IZipEntry} from 'adm-zip';
 
 /* Gates */
@@ -46,6 +47,25 @@ abstract class AFileSystemGate extends AGate {
     }
 }
 
+export class MockGate extends AGate {
+
+    send(instructions: object, callback: (response: Response) => void): void {
+        logger.debug('Send ' + instructions + ' to ' + this.getGateAddress());
+        const response = this.responseVendor.buySuccessResponse();
+        response.initialize('This is a send-response of a mock gate.', instructions)
+        callback(response);
+    };
+    receive(instructions: object, callback: (response: Response) => void): void {
+        const response = this.responseVendor.buySuccessResponse();
+        response.initialize('This is a receive-response of a mock gate.', instructions)
+        callback(response);
+    };
+    constructor() {
+        super();
+        this.gateAddress = 'Valinor';
+    }
+}
+
 export class XMLGate extends AFileSystemGate {
 
     /*send(instructions: object, callback: (response: Response) => void): void {
@@ -75,66 +95,6 @@ export class XMLGate extends AFileSystemGate {
     close(): Response {
         return this.responseVendor.buyErrorResponse();
     };*/
-}
-
-export class MockGate extends AGate {
-
-    send(instructions: object, callback: (response: Response) => void): void {
-        logger.debug('Send ' + instructions + ' to ' + this.getGateAddress());
-        const response = this.responseVendor.buySuccessResponse();
-        response.initialize('This is a send-response of a mock gate.', instructions)
-        callback(response);
-    };
-    receive(instructions: object, callback: (response: Response) => void): void {
-        const response = this.responseVendor.buySuccessResponse();
-        response.initialize('This is a receive-response of a mock gate.', instructions)
-        callback(response);
-    };
-    constructor() {
-        super();
-        this.gateAddress = 'Valinor';
-    }
-}
-
-export interface Gate {
-    /**
-     * Write data to the source via the gate.
-     * @param instructions - A set of instructions, configuring the gate while sending.
-     * @param callback - Concerning asynchronous behaviour, return data via a callback function.
-     */
-    send(instructions: object, callback: (response: Response) => void): void;
-    /**
-     * Asynchronous: Send a request to the source and receive theirs answer.
-     * @param instructions - A set of instructions, configuring the gate while receiving.
-     * @param callback - Concerning asynchronous behaviour, return data via a callback function.
-     */
-    receive(instructions: object, callback: (response: Response) => void): void;
-    // TODO: What to do with open()/close() ???
-    //open(): Response;
-    //close(): Response;
-    getGateAddress(): string | undefined;
-    initialize(address: string): boolean;
-}
-
-/* Factories */
-abstract class AGateFactory implements GateFactory {
-    abstract create(): Gate;
-}
-
-export class MockGateFactory extends AGateFactory {
-    create(): Gate {
-        const gate = new MockGate();
-        logger.debug(this.constructor.name + ' creates a ' + gate.constructor.name);
-        return gate;
-    }
-}
-
-export class XMLGateFactory extends AGateFactory {
-    create(): Gate {
-        const gate = new XMLGate();
-        logger.debug(this.constructor.name + ' creates a ' + gate.constructor.name);
-        return gate;
-    }
 }
 
 export class ZIPGate extends AFileSystemGate {
@@ -195,14 +155,22 @@ export class ZIPGate extends AFileSystemGate {
     }
 }
 
-export class ZIPGateFactory extends AGateFactory {
-    create(): Gate {
-        const gate = new ZIPGate();
-        logger.debug(this.constructor.name + ' creates a ' + gate.constructor.name);
-        return gate;
-    }
-}
-
-export interface GateFactory {
-    create(): Gate;
+export interface Gate {
+    /**
+     * Write data to the source via the gate.
+     * @param instructions - A set of instructions, configuring the gate while sending.
+     * @param callback - Concerning asynchronous behaviour, return data via a callback function.
+     */
+    send(instructions: object, callback: (response: Response) => void): void;
+    /**
+     * Asynchronous: Send a request to the source and receive theirs answer.
+     * @param instructions - A set of instructions, configuring the gate while receiving.
+     * @param callback - Concerning asynchronous behaviour, return data via a callback function.
+     */
+    receive(instructions: object, callback: (response: Response) => void): void;
+    // TODO: What to do with open()/close() ???
+    //open(): Response;
+    //close(): Response;
+    getGateAddress(): string | undefined;
+    initialize(address: string): boolean;
 }
