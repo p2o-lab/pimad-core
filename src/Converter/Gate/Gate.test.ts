@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import {MockGateFactory, XMLGateFactory, ZIPGateFactory} from './GateFactory';
+import {AMLGateFactory, MockGateFactory, XMLGateFactory, ZIPGateFactory} from './GateFactory';
 import {ErrorResponse, Response, SuccessResponse} from '../../Backbone/Response';
 
 describe('class: MockGate', () => {
@@ -26,7 +26,7 @@ describe('class: MockGate', () => {
     });
 })
 
-/*describe('class AMLGate', () => {
+describe('class AMLGate', () => {
     const factory = new AMLGateFactory()
     let gate = factory.create()
     beforeEach(() => {
@@ -43,24 +43,27 @@ describe('class: MockGate', () => {
             expect(response.getMessage()).is.equal('Not implemented yet!');
         })
     })
-    it('method: receive()', () => {
-        const xml2jsonTest = JSON.stringify({'test':{'title':{'value':'PiMAd-XML-Gate-Test'},'greeting':'Hello, World !'}});
-        gate.receive({source: 'test/Converter/test.xml'},(response: Response) => {
-            // TODO: General way to go? Handle simple typing? Without modeling fucking a lot classes.
-            const content: { data?: {}} = response.getContent();
-            expect(typeof response).is.equal(typeof new SuccessResponse());
-            expect(JSON.stringify(content.data)).is.equal(xml2jsonTest);
-        });
-        gate.receive({source: 'this/is/a/wrong/path'},(response: Response) => {
-            expect(typeof response).is.equal(typeof new ErrorResponse());
-        });
+    describe('method: receive()', () => {
+        it('base functionality', () => {
+            const xml2jsonTest = JSON.stringify({'test':{'title':{'value':'PiMAd-AML-Gate-Test'},'greeting':'Hello, World !'}});
+            gate.receive({source: 'test/Converter/test.aml'},(response: Response) => {
+                const content: { data?: {}} = response.getContent();
+                expect(typeof response).is.equal(typeof new SuccessResponse());
+                expect(JSON.stringify(content.data)).is.equal(xml2jsonTest);
+            });
+        })
+        it('wrong path', () => {
+            gate.receive({source: 'this/is/a/wrong/path'},(response: Response) => {
+                expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+            });
+        })
     })
     it('method: getGateAddress()', () => {
         const address = 'Test-Address';
         gate.initialize(address)
         expect(gate.getGateAddress()).is.equal(address);
     })
-})*/
+})
 
 describe('class XMLGate', () => {
     const factory = new XMLGateFactory()
