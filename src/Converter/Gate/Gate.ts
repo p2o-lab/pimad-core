@@ -68,11 +68,6 @@ export class MockGate extends AGate {
 
 export class XMLGate extends AFileSystemGate {
 
-    /*send(instructions: object, callback: (response: Response) => void): void {
-        const localResponse = this.responseVendor.buyErrorResponse()
-        localResponse.initialize('Not implemented yet!', {})
-        callback(localResponse)
-    }; */
     receive(instructions: {
         source: string; //TODO: Quatsch!!! Gibt doch ne GateAddresse!
     }, callback: (response: Response) => void): void {
@@ -89,12 +84,6 @@ export class XMLGate extends AFileSystemGate {
             }
         })
     };
-    /*open(): Response {
-        return this.responseVendor.buyErrorResponse();
-    };
-    close(): Response {
-        return this.responseVendor.buyErrorResponse();
-    };*/
 }
 
 export class ZIPGate extends AFileSystemGate {
@@ -105,14 +94,16 @@ export class ZIPGate extends AFileSystemGate {
         const zipEntries = zipHandler.getEntries(); // an array of ZipEntry records
 
         if (zipEntries.length >= 0) {
-            // Zu diesem Zeitpunkt ist sicher, dass string vorhanden ist. Wollen das Zip-Archiev jedoch in einen
-            // normalen Ordner kopieren, deshalb das Ende abschneiden.
+            // build the path to the parent and the extracted folder
             const folderPath: string = ('' + this.gateAddress).slice(0,-(zipEntries[0].entryName.length + 4));
             const unzippedFolderPath: string = ('' + this.gateAddress).slice(0,-4);
+            // extract the zip
             zipHandler.extractAllTo(folderPath, true);
             const responseData: object[] = [];
+            // parse the entries ...
             zipEntries.forEach((entry: IZipEntry) => {
-                switch (this.getFileType(entry.entryName)) {
+                // Supporting different file types
+                switch (ZIPGate.getFileType(entry.entryName)) {
                     case '.aml':
                         logger.info('There is a .aml file!');
                         break;
@@ -122,11 +113,12 @@ export class ZIPGate extends AFileSystemGate {
                         xmlGate.initialize(folderPath + '/' + entry.entryName);
                         xmlGate.receive({source: folderPath + '/' + entry.entryName}, (response: Response) => {
                             if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
-                                const content: {} = response.getContent();
-                                responseData.push(content);
+                                responseData.push(response.getContent());
+                                // Calling the callback in the last loop cycle
                                 if (entry == zipEntries[zipEntries.length-1]) {
                                     const response = this.responseVendor.buySuccessResponse();
                                     response.initialize('Success!', {data: responseData});
+                                    // delete the extracted data
                                     rimraf(unzippedFolderPath, function () {
                                         callback(response);
                                     })
@@ -144,9 +136,12 @@ export class ZIPGate extends AFileSystemGate {
         }
     }
 
-    private getFileType(fileName: string): string {
-        const fileEnding = fileName.slice(-4);
-        return fileEnding;
+    /**
+     * This function cuts of the last four characters of the input string. F. ex.: test.xml -> test
+     * @param fileName - The name of the file as String.
+     */
+    private static getFileType(fileName: string): string {
+        return fileName.slice(-4);
     }
 
     constructor() {
@@ -155,6 +150,10 @@ export class ZIPGate extends AFileSystemGate {
     }
 }
 
+/**
+ * Gates allows connections to other realms. Use Gates to connect to different data sources like MTP or TripleStore with
+ * a little API.
+ */
 export interface Gate {
     /**
      * Write data to the source via the gate.
