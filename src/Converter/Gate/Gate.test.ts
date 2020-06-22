@@ -11,7 +11,7 @@ describe('class: MockGate', () => {
     it('method: send()', () => {
         const instruction = {test: 'Test-Instruction for send()'}
         gate.send(instruction,(response) => {
-            expect(typeof response).is.equal(typeof new SuccessResponse());
+            expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
             const content: {test?: string} = response.getContent();
             expect(JSON.stringify(content)).is.equal(JSON.stringify(instruction));
         })
@@ -19,7 +19,7 @@ describe('class: MockGate', () => {
     it('method: receive()', () => {
         const instruction = {test: 'Test-Instruction for receive()'}
         gate.receive(instruction,(response) => {
-            expect(typeof response).is.equal(typeof new SuccessResponse());
+            expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
             const content: {test?: string} = response.getContent();
             expect(JSON.stringify(content)).is.equal(JSON.stringify(instruction));
         })
@@ -39,20 +39,22 @@ describe('class AMLGate', () => {
     })
     it('method: send()', () => {
         gate.send({},(response) => {
-            expect(typeof response).is.equal(typeof new ErrorResponse());
+            expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
             expect(response.getMessage()).is.equal('Not implemented yet!');
         })
     })
     describe('method: receive()', () => {
         it('base functionality', () => {
+            gate.initialize('test/Converter/test.aml');
             const xml2jsonTest = JSON.stringify({'test':{'title':{'value':'PiMAd-AML-Gate-Test'},'greeting':'Hello, World !'}});
             gate.receive({source: 'test/Converter/test.aml'},(response: Response) => {
                 const content: { data?: {}} = response.getContent();
-                expect(typeof response).is.equal(typeof new SuccessResponse());
+                expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
                 expect(JSON.stringify(content.data)).is.equal(xml2jsonTest);
             });
         })
         it('wrong path', () => {
+            gate.initialize('this/is/a/wrong/path');
             gate.receive({source: 'this/is/a/wrong/path'},(response: Response) => {
                 expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
             });
@@ -78,20 +80,21 @@ describe('class XMLGate', () => {
     })
     it('method: send()', () => {
         gate.send({},(response) => {
-            expect(typeof response).is.equal(typeof new ErrorResponse());
+            expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
             expect(response.getMessage()).is.equal('Not implemented yet!');
         })
     })
     it('method: receive()', () => {
+        // TODO: Do some refractor like AMLGate.
         const xml2jsonTest = JSON.stringify({'test':{'title':{'value':'PiMAd-XML-Gate-Test'},'greeting':'Hello, World !'}});
         gate.receive({source: 'test/Converter/test.xml'},(response: Response) => {
             // TODO: General way to go? Handle simple typing? Without modeling fucking a lot classes.
             const content: { data?: {}} = response.getContent();
-            expect(typeof response).is.equal(typeof new SuccessResponse());
+            expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
             expect(JSON.stringify(content.data)).is.equal(xml2jsonTest);
         });
         gate.receive({source: 'this/is/a/wrong/path'},(response: Response) => {
-            expect(typeof response).is.equal(typeof new ErrorResponse());
+            expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
         });
     })
     it('method: getGateAddress()', () => {
@@ -115,7 +118,7 @@ describe('class ZIPGate', () => {
     })
     it('method: send()', () => {
         gate.send({},(response) => {
-            expect(typeof response).is.equal(typeof new ErrorResponse());
+            expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
             expect(response.getMessage()).is.equal('Not implemented yet!');
         })
     })
