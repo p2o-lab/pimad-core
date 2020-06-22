@@ -1,8 +1,16 @@
 import {logger} from '../../Utils/Logger';
-import {Gate, MockGate, XMLGate, ZIPGate} from './Gate';
+import {AMLGate, Gate, MockGate, XMLGate, ZIPGate} from './Gate';
 
 abstract class AGateFactory implements GateFactory {
     abstract create(): Gate;
+}
+
+export class AMLGateFactory extends AGateFactory {
+    create(): Gate {
+        const gate = new AMLGate();
+        logger.debug(this.constructor.name + ' creates a ' + gate.constructor.name);
+        return gate;
+    }
 }
 
 export class MockGateFactory extends AGateFactory {
