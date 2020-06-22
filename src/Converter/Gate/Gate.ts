@@ -130,10 +130,8 @@ export class MTPGate extends AFileSystemGate {
 
 export class XMLGate extends AFileSystemGate {
 
-    receive(instructions: {
-        source: string; //TODO: Quatsch!!! Gibt doch ne GateAddresse!
-    }, callback: (response: Response) => void): void {
-        this.fileSystem.readFile(instructions.source, (error: NodeJS.ErrnoException | null, data: Buffer) => {
+    receive(instructions: object, callback: (response: Response) => void): void {
+        this.fileSystem.readFile('' + this.gateAddress, (error: NodeJS.ErrnoException | null, data: Buffer) => {
             if (!error) {
                 const json: {} = xml2jsonParser.toJson(data.toString(), {object: true});
                 const xmlGateResponse = this.responseVendor.buySuccessResponse();

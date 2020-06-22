@@ -126,7 +126,7 @@ describe('class XMLGate', () => {
         it('base functionality', () => {
             gate.initialize('test/Converter/test.xml');
             const xml2jsonTest = JSON.stringify({'test':{'title':{'value':'PiMAd-XML-Gate-Test'},'greeting':'Hello, World !'}});
-            gate.receive({source: 'test/Converter/test.xml'},(response: Response) => {
+            gate.receive({},(response: Response) => {
                 // TODO: General way to go? Handle simple typing? Without modeling fucking a lot classes.
                 const content: { data?: {}} = response.getContent();
                 expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
@@ -135,7 +135,7 @@ describe('class XMLGate', () => {
         })
         it('wrong path', () => {
             gate.initialize('this/is/a/wrong/path');
-            gate.receive({source: 'this/is/a/wrong/path'},(response: Response) => {
+            gate.receive({},(response: Response) => {
                 expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
             });
         })
