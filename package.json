@@ -45,7 +45,7 @@
     "nyc": "^15.0.1",
     "pino-pretty": "^4.0.0",
     "ts-node": "^8.9.0",
-    "typedoc": "^0.17.4",
+    "typedoc": "^0.17.7",
     "typescript": "^3.8.3",
     "PiMAd-types": "0.0.2-BE",
     "adm-zip": "^0.4.14",

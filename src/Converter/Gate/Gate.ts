@@ -7,6 +7,9 @@ import rimraf = require('rimraf');
 import {logger} from '../../Utils/Logger';
 import {IZipEntry} from 'adm-zip';
 
+/**
+ * AGate is an abstract implementation of the Gate-Interface. Mainly this one reduces the code.
+ */
 abstract class AGate implements Gate {
     protected initialized: boolean;
     protected gateAddress: string | undefined;
@@ -17,17 +20,21 @@ abstract class AGate implements Gate {
         this.gateAddress = undefined;
         this.responseVendor = new ResponseVendor();
     }
+    /** @inheritDoc */
     public send(instructions: object, callback: (response: Response) => void): void {
         const localResponse = this.responseVendor.buyErrorResponse()
         localResponse.initialize('Not implemented yet!', {})
         callback(localResponse)
     };
+    /** @inheritDoc */
     abstract receive(instructions: object, callback: (response: Response) => void): void;
     /*abstract open(): Response;
     abstract close(): Response;*/
+    /** @inheritDoc */
     getGateAddress(): string | undefined {
         return this.gateAddress;
     };
+    /** @inheritDoc */
     initialize(address: string): boolean {
         if (!this.initialized) {
             this.gateAddress = address;
@@ -39,6 +46,9 @@ abstract class AGate implements Gate {
     };
 }
 
+/**
+ * An AFileSystemGate allows the access to the local file system.
+ */
 abstract class AFileSystemGate extends AGate {
     protected fileSystem = fileSystem;
 
@@ -55,6 +65,9 @@ abstract class AFileSystemGate extends AGate {
     }
 }
 
+/**
+ * A AMLGate is an abstraction layer to interact with AML-Files.
+ */
 export class AMLGate extends AFileSystemGate {
     private xmlGateFactory: XMLGateFactory;
 
@@ -87,6 +100,9 @@ export class AMLGate extends AFileSystemGate {
     }
 }
 
+/**
+ * A MockGate let test your implementation and converter logic. It has no relevant function.
+ */
 export class MockGate extends AGate {
 
     send(instructions: object, callback: (response: Response) => void): void {
@@ -113,6 +129,9 @@ export class MockGate extends AGate {
     }
 }
 
+/**
+ * A MTPGate is an abstraction layer to interact with MTP-Archives.
+ */
 export class MTPGate extends AFileSystemGate {
     private zipGateFactory: ZIPGateFactory;
     receive(instructions: object, callback: (response: Response) => void): void {
@@ -143,6 +162,9 @@ export class MTPGate extends AFileSystemGate {
     }
 }
 
+/**
+ * A XMLGate is an abstraction layer to interact with XML-Files.
+ */
 export class XMLGate extends AFileSystemGate {
 
     receive(instructions: object, callback: (response: Response) => void): void {
@@ -168,10 +190,14 @@ export class XMLGate extends AFileSystemGate {
     };
 }
 
+/**
+ * A ZIPGate is an abstraction layer to interact with ZIP-Archives.
+ */
 export class ZIPGate extends AFileSystemGate {
     private xmlGateFactory: XMLGateFactory;
     private amlGateFactory: AMLGateFactory;
 
+    /** @inheritDoc */
     receive(instructions: object, callback: (response: Response) => void): void {
         if(this.initialized) {
             const zipHandler = new AdmZip(this.gateAddress);
@@ -251,7 +277,7 @@ export class ZIPGate extends AFileSystemGate {
 
 /**
  * Gates allows connections to other realms. Use Gates to connect to different data sources like MTP or TripleStore with
- * a little API.
+ * a little API. Every Gate needs an initialisation via initialize() to work in proper manner.
  */
 export interface Gate {
     /**
@@ -269,6 +295,16 @@ export interface Gate {
     // TODO: What to do with open()/close() ???
     //open(): Response;
     //close(): Response;
+    /**
+     * Get the address of the gate.
+     * @return Returns the address of the gate.
+     */
     getGateAddress(): string | undefined;
+
+    /**
+     * Initialize the gate. The gates won't work without initialisation.
+     * @param address The address of the Gate.
+     * @return A successful initialisation returns a true. A bad one returns a false.
+     */
     initialize(address: string): boolean;
 }
