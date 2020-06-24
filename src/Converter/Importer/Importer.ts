@@ -1,7 +1,7 @@
-import {Response, ResponseVendor} from '../Backbone/Response';
-import {Gate} from './Gate/Gate';
-import {logger} from '../Utils/Logger';
-import {BasicSemanticVersion, SemanticVersion} from '../Backbone/SemanticVersion';
+import {Response, ResponseVendor} from '../../Backbone/Response';
+import {Gate} from '../Gate/Gate';
+import {logger} from '../../Utils/Logger';
+import {BasicSemanticVersion, SemanticVersion} from '../../Backbone/SemanticVersion';
 
 abstract class AImporter implements  Importer {
 

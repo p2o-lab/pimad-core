@@ -1,6 +1,6 @@
 import {Response, ResponseVendor} from '../Backbone/Response';
 import {PEA} from '../ModuleAutomation/PEA';
-import {Importer} from '../Converter/Importer';
+import {Importer} from '../Converter/Importer/Importer';
 import {logger} from '../Utils/Logger';
 
 abstract class APEAPool implements PEAPool {

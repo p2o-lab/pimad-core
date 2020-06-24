@@ -1,7 +1,7 @@
 import {expect} from 'chai';
 import {LastChainElementImporterFactory, LastChainLinkImporter} from './Importer';
-import {ErrorResponse, Response} from '../Backbone/Response';
-import {BasicSemanticVersion} from '../Backbone/SemanticVersion';
+import {ErrorResponse, Response} from '../../Backbone/Response';
+import {BasicSemanticVersion} from '../../Backbone/SemanticVersion';
 
 describe('class: LastChainElementImporter', () => {
     let importer: LastChainLinkImporter;
