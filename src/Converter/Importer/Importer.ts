@@ -81,7 +81,7 @@ export class MTPFreeze202001Importer extends AImporter {
                 callback: (response: Response) => void) {
         if(this.initialized) {
             // Instructions
-            if(instructions.source != undefined) {
+            /*if(instructions.source != undefined) {
                 // data source access
                 switch (instructions.source.slice(-4)) {
                     case '.aml':
@@ -120,8 +120,10 @@ export class MTPFreeze202001Importer extends AImporter {
                 this.nextImporter?.convertFrom(instructions, response => {
                     callback(response);
                 })
-            }
-
+            }*/
+            this.followInstructions(instructions, (response => {
+                callback(response);
+            }))
             // TODO: ALL THE Parsing logic!
             //callback(this.responseVendor.buyErrorResponse())
         } else {
@@ -132,11 +134,51 @@ export class MTPFreeze202001Importer extends AImporter {
         }
     }
 
-    /*private followInstructions(instructions: {source: string}, callback: (response: Response) => void) {
-
+    private followInstructions(instructions: {source: string}, callback: (response: Response) => void) {
+        // Instructions
+        if(instructions.source != undefined) {
+            // data source access
+            switch (instructions.source.slice(-4)) {
+                case '.aml':
+                    const amlGate = this.amlGateFactory.create();
+                    amlGate.initialize(instructions.source);
+                    amlGate.receive({}, response => {
+                        callback(response);
+                    })
+                    break;
+                case '.mtp':
+                    const mtpGate = this.mtpGateFactory.create();
+                    mtpGate.initialize(instructions.source);
+                    mtpGate.receive({}, response => {
+                        callback(response);
+                    })
+                    break;
+                case '.xml':
+                    const xmlGate = this.xmlGateFactory.create();
+                    xmlGate.initialize(instructions.source);
+                    xmlGate.receive({}, response => {
+                        callback(response);
+                    })
+                    break;
+                case '.zip':
+                    const zipGate = this.zipGateFactory.create();
+                    zipGate.initialize(instructions.source);
+                    zipGate.receive({}, response => {
+                        callback(response);
+                    })
+                    break;
+                default:
+                    callback(this.responseVendor.buyErrorResponse())
+                    break;
+            }
+        } else {
+            this.nextImporter?.convertFrom(instructions, response => {
+                callback(response);
+            })
+        }
     }
 
-    private checkInformationModel(data: object, callback: (response: Response) => void) {
+    /*private checkInformationModel(data: object, callback: (response: Response) => void) {
 
     }*/
 
