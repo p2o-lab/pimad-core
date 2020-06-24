@@ -3,7 +3,7 @@ import {Response, ResponseVendor} from '../../Backbone/Response';
 abstract class AImporterPart implements ImporterPart {
     protected responseVendor: ResponseVendor
 
-    convertFrom(data: object, callback: (response: Response) => void) {
+    convertFrom(data: object, callback: (response: Response) => void): void {
         const localResponse = this.responseVendor.buyErrorResponse()
         localResponse.initialize('Not implemented yet!', {})
         callback(localResponse)

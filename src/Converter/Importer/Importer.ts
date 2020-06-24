@@ -1,5 +1,4 @@
 import {Response, ResponseVendor} from '../../Backbone/Response';
-import {Gate} from '../Gate/Gate';
 import {logger} from '../../Utils/Logger';
 import {BasicSemanticVersion, SemanticVersion} from '../../Backbone/SemanticVersion';
 import {HMIPart, ImporterPart, MTPPart, ServicePart, TextPart} from './ImporterPart';
@@ -78,7 +77,7 @@ export class MTPFreeze202001Importer extends AImporter {
     private zipGateFactory: ZIPGateFactory;
 
     convertFrom(instructions: {source: string},
-                callback: (response: Response) => void) {
+                callback: (response: Response) => void): void {
         if(this.initialized) {
             //
             this.followInstructions(instructions, response => {
@@ -97,7 +96,7 @@ export class MTPFreeze202001Importer extends AImporter {
      * @param instructions
      * @param callback
      */
-    private followInstructions(instructions: {source: string}, callback: (response: Response) => void) {
+    private followInstructions(instructions: {source: string}, callback: (response: Response) => void): void {
         // Instructions
         if(instructions.source != undefined) {
             // data source access
@@ -141,11 +140,11 @@ export class MTPFreeze202001Importer extends AImporter {
         }
     }
 
-    /*private checkInformationModel(data: object, callback: (response: Response) => void) {
+    /*private checkInformationModel(data: object, callback: (response: Response) => void): void {
         //TODO: Next step!
     }
 
-    private convert(data: object, callback: (response: Response) => void) {
+    private convert(data: object, callback: (response: Response) => void): void {
         //TODO: Second step!
     }*/
 
