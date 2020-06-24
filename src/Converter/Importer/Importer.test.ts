@@ -30,24 +30,27 @@ describe('class: MTPFreeze202001Importer', () => {
         importer = new MTPFreeze202001Importer();
     });
     describe('method: convertFrom()', () => {
-        it('base functionality', () => {
+        it('base functionality', (done) => {
             const lastChainLinkImporter = new LastChainLinkImporter()
             importer.initialize(lastChainLinkImporter);
-            importer.convertFrom({}, response => {
+            importer.convertFrom({source: ''}, response => {
                 expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name);
+                done();
             })
         });
-        it('without initialization', () => {
-            importer.convertFrom({}, response => {
+        it('without initialization', (done) => {
+            importer.convertFrom({source: ''}, response => {
                 expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name);
                 expect(response.getMessage()).is.equal('The Importer is not initialized yet! Aborting ... ');
+                done()
             })
         })
     })
     describe('method: initialize()', () => {
         it('base functionality', () => {
-            const lastChainLinkImporter = new LastChainLinkImporter()
+            let lastChainLinkImporter = new LastChainLinkImporter()
             expect(importer.initialize(lastChainLinkImporter)).is.true;
+            lastChainLinkImporter = new LastChainLinkImporter()
             expect(importer.initialize(lastChainLinkImporter)).is.false;
         })
     });

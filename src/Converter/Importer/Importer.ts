@@ -6,7 +6,6 @@ import {HMIPart, ImporterPart, MTPPart, ServicePart, TextPart} from './ImporterP
 
 abstract class AImporter implements  Importer {
 
-    protected gate: Gate[];
     protected initialized: boolean;
     protected metaModelVersion: SemanticVersion;
     protected nextImporter: Importer | undefined;
@@ -14,7 +13,6 @@ abstract class AImporter implements  Importer {
 
     constructor() {
         this.initialized = false;
-        this.gate = []
         this.metaModelVersion = new BasicSemanticVersion();
         this.nextImporter = undefined;
         this.responseVendor = new ResponseVendor();
@@ -73,10 +71,21 @@ export class MTPFreeze202001Importer extends AImporter {
     private mtpPart: ImporterPart;
     private textPart: ImporterPart;
 
-    convertFrom(instructions: object, callback: (response: Response) => void) {
+    convertFrom(instructions: {source: string},
+                callback: (response: Response) => void) {
         if(this.initialized) {
+            // Instructions
+            if(instructions.source != undefined) {
+                // data source access
+                callback(this.responseVendor.buyErrorResponse())
+            } else {
+                this.nextImporter?.convertFrom(instructions, response => {
+                    callback(response);
+                })
+            }
+
             // TODO: ALL THE Parsing logic!
-            callback(this.responseVendor.buyErrorResponse())
+            //callback(this.responseVendor.buyErrorResponse())
         } else {
             const notInitialized = this.responseVendor.buyErrorResponse();
             logger.error('Use of a non-initialized MTPFreeze202001Importer. This one rejects the Request!');
@@ -84,15 +93,15 @@ export class MTPFreeze202001Importer extends AImporter {
             callback(notInitialized)
         }
     }
-    initialize(nextImporter: Importer): boolean {
+    /*initialize(nextImporter: Importer): boolean {
         if (!this.initialized) {
             this.nextImporter = nextImporter;
-            this.initialized = (this.nextImporter == nextImporter);
+            this.initialized = (this.nextImporter === nextImporter);
             return this.initialized
         } else {
             return false;
         }
-    }
+    } */
     constructor() {
         super();
         this.servicePart = new ServicePart();
