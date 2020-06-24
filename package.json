@@ -52,7 +52,6 @@
     "rimraf": "^3.0.2"
   },
   "dependencies": {
-    "@types/fs-extra": "^9.0.1",
     "pino": "^6.2.1",
     "rxjs": "^6.5.5",
     "xml2json": "^0.12.0"
