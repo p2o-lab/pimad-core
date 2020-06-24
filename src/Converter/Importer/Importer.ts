@@ -2,6 +2,7 @@ import {Response, ResponseVendor} from '../../Backbone/Response';
 import {Gate} from '../Gate/Gate';
 import {logger} from '../../Utils/Logger';
 import {BasicSemanticVersion, SemanticVersion} from '../../Backbone/SemanticVersion';
+import {HMIPart, ImporterPart, MTPPart, ServicePart, TextPart} from './ImporterPart';
 
 abstract class AImporter implements  Importer {
 
@@ -55,7 +56,7 @@ export class LastChainLinkImporter extends AImporter {
      */
     initialize(nextImporter: Importer | undefined): boolean {
         if (!this.initialized) {
-            if(nextImporter == undefined) {
+            if(nextImporter != undefined) {
                 logger.warn('You pass an Importer to a LastChainLinkImporter. That is not necessary. Use undefined instead.');
             }
             this.initialized = true;
@@ -64,6 +65,41 @@ export class LastChainLinkImporter extends AImporter {
             return false;
         }
     };
+}
+
+export class MTPFreeze202001Importer extends AImporter {
+    private servicePart: ImporterPart;
+    private hmiPart: ImporterPart;
+    private mtpPart: ImporterPart;
+    private textPart: ImporterPart;
+
+    convertFrom(instructions: object, callback: (response: Response) => void) {
+        if(this.initialized) {
+            // TODO: ALL THE Parsing logic!
+            callback(this.responseVendor.buyErrorResponse())
+        } else {
+            const notInitialized = this.responseVendor.buyErrorResponse();
+            logger.error('Use of a non-initialized MTPFreeze202001Importer. This one rejects the Request!');
+            notInitialized.initialize('The Importer is not initialized yet! Aborting ... ', {})
+            callback(notInitialized)
+        }
+    }
+    initialize(nextImporter: Importer): boolean {
+        if (!this.initialized) {
+            this.nextImporter = nextImporter;
+            this.initialized = (this.nextImporter == nextImporter);
+            return this.initialized
+        } else {
+            return false;
+        }
+    }
+    constructor() {
+        super();
+        this.servicePart = new ServicePart();
+        this.hmiPart = new HMIPart();
+        this.mtpPart = new MTPPart();
+        this.textPart = new TextPart();
+    }
 }
 
 export interface Importer {
