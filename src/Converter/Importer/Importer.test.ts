@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 import {LastChainElementImporterFactory, LastChainLinkImporter, MTPFreeze202001Importer} from './Importer';
-import {ErrorResponse, Response} from '../../Backbone/Response';
+import {ErrorResponse, Response, SuccessResponse} from '../../Backbone/Response';
 import {BasicSemanticVersion} from '../../Backbone/SemanticVersion';
 
 describe('class: LastChainElementImporter', () => {
@@ -30,7 +30,7 @@ describe('class: MTPFreeze202001Importer', () => {
         importer = new MTPFreeze202001Importer();
     });
     describe('method: convertFrom()', () => {
-        it('base functionality', (done) => {
+        it('default', (done) => {
             const lastChainLinkImporter = new LastChainLinkImporter()
             importer.initialize(lastChainLinkImporter);
             importer.convertFrom({source: ''}, response => {
@@ -38,6 +38,59 @@ describe('class: MTPFreeze202001Importer', () => {
                 done();
             })
         });
+        it('AML', (done) => {
+            const lastChainLinkImporter = new LastChainLinkImporter()
+            importer.initialize(lastChainLinkImporter);
+            importer.convertFrom({source: 'test/Converter/test.aml'}, response => {
+                expect(response.constructor.name).is.equal((new SuccessResponse()).constructor.name);
+                done();
+            })
+        });
+        describe('MTP', () => {
+            it('MTP-AML', (done) => {
+                const lastChainLinkImporter = new LastChainLinkImporter()
+                importer.initialize(lastChainLinkImporter);
+                importer.convertFrom({source: 'test/Converter/test-aml.mtp'}, response => {
+                    expect(response.constructor.name).is.equal((new SuccessResponse()).constructor.name);
+                    done();
+                })
+            });
+            it('MTP-XML', (done) => {
+                const lastChainLinkImporter = new LastChainLinkImporter()
+                importer.initialize(lastChainLinkImporter);
+                importer.convertFrom({source: 'test/Converter/test-xml.mtp'}, response => {
+                    expect(response.constructor.name).is.equal((new SuccessResponse()).constructor.name);
+                    done();
+                })
+            });
+        });
+        it('XML', (done) => {
+            const lastChainLinkImporter = new LastChainLinkImporter()
+            importer.initialize(lastChainLinkImporter);
+            importer.convertFrom({source: 'test/Converter/test.xml'}, response => {
+                expect(response.constructor.name).is.equal((new SuccessResponse()).constructor.name);
+                done();
+            })
+        });
+        describe('ZIP', () => {
+            it('ZIP-AML', (done) => {
+                const lastChainLinkImporter = new LastChainLinkImporter()
+                importer.initialize(lastChainLinkImporter);
+                importer.convertFrom({source: 'test/Converter/test-aml.zip'}, response => {
+                    expect(response.constructor.name).is.equal((new SuccessResponse()).constructor.name);
+                    done();
+                })
+            });
+            it('ZIP-XML', (done) => {
+                const lastChainLinkImporter = new LastChainLinkImporter()
+                importer.initialize(lastChainLinkImporter);
+                importer.convertFrom({source: 'test/Converter/test-xml.zip'}, response => {
+                    expect(response.constructor.name).is.equal((new SuccessResponse()).constructor.name);
+                    done();
+                })
+            });
+        })
+
         it('without initialization', (done) => {
             importer.convertFrom({source: ''}, response => {
                 expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name);

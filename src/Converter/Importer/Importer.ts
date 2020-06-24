@@ -3,6 +3,7 @@ import {Gate} from '../Gate/Gate';
 import {logger} from '../../Utils/Logger';
 import {BasicSemanticVersion, SemanticVersion} from '../../Backbone/SemanticVersion';
 import {HMIPart, ImporterPart, MTPPart, ServicePart, TextPart} from './ImporterPart';
+import {AMLGateFactory, MTPGateFactory, XMLGateFactory, ZIPGateFactory} from '../Gate/GateFactory';
 
 abstract class AImporter implements  Importer {
 
@@ -70,6 +71,11 @@ export class MTPFreeze202001Importer extends AImporter {
     private hmiPart: ImporterPart;
     private mtpPart: ImporterPart;
     private textPart: ImporterPart;
+    // Factories
+    private amlGateFactory: AMLGateFactory;
+    private mtpGateFactory: MTPGateFactory;
+    private xmlGateFactory: XMLGateFactory;
+    private zipGateFactory: ZIPGateFactory;
 
     convertFrom(instructions: {source: string},
                 callback: (response: Response) => void) {
@@ -77,7 +83,39 @@ export class MTPFreeze202001Importer extends AImporter {
             // Instructions
             if(instructions.source != undefined) {
                 // data source access
-                callback(this.responseVendor.buyErrorResponse())
+                switch (instructions.source.slice(-4)) {
+                    case '.aml':
+                        const amlGate = this.amlGateFactory.create();
+                        amlGate.initialize(instructions.source);
+                        amlGate.receive({}, response => {
+                            callback(response);
+                        })
+                        break;
+                    case '.mtp':
+                        const mtpGate = this.mtpGateFactory.create();
+                        mtpGate.initialize(instructions.source);
+                        mtpGate.receive({}, response => {
+                            callback(response);
+                        })
+                        break;
+                    case '.xml':
+                        const xmlGate = this.xmlGateFactory.create();
+                        xmlGate.initialize(instructions.source);
+                        xmlGate.receive({}, response => {
+                            callback(response);
+                        })
+                        break;
+                    case '.zip':
+                        const zipGate = this.zipGateFactory.create();
+                        zipGate.initialize(instructions.source);
+                        zipGate.receive({}, response => {
+                            callback(response);
+                        })
+                        break;
+                    default:
+                        callback(this.responseVendor.buyErrorResponse())
+                        break;
+                }
             } else {
                 this.nextImporter?.convertFrom(instructions, response => {
                     callback(response);
@@ -93,21 +131,27 @@ export class MTPFreeze202001Importer extends AImporter {
             callback(notInitialized)
         }
     }
-    /*initialize(nextImporter: Importer): boolean {
-        if (!this.initialized) {
-            this.nextImporter = nextImporter;
-            this.initialized = (this.nextImporter === nextImporter);
-            return this.initialized
-        } else {
-            return false;
-        }
-    } */
+
+    /*private followInstructions(instructions: {source: string}, callback: (response: Response) => void) {
+
+    }
+
+    private checkInformationModel(data: object, callback: (response: Response) => void) {
+
+    }*/
+
     constructor() {
         super();
         this.servicePart = new ServicePart();
         this.hmiPart = new HMIPart();
         this.mtpPart = new MTPPart();
         this.textPart = new TextPart();
+        // Factories
+        this.amlGateFactory = new AMLGateFactory();
+        this.mtpGateFactory = new MTPGateFactory();
+        this.xmlGateFactory = new XMLGateFactory();
+        this.zipGateFactory = new ZIPGateFactory();
+
     }
 }
 
