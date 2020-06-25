@@ -38,14 +38,18 @@ describe('class: MTPFreeze202001Importer', () => {
                 done();
             })
         });
-        it('AML', (done) => {
-            const lastChainLinkImporter = new LastChainLinkImporter()
-            importer.initialize(lastChainLinkImporter);
-            importer.convertFrom({source: 'test/Converter/test.aml'}, response => {
-                expect(response.constructor.name).is.equal((new SuccessResponse()).constructor.name);
-                done();
-            })
-        });
+        describe('AML', () => {
+            it('fake CAEX', (done) => {
+                const lastChainLinkImporter = new LastChainLinkImporter()
+                importer.initialize(lastChainLinkImporter);
+                const source = 'test/Converter/test.aml';
+                importer.convertFrom({source: source}, response => {
+                    expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name);
+                    expect(response.getMessage()).is.equal('The File at ' + source + ' is not valid CAEX!')
+                    done();
+                })
+            });
+        })
         describe('MTP', () => {
             it('MTP-AML', (done) => {
                 const lastChainLinkImporter = new LastChainLinkImporter()

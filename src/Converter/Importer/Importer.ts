@@ -3,7 +3,7 @@ import {logger} from '../../Utils/Logger';
 import {BasicSemanticVersion, SemanticVersion} from '../../Backbone/SemanticVersion';
 import {HMIPart, ImporterPart, MTPPart, ServicePart, TextPart} from './ImporterPart';
 import {AMLGateFactory, MTPGateFactory, XMLGateFactory, ZIPGateFactory} from '../Gate/GateFactory';
-import {response} from 'express';
+import {CAEXFile, InstanceHierarchy} from 'PiMAd-types';
 
 abstract class AImporter implements  Importer {
 
@@ -106,9 +106,17 @@ export class MTPFreeze202001Importer extends AImporter {
                     const amlGate = this.amlGateFactory.create();
                     amlGate.initialize(instructions.source);
                     amlGate.receive({}, response => {
-                        this.checkInformationModel(response.getContent(), checkIMResponse => {
-                            callback(checkIMResponse);
-                        })
+                        //TODO: Fix that in Gate.ts
+                        const caexFile: { data?: {CAEXFile: CAEXFile}} = response.getContent();
+                        if(caexFile.data?.CAEXFile != undefined) {
+                            this.checkInformationModel(caexFile.data.CAEXFile, checkIMResponse => {
+                                callback(checkIMResponse);
+                            })
+                        } else {
+                            const followInstructionResponse = this.responseVendor.buyErrorResponse()
+                            followInstructionResponse.initialize('The File at ' + instructions.source + ' is not valid CAEX!', {})
+                            callback(followInstructionResponse)
+                        }
                     })
                     break;
                 case '.mtp':
@@ -143,14 +151,33 @@ export class MTPFreeze202001Importer extends AImporter {
         }
     }
 
-    private checkInformationModel(data: object, callback: (response: Response) => void): void {
-
-        callback(this.responseVendor.buySuccessResponse());
+    /** Uff... actually there is no real possibility to check IM of MTP. Missing SemVer. Therefore passing to the
+     * next stage.
+     * @param data
+     * @param callback
+     */
+    private checkInformationModel(data: CAEXFile, callback: (response: Response) => void): void {
+        this.convert(data, response => {
+            callback(response)
+        })
     }
 
-    /*private convert(data: object, callback: (response: Response) => void): void {
-        //TODO: Second step!
-    }*/
+    private convert(data: CAEXFile, callback: (response: Response) => void): void {
+        // Now the parsing starts...
+        //logger.info(data.InstanceHierarchy.length.toString());
+        data.InstanceHierarchy.forEach((instance: InstanceHierarchy) => {
+            switch (instance.constructor.name) {
+                case 'ModuleTypePackage':
+                    const importerPart: MTPPart = new MTPPart();
+                    break;
+                default:
+                    break;
+            }
+            if (instance == data.InstanceHierarchy[data.InstanceHierarchy.length-1]) {
+                callback(this.responseVendor.buySuccessResponse());
+            }
+        })
+    }
 
     constructor() {
         super();
