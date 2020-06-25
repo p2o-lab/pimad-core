@@ -3,6 +3,7 @@ import {logger} from '../../Utils/Logger';
 import {BasicSemanticVersion, SemanticVersion} from '../../Backbone/SemanticVersion';
 import {HMIPart, ImporterPart, MTPPart, ServicePart, TextPart} from './ImporterPart';
 import {AMLGateFactory, MTPGateFactory, XMLGateFactory, ZIPGateFactory} from '../Gate/GateFactory';
+import {response} from 'express';
 
 abstract class AImporter implements  Importer {
 
@@ -105,7 +106,9 @@ export class MTPFreeze202001Importer extends AImporter {
                     const amlGate = this.amlGateFactory.create();
                     amlGate.initialize(instructions.source);
                     amlGate.receive({}, response => {
-                        callback(response);
+                        this.checkInformationModel(response.getContent(), checkIMResponse => {
+                            callback(checkIMResponse);
+                        })
                     })
                     break;
                 case '.mtp':
@@ -140,11 +143,12 @@ export class MTPFreeze202001Importer extends AImporter {
         }
     }
 
-    /*private checkInformationModel(data: object, callback: (response: Response) => void): void {
-        //TODO: Next step!
+    private checkInformationModel(data: object, callback: (response: Response) => void): void {
+
+        callback(this.responseVendor.buySuccessResponse());
     }
 
-    private convert(data: object, callback: (response: Response) => void): void {
+    /*private convert(data: object, callback: (response: Response) => void): void {
         //TODO: Second step!
     }*/
 
