@@ -8,7 +8,7 @@ describe('class: MTPPart', () => {
         part = new MTPPart();
     })
     it('method: convertFrom()', () => {
-        part.convertFrom({},(response) => {
+        part.extract({},(response) => {
             expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
             expect(response.getMessage()).is.equal('Not implemented yet!');
         })
@@ -21,7 +21,7 @@ describe('class: HMIPart', () => {
         part = new HMIPart();
     })
     it('method: convertFrom()', () => {
-        part.convertFrom({},(response) => {
+        part.extract({},(response) => {
             expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
             expect(response.getMessage()).is.equal('Not implemented yet!');
         })
@@ -34,7 +34,7 @@ describe('class: TextPart', () => {
         part = new TextPart();
     })
     it('method: convertFrom()', () => {
-        part.convertFrom({},(response) => {
+        part.extract({},(response) => {
             expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
             expect(response.getMessage()).is.equal('Not implemented yet!');
         })
@@ -47,7 +47,7 @@ describe('class: ServicePart', () => {
         part = new ServicePart();
     })
     it('method: convertFrom()', () => {
-        part.convertFrom({},(response) => {
+        part.extract({},(response) => {
             expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
             expect(response.getMessage()).is.equal('Not implemented yet!');
         })
