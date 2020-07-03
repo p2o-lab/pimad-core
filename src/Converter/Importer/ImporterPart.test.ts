@@ -1,7 +1,8 @@
 import {expect} from 'chai';
 import {HMIPart, MTPPart, ServicePart, TextPart} from './ImporterPart';
-import {ErrorResponse} from '../../Backbone/Response';
+import {ErrorResponse, SuccessResponse} from '../../Backbone/Response';
 import * as communicationsSetData from '../../../test/Converter/testdata-CommunicationSet-parser-logic.json';
+import {OPCUAServerCommunication} from '../../ModuleAutomation/CommunicationInterfaceData';
 
 describe('class: MTPPart', () => {
     let part = new MTPPart();
@@ -10,8 +11,15 @@ describe('class: MTPPart', () => {
     })
     it('method: extract()', () => {
         part.extract({CommunicationSet: communicationsSetData, HMISet: {}, ServiceSet: {}, TextSet: {}},(response) => {
-            expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
-            expect(response.getMessage()).is.equal('Not implemented yet!');
+            expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
+            const testData: {CommunicationInterfaceData?: OPCUAServerCommunication[]} = response.getContent();
+            if (testData.CommunicationInterfaceData == undefined) {
+                testData.CommunicationInterfaceData = [];
+            }
+            expect(testData.CommunicationInterfaceData?.length).is.equal(1);
+            const serverEndpoint: {name?: string; serverURL?: string} = testData.CommunicationInterfaceData[0].getDescription();
+            expect(serverEndpoint.name).is.equal('Test Control Engine OPC UA Server');
+            expect(serverEndpoint.serverURL).is.equal('opc.tcp://127.0.0.1:4840');
         })
     })
 });
