@@ -28,7 +28,7 @@ export class HMIPart extends AImporterPart {
 export class MTPPart extends AImporterPart {
     private opcuaServerCommunicationFactory: CommunicationInterfaceDataFactory;
 
-    extract(data: {CommunicationSet: object, HMISet: object, ServiceSet: object, TextSet: object}, callback: (response: Response) => void): void {
+    extract(data: {CommunicationSet: object[], HMISet: object, ServiceSet: object, TextSet: object}, callback: (response: Response) => void): void {
         const communicationSet = this.extractCommunicationSet(data.CommunicationSet);
         super.extract(data, callback);
     }
@@ -37,13 +37,42 @@ export class MTPPart extends AImporterPart {
      * Extract the CommunicationSet
      * @param data
      */
-    private extractCommunicationSet(data: {}): {
-        CommunicationInterfaceData: CommunicationInterfaceData,
+    private extractCommunicationSet(data: object[]): {
+        CommunicationInterfaceData: CommunicationInterfaceData[],
         DataAssemblies: DataAssembly[]
     }  {
-        let communicationInterfaceData = this.opcuaServerCommunicationFactory.create();
+        let communicationInterfaceData: CommunicationInterfaceData[] = [];
         let dataAssemblies: DataAssembly[] = []
 
+        data.forEach((element: {RefBaseSystemUnitPath?: string, InternalElement?: object[]}) => {
+            if(element.InternalElement == undefined) {
+                element.InternalElement = []
+            }
+            switch (element.RefBaseSystemUnitPath) {
+                case 'MTPSUCLib/CommunicationSet/SourceList':
+                    if(!(Array.isArray(element.InternalElement))) {
+                        element.InternalElement = [element.InternalElement]
+                    }
+                    element.InternalElement?.forEach((source: {Name?: string, RefBaseSystemUnitPath?: string, Attribute?: {Name: string, AttributeDataType: string, Value: string}}) => {
+                        switch (source.RefBaseSystemUnitPath) {
+                            case 'MTPCommunicationSUCLib/ServerAssembly/OPCUAServer':
+                                const localeComIntData = this.opcuaServerCommunicationFactory.create()
+                                if(localeComIntData.initialize({name: source.Name, serverURL: source.Attribute?.Value})) {
+                                    communicationInterfaceData.push(localeComIntData)
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    })
+                    break;
+                case 'MTPSUCLib/CommunicationSet/InstanceList':
+                    break;
+                default:
+                    break;
+
+            }
+        })
         return {
             CommunicationInterfaceData: communicationInterfaceData,
             DataAssemblies: dataAssemblies
