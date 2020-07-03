@@ -5,7 +5,8 @@
     "declaration": true,
     "outDir": "./build",
     "strict": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true
   },
   "include": ["src"],
   "exclude": ["node_modules", "**/__tests__/*"]
