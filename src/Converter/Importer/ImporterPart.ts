@@ -43,6 +43,7 @@ export class MTPPart extends AImporterPart {
     }  {
         let communicationInterfaceData: CommunicationInterfaceData[] = [];
         let dataAssemblies: DataAssembly[] = []
+        let externalInterfaces: {Name: string, ID: string, RefBaseClassPath: string, Attribute: {Name: string, AttributeDataType: string, Value: string}[]}[] = []
 
         data.forEach((element: {RefBaseSystemUnitPath?: string, InternalElement?: object[]}) => {
             if(element.InternalElement == undefined) {
@@ -60,6 +61,7 @@ export class MTPPart extends AImporterPart {
                                 if(localeComIntData.initialize({name: source.Name, serverURL: source.Attribute?.Value})) {
                                     communicationInterfaceData.push(localeComIntData)
                                 }
+                                // parse the external Interface stuff
                                 break;
                             default:
                                 break;
