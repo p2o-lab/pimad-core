@@ -3,7 +3,7 @@ import {
     BasePEAPoolFactory,
     PEAPoolVendor
 } from './PEAPool';
-import {LastChainElementImporterFactory} from '../Converter/Importer'
+import {LastChainElementImporterFactory} from '../Converter/Importer/Importer'
 
 import {expect} from 'chai';
 import {ErrorResponse} from '../Backbone/Response';
