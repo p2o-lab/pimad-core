@@ -51,7 +51,7 @@ export class MTPPart extends AImporterPart {
     }  {
         const communicationInterfaceData: CommunicationInterfaceData[] = [];
         const dataAssemblies: DataAssembly[] = [];
-        //let externalInterfaces: {Name: string, ID: string, RefBaseClassPath: string, Attribute: {Name: string, AttributeDataType: string, Value: string}[]}[] = [];
+        const localExternalInterfaces: {Name: string; ID: string; RefBaseClassPath: string; Attribute: {Name: string; AttributeDataType: string; Value: string}[]}[] = [];
 
         communicationSet.forEach((element: {RefBaseSystemUnitPath?: string; InternalElement?: object[]}) => {
             if(element.InternalElement == undefined) {
@@ -76,7 +76,10 @@ export class MTPPart extends AImporterPart {
                                 const localeComIntData = this.opcuaServerCommunicationFactory.create();
                                 if(localeComIntData.initialize({name: source.Name, serverURL: source.Attribute?.Value})) {
                                     communicationInterfaceData.push(localeComIntData);
+                                } else {
+                                    // TODO: Missing error handling
                                 }
+
                                 // parse the external Interface stuff
                                 break;
                             default:
