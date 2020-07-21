@@ -199,7 +199,7 @@ export class ZIPGate extends AFileSystemGate {
     private xmlGateFactory: XMLGateFactory;
     private amlGateFactory: AMLGateFactory;
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     receive(instructions: object, callback: (response: Response) => void): void {
         if(this.initialized) {
             const zipHandler = new AdmZip(this.gateAddress);
