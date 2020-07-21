@@ -4,8 +4,9 @@ import {
     OPCUAServerCommunicationFactory
 } from '../../ModuleAutomation/CommunicationInterfaceData';
 import {Actuator, DataAssembly, DataAssemblyFactory, Sensor} from '../../ModuleAutomation/DataAssembly';
-import { DataItemInstanceList, DataItemSourceList } from 'AML';
+import { DataItemInstanceList, DataItemSourceList, DataItemSourceListExternalInterface } from 'AML';
 import { InstanceList, SourceList } from 'PiMAd-types';
+import {logger} from '../../Utils/Logger';
 
 abstract class AImporterPart implements ImporterPart {
     protected responseVendor: ResponseVendor
@@ -53,7 +54,7 @@ export class MTPPart extends AImporterPart {
     }  {
         const communicationInterfaceData: CommunicationInterfaceData[] = [];
         const dataAssemblies: DataAssembly[] = [];
-        const localExternalInterfaces: DataItemInstanceList[] = [];
+        const localExternalInterfaces: DataItemSourceListExternalInterface[] = [];
 
         communicationSet.forEach((element: object) => {
             const elementWithListType = <InstanceList| SourceList> element;
@@ -72,10 +73,11 @@ export class MTPPart extends AImporterPart {
                                 if(localeComIntData.initialize({name: source.Name, serverURL: source.Attribute.Value})) {
                                     communicationInterfaceData.push(localeComIntData);
                                 } else {
-                                    // TODO: Missing error handling
+                                    logger.warn('Cannot extract source ' + source.Name + '! Need MTPFreeze-2020-01');
                                 }
-
-                                // parse the external Interface stuff
+                                source.ExternalInterface.forEach((dataItem: DataItemSourceListExternalInterface) => {
+                                    localExternalInterfaces.push(dataItem);
+                                })
                                 break;
                             default:
                                 break;
@@ -84,7 +86,7 @@ export class MTPPart extends AImporterPart {
                     break;
                 case 'MTPSUCLib/CommunicationSet/InstanceList':
                     // Typecasting
-                    const instanceListElement = <InstanceList> elementWithListType
+                    const instanceListElement = <InstanceList> elementWithListType;
                     break;
                 default:
                     break;
