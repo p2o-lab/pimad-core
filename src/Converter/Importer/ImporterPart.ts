@@ -5,6 +5,7 @@ import {
 } from '../../ModuleAutomation/CommunicationInterfaceData';
 import {Actuator, DataAssembly, DataAssemblyFactory, Sensor} from '../../ModuleAutomation/DataAssembly';
 import { DataItemInstanceList } from 'AML';
+import { InstanceList, SourceList } from 'PiMAd-types';
 
 abstract class AImporterPart implements ImporterPart {
     protected responseVendor: ResponseVendor
@@ -55,16 +56,16 @@ export class MTPPart extends AImporterPart {
         //const localExternalInterfaces: {Name: string; ID: string; RefBaseClassPath: string; Attribute: {Name: string; AttributeDataType: string; Value: string}[]}[] = [];
         const localExternalInterfaces: DataItemInstanceList[] = [];
 
-        communicationSet.forEach((element: {RefBaseSystemUnitPath?: string; InternalElement?: object[]}) => {
-            if(element.InternalElement == undefined) {
-                element.InternalElement = [];
-            }
-            switch (element.RefBaseSystemUnitPath) {
+        communicationSet.forEach((element: object) => {
+            const elementWithType = <InstanceList| SourceList> element;
+
+            switch (elementWithType.RefBaseSystemUnitPath) {
                 case 'MTPSUCLib/CommunicationSet/SourceList':
-                    if(!(Array.isArray(element.InternalElement))) {
-                        element.InternalElement = [element.InternalElement];
+                    if(!(Array.isArray(elementWithType.InternalElement))) {
+                        elementWithType.InternalElement = [elementWithType.InternalElement];
                     }
-                    element.InternalElement?.forEach((source: {
+                    const elementSourceList = <SourceList> elementWithType
+                    elementSourceList.InternalElement.forEach((source: {
                         Name?: string;
                         RefBaseSystemUnitPath?: string;
                         Attribute?: {
