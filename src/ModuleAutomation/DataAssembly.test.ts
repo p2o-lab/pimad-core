@@ -1,6 +1,7 @@
 import {BaseDataAssemblyFactory, BaseDataAssembly} from './DataAssembly';
 import {expect} from 'chai';
 import {ErrorResponse} from '../Backbone/Response';
+import {BaseDataItem, DataItem} from './DataItem';
 
 describe('class: BaseDataAssembly', () => {
     let dataAssembly: BaseDataAssembly;
@@ -20,7 +21,12 @@ describe('class: BaseDataAssembly', () => {
         expect(typeof dataAssembly.getCommunication()).is.equal(typeof new ErrorResponse());
     });
     it('method: initialize()', () => {
-        expect(dataAssembly.initialize()).is.true;
+        //const dataItems: DataItem[] = []
+        expect(dataAssembly.initialize({
+            tag: 'Test-DataAssembly',
+            description: 'It is a test!',
+            dataItems: []
+        })).is.true;
     });
 });
 describe('class: BaseDataAssemblyFactory', () => {
