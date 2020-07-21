@@ -15,7 +15,7 @@ describe('class: MTPPart', () => {
     it('method: extract()', () => {
         part.extract({CommunicationSet: communicationsSetData, HMISet: {}, ServiceSet: {}, TextSet: {}},(response) => {
             expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
-            const testData: {CommunicationInterfaceData?: OPCUAServerCommunication[], DataAssemblies?: DataAssemblyFactory[]} = response.getContent();
+            const testData: {CommunicationInterfaceData?: OPCUAServerCommunication[]; DataAssemblies?: DataAssemblyFactory[]} = response.getContent();
             expect(JSON.stringify(testData.CommunicationInterfaceData)).is.equal(JSON.stringify(communicationInterfaceDataTestResultData));
             expect(JSON.stringify(testData.DataAssemblies)).is.equal(JSON.stringify(dataAssemblyTestResultData));
         })

@@ -101,8 +101,8 @@ export class MTPPart extends AImporterPart {
                                 if(localeInterface.ID === attribute.Value) {
                                     const opcuaNodeCommunication = this.opcuaNodeCommunicationFactory.create()
                                     let identifier: number | string = -1;
-                                    let namespace: string = '';
-                                    let access: string = '';
+                                    let namespace = '';
+                                    let access = '';
                                     localeInterface.Attribute.forEach((localeInterfaceAttribute: Attribute) => {
                                         switch (localeInterfaceAttribute.Name) {
                                             case ('Identifier'):
