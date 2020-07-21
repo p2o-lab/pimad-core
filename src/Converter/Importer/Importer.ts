@@ -3,8 +3,8 @@ import {logger} from '../../Utils/Logger';
 import {BasicSemanticVersion, SemanticVersion} from '../../Backbone/SemanticVersion';
 import {HMIPart, ImporterPart, MTPPart, ServicePart, TextPart} from './ImporterPart';
 import {AMLGateFactory, MTPGateFactory, XMLGateFactory, ZIPGateFactory} from '../Gate/GateFactory';
-import {CAEXFile} from 'PiMAd-types';
 import {InstanceHierarchy} from 'AML';
+import { CAEXFile } from 'PiMAd-types';
 abstract class AImporter implements  Importer {
 
     protected initialized: boolean;

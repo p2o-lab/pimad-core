@@ -7,7 +7,7 @@ export interface DataAssembly {
     getTagDescription(): string;
     getTagName(): string;
     getCommunication(): Response; //any[] //not defined yet
-    initialize(): boolean;
+    initialize(instructions: object): boolean;
 }
 
 abstract class ADataAssembly implements DataAssembly{
@@ -37,13 +37,24 @@ abstract class ADataAssembly implements DataAssembly{
     getCommunication(): Response {
         return this.responseVendor.buyErrorResponse();
     }
-    initialize(): boolean {
+    initialize(instructions: object): boolean {
         //add INIT-Operations here
         this.initialized=true;
         return this.initialized;
     }
 }
 export class BaseDataAssembly extends ADataAssembly {
+    initialize(instructions: {tag: string, description: string, dataItems: DataItem[]}): boolean {
+        if (!this.initialized) {
+            this.tagName = instructions.tag;
+            this.tagDescription = instructions.description;
+            this.dataItems = instructions.dataItems;
+            this.initialized = (this.tagName === instructions.tag && this.tagDescription == instructions.description && JSON.stringify(this.dataItems) === JSON.stringify(instructions.dataItems));
+            return this.initialized;
+        } else {
+            return false;
+        }
+    }
 }
 
 export interface DataAssemblyFactory {
@@ -70,11 +81,11 @@ abstract class AOperation extends ADataAssembly {
 }
 
 export interface Actuator extends DataAssembly {
-    initialize(): boolean;
+    initialize(instructions: object): boolean;
 }
 
 export interface Sensor extends DataAssembly {
-    initialize(): boolean;
+    initialize(instructions: object): boolean;
 }
 
 abstract class AActive extends ADataAssembly implements Actuator{

@@ -3,10 +3,11 @@ import {
     CommunicationInterfaceData, CommunicationInterfaceDataFactory,
     OPCUAServerCommunicationFactory
 } from '../../ModuleAutomation/CommunicationInterfaceData';
-import {Actuator, DataAssembly, DataAssemblyFactory, Sensor} from '../../ModuleAutomation/DataAssembly';
-import { DataItemInstanceList, DataItemSourceList, DataItemSourceListExternalInterface } from 'AML';
+import {Actuator, DataAssembly, DataAssemblyFactory, Sensor, BaseDataAssemblyFactory} from '../../ModuleAutomation/DataAssembly';
+import { DataItemInstanceList, DataItemSourceList, DataItemSourceListExternalInterface, Attribute } from 'AML';
 import { InstanceList, SourceList } from 'PiMAd-types';
 import {logger} from '../../Utils/Logger';
+import {DataItem} from '../../ModuleAutomation/DataItem';
 
 abstract class AImporterPart implements ImporterPart {
     protected responseVendor: ResponseVendor
@@ -30,6 +31,7 @@ export class HMIPart extends AImporterPart {
  */
 export class MTPPart extends AImporterPart {
     private opcuaServerCommunicationFactory: CommunicationInterfaceDataFactory;
+    private baseDataAssemblyFactory: BaseDataAssemblyFactory;
 
     /**
      * Parsing the relevant data of the ModuleTypePackage-object and copy that to different instances of PiMAd-core-IM.
@@ -73,7 +75,7 @@ export class MTPPart extends AImporterPart {
                                 if(localeComIntData.initialize({name: source.Name, serverURL: source.Attribute.Value})) {
                                     communicationInterfaceData.push(localeComIntData);
                                 } else {
-                                    logger.warn('Cannot extract source ' + source.Name + '! Need MTPFreeze-2020-01');
+                                    logger.warn('Cannot extract source <' + source.Name + '> need MTPFreeze-2020-01!');
                                 }
                                 source.ExternalInterface.forEach((dataItem: DataItemSourceListExternalInterface) => {
                                     localExternalInterfaces.push(dataItem);
@@ -87,6 +89,20 @@ export class MTPPart extends AImporterPart {
                 case 'MTPSUCLib/CommunicationSet/InstanceList':
                     // Typecasting
                     const instanceListElement = elementWithListType as InstanceList;
+                    instanceListElement.InternalElement.forEach((dataAssembly: DataItemInstanceList) => {
+                        const localeDataAssembly = this.baseDataAssemblyFactory.create();
+                        const localDataItems: DataItem[] = []
+                        // ---
+                        dataAssembly.Attribute.forEach((attribute: Attribute) => {
+
+                        })
+                        // ---
+                        if(localeDataAssembly.initialize({tag: dataAssembly.Name, description: dataAssembly, dataItems: localDataItems})) {
+                            logger.info('Add DataAssembly <' + localeDataAssembly.getTagName() + '>');
+                        } else {
+                            logger.warn('Cannot extract all data from DataAssembly <' + dataAssembly.Name + '> need MTPFreeze-2020-01!');
+                        }
+                    })
                     break;
                 default:
                     break;
@@ -102,6 +118,7 @@ export class MTPPart extends AImporterPart {
     constructor() {
         super();
         this.opcuaServerCommunicationFactory = new OPCUAServerCommunicationFactory();
+        this.baseDataAssemblyFactory = new BaseDataAssemblyFactory();
     }
 }
 export class ServicePart extends AImporterPart {
