@@ -20,21 +20,22 @@ abstract class AGate implements Gate {
         this.gateAddress = undefined;
         this.responseVendor = new ResponseVendor();
     }
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public send(instructions: object, callback: (response: Response) => void): void {
         const localResponse = this.responseVendor.buyErrorResponse()
         localResponse.initialize('Not implemented yet!', {})
         callback(localResponse)
     };
-    /** @inheritDoc */
+
     abstract receive(instructions: object, callback: (response: Response) => void): void;
     /*abstract open(): Response;
     abstract close(): Response;*/
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     getGateAddress(): string | undefined {
         return this.gateAddress;
     };
-    /** @inheritDoc */
+
+    /** {@inheritDoc} */
     initialize(address: string): boolean {
         if (!this.initialized) {
             this.gateAddress = address;
@@ -71,6 +72,7 @@ abstract class AFileSystemGate extends AGate {
 export class AMLGate extends AFileSystemGate {
     private xmlGateFactory: XMLGateFactory;
 
+    /** {@inheritDoc} */
     receive(instructions: object, callback: (response: Response) => void): void {
         if(this.initialized) {
             const xmlGate = this.xmlGateFactory.create();

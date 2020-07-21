@@ -44,7 +44,7 @@ abstract class ADataAssembly implements DataAssembly{
     }
 }
 export class BaseDataAssembly extends ADataAssembly {
-    initialize(instructions: {tag: string, description: string, dataItems: DataItem[]}): boolean {
+    initialize(instructions: {tag: string; description: string; dataItems: DataItem[]}): boolean {
         if (!this.initialized) {
             this.tagName = instructions.tag;
             this.tagDescription = instructions.description;
