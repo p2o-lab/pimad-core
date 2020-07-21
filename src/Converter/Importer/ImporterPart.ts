@@ -4,6 +4,7 @@ import {
     OPCUAServerCommunicationFactory
 } from '../../ModuleAutomation/CommunicationInterfaceData';
 import {Actuator, DataAssembly, DataAssemblyFactory, Sensor} from '../../ModuleAutomation/DataAssembly';
+import { DataItemInstanceList } from 'AML';
 
 abstract class AImporterPart implements ImporterPart {
     protected responseVendor: ResponseVendor
@@ -51,7 +52,8 @@ export class MTPPart extends AImporterPart {
     }  {
         const communicationInterfaceData: CommunicationInterfaceData[] = [];
         const dataAssemblies: DataAssembly[] = [];
-        const localExternalInterfaces: {Name: string; ID: string; RefBaseClassPath: string; Attribute: {Name: string; AttributeDataType: string; Value: string}[]}[] = [];
+        //const localExternalInterfaces: {Name: string; ID: string; RefBaseClassPath: string; Attribute: {Name: string; AttributeDataType: string; Value: string}[]}[] = [];
+        const localExternalInterfaces: DataItemInstanceList[] = [];
 
         communicationSet.forEach((element: {RefBaseSystemUnitPath?: string; InternalElement?: object[]}) => {
             if(element.InternalElement == undefined) {
