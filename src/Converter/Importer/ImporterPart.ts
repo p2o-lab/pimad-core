@@ -57,7 +57,7 @@ export class MTPPart extends AImporterPart {
         const localExternalInterfaces: DataItemSourceListExternalInterface[] = [];
 
         communicationSet.forEach((element: object) => {
-            const elementWithListType = <InstanceList| SourceList> element;
+            const elementWithListType = element as InstanceList| SourceList;
 
             switch (elementWithListType.RefBaseSystemUnitPath) {
                 case 'MTPSUCLib/CommunicationSet/SourceList':
@@ -65,7 +65,7 @@ export class MTPPart extends AImporterPart {
                         elementWithListType.InternalElement = [elementWithListType.InternalElement];
                     }
                     // Typecasting
-                    const sourceListElement = <SourceList> elementWithListType
+                    const sourceListElement = elementWithListType as SourceList
                     sourceListElement.InternalElement.forEach((source: DataItemSourceList) => {
                         switch (source.RefBaseSystemUnitPath) {
                             case 'MTPCommunicationSUCLib/ServerAssembly/OPCUAServer':
@@ -86,7 +86,7 @@ export class MTPPart extends AImporterPart {
                     break;
                 case 'MTPSUCLib/CommunicationSet/InstanceList':
                     // Typecasting
-                    const instanceListElement = <InstanceList> elementWithListType;
+                    const instanceListElement = elementWithListType as InstanceList;
                     break;
                 default:
                     break;
