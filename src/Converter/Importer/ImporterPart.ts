@@ -4,7 +4,7 @@ import {
     OPCUAServerCommunicationFactory
 } from '../../ModuleAutomation/CommunicationInterfaceData';
 import {Actuator, DataAssembly, DataAssemblyFactory, Sensor} from '../../ModuleAutomation/DataAssembly';
-import { DataItemInstanceList } from 'AML';
+import { DataItemInstanceList, DataItemSourceList } from 'AML';
 import { InstanceList, SourceList } from 'PiMAd-types';
 
 abstract class AImporterPart implements ImporterPart {
@@ -53,31 +53,23 @@ export class MTPPart extends AImporterPart {
     }  {
         const communicationInterfaceData: CommunicationInterfaceData[] = [];
         const dataAssemblies: DataAssembly[] = [];
-        //const localExternalInterfaces: {Name: string; ID: string; RefBaseClassPath: string; Attribute: {Name: string; AttributeDataType: string; Value: string}[]}[] = [];
         const localExternalInterfaces: DataItemInstanceList[] = [];
 
         communicationSet.forEach((element: object) => {
-            const elementWithType = <InstanceList| SourceList> element;
+            const elementWithListType = <InstanceList| SourceList> element;
 
-            switch (elementWithType.RefBaseSystemUnitPath) {
+            switch (elementWithListType.RefBaseSystemUnitPath) {
                 case 'MTPSUCLib/CommunicationSet/SourceList':
-                    if(!(Array.isArray(elementWithType.InternalElement))) {
-                        elementWithType.InternalElement = [elementWithType.InternalElement];
+                    if(!(Array.isArray(elementWithListType.InternalElement))) {
+                        elementWithListType.InternalElement = [elementWithListType.InternalElement];
                     }
-                    const elementSourceList = <SourceList> elementWithType
-                    elementSourceList.InternalElement.forEach((source: {
-                        Name?: string;
-                        RefBaseSystemUnitPath?: string;
-                        Attribute?: {
-                            Name: string;
-                            AttributeDataType: string;
-                            Value: string;
-                        };
-                    }) => {
+                    // Typecasting
+                    const sourceListElement = <SourceList> elementWithListType
+                    sourceListElement.InternalElement.forEach((source: DataItemSourceList) => {
                         switch (source.RefBaseSystemUnitPath) {
                             case 'MTPCommunicationSUCLib/ServerAssembly/OPCUAServer':
                                 const localeComIntData = this.opcuaServerCommunicationFactory.create();
-                                if(localeComIntData.initialize({name: source.Name, serverURL: source.Attribute?.Value})) {
+                                if(localeComIntData.initialize({name: source.Name, serverURL: source.Attribute.Value})) {
                                     communicationInterfaceData.push(localeComIntData);
                                 } else {
                                     // TODO: Missing error handling
@@ -91,6 +83,8 @@ export class MTPPart extends AImporterPart {
                     })
                     break;
                 case 'MTPSUCLib/CommunicationSet/InstanceList':
+                    // Typecasting
+                    const instanceListElement = <InstanceList> elementWithListType
                     break;
                 default:
                     break;
