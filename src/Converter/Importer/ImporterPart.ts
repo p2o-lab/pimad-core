@@ -59,26 +59,33 @@ export class MTPPart extends AImporterPart {
         const communicationInterfaceData: CommunicationInterfaceData[] = [];
         const dataAssemblies: DataAssembly[] = [];
         const localExternalInterfaces: DataItemSourceListExternalInterface[] = [];
-
+        // looping through the data
         communicationSet.forEach((element: object) => {
+            // First of all: typing
             const elementWithListType = element as InstanceList| SourceList;
-
+            // Distinction is made by 'RefBaseSystemUnitPath'
             switch (elementWithListType.RefBaseSystemUnitPath) {
+                // TODO: SourceList muss zwingend vor InstanceList geparst werden! :S
                 case 'MTPSUCLib/CommunicationSet/SourceList':
+                    // Easier handling of 'single' and 'multiple' sources in one code section. Therefore a single source is transferred to an array with one entry.
                     if(!(Array.isArray(elementWithListType.InternalElement))) {
                         elementWithListType.InternalElement = [elementWithListType.InternalElement];
                     }
-                    // Typecasting
+                    // Typecasting again! Now one knows it is a 'SourceList'
                     const sourceListElement = elementWithListType as SourceList
+                    // again looping through the more specific data.
                     sourceListElement.InternalElement.forEach((source: DataItemSourceList) => {
+                        // So far we only know MTPs with a OPCUAServer as source.
                         switch (source.RefBaseSystemUnitPath) {
                             case 'MTPCommunicationSUCLib/ServerAssembly/OPCUAServer':
+                                // Extract the data
                                 const localeComIntData = this.opcuaServerCommunicationFactory.create();
                                 if(localeComIntData.initialize({name: source.Name, serverURL: source.Attribute.Value})) {
                                     communicationInterfaceData.push(localeComIntData);
                                 } else {
                                     logger.warn('Cannot extract source <' + source.Name + '> need MTPFreeze-2020-01!');
                                 }
+                                // Store the source specific 'ExternalInterface' data temporary. You need these in the next parsing step.
                                 source.ExternalInterface.forEach((dataItem: DataItemSourceListExternalInterface) => {
                                     localExternalInterfaces.push(dataItem);
                                 })
@@ -149,7 +156,6 @@ export class MTPPart extends AImporterPart {
                     break;
                 default:
                     break;
-
             }
         })
         return {
