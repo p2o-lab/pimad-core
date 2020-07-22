@@ -48,6 +48,17 @@ export class MTPPart extends AImporterPart {
         callback(localeResponse);
     }
 
+    private getRefBaseSystemUnitPathElement(communicationSet: object[], refBaseSystemUnitPath: string, callback: (listElement: InstanceList | SourceList) => void): void {
+        communicationSet.forEach((setElement: object) => {
+            // First of all: typing
+            const elementWithListType = setElement as InstanceList| SourceList;
+
+            if (elementWithListType.RefBaseSystemUnitPath === refBaseSystemUnitPath) {
+                callback(elementWithListType)
+            }
+        });
+    };
+
     /**
      * Initialize all relevant Data of 'MTP-CommunicationSet' as instances of PiMAd-core-IM.
      * @param communicationSet The bare CommunicationSet-object of the MTP.
@@ -59,103 +70,105 @@ export class MTPPart extends AImporterPart {
         const communicationInterfaceData: CommunicationInterfaceData[] = [];
         const dataAssemblies: DataAssembly[] = [];
         const localExternalInterfaces: DataItemSourceListExternalInterface[] = [];
-        // looping through the data
-        communicationSet.forEach((element: object) => {
-            // First of all: typing
-            const elementWithListType = element as InstanceList| SourceList;
-            // Distinction is made by 'RefBaseSystemUnitPath'
-            switch (elementWithListType.RefBaseSystemUnitPath) {
-                // TODO: SourceList muss zwingend vor InstanceList geparst werden! :S
-                case 'MTPSUCLib/CommunicationSet/SourceList':
-                    // Easier handling of 'single' and 'multiple' sources in one code section. Therefore a single source is transferred to an array with one entry.
-                    if(!(Array.isArray(elementWithListType.InternalElement))) {
-                        elementWithListType.InternalElement = [elementWithListType.InternalElement];
+        // Extract InstantList and SourceList
+        let instanceList: InstanceList = {} as InstanceList;
+        this.getRefBaseSystemUnitPathElement(communicationSet, 'MTPSUCLib/CommunicationSet/InstanceList', extractedInstanceList => {
+            instanceList = extractedInstanceList as InstanceList;
+        });
+        let sourceList: SourceList = {} as SourceList;
+        this.getRefBaseSystemUnitPathElement(communicationSet, 'MTPSUCLib/CommunicationSet/SourceList', extractedSourceList => {
+            sourceList = extractedSourceList as SourceList;
+        });
+        if(JSON.stringify(instanceList) == JSON.stringify({}) || JSON.stringify(sourceList) == JSON.stringify({})) {
+            logger.error('Could not extract InstanceList and SourceList of the CommunicationSet. Aborting!')
+            return {
+                CommunicationInterfaceData: [],
+                DataAssemblies: []
+            }
+        }
+        // Easier handling of 'single' and 'multiple' sources in one code section. Therefore a single source is transferred to an array with one entry.
+        if(!(Array.isArray(sourceList.InternalElement))) {
+            sourceList.InternalElement = [sourceList.InternalElement];
+        }
+        // Handle the SourceList
+        sourceList.InternalElement.forEach((source: DataItemSourceList) => {
+            // So far we only know MTPs with a OPCUAServer as source.
+            switch (source.RefBaseSystemUnitPath) {
+                case 'MTPCommunicationSUCLib/ServerAssembly/OPCUAServer':
+                    // Extract the data
+                    const localeComIntData = this.opcuaServerCommunicationFactory.create();
+                    if(localeComIntData.initialize({name: source.Name, serverURL: source.Attribute.Value})) {
+                        communicationInterfaceData.push(localeComIntData);
+                    } else {
+                        logger.warn('Cannot extract source <' + source.Name + '> need MTPFreeze-2020-01!');
                     }
-                    // Typecasting again! Now one knows it is a 'SourceList'
-                    const sourceListElement = elementWithListType as SourceList
-                    // again looping through the more specific data.
-                    sourceListElement.InternalElement.forEach((source: DataItemSourceList) => {
-                        // So far we only know MTPs with a OPCUAServer as source.
-                        switch (source.RefBaseSystemUnitPath) {
-                            case 'MTPCommunicationSUCLib/ServerAssembly/OPCUAServer':
-                                // Extract the data
-                                const localeComIntData = this.opcuaServerCommunicationFactory.create();
-                                if(localeComIntData.initialize({name: source.Name, serverURL: source.Attribute.Value})) {
-                                    communicationInterfaceData.push(localeComIntData);
-                                } else {
-                                    logger.warn('Cannot extract source <' + source.Name + '> need MTPFreeze-2020-01!');
-                                }
-                                // Store the source specific 'ExternalInterface' data temporary. You need these in the next parsing step.
-                                source.ExternalInterface.forEach((dataItem: DataItemSourceListExternalInterface) => {
-                                    localExternalInterfaces.push(dataItem);
-                                })
-                                break;
-                            default:
-                                break;
-                        }
-                    })
-                    break;
-                case 'MTPSUCLib/CommunicationSet/InstanceList':
-                    // Typecasting
-                    const instanceListElement = elementWithListType as InstanceList;
-                    instanceListElement.InternalElement.forEach((dataAssembly: DataItemInstanceList) => {
-                        const localeDataAssembly = this.baseDataAssemblyFactory.create();
-                        const localDataItems: DataItem[] = []
-                        // iterate through all attributes
-                        dataAssembly.Attribute.forEach((attribute: Attribute) => {
-                            localExternalInterfaces.some((localeInterface: DataItemSourceListExternalInterface) => {
-                                // TODO: Extract description via new swicth case szenario
-                                if(localeInterface.ID === attribute.Value) {
-                                    const opcuaNodeCommunication = this.opcuaNodeCommunicationFactory.create()
-                                    let identifier: number | string = -1;
-                                    let namespace = '';
-                                    let access = '';
-                                    localeInterface.Attribute.forEach((localeInterfaceAttribute: Attribute) => {
-                                        switch (localeInterfaceAttribute.Name) {
-                                            case ('Identifier'):
-                                                identifier = localeInterfaceAttribute.Value;
-                                                break;
-                                            case ('Namespace'):
-                                                namespace = localeInterfaceAttribute.Value;
-                                                break;
-                                            case ('Access'):
-                                                access = localeInterfaceAttribute.Value;
-                                                break;
-                                            default:
-                                                logger.warn('The opcua-node-communication object contains the unknown attribute <' + attribute.Name + '>! Ignoring ...')
-                                                break;
-                                        }
-                                        if (localeInterfaceAttribute == localeInterface.Attribute[localeInterface.Attribute.length-1]) {
-                                            if(opcuaNodeCommunication.initialize({name: attribute.Name, namespaceIndex: namespace, nodeId: identifier, dataType: '???'})) {
-                                                logger.info('Successfully add opcua-communication <' + attribute.Name + '> to DataAssembly <' + dataAssembly.Name + '>');
-                                            } else {
-                                                logger.warn('Could not add opcua-communication <' + attribute.Name + '> to DataAssembly <' + dataAssembly.Name + '>');
-                                            }
-                                        }
-                                    })
-                                    const localDataItem = this.baseDataItemFactory.create();
-                                    if(localDataItem.initialize(attribute.Name, opcuaNodeCommunication)) {
-                                        localDataItems.push(localDataItem);
-                                    } else {
-                                        // logging
-                                    }
-                                    return true;
-                                } else {
-                                    return false;
-                                }
-                            })
-                        })
-                        // finalizing: checking response of initialize() > logging the results
-                        if(localeDataAssembly.initialize({tag: dataAssembly.Name, description: 'inline TODO above', dataItems: localDataItems})) {
-                            dataAssemblies.push(localeDataAssembly);
-                            logger.info('Add DataAssembly <' + localeDataAssembly.getTagName() + '>');
-                        } else {
-                            logger.warn('Cannot extract all data from DataAssembly <' + dataAssembly.Name + '> need MTPFreeze-2020-01!');
-                        }
+                    // Store the source specific 'ExternalInterface' data temporary. You need these in the next parsing step.
+                    source.ExternalInterface.forEach((dataItem: DataItemSourceListExternalInterface) => {
+                        localExternalInterfaces.push(dataItem);
                     })
                     break;
                 default:
                     break;
+            }
+        })
+        instanceList.InternalElement.forEach((dataAssembly: DataItemInstanceList) => {
+            const localeDataAssembly = this.baseDataAssemblyFactory.create();
+            const localDataItems: DataItem[] = []
+            // iterate through all attributes
+            dataAssembly.Attribute.forEach((attribute: Attribute) => {
+                localExternalInterfaces.some((localeInterface: DataItemSourceListExternalInterface) => {
+                    // TODO: Extract description via new swicth case szenario
+                    if (localeInterface.ID === attribute.Value) {
+                        const opcuaNodeCommunication = this.opcuaNodeCommunicationFactory.create()
+                        let identifier: number | string = -1;
+                        let namespace = '';
+                        let access = '';
+                        localeInterface.Attribute.forEach((localeInterfaceAttribute: Attribute) => {
+                            switch (localeInterfaceAttribute.Name) {
+                                case ('Identifier'):
+                                    identifier = localeInterfaceAttribute.Value;
+                                    break;
+                                case ('Namespace'):
+                                    namespace = localeInterfaceAttribute.Value;
+                                    break;
+                                case ('Access'):
+                                    access = localeInterfaceAttribute.Value;
+                                    break;
+                                default:
+                                    logger.warn('The opcua-node-communication object contains the unknown attribute <' + attribute.Name + '>! Ignoring ...')
+                                    break;
+                            }
+                            if (localeInterfaceAttribute == localeInterface.Attribute[localeInterface.Attribute.length - 1]) {
+                                if (opcuaNodeCommunication.initialize({
+                                    name: attribute.Name,
+                                    namespaceIndex: namespace,
+                                    nodeId: identifier,
+                                    dataType: '???'
+                                })) {
+                                    logger.info('Successfully add opcua-communication <' + attribute.Name + '> to DataAssembly <' + dataAssembly.Name + '>');
+                                } else {
+                                    logger.warn('Could not add opcua-communication <' + attribute.Name + '> to DataAssembly <' + dataAssembly.Name + '>');
+                                }
+                            }
+                        })
+                        const localDataItem = this.baseDataItemFactory.create();
+                        if (localDataItem.initialize(attribute.Name, opcuaNodeCommunication)) {
+                            localDataItems.push(localDataItem);
+                        } else {
+                            // logging
+                        }
+                        return true;
+                    } else {
+                        return false;
+                    }
+                })
+            })
+            // finalizing: checking response of initialize() > logging the results
+            if(localeDataAssembly.initialize({tag: dataAssembly.Name, description: 'inline TODO above', dataItems: localDataItems})) {
+                dataAssemblies.push(localeDataAssembly);
+                logger.info('Add DataAssembly <' + localeDataAssembly.getTagName() + '>');
+            } else {
+                logger.warn('Cannot extract all data from DataAssembly <' + dataAssembly.Name + '> need MTPFreeze-2020-01!');
             }
         })
         return {
