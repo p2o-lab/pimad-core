@@ -10,6 +10,8 @@
           "dataType": "???"
         },
         "name": "WQC",
+        "identifier": "link1",
+        "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
         "initialized": true,
         "responseVendor": {
           "fErrorResponse": {},
@@ -25,6 +27,8 @@
           "dataType": "???"
         },
         "name": "OSLevel",
+        "identifier": "link2",
+        "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
         "initialized": true,
         "responseVendor": {
           "fErrorResponse": {},
@@ -40,6 +44,8 @@
           "dataType": "???"
         },
         "name": "CommandOp",
+        "identifier": "link3",
+        "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
         "initialized": true,
         "responseVendor": {
           "fErrorResponse": {},
@@ -55,6 +61,8 @@
           "dataType": "???"
         },
         "name": "CommandInt",
+        "identifier": "link4",
+        "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
         "initialized": true,
         "responseVendor": {
           "fErrorResponse": {},
@@ -70,6 +78,8 @@
           "dataType": "???"
         },
         "name": "CommandExt",
+        "identifier": "link5",
+        "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
         "initialized": true,
         "responseVendor": {
           "fErrorResponse": {},

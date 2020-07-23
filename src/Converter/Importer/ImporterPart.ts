@@ -152,7 +152,7 @@ export class MTPPart extends AImporterPart {
                             }
                         })
                         const localDataItem = this.baseDataItemFactory.create();
-                        if (localDataItem.initialize(attribute.Name, opcuaNodeCommunication)) {
+                        if (localDataItem.initialize(attribute.Name, opcuaNodeCommunication, localeInterface.ID, localeInterface.RefBaseClassPath)) {
                             localDataItems.push(localDataItem);
                         } else {
                             // logging

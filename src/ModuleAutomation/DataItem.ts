@@ -5,19 +5,25 @@ import {CommunicationInterfaceData, OPCUANodeCommunication} from './Communicatio
 export interface DataItem {
     getCommunicationInterfaceData(): CommunicationInterfaceData;
     getDataType(): Response; //string;
-    initialize(name: string, ciData: CommunicationInterfaceData): boolean;
+    getIdentifier(): string;
+    getMetaModelRef(): string;
+    initialize(name: string, ciData: CommunicationInterfaceData, id: string, metaModelRef: string): boolean;
 }
 
 abstract class ADataItem implements DataItem {
 
     protected cIData: CommunicationInterfaceData;
     protected name: string;
+    protected identifier: string;
+    protected metaModelRef: string;
     protected initialized: boolean;
     protected responseVendor: ResponseVendor;
 
     constructor() {
         this.cIData= new OPCUANodeCommunication(); //TODO: Add BaseCommunicationInterfaceData
-        this.name='';
+        this.name = '';
+        this.identifier = '';
+        this.metaModelRef = '';
         this.initialized = false;
         this.responseVendor = new ResponseVendor();
     }
@@ -27,14 +33,22 @@ abstract class ADataItem implements DataItem {
     }
     getDataType(): Response{
         //TODO: Datatype of OPCUAServerCommunication definition
-    return this.responseVendor.buyErrorResponse();
+        return this.responseVendor.buyErrorResponse();
     }
-    initialize(name: string, ciData: CommunicationInterfaceData): boolean {
+    getIdentifier(): string {
+        return this.identifier;
+    };
+    getMetaModelRef(): string {
+        return this.metaModelRef;
+    };
+    initialize(name: string, ciData: CommunicationInterfaceData, identifier: string, metaModelRef: string): boolean {
         if (!this.initialized) {
             //TODO: much more checking
             this.name = name;
             this.cIData = ciData;
-            this.initialized = (this.name == name && this.cIData == ciData);
+            this.identifier = identifier;
+            this.metaModelRef = metaModelRef;
+            this.initialized = (this.name === name && this.cIData === ciData && this.identifier === identifier && this.metaModelRef === metaModelRef);
             return this.initialized;
         } else {
             return false;
