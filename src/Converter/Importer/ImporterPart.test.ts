@@ -14,7 +14,7 @@ describe('class: MTPPart', () => {
         part = new MTPPart();
     })
     describe('method: extract()', () => {
-        it('standard way', () => {
+        it('test case: standard way', () => {
             part.extract({CommunicationSet: communicationsSetData, HMISet: {}, ServiceSet: {}, TextSet: {}},(response) => {
                 expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
                 const testData: {CommunicationInterfaceData?: OPCUAServerCommunication[]; DataAssemblies?: DataAssemblyFactory[]} = response.getContent();
@@ -22,7 +22,7 @@ describe('class: MTPPart', () => {
                 expect(JSON.stringify(testData.DataAssemblies)).is.equal(JSON.stringify(dataAssemblyTestResultData));
             })
         })
-        it('mixing data structure', () => {
+        it('test case: mixing data structure', () => {
             part.extract({CommunicationSet: communicationsSetDataMixingDataStructure, HMISet: {}, ServiceSet: {}, TextSet: {}},(response) => {
                 expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
                 const testData: {CommunicationInterfaceData?: OPCUAServerCommunication[]; DataAssemblies?: DataAssemblyFactory[]} = response.getContent();
