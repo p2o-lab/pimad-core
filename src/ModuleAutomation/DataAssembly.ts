@@ -16,6 +16,8 @@ abstract class ADataAssembly implements DataAssembly{
     protected tagDescription: string;
     protected tagName: string;
     protected initialized: boolean;
+    protected identifier: string;
+    protected metaModelRef: string;
     protected responseVendor: ResponseVendor;
 
     constructor() {
@@ -23,6 +25,8 @@ abstract class ADataAssembly implements DataAssembly{
         this.tagDescription='';
         this.tagName='';
         this.initialized = false;
+        this.identifier = '';
+        this.metaModelRef = '';
         this.responseVendor = new ResponseVendor();
     }
     getInterfaceClass(): Response {
@@ -44,12 +48,20 @@ abstract class ADataAssembly implements DataAssembly{
     }
 }
 export class BaseDataAssembly extends ADataAssembly {
-    initialize(instructions: {tag: string; description: string; dataItems: DataItem[]}): boolean {
+    initialize(instructions: {tag: string; description: string; dataItems: DataItem[]; identifier: string; metaModelRef: string}): boolean {
         if (!this.initialized) {
             this.tagName = instructions.tag;
             this.tagDescription = instructions.description;
             this.dataItems = instructions.dataItems;
-            this.initialized = (this.tagName === instructions.tag && this.tagDescription == instructions.description && JSON.stringify(this.dataItems) === JSON.stringify(instructions.dataItems));
+            this.identifier = instructions.identifier;
+            this.metaModelRef = instructions.metaModelRef;
+            this.initialized = (
+                this.tagName === instructions.tag &&
+                this.tagDescription == instructions.description &&
+                JSON.stringify(this.dataItems) === JSON.stringify(instructions.dataItems) &&
+                this.identifier === instructions.identifier &&
+                this.metaModelRef === instructions.metaModelRef
+            );
             return this.initialized;
         } else {
             return false;

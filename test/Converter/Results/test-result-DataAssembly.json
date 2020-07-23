@@ -90,6 +90,8 @@
     "tagDescription": "inline TODO above",
     "tagName": "CrystalCrasher",
     "initialized": true,
+    "identifier": "string2",
+    "metaModelRef": "MTPDataObjectSUCLib/DataAssembly/ServiceControl",
     "responseVendor": {
       "fErrorResponse": {},
       "fSuccessResponse": {}
