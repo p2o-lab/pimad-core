@@ -1,61 +1,88 @@
 import {logger} from '../Utils/Logger';
 import {Parameter} from './Parameter';
-
+import {DataAssembly} from './DataAssembly';
+import { Attribute } from 'AML';
+import {Response, ResponseVendor} from '../Backbone/Response';
 
 export interface Procedure {
+    getAllAttributes(): Attribute[];
     getAllParameters(): Parameter[];
-    getID(): number;
+    getAttribute(name: string, callback: (response: Response) => void): void;
+    getDataAssembly(): DataAssembly;
+    getIdentifier(): string;
     getName(): string;
-    getDefault(): boolean;
-    getSc(): boolean;
-    getParameter(tag: string): Parameter;
-    initialize(id: number, name: string, def: boolean, sc: boolean, para: Parameter[]): boolean;
+    getParameter(tag: string, callback: (response: Response) => void): void;
+    initialize(dataAssembly: DataAssembly, identifier: string, metaModelRef: string, name: string, attributes: Attribute[], para: Parameter[]): boolean;
 }
 
 abstract class AProcedure implements Procedure {
-    protected id: number;
+    protected attributes: Attribute[];
+    protected dataAssembly: DataAssembly;
+    protected identifier: string;
+    protected metaModelRef: string;
     protected name: string;
-    protected default: boolean;
-    protected sc: boolean;
     protected parameters: Parameter[];
     protected initialized: boolean;
+    protected responseVendor: ResponseVendor
 
     constructor() {
-        this.id= 0;
+        this.attributes = [];
+        this.dataAssembly = {} as DataAssembly;
+        this.identifier = '';
+        this.metaModelRef = '';
         this.name= '';
-        this.default= false;
-        this.sc = false;
         this.parameters= [];
         this.initialized= false;
+        this.responseVendor = new ResponseVendor();
+    }
+    getAllAttributes(): Attribute[] {
+        return this.attributes
     }
     getAllParameters(): Parameter[] {
         return this.parameters;
     }
-    getID(): number {
-        return this.id;
+    getAttribute(name: string, callback: (response: Response) => void) {
+        this.attributes.forEach((attribute: Attribute) => {
+            if(attribute.Name === name) {
+                const response = this.responseVendor.buySuccessResponse();
+                response.initialize('Success!', attribute);
+                callback(response);
+            }
+            if(attribute === this.attributes[this.attributes.length -1]) {
+                const response = this.responseVendor.buyErrorResponse();
+                response.initialize('', {})
+                callback(response)
+            }
+        })
+    }
+    getDataAssembly(): DataAssembly {
+        return this.dataAssembly;
+    }
+    getIdentifier(): string {
+        return this.identifier;
     }
     getName(): string {
         return this.name;
     }
-    getDefault(): boolean {
-        return this.default;
-    }
-    getSc(): boolean {
-        return this.sc;
-    }
-    getParameter(tag: string): Parameter {
-        return this.parameters[0];
-    }
+    getParameter(tag: string, callback: (response: Response) => void) {
 
-    initialize(id: number, name: string, def: boolean, sc: boolean, para: Parameter[]): boolean {
-        //add INIT-Operations here
-        this.id= id;
-        this.name= name;
-        this.default= def;
-        this.sc = sc;
-        this.parameters= para;
-        this.initialized=true;
-    return this.initialized;
+    }
+    initialize(dataAssembly: DataAssembly, identifier: string, metaModelRef: string, name: string, attributes: Attribute[], para: Parameter[]): boolean {
+        this.attributes = attributes;
+        this.dataAssembly = dataAssembly;
+        this.identifier = identifier;
+        this.metaModelRef = metaModelRef;
+        this.name = name;
+        this.parameters = para;
+        this.initialized = (
+            JSON.stringify(this.attributes) === JSON.stringify(attributes) &&
+            JSON.stringify(this.dataAssembly) === JSON.stringify(dataAssembly) &&
+            this.identifier === identifier &&
+            this.metaModelRef === metaModelRef &&
+            this.name === name &&
+            JSON.stringify(this.parameters) === JSON.stringify(para)
+        );
+        return this.initialized;
     }
 }
 
@@ -70,7 +97,8 @@ abstract class AProcedureFactory implements ProcedureFactory {
 }
 export class BaseProcedureFactory extends AProcedureFactory {
     create(): Procedure{
-            const procedure = new BaseProcedure();
-            logger.debug(this.constructor.name + ' creates a ' + procedure.constructor.name);
-        return procedure;}
+        const procedure = new BaseProcedure();
+        logger.debug(this.constructor.name + ' creates a ' + procedure.constructor.name);
+        return procedure;
+    }
 }

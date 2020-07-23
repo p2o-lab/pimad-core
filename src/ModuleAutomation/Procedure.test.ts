@@ -11,7 +11,7 @@ describe('class: BaseProcedure', () => {
         expect(typeof procedure.getAllParameters()).is.equal(typeof new BaseParameter());
     });
     it('method: getID()', () => {
-        expect( typeof procedure.getID()).is.equal(typeof 0);
+        expect( typeof procedure.getIdentifier()).is.equal(typeof 0);
     });
     it('method: getName()', () => {
         expect(typeof procedure.getName()).is.equal(typeof '');
