@@ -164,7 +164,13 @@ export class MTPPart extends AImporterPart {
                 })
             })
             // finalizing: checking response of initialize() > logging the results
-            if(localeDataAssembly.initialize({tag: dataAssembly.Name, description: 'inline TODO above', dataItems: localDataItems})) {
+            if(localeDataAssembly.initialize({
+                tag: dataAssembly.Name,
+                description: 'inline TODO above',
+                dataItems: localDataItems,
+                identifier: dataAssembly.ID,
+                metaModelRef: dataAssembly.RefBaseSystemUnitPath
+            })) {
                 dataAssemblies.push(localeDataAssembly);
                 logger.info('Add DataAssembly <' + localeDataAssembly.getTagName() + '>');
             } else {

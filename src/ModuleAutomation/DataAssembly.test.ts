@@ -25,7 +25,9 @@ describe('class: BaseDataAssembly', () => {
         expect(dataAssembly.initialize({
             tag: 'Test-DataAssembly',
             description: 'It is a test!',
-            dataItems: []
+            dataItems: [],
+            identifier: 'Test-Identifier',
+            metaModelRef: 'Test-MetaModelRef'
         })).is.true;
     });
 });
