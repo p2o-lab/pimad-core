@@ -20,8 +20,13 @@ describe('class: BaseDataAssembly', () => {
     it('method: getCommunication()', () => {
         expect(typeof dataAssembly.getCommunication()).is.equal(typeof new ErrorResponse());
     });
+    it('method: getIdentifier()', () => {
+        expect(dataAssembly.getIdentifier()).is.equal('');
+    })
+    it('method: getMetaModelRef()', () => {
+        expect(dataAssembly.getMetaModelRef()).is.equal('');
+    })
     it('method: initialize()', () => {
-        //const dataItems: DataItem[] = []
         expect(dataAssembly.initialize({
             tag: 'Test-DataAssembly',
             description: 'It is a test!',
@@ -29,6 +34,13 @@ describe('class: BaseDataAssembly', () => {
             identifier: 'Test-Identifier',
             metaModelRef: 'Test-MetaModelRef'
         })).is.true;
+        expect(dataAssembly.initialize({
+            tag: 'Test-DataAssembly',
+            description: 'It is a test!',
+            dataItems: [],
+            identifier: 'Test-Identifier',
+            metaModelRef: 'Test-MetaModelRef'
+        })).is.false;
     });
 });
 describe('class: BaseDataAssemblyFactory', () => {
