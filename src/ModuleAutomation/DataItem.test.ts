@@ -16,10 +16,26 @@ describe('class: BaseDataItem', () => {
         //TODO: OPCServerCommunication as option
         expect(dataItem.getCommunicationInterfaceData()).to.be.instanceOf(OPCUANodeCommunication)
     });
-    it('method: initialize()', () => {
-        expect(dataItem.initialize('', new OPCUANodeCommunication())).is.true;
-        expect(dataItem.initialize('', new OPCUANodeCommunication())).is.false;
+    describe('method: getIdentifier()', () => {
+        it('test case: standard usage', () => {
+            expect(dataItem.getIdentifier()).is.equal('');
+        });
     });
+    describe('method: getMetaModelRef()', () => {
+        it('test case: standard usage', () => {
+            expect(dataItem.getMetaModelRef()).is.equal('');
+        });
+    });
+    describe('method: initialize()', () => {
+        it('test case: init twice', () => {
+            expect(dataItem.initialize('', new OPCUANodeCommunication(), '', '')).is.true;
+            expect(dataItem.initialize('', new OPCUANodeCommunication(), '', '')).is.false;
+        });
+        it('test case: standard usage', () => {
+            expect(dataItem.initialize('Test-Name', new OPCUANodeCommunication(), 'Test-Identifier', 'Test-MetaModelRef')).is.true;
+
+        });
+    })
 });
 describe('class: BaseDataItemFactory', () => {
     it('method: create()', () => {

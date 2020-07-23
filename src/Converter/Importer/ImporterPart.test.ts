@@ -2,24 +2,33 @@ import {expect} from 'chai';
 import {HMIPart, MTPPart, ServicePart, TextPart} from './ImporterPart';
 import {ErrorResponse, SuccessResponse} from '../../Backbone/Response';
 import * as communicationsSetData from '../../../test/Converter/testdata-CommunicationSet-parser-logic.json';
+import * as communicationsSetDataMixingDataStructure from '../../../test/Converter/testdata-CommunicationSet-mixing-data-structure.json';
+import * as dataAssemblyTestResultData from '../../../test/Converter/Results/test-result-DataAssembly.json';
+import * as communicationInterfaceDataTestResultData from '../../../test/Converter/Results/tes-result-CommunicationInterfaceData.json';
 import {OPCUAServerCommunication} from '../../ModuleAutomation/CommunicationInterfaceData';
+import {DataAssemblyFactory} from '../../ModuleAutomation/DataAssembly';
 
 describe('class: MTPPart', () => {
     let part = new MTPPart();
     beforeEach(() => {
         part = new MTPPart();
     })
-    it('method: extract()', () => {
-        part.extract({CommunicationSet: communicationsSetData, HMISet: {}, ServiceSet: {}, TextSet: {}},(response) => {
-            expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
-            const testData: {CommunicationInterfaceData?: OPCUAServerCommunication[]} = response.getContent();
-            if (testData.CommunicationInterfaceData == undefined) {
-                testData.CommunicationInterfaceData = [];
-            }
-            expect(testData.CommunicationInterfaceData?.length).is.equal(1);
-            const serverEndpoint: {name?: string; serverURL?: string} = testData.CommunicationInterfaceData[0].getDescription();
-            expect(serverEndpoint.name).is.equal('Test Control Engine OPC UA Server');
-            expect(serverEndpoint.serverURL).is.equal('opc.tcp://127.0.0.1:4840');
+    describe('method: extract()', () => {
+        it('test case: standard way', () => {
+            part.extract({CommunicationSet: communicationsSetData, HMISet: {}, ServiceSet: {}, TextSet: {}},(response) => {
+                expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
+                const testData: {CommunicationInterfaceData?: OPCUAServerCommunication[]; DataAssemblies?: DataAssemblyFactory[]} = response.getContent();
+                expect(JSON.stringify(testData.CommunicationInterfaceData)).is.equal(JSON.stringify(communicationInterfaceDataTestResultData));
+                expect(JSON.stringify(testData.DataAssemblies)).is.equal(JSON.stringify(dataAssemblyTestResultData));
+            })
+        })
+        it('test case: mixing data structure', () => {
+            part.extract({CommunicationSet: communicationsSetDataMixingDataStructure, HMISet: {}, ServiceSet: {}, TextSet: {}},(response) => {
+                expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
+                const testData: {CommunicationInterfaceData?: OPCUAServerCommunication[]; DataAssemblies?: DataAssemblyFactory[]} = response.getContent();
+                expect(JSON.stringify(testData.CommunicationInterfaceData)).is.equal(JSON.stringify(communicationInterfaceDataTestResultData));
+                expect(JSON.stringify(testData.DataAssemblies)).is.equal(JSON.stringify(dataAssemblyTestResultData));
+            })
         })
     })
 });

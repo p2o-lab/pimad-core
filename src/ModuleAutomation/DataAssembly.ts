@@ -6,8 +6,10 @@ export interface DataAssembly {
     getInterfaceClass(): Response; //any; //not defined yet
     getTagDescription(): string;
     getTagName(): string;
+    getIdentifier(): string;
+    getMetaModelRef(): string;
     getCommunication(): Response; //any[] //not defined yet
-    initialize(): boolean;
+    initialize(instructions: object): boolean;
 }
 
 abstract class ADataAssembly implements DataAssembly{
@@ -16,6 +18,8 @@ abstract class ADataAssembly implements DataAssembly{
     protected tagDescription: string;
     protected tagName: string;
     protected initialized: boolean;
+    protected identifier: string;
+    protected metaModelRef: string;
     protected responseVendor: ResponseVendor;
 
     constructor() {
@@ -23,6 +27,8 @@ abstract class ADataAssembly implements DataAssembly{
         this.tagDescription='';
         this.tagName='';
         this.initialized = false;
+        this.identifier = '';
+        this.metaModelRef = '';
         this.responseVendor = new ResponseVendor();
     }
     getInterfaceClass(): Response {
@@ -34,16 +40,42 @@ abstract class ADataAssembly implements DataAssembly{
     getTagName(): string {
         return this.tagName;
     }
+    getIdentifier(): string {
+        return this.identifier;
+    };
+    getMetaModelRef(): string {
+        return this.metaModelRef;
+    };
     getCommunication(): Response {
         return this.responseVendor.buyErrorResponse();
     }
-    initialize(): boolean {
+    abstract initialize(instructions: object): boolean ;
+    /*{
         //add INIT-Operations here
         this.initialized=true;
-        return this.initialized;
-    }
+        return true;
+    }*/
 }
 export class BaseDataAssembly extends ADataAssembly {
+    initialize(instructions: {tag: string; description: string; dataItems: DataItem[]; identifier: string; metaModelRef: string}): boolean {
+        if (!this.initialized) {
+            this.tagName = instructions.tag;
+            this.tagDescription = instructions.description;
+            this.dataItems = instructions.dataItems;
+            this.identifier = instructions.identifier;
+            this.metaModelRef = instructions.metaModelRef;
+            this.initialized = (
+                this.tagName === instructions.tag &&
+                this.tagDescription == instructions.description &&
+                JSON.stringify(this.dataItems) === JSON.stringify(instructions.dataItems) &&
+                this.identifier === instructions.identifier &&
+                this.metaModelRef === instructions.metaModelRef
+            );
+            return this.initialized;
+        } else {
+            return false;
+        }
+    }
 }
 
 export interface DataAssemblyFactory {
@@ -70,11 +102,11 @@ abstract class AOperation extends ADataAssembly {
 }
 
 export interface Actuator extends DataAssembly {
-    initialize(): boolean;
+    initialize(instructions: object): boolean;
 }
 
 export interface Sensor extends DataAssembly {
-    initialize(): boolean;
+    initialize(instructions: object): boolean;
 }
 
 abstract class AActive extends ADataAssembly implements Actuator{

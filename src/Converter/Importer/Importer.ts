@@ -3,8 +3,8 @@ import {logger} from '../../Utils/Logger';
 import {BasicSemanticVersion, SemanticVersion} from '../../Backbone/SemanticVersion';
 import {HMIPart, ImporterPart, MTPPart, ServicePart, TextPart} from './ImporterPart';
 import {AMLGateFactory, MTPGateFactory, XMLGateFactory, ZIPGateFactory} from '../Gate/GateFactory';
-import {CAEXFile} from 'PiMAd-types';
 import {InstanceHierarchy} from 'AML';
+import { CAEXFile } from 'PiMAd-types';
 abstract class AImporter implements  Importer {
 
     protected initialized: boolean;
@@ -94,8 +94,8 @@ export class MTPFreeze202001Importer extends AImporter {
 
     /**
      *
-     * @param instructions
-     * @param callback
+     * @param instructions - To do.
+     * @param callback - To do.
      */
     private followInstructions(instructions: {source: string}, callback: (response: Response) => void): void {
         // Instructions
@@ -153,8 +153,8 @@ export class MTPFreeze202001Importer extends AImporter {
 
     /** Uff... actually there is no real possibility to check IM of MTP. Missing SemVer. Therefore passing to the
      * next stage.
-     * @param data
-     * @param callback
+     * @param data - To do.
+     * @param callback - To do.
      */
     private checkInformationModel(data: CAEXFile, callback: (response: Response) => void): void {
         this.convert(data, response => {

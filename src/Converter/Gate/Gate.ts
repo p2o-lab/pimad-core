@@ -20,21 +20,21 @@ abstract class AGate implements Gate {
         this.gateAddress = undefined;
         this.responseVendor = new ResponseVendor();
     }
-    /** @inheritDoc */
+
     public send(instructions: object, callback: (response: Response) => void): void {
         const localResponse = this.responseVendor.buyErrorResponse()
         localResponse.initialize('Not implemented yet!', {})
         callback(localResponse)
     };
-    /** @inheritDoc */
+
     abstract receive(instructions: object, callback: (response: Response) => void): void;
     /*abstract open(): Response;
     abstract close(): Response;*/
-    /** @inheritDoc */
+
     getGateAddress(): string | undefined {
         return this.gateAddress;
     };
-    /** @inheritDoc */
+
     initialize(address: string): boolean {
         if (!this.initialized) {
             this.gateAddress = address;
@@ -197,7 +197,6 @@ export class ZIPGate extends AFileSystemGate {
     private xmlGateFactory: XMLGateFactory;
     private amlGateFactory: AMLGateFactory;
 
-    /** @inheritDoc */
     receive(instructions: object, callback: (response: Response) => void): void {
         if(this.initialized) {
             const zipHandler = new AdmZip(this.gateAddress);
@@ -297,14 +296,14 @@ export interface Gate {
     //close(): Response;
     /**
      * Get the address of the gate.
-     * @return Returns the address of the gate.
+     * @returns Returns the address of the gate.
      */
     getGateAddress(): string | undefined;
 
     /**
      * Initialize the gate. The gates won't work without initialisation.
-     * @param address The address of the Gate.
-     * @return A successful initialisation returns a true. A bad one returns a false.
+     * @param address - The address of the Gate.
+     * @returns A successful initialisation returns a true. A bad one returns a false.
      */
     initialize(address: string): boolean;
 }
