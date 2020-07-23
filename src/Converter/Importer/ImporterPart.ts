@@ -37,8 +37,8 @@ export class MTPPart extends AImporterPart {
 
     /**
      * Parsing the relevant data of the ModuleTypePackage-object and copy that to different instances of PiMAd-core-IM.
-     * @param data The bare ModuleTypePackage-object of the MTP. Containing a CommunicationSet, HMISet, ServiceSet and TextSet.
-     * @param callback A callback function with an instance of the Response-Interface.
+     * @param data - The bare ModuleTypePackage-object of the MTP. Containing a CommunicationSet, HMISet, ServiceSet and TextSet.
+     * @param callback - A callback function with an instance of the Response-Interface.
      */
     extract(data: {CommunicationSet: object[]; HMISet: object; ServiceSet: object; TextSet: object}, callback: (response: Response) => void): void {
         const communicationSet = this.buildCommunicationSet(data.CommunicationSet);
@@ -61,7 +61,7 @@ export class MTPPart extends AImporterPart {
 
     /**
      * Initialize all relevant Data of 'MTP-CommunicationSet' as instances of PiMAd-core-IM.
-     * @param communicationSet The bare CommunicationSet-object of the MTP.
+     * @param communicationSet - The bare CommunicationSet-object of the MTP.
      */
     private buildCommunicationSet(communicationSet: object[]): {
         CommunicationInterfaceData: CommunicationInterfaceData[];
@@ -198,8 +198,8 @@ export class TextPart extends AImporterPart {
 export interface ImporterPart {
     /**
      * Extracts data based on a specific information model and converts it into the internal data model of PiMAd.
-     * @param data The data source.
-     * @param callback Return the results via callback-function.
+     * @param data - The data source.
+     * @param callback - Return the results via callback-function.
      */
     extract(data: object, callback: (response: Response) => void): void;
 }
