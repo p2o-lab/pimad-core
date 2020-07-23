@@ -1,32 +1,34 @@
 import {BaseProcedureFactory, BaseProcedure} from './Procedure';
 import {expect} from 'chai';
 import {BaseParameter} from './Parameter';
+import {DataAssembly} from './DataAssembly';
 
 describe('class: BaseProcedure', () => {
     let procedure: BaseProcedure;
     beforeEach(function () {
         procedure = new BaseProcedure();
     });
+    it('method: getAllAttributes()', () => {
+        expect(JSON.stringify(procedure.getAllAttributes())).is.equal(JSON.stringify([]));
+    });
     it('method: getAllParameters()', () => {
         expect(typeof procedure.getAllParameters()).is.equal(typeof new BaseParameter());
     });
-    it('method: getID()', () => {
-        expect( typeof procedure.getIdentifier()).is.equal(typeof 0);
+    it('method: getIdentifier()', () => {
+        expect(procedure.getIdentifier()).is.equal('identifier: not-initialized');
     });
     it('method: getName()', () => {
-        expect(typeof procedure.getName()).is.equal(typeof '');
+        expect(procedure.getName()).is.equal('name: not-initialized');
     });
-    it('method: getDefault()', () => {
-        expect(typeof procedure.getDefault()).is.equal(typeof true);
-    });
-    it('method: getSc()', () => {
-        expect(typeof procedure.getSc()).is.equal(typeof true);
+    it('method: getMetaModelRef()', () => {
+        expect(procedure.getMetaModelRef()).is.equal('metaModelRef: not-initialized');
     });
     it('method: getParameter()', () => {
-        expect(typeof procedure.getParameter('')).is.equal(typeof undefined);
+        //expect(typeof procedure.getParameter('')).is.equal(typeof undefined);
     });
     it('method: initialize()', () => {
-        expect(procedure.initialize(1,'',true,true,[])).is.true;
+        expect(procedure.initialize({} as DataAssembly,'','','',[], [])).is.true;
+        expect(procedure.initialize({} as DataAssembly,'','','',[], [])).is.false;
     });
 });
 describe('class: BaseProcedureFactory', () => {
