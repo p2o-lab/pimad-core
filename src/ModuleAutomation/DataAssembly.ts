@@ -6,6 +6,8 @@ export interface DataAssembly {
     getInterfaceClass(): Response; //any; //not defined yet
     getTagDescription(): string;
     getTagName(): string;
+    getIdentifier(): string;
+    getMetaModelRef(): string;
     getCommunication(): Response; //any[] //not defined yet
     initialize(instructions: object): boolean;
 }
@@ -38,14 +40,21 @@ abstract class ADataAssembly implements DataAssembly{
     getTagName(): string {
         return this.tagName;
     }
+    getIdentifier(): string {
+        return this.identifier;
+    };
+    getMetaModelRef(): string {
+        return this.metaModelRef;
+    };
     getCommunication(): Response {
         return this.responseVendor.buyErrorResponse();
     }
-    initialize(instructions: object): boolean {
+    abstract initialize(instructions: object): boolean ;
+    /*{
         //add INIT-Operations here
         this.initialized=true;
-        return this.initialized;
-    }
+        return true;
+    }*/
 }
 export class BaseDataAssembly extends ADataAssembly {
     initialize(instructions: {tag: string; description: string; dataItems: DataItem[]; identifier: string; metaModelRef: string}): boolean {
