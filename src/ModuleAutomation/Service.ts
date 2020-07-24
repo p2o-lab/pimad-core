@@ -15,12 +15,12 @@ export interface Service {
     getDataAssembly(): Response; */
     /**
      * Getter for this.name of the service object.
-     * @returns A response object. {content: {data: <name>}}
+     * @returns A response object.
      */
     getName(): Response;
     /**
      * Getter for this.metaModelRef of the service object.
-     * @returns A response object. {content: {data: <metamodel reference>>}}
+     * @returns A response object.
      */
     getMetaModelReference(): Response;
     /**
