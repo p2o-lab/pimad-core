@@ -1,6 +1,5 @@
 import {BaseServiceFactory, BaseService} from './Service';
 import {expect} from 'chai';
-import {ErrorResponse} from '../Backbone/Response';
 import {BaseParameter} from './Parameter';
 import {BaseDataAssembly, DataAssembly} from './DataAssembly';
 import {Attribute} from 'AML';
@@ -35,6 +34,9 @@ describe('class: BaseService', () => {
             const procedure1 = new BaseProcedure();
             procedure1.initialize({} as DataAssembly, '','', 'Test-Procedure1', [],[]);
             service.initialize(attributes, dataAssembly,'Test-Identifier','Test-MetaModelRef','Test-Name', [parameter, parameter2], [procedure0, procedure1]);
+        });
+        it('method: getDataAssembly()', () => {
+            expect((service.getDataAssembly().getContent() as {data: DataAssembly}).data.getTagName()).is.equal('Test-DataAssembly');
         });
         it('method: getMetaModelRef()', () => {
             expect(JSON.stringify(service.getMetaModelReference().getContent())).is.equal(JSON.stringify({data: 'Test-MetaModelRef'}));

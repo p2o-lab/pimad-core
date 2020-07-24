@@ -11,8 +11,12 @@ export interface Service {
     getAllParameters(): Response;
     getAttribute(tag: string, callback: (response: Response) => void): void;
     getParameter(tag: string, callback: (response: Response) => void): void;
-    getProcedure(tag: string, callback: (response: Response) => void): void;
-    getDataAssembly(): Response; */
+    getProcedure(tag: string, callback: (response: Response) => void): void;*/
+    /**
+     * Getter for this.dataAssembly of the service object.
+     * @returns A response object.
+     */
+    getDataAssembly(): Response;
     /**
      * Getter for this.name of the service object.
      * @returns A response object.
@@ -78,6 +82,11 @@ abstract class AService implements Service{
     getParameter(tag: string): Response{
         return this.responseVendor.buyErrorResponse();
     }*/
+    getDataAssembly(): Response {
+        const response = this.responseVendor.buySuccessResponse();
+        response.initialize('Success!', {data: this.dataAssembly});
+        return response
+    };
     getMetaModelReference(): Response {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('Success!', {data: this.metaModelRef});
