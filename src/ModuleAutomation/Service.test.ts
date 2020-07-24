@@ -34,10 +34,13 @@ describe('class: BaseService', () => {
             procedure0.initialize({} as DataAssembly, '','', 'Test-Procedure0', [],[]);
             const procedure1 = new BaseProcedure();
             procedure1.initialize({} as DataAssembly, '','', 'Test-Procedure1', [],[]);
-            service.initialize(attributes, dataAssembly,'Test-Identifier','Test-MetaModelRef','Test-Service', [parameter, parameter2], [procedure0, procedure1]);
+            service.initialize(attributes, dataAssembly,'Test-Identifier','Test-MetaModelRef','Test-Name', [parameter, parameter2], [procedure0, procedure1]);
         });
         it('method: getMetaModelRef()', () => {
             expect(JSON.stringify(service.getMetaModelReference().getContent())).is.equal(JSON.stringify({data: 'Test-MetaModelRef'}));
+        });
+        it('method: getName()', () => {
+            expect(JSON.stringify(service.getName().getContent())).is.equal(JSON.stringify({data: 'Test-Name'}));
         });
     })
     /*it('method: getAllCommunicationInterfaceData()', () => {

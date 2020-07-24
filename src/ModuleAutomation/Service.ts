@@ -12,11 +12,15 @@ export interface Service {
     getAttribute(tag: string, callback: (response: Response) => void): void;
     getParameter(tag: string, callback: (response: Response) => void): void;
     getProcedure(tag: string, callback: (response: Response) => void): void;
-    getDataAssembly(): Response;
-    getName(): Response;*/
+    getDataAssembly(): Response; */
+    /**
+     * Getter for this.name of the service object.
+     * @returns A response object. {content: {data: <name>}}
+     */
+    getName(): Response;
     /**
      * Getter for this.metaModelRef of the service object.
-     * @returns A response object. {content: {data: Meta-Model-Reference}}
+     * @returns A response object. {content: {data: <metamodel reference>>}}
      */
     getMetaModelReference(): Response;
     /**
@@ -73,16 +77,17 @@ abstract class AService implements Service{
     }
     getParameter(tag: string): Response{
         return this.responseVendor.buyErrorResponse();
-    }
-    getName(): string {
-        return this.name;
     }*/
     getMetaModelReference(): Response {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('Success!', {data: this.metaModelRef});
         return response
-    }
-
+    };
+    getName(): Response {
+        const response = this.responseVendor.buySuccessResponse();
+        response.initialize('Success!', {data: this.name});
+        return response
+    };
     initialize(attributes: Attribute[], dataAssembly: DataAssembly, identifier: string, metaModelRef: string, name: string, parameter: Parameter[], procedure: Procedure[]): boolean {
         if(!this.initialized) {
             this.attributes = attributes;
@@ -104,7 +109,7 @@ abstract class AService implements Service{
         } else {
             return false;
         }
-    }
+    };
 }
 export class BaseService extends AService {
 }
