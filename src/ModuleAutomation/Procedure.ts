@@ -5,14 +5,49 @@ import {Response, ResponseVendor} from '../Backbone/Response';
 import {Attribute} from 'AML';
 
 export interface Procedure {
+    /**
+     * Get all attributes of this procedure.
+     */
     getAllAttributes(): Attribute[];
+
+    /**
+     * Get all parameters of this procedure.
+     */
     getAllParameters(): Parameter[];
+
+    /**
+     * Get a specific attribute of this procedure.
+     * @param name - The name of the attribute.
+     * @param callback - A callback function. Use an instance of the interface Response as input.
+     */
     getAttribute(name: string, callback: (response: Response) => void): void;
+
+    /**
+     * Get the DataAssembly-object of this procedure.
+     */
     getDataAssembly(): DataAssembly;
+
+    /**
+     * Get the identifier of this procedure.
+     */
     getIdentifier(): string;
+
+    /**
+     * Get the metamodel reference of this procedure.
+     */
     getMetaModelRef(): string;
+
+    /**
+     * Get the name of this procedure.
+     */
     getName(): string;
-    getParameter(tag: string, callback: (response: Response) => void): void;
+
+    /**
+     * Get a specific parameter of this procedure.
+     * @param name - The name of the parameter.
+     * @param callback - A callback function. Use an instance of the interface PiMAd-core/src/Backbone/Response as input.
+     */
+    getParameter(name: string, callback: (response: Response) => void): void;
     initialize(dataAssembly: DataAssembly, identifier: string, metaModelRef: string, name: string, attributes: Attribute[], para: Parameter[]): boolean;
 }
 
@@ -42,7 +77,7 @@ abstract class AProcedure implements Procedure {
     getAllParameters(): Parameter[] {
         return this.parameters;
     }
-    getAttribute(name: string, callback: (response: Response) => void) {
+    getAttribute(name: string, callback: (response: Response) => void): void {
         this.attributes.forEach((attribute: Attribute) => {
             if(attribute.Name === name) {
                 const response = this.responseVendor.buySuccessResponse();
@@ -68,7 +103,7 @@ abstract class AProcedure implements Procedure {
     getName(): string {
         return this.name;
     }
-    getParameter(tag: string, callback: (response: Response) => void) {
+    getParameter(tag: string, callback: (response: Response) => void): void {
         this.parameters.forEach((parameter: Parameter) => {
             if(parameter.getName() === tag) {
                 const response = this.responseVendor.buySuccessResponse();
