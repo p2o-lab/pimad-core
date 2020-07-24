@@ -14,7 +14,13 @@ describe('class: BaseProcedure', () => {
     describe('check getter', () => {
         beforeEach(function () {
             const dataAssembly = new BaseDataAssembly();
-            dataAssembly.initialize({tag: 'Test-DataAssembly', description: '', metaModelRef: '', identifier: '', dataItems: []});
+            dataAssembly.initialize({
+                tag: 'Test-DataAssembly',
+                description: '',
+                metaModelRef: '',
+                identifier: '',
+                dataItems: []
+            });
             const attributes: Attribute[] = [
                 {Name: 'Test-Attribute0', AttributeDataType: '', Value:''},
                 {Name: 'Test-Attribute1', AttributeDataType: '', Value:'1'},
