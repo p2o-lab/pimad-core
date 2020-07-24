@@ -2,8 +2,7 @@ import {logger} from '../Utils/Logger';
 import {Parameter} from './Parameter';
 import {DataAssembly} from './DataAssembly';
 import {Response, ResponseVendor} from '../Backbone/Response';
-import { Attribute } from 'AML';
-//import { Attribute } from 'AML';
+import {Attribute} from 'AML';
 
 export interface Procedure {
     getAllAttributes(): Attribute[];
@@ -32,9 +31,9 @@ abstract class AProcedure implements Procedure {
         this.dataAssembly = {} as DataAssembly;
         this.identifier = 'identifier: not-initialized';
         this.metaModelRef = 'metaModelRef: not-initialized';
-        this.name= 'name: not-initialized';
-        this.parameters= [];
-        this.initialized= false;
+        this.name = 'name: not-initialized';
+        this.parameters = [];
+        this.initialized = false;
         this.responseVendor = new ResponseVendor();
     }
     getAllAttributes(): Attribute[] {
@@ -78,7 +77,7 @@ abstract class AProcedure implements Procedure {
             }
             if(parameter === this.parameters[this.parameters.length -1]) {
                 const response = this.responseVendor.buyErrorResponse();
-                response.initialize('Could not find parameter <' + name + '> in procedure <' + this.name + '>', {})
+                response.initialize('Could not find parameter <' + tag + '> in procedure <' + this.name + '>', {})
                 callback(response)
             }
         })
