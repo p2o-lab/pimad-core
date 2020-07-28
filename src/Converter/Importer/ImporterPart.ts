@@ -4,11 +4,11 @@ import {
     OPCUAServerCommunicationFactory
 } from '../../ModuleAutomation/CommunicationInterfaceData';
 import { DataAssembly,BaseDataAssemblyFactory} from '../../ModuleAutomation/DataAssembly';
-import { DataItemInstanceList, DataItemSourceList, DataItemSourceListExternalInterface, Attribute, Service, ServiceInternalElement } from 'AML';
+import { DataItemInstanceList, DataItemSourceList, DataItemSourceListExternalInterface, Attribute, ServiceInternalElement } from 'AML';
 import { InstanceList, SourceList } from 'PiMAd-types';
 import {logger} from '../../Utils/Logger';
 import {BaseDataItemFactory, DataItem} from '../../ModuleAutomation/DataItem';
-import {BaseProcedureFactory, Procedure} from '../../ModuleAutomation/Procedure';
+import {BaseProcedureFactory} from '../../ModuleAutomation/Procedure';
 import {Parameter} from '../../ModuleAutomation/Parameter';
 
 abstract class AImporterPart implements ImporterPart {
@@ -198,10 +198,11 @@ export class MTPPart extends AImporterPart {
  */
 export class ServicePart extends AImporterPart {
     private baseProcedureFactory: BaseProcedureFactory;
+
     /**
-     *
-     * @param data
-     * @param callback
+     * Parsing the relevant data of \<MTPServiceSUCLib/Service\> and copy that to different instances of PiMAd-core-IM.
+     * @param data - All service data as object.
+     * @param callback - A callback function with an instance of the Response-Interface.
      */
     extract(data: ServicePartExtractInputDataType, callback: (response: Response) => void): void {
         const localResponse = this.responseVendor.buySuccessResponse();
@@ -252,9 +253,9 @@ export class ServicePart extends AImporterPart {
                             localProcedure.Attributes = response.getContent() as Attribute[];
                         }))
                         localService.Procedures.push(localProcedure);
-                        // TODO: Missing Procedure-Parameter!!
+                        // TODO: Missing Procedure-Parameters
                         break;
-                    //case 'TODO: Service-Parameters'
+                    //case 'TODO: Missing Service-Parameters'
                     default:
                         logger.warn('Unknown >InternalElement< in service <' + amlService.Name + '> Ignoring!');
                         break;
@@ -268,6 +269,13 @@ export class ServicePart extends AImporterPart {
             }
         })
     }
+
+    /**
+     * Extract a specific attribute from an Attribute Array. F.ex. the RefID-Attribute.
+     * @param attributeName - The name of the attribute.
+     * @param attributes - The attributes array.
+     * @param callback - A callback function with an instance of the Response-Interface.
+     */
     private getAttribute(attributeName: string, attributes: Attribute[], callback: (response: Response) => void): void {
         attributes.forEach((attribute: Attribute) => {
             if(attribute.Name === attributeName) {
@@ -277,6 +285,12 @@ export class ServicePart extends AImporterPart {
             }
         })
     }
+
+    /**
+     * Transforming AML-Attributes into AML-Attributes. Ignoring specific one. f. ex. RefID. Needs a Refactor -\> PiMAd needs an attribute interface too!
+     * @param attributes - The attributes array.
+     * @param callback - A callback function with an instance of the Response-Interface.
+     */
     private extractAttributes(attributes: Attribute[], callback: (response: Response) => void): void {
         const responseAttributes: Attribute[] = []
         attributes.forEach((attribute: Attribute) => {
@@ -332,5 +346,5 @@ export type ServicePartExtractInputDataType = {
     Name: string;
     ID: string;
     Version: string;
-    InternalElement: object[]
+    InternalElement: object[];
 }
