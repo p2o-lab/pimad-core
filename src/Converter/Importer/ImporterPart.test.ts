@@ -1,11 +1,11 @@
 import {expect} from 'chai';
-import {HMIPart, MTPPart, ServicePart, TextPart} from './ImporterPart';
+import {HMIPart, InternalServiceType, MTPPart, ServicePart, TextPart} from './ImporterPart';
 import {ErrorResponse, SuccessResponse} from '../../Backbone/Response';
 import * as communicationsSetData from '../../../test/Converter/testdata-CommunicationSet-parser-logic.json';
 import * as communicationsSetDataMixingDataStructure from '../../../test/Converter/testdata-CommunicationSet-mixing-data-structure.json';
 import * as dataAssemblyTestResultData from '../../../test/Converter/Results/test-result-DataAssembly.json';
 import * as communicationInterfaceDataTestResultData from '../../../test/Converter/Results/tes-result-CommunicationInterfaceData.json';
-import * as servicePart from '../../../test/Converter/testdata-ServicePart.json';
+import * as servicePartData from '../../../test/Converter/testdata-ServicePart.json';
 import {OPCUAServerCommunication} from '../../ModuleAutomation/CommunicationInterfaceData';
 import {DataAssemblyFactory} from '../../ModuleAutomation/DataAssembly';
 
@@ -66,9 +66,10 @@ describe('class: ServicePart', () => {
         part = new ServicePart();
     })
     it('method: extract()', () => {
-        part.extract({},(response) => {
-            expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
-            expect(response.getMessage()).is.equal('Not implemented yet!');
+        part.extract(servicePartData,(response) => {
+            expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
+            const testData = response.getContent() as InternalServiceType[];
+            expect(testData.length).is.equal(2);
         })
     })
 });
