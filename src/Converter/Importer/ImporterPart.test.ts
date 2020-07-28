@@ -5,6 +5,7 @@ import * as communicationsSetData from '../../../test/Converter/testdata-Communi
 import * as communicationsSetDataMixingDataStructure from '../../../test/Converter/testdata-CommunicationSet-mixing-data-structure.json';
 import * as dataAssemblyTestResultData from '../../../test/Converter/Results/test-result-DataAssembly.json';
 import * as communicationInterfaceDataTestResultData from '../../../test/Converter/Results/tes-result-CommunicationInterfaceData.json';
+import * as servicePart from '../../../test/Converter/testdata-ServicePart.json';
 import {OPCUAServerCommunication} from '../../ModuleAutomation/CommunicationInterfaceData';
 import {DataAssemblyFactory} from '../../ModuleAutomation/DataAssembly';
 
@@ -64,7 +65,7 @@ describe('class: ServicePart', () => {
     beforeEach(() => {
         part = new ServicePart();
     })
-    it('method: convertFrom()', () => {
+    it('method: extract()', () => {
         part.extract({},(response) => {
             expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
             expect(response.getMessage()).is.equal('Not implemented yet!');

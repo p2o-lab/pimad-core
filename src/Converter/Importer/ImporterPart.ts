@@ -191,6 +191,9 @@ export class MTPPart extends AImporterPart {
         this.baseDataItemFactory = new BaseDataItemFactory();
     }
 }
+/**
+ * Handles the 'ServicePart' of the ModuleTypePackage file.
+ */
 export class ServicePart extends AImporterPart {
 
 }
