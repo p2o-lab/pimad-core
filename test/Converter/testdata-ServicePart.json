@@ -7,11 +7,17 @@
       "Name": "RageAgainstTheMachine",
       "ID": "id-1",
       "RefBaseSystemUnitPath": "MTPServiceSUCLib/Service",
-      "Attribute": {
-        "Name": "RefID",
-        "AttributeDataType": "xs:ID",
-        "Value": "refid-0"
-      },
+      "Attribute": [
+        {
+          "Name": "Test-Attribute",
+          "AttributeDataType": "xs:boolean",
+          "Value": "true"
+        },
+        {
+          "Name": "RefID",
+          "AttributeDataType": "xs:ID",
+          "Value": "refid-0"
+      }],
       "InternalElement": [
         {
           "Name": "Testefy",
@@ -66,6 +72,13 @@
               "Value": "refid-2"
             }
           ]
+        },
+        {
+          "Name": "Ignoring0"
+        },
+        {
+          "Name": "Ignoring0",
+          "RefBaseSystemUnitPath": "Molotov cocktail of punk, hip-hop, and trash"
         }
       ]
     },
