@@ -6,10 +6,22 @@ import {Procedure} from './Procedure';
 import { Attribute } from 'AML';
 
 export interface Service {
-    /*getAllAttributes(): Response;
+    /**
+     * Getter for this.attributes of the service object.
+     * @returns A response object.
+     */
+    getAllAttributes(): Response;
+    /**
+     * Getter for this.procedures of the service object.
+     * @returns A response object.
+     */
     getAllProcedures(): Response;
+    /**
+     * Getter for this.parameters of the service object.
+     * @returns A response object.
+     */
     getAllParameters(): Response;
-    getAttribute(tag: string, callback: (response: Response) => void): void;
+    /*getAttribute(tag: string, callback: (response: Response) => void): void;
     getParameter(tag: string, callback: (response: Response) => void): void;
     getProcedure(tag: string, callback: (response: Response) => void): void;*/
     /**
@@ -62,41 +74,44 @@ abstract class AService implements Service{
         this.parameters = [];
         this.initialized = false;
         this.responseVendor = new ResponseVendor();
+    };
+
+    getAllAttributes(): Response {
+        const response = this.responseVendor.buySuccessResponse();
+        response.initialize('Success!', {data: this.attributes});
+        return response;
+    };
+
+    getAllProcedures(): Response {
+        const response = this.responseVendor.buySuccessResponse();
+        response.initialize('Success!', {data: this.procedures});
+        return response;
     }
-    /*getAllCommunicationInterfaceData(): Response{
-        return this.responseVendor.buyErrorResponse();
+
+    getAllParameters(): Response {
+        const response = this.responseVendor.buySuccessResponse();
+        response.initialize('Success!', {data: this.parameters});
+        return response;
     }
-    getAllProcedures(): Response{
-        return this.responseVendor.buyErrorResponse();
-        //return this.procedures;
-    }
-    getAllParameters(): Parameter[]{
-        return this.parameters;
-    }
-    getCommunicationInterfaceData(tag: string): Response{
-        return this.responseVendor.buyErrorResponse();
-    }
-    getProcedure(tag: string): Response{
-        return this.responseVendor.buyErrorResponse();
-    }
-    getParameter(tag: string): Response{
-        return this.responseVendor.buyErrorResponse();
-    }*/
+
     getDataAssembly(): Response {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('Success!', {data: this.dataAssembly});
-        return response
+        return response;
     };
+
     getMetaModelReference(): Response {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('Success!', {data: this.metaModelRef});
-        return response
+        return response;
     };
+
     getName(): Response {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('Success!', {data: this.name});
-        return response
+        return response;
     };
+
     initialize(attributes: Attribute[], dataAssembly: DataAssembly, identifier: string, metaModelRef: string, name: string, parameter: Parameter[], procedure: Procedure[]): boolean {
         if(!this.initialized) {
             this.attributes = attributes;
