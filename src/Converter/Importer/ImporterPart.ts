@@ -4,10 +4,12 @@ import {
     OPCUAServerCommunicationFactory
 } from '../../ModuleAutomation/CommunicationInterfaceData';
 import { DataAssembly,BaseDataAssemblyFactory} from '../../ModuleAutomation/DataAssembly';
-import { DataItemInstanceList, DataItemSourceList, DataItemSourceListExternalInterface, Attribute } from 'AML';
+import { DataItemInstanceList, DataItemSourceList, DataItemSourceListExternalInterface, Attribute, ServiceInternalElement } from 'AML';
 import { InstanceList, SourceList } from 'PiMAd-types';
 import {logger} from '../../Utils/Logger';
 import {BaseDataItemFactory, DataItem} from '../../ModuleAutomation/DataItem';
+import {BaseProcedureFactory} from '../../ModuleAutomation/Procedure';
+import {Parameter} from '../../ModuleAutomation/Parameter';
 
 abstract class AImporterPart implements ImporterPart {
     protected responseVendor: ResponseVendor
@@ -191,8 +193,125 @@ export class MTPPart extends AImporterPart {
         this.baseDataItemFactory = new BaseDataItemFactory();
     }
 }
+/**
+ * Handles the 'ServicePart' of the ModuleTypePackage file.
+ */
 export class ServicePart extends AImporterPart {
+    private baseProcedureFactory: BaseProcedureFactory;
 
+    /**
+     * Parsing the relevant data of \<MTPServiceSUCLib/Service\> and copy that to different instances of PiMAd-core-IM.
+     * @param data - All service data as object.
+     * @param callback - A callback function with an instance of the Response-Interface.
+     */
+    extract(data: ServicePartExtractInputDataType, callback: (response: Response) => void): void {
+        const localResponse = this.responseVendor.buySuccessResponse();
+        const extractedServiceData: InternalServiceType[] = []
+        const services = data.InternalElement as ServiceInternalElement[]
+        services.forEach((amlService: ServiceInternalElement) => {
+            let localAMLServiceAttributes: Attribute[] = [];
+            if(!Array.isArray(amlService.Attribute)) {
+                localAMLServiceAttributes.push(amlService.Attribute as Attribute);
+            } else {
+                localAMLServiceAttributes = amlService.Attribute;
+            }
+
+            const localService = {} as InternalServiceType;
+            localService.Attributes = [];
+            localService.Identifier = amlService.ID;
+            localService.MetaModelRef = amlService.RefBaseSystemUnitPath;
+            localService.Name = amlService.Name;
+            localService.Parameters = [];
+            localService.Procedures = [];
+            // extract the 'RefID'-Attribute
+            this.getAttribute('RefID', localAMLServiceAttributes, (response: Response) => {
+                if(response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
+                    localService.DataAssembly = response.getContent() as Attribute;
+                }
+            });
+            // extract all other attributes
+            this.extractAttributes(localAMLServiceAttributes, (response => {
+                localService.Attributes = response.getContent() as Attribute[];
+            }))
+            // extract all Procedures, etc
+            amlService.InternalElement.forEach((amlDataItem: DataItemInstanceList) => {
+                switch (amlDataItem.RefBaseSystemUnitPath) {
+                    case 'MTPServiceSUCLib/ServiceProcedure':
+                        const localProcedure = {} as InternalProcedureType
+                        localProcedure.Attributes = [];
+                        localProcedure.Identifier = amlDataItem.ID;
+                        localProcedure.MetaModelRef = amlDataItem.RefBaseSystemUnitPath;
+                        localProcedure.Name = amlDataItem.Name;
+                        localProcedure.Parameters = [];
+                        this.getAttribute('RefID', amlDataItem.Attribute, (response: Response) => {
+                            if(response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
+                                localProcedure.DataAssembly = response.getContent() as Attribute;
+                            }
+                        });
+                        // extract all the other Attributes
+                        this.extractAttributes(amlDataItem.Attribute, (response => {
+                            localProcedure.Attributes = response.getContent() as Attribute[];
+                        }))
+                        localService.Procedures.push(localProcedure);
+                        // TODO: Missing Procedure-Parameters
+                        break;
+                    //case 'TODO: Missing Service-Parameters'
+                    default:
+                        logger.warn('Unknown >InternalElement< in service <' + amlService.Name + '> Ignoring!');
+                        break;
+                }
+            })
+
+            extractedServiceData.push(localService);
+            if(amlService == data.InternalElement[data.InternalElement.length - 1]) {
+                localResponse.initialize('???', extractedServiceData);
+                callback(localResponse);
+            }
+        })
+    }
+
+    /**
+     * Extract a specific attribute from an Attribute Array. F.ex. the RefID-Attribute.
+     * @param attributeName - The name of the attribute.
+     * @param attributes - The attributes array.
+     * @param callback - A callback function with an instance of the Response-Interface.
+     */
+    private getAttribute(attributeName: string, attributes: Attribute[], callback: (response: Response) => void): void {
+        attributes.forEach((attribute: Attribute) => {
+            if(attribute.Name === attributeName) {
+                const localResponse = this.responseVendor.buySuccessResponse();
+                localResponse.initialize('Success!', attribute);
+                callback(localResponse)
+            }
+        })
+    }
+
+    /**
+     * Transforming AML-Attributes into AML-Attributes. Ignoring specific one. f. ex. RefID. Needs a Refactor -\> PiMAd needs an attribute interface too!
+     * @param attributes - The attributes array.
+     * @param callback - A callback function with an instance of the Response-Interface.
+     */
+    private extractAttributes(attributes: Attribute[], callback: (response: Response) => void): void {
+        const responseAttributes: Attribute[] = []
+        attributes.forEach((attribute: Attribute) => {
+            switch (attribute.Name) {
+                case 'RefID':
+                    break;
+                default:
+                    responseAttributes.push(attribute);
+            }
+            if(JSON.stringify(attribute) === JSON.stringify(attributes[attributes.length -1])) {
+                const localeResponse = this.responseVendor.buySuccessResponse();
+                localeResponse.initialize('Success!', responseAttributes);
+                callback(localeResponse)
+            }
+        })
+    }
+
+    constructor() {
+        super();
+        this.baseProcedureFactory = new BaseProcedureFactory();
+    }
 }
 export class TextPart extends AImporterPart {
 
@@ -208,4 +327,24 @@ export interface ImporterPart {
      * @param callback - Return the results via callback-function.
      */
     extract(data: object, callback: (response: Response) => void): void;
+}
+
+export type InternalServiceType = InternalProcedureType & {
+    Procedures: InternalProcedureType[];
+}
+
+export type InternalProcedureType = {
+    Attributes: Attribute[];
+    DataAssembly: Attribute;
+    Identifier: string;
+    MetaModelRef: string;
+    Name: string;
+    Parameters: Parameter[];
+}
+
+export type ServicePartExtractInputDataType = {
+    Name: string;
+    ID: string;
+    Version: string;
+    InternalElement: object[];
 }
