@@ -7,6 +7,12 @@ import { Attribute } from 'AML';
 
 export interface Service {
     /**
+     * Get a specific attribute of the service object.
+     * @param name - The name of the attribute.
+     * @param callback - A callback function. Use an instance of the interface Response as input.
+     */
+    getAttribute(name: string, callback: (response: Response) => void): void;
+    /**
      * Getter for this.attributes of the service object.
      * @returns A response object.
      */
@@ -21,9 +27,6 @@ export interface Service {
      * @returns A response object.
      */
     getAllParameters(): Response;
-    /*getAttribute(tag: string, callback: (response: Response) => void): void;
-    getParameter(tag: string, callback: (response: Response) => void): void;
-    getProcedure(tag: string, callback: (response: Response) => void): void;*/
     /**
      * Getter for this.dataAssembly of the service object.
      * @returns A response object.
@@ -39,6 +42,18 @@ export interface Service {
      * @returns A response object.
      */
     getMetaModelReference(): Response;
+    /**
+     * Get a specific parameter of the service object.
+     * @param name - The name of the attribute.
+     * @param callback - A callback function. Use an instance of the interface Response as input.
+     */
+    getParameter(name: string, callback: (response: Response) => void): void;
+    /**
+     * Get a specific procedure of the service object.
+     * @param name - The name of the procedure.
+     * @param callback - A callback function. Use an instance of the interface Response as input.
+     */
+    getProcedure(name: string, callback: (response: Response) => void): void;
     /**
      * Initialize the service object with data. This one works like a constructor.
      * @param attributes - An Array with attributes of the service object..
@@ -76,6 +91,21 @@ abstract class AService implements Service{
         this.responseVendor = new ResponseVendor();
     };
 
+    getAttribute(name: string, callback: (response: Response) => void): void {
+        this.attributes.forEach((attribute: Attribute) => {
+            if(attribute.Name === name) {
+                const response = this.responseVendor.buySuccessResponse();
+                response.initialize('Success!', attribute);
+                callback(response);
+            }
+            if(attribute === this.attributes[this.attributes.length -1]) {
+                const response = this.responseVendor.buyErrorResponse();
+                response.initialize('Could not find attribute <' + name + '> in service <' + this.name + '>', {})
+                callback(response)
+            }
+        })
+    }
+
     getAllAttributes(): Response {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('Success!', {data: this.attributes});
@@ -111,6 +141,36 @@ abstract class AService implements Service{
         response.initialize('Success!', {data: this.name});
         return response;
     };
+
+    getParameter(name: string, callback: (response: Response) => void) {
+        this.parameters.forEach((parameter: Parameter) => {
+            if(parameter.getName() === name) {
+                const response = this.responseVendor.buySuccessResponse();
+                response.initialize('Success!', parameter);
+                callback(response);
+            }
+            if(parameter === this.parameters[this.parameters.length -1]) {
+                const response = this.responseVendor.buyErrorResponse();
+                response.initialize('Could not find attribute <' + parameter.getName() + '> in service <' + this.name + '>', {})
+                callback(response)
+            }
+        })
+    };
+
+    getProcedure(name: string, callback: (response: Response) => void) {
+        this.procedures.forEach((procedure: Procedure) => {
+            if(procedure.getName() === name) {
+                const response = this.responseVendor.buySuccessResponse();
+                response.initialize('Success!', procedure);
+                callback(response);
+            }
+            if(procedure === this.procedures[this.procedures.length -1]) {
+                const response = this.responseVendor.buyErrorResponse();
+                response.initialize('Could not find procedure <' + procedure.getName() + '> in service <' + this.name + '>', {})
+                callback(response)
+            }
+        })
+    }
 
     initialize(attributes: Attribute[], dataAssembly: DataAssembly, identifier: string, metaModelRef: string, name: string, parameter: Parameter[], procedure: Procedure[]): boolean {
         if(!this.initialized) {
