@@ -4,11 +4,11 @@ import {
     OPCUAServerCommunicationFactory
 } from '../../ModuleAutomation/CommunicationInterfaceData';
 import { DataAssembly,BaseDataAssemblyFactory} from '../../ModuleAutomation/DataAssembly';
-import { DataItemInstanceList, DataItemSourceList, DataItemSourceListExternalInterface, Attribute } from 'AML';
+import { DataItemInstanceList, DataItemSourceList, DataItemSourceListExternalInterface, Attribute, Service, ServiceInternalElement } from 'AML';
 import { InstanceList, SourceList } from 'PiMAd-types';
 import {logger} from '../../Utils/Logger';
 import {BaseDataItemFactory, DataItem} from '../../ModuleAutomation/DataItem';
-import {Procedure} from '../../ModuleAutomation/Procedure';
+import {BaseProcedureFactory, Procedure} from '../../ModuleAutomation/Procedure';
 import {Parameter} from '../../ModuleAutomation/Parameter';
 
 abstract class AImporterPart implements ImporterPart {
@@ -197,11 +197,106 @@ export class MTPPart extends AImporterPart {
  * Handles the 'ServicePart' of the ModuleTypePackage file.
  */
 export class ServicePart extends AImporterPart {
-    extract(data: {Name: string, ID: string, Version: string, InternalElement: object[]}, callback: (response: Response) => void): void {
+    private baseProcedureFactory: BaseProcedureFactory;
+    /**
+     *
+     * @param data
+     * @param callback
+     */
+    extract(data: ServicePartExtractInputDataType, callback: (response: Response) => void): void {
         const localResponse = this.responseVendor.buySuccessResponse();
-        localResponse.initialize('???', data.InternalElement);
-        callback(localResponse);
+        const extractedServiceData: InternalServiceType[] = []
+        const services = data.InternalElement as ServiceInternalElement[]
+        services.forEach((amlService: ServiceInternalElement) => {
+            let localAMLServiceAttributes: Attribute[] = [];
+            if(!Array.isArray(amlService.Attribute)) {
+                localAMLServiceAttributes.push(amlService.Attribute as Attribute);
+            } else {
+                localAMLServiceAttributes = amlService.Attribute;
+            }
 
+            const localService = {} as InternalServiceType;
+            localService.Attributes = [];
+            localService.Identifier = amlService.ID;
+            localService.MetaModelRef = amlService.RefBaseSystemUnitPath;
+            localService.Name = amlService.Name;
+            localService.Parameters = [];
+            localService.Procedures = [];
+            // extract the 'RefID'-Attribute
+            this.getAttribute('RefID', localAMLServiceAttributes, (response: Response) => {
+                if(response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
+                    localService.DataAssembly = response.getContent() as Attribute;
+                }
+            });
+            // extract all other attributes
+            this.extractAttributes(localAMLServiceAttributes, (response => {
+                localService.Attributes = response.getContent() as Attribute[];
+            }))
+            // extract all Procedures, etc
+            amlService.InternalElement.forEach((amlDataItem: DataItemInstanceList) => {
+                switch (amlDataItem.RefBaseSystemUnitPath) {
+                    case 'MTPServiceSUCLib/ServiceProcedure':
+                        const localProcedure = {} as InternalProcedureType
+                        localProcedure.Attributes = [];
+                        localProcedure.Identifier = amlDataItem.ID;
+                        localProcedure.MetaModelRef = amlDataItem.RefBaseSystemUnitPath;
+                        localProcedure.Name = amlDataItem.Name;
+                        localProcedure.Parameters = [];
+                        this.getAttribute('RefID', amlDataItem.Attribute, (response: Response) => {
+                            if(response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
+                                localProcedure.DataAssembly = response.getContent() as Attribute;
+                            }
+                        });
+                        // extract all the other Attributes
+                        this.extractAttributes(amlDataItem.Attribute, (response => {
+                            localProcedure.Attributes = response.getContent() as Attribute[];
+                        }))
+                        localService.Procedures.push(localProcedure);
+                        // TODO: Missing Procedure-Parameter!!
+                        break;
+                    //case 'TODO: Service-Parameters'
+                    default:
+                        logger.warn('Unknown >InternalElement< in service <' + amlService.Name + '> Ignoring!');
+                        break;
+                }
+            })
+
+            extractedServiceData.push(localService);
+            if(amlService == data.InternalElement[data.InternalElement.length - 1]) {
+                localResponse.initialize('???', extractedServiceData);
+                callback(localResponse);
+            }
+        })
+    }
+    private getAttribute(attributeName: string, attributes: Attribute[], callback: (response: Response) => void): void {
+        attributes.forEach((attribute: Attribute) => {
+            if(attribute.Name === attributeName) {
+                const localResponse = this.responseVendor.buySuccessResponse();
+                localResponse.initialize('Success!', attribute);
+                callback(localResponse)
+            }
+        })
+    }
+    private extractAttributes(attributes: Attribute[], callback: (response: Response) => void): void {
+        const responseAttributes: Attribute[] = []
+        attributes.forEach((attribute: Attribute) => {
+            switch (attribute.Name) {
+                case 'RefID':
+                    break;
+                default:
+                    responseAttributes.push(attribute);
+            }
+            if(JSON.stringify(attribute) === JSON.stringify(attributes[attributes.length -1])) {
+                const localeResponse = this.responseVendor.buySuccessResponse();
+                localeResponse.initialize('Success!', responseAttributes);
+                callback(localeResponse)
+            }
+        })
+    }
+
+    constructor() {
+        super();
+        this.baseProcedureFactory = new BaseProcedureFactory();
     }
 }
 export class TextPart extends AImporterPart {
@@ -220,12 +315,22 @@ export interface ImporterPart {
     extract(data: object, callback: (response: Response) => void): void;
 }
 
-export type InternalServiceType = {
-    Attributes: Attribute[],
-    DataAssembly: Attribute,
-    Identifier: string,
-    MetaModelRef: string,
-    Name: string,
-    Procedures: Procedure[],
-    Parameters: Parameter[]
+export type InternalServiceType = InternalProcedureType & {
+    Procedures: InternalProcedureType[];
+}
+
+export type InternalProcedureType = {
+    Attributes: Attribute[];
+    DataAssembly: Attribute;
+    Identifier: string;
+    MetaModelRef: string;
+    Name: string;
+    Parameters: Parameter[];
+}
+
+export type ServicePartExtractInputDataType = {
+    Name: string;
+    ID: string;
+    Version: string;
+    InternalElement: object[]
 }

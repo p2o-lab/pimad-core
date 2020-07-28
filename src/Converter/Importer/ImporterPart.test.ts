@@ -4,6 +4,7 @@ import {ErrorResponse, SuccessResponse} from '../../Backbone/Response';
 import * as communicationsSetData from '../../../test/Converter/testdata-CommunicationSet-parser-logic.json';
 import * as communicationsSetDataMixingDataStructure from '../../../test/Converter/testdata-CommunicationSet-mixing-data-structure.json';
 import * as dataAssemblyTestResultData from '../../../test/Converter/Results/test-result-DataAssembly.json';
+import * as servicePartTestResult from '../../../test/Converter/Results/test-result-ServicePart.json';
 import * as communicationInterfaceDataTestResultData from '../../../test/Converter/Results/tes-result-CommunicationInterfaceData.json';
 import * as servicePartData from '../../../test/Converter/testdata-ServicePart.json';
 import {OPCUAServerCommunication} from '../../ModuleAutomation/CommunicationInterfaceData';
@@ -70,6 +71,7 @@ describe('class: ServicePart', () => {
             expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
             const testData = response.getContent() as InternalServiceType[];
             expect(testData.length).is.equal(2);
+            expect(JSON.stringify(testData)).is.equal(JSON.stringify(servicePartTestResult))
         })
     })
 });
