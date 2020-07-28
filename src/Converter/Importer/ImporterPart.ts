@@ -8,6 +8,8 @@ import { DataItemInstanceList, DataItemSourceList, DataItemSourceListExternalInt
 import { InstanceList, SourceList } from 'PiMAd-types';
 import {logger} from '../../Utils/Logger';
 import {BaseDataItemFactory, DataItem} from '../../ModuleAutomation/DataItem';
+import {Procedure} from '../../ModuleAutomation/Procedure';
+import {Parameter} from '../../ModuleAutomation/Parameter';
 
 abstract class AImporterPart implements ImporterPart {
     protected responseVendor: ResponseVendor
@@ -195,7 +197,12 @@ export class MTPPart extends AImporterPart {
  * Handles the 'ServicePart' of the ModuleTypePackage file.
  */
 export class ServicePart extends AImporterPart {
+    extract(data: {Name: string, ID: string, Version: string, InternalElement: object[]}, callback: (response: Response) => void): void {
+        const localResponse = this.responseVendor.buySuccessResponse();
+        localResponse.initialize('???', data.InternalElement);
+        callback(localResponse);
 
+    }
 }
 export class TextPart extends AImporterPart {
 
@@ -211,4 +218,14 @@ export interface ImporterPart {
      * @param callback - Return the results via callback-function.
      */
     extract(data: object, callback: (response: Response) => void): void;
+}
+
+export type InternalServiceType = {
+    Attributes: Attribute[],
+    DataAssembly: Attribute,
+    Identifier: string,
+    MetaModelRef: string,
+    Name: string,
+    Procedures: Procedure[],
+    Parameters: Parameter[]
 }
