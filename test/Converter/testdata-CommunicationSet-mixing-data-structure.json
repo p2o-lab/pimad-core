@@ -43,6 +43,11 @@
             "Name": "CommandExt",
             "AttributeDataType": "xs:IDREF",
             "Value": "link5"
+          },
+          {
+            "Name": "RefID",
+            "AttributeDataType": "xs:ID",
+            "Value": "link6"
           }
         ]
       }

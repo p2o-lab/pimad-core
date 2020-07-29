@@ -131,7 +131,8 @@ export class MTPPart extends AImporterPart {
         })
         instanceList.InternalElement.forEach((dataAssembly: DataItemInstanceList) => {
             const localeDataAssembly = this.baseDataAssemblyFactory.create();
-            const localDataItems: DataItem[] = []
+            const localDataItems: DataItem[] = [];
+            let dataAssemblyIdentifier: string = '';
             // iterate through all attributes
             dataAssembly.Attribute.forEach((attribute: Attribute) => {
                 switch (attribute.AttributeDataType) {
@@ -186,6 +187,7 @@ export class MTPPart extends AImporterPart {
                     case 'xs:ID':
                         switch(attribute.Name) {
                             case 'RefID':
+                                dataAssemblyIdentifier = attribute.Value;
                                 break;
                             default:
                                 break;
@@ -253,8 +255,8 @@ export class MTPPart extends AImporterPart {
                 tag: dataAssembly.Name,
                 description: 'inline TODO above',
                 dataItems: localDataItems,
-                identifier: dataAssembly.ID,
-                //identifier: dataAssemblyIdentifier, TODO: Maybe the line above is wrong.
+                //identifier: dataAssembly.ID,
+                identifier: dataAssemblyIdentifier, //TODO: Maybe the line above is wrong.
                 metaModelRef: dataAssembly.RefBaseSystemUnitPath
             })) {
                 dataAssemblies.push(localeDataAssembly);

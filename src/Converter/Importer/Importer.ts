@@ -256,7 +256,7 @@ export class MTPFreeze202001Importer extends AImporter {
                             }
                         }
                     })
-                    if(localService.initialize(service.Attributes, this.dataAssemblyFactory.create(), service.Identifier, service.MetaModelRef, service.Name, service.Parameters, localServiceProcedures)) {
+                    if(localService.initialize(service.Attributes, localeServiceDataAssembly, service.Identifier, service.MetaModelRef, service.Name, service.Parameters, localServiceProcedures)) {
                         localeServices.push(localService);
                     }
                 }
