@@ -32,6 +32,31 @@ describe('class: MTPPart', () => {
                 expect(JSON.stringify(testData.DataAssemblies)).is.equal(JSON.stringify(dataAssemblyTestResultData));
             })
         })
+        describe('Messing with CommunicationSet-Data', () => {
+            describe('CommunicationSet without InstanceList and/or SourceList', () => {
+                it('without InstanceList', () => {
+                    const manipulatedCommunicationSetData = [communicationsSetData[0], {}];
+                    part.extract({CommunicationSet: manipulatedCommunicationSetData, HMISet: {}, ServiceSet: {}, TextSet: {}},(response) => {
+                        expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+                        expect(response.getMessage()).is.equal('Could not parse the CommunicationSet!');
+                    });
+                });
+                it('without SourceList', () => {
+                    const manipulatedCommunicationSetData = [{}, communicationsSetData[1]];
+                    part.extract({CommunicationSet: manipulatedCommunicationSetData, HMISet: {}, ServiceSet: {}, TextSet: {}},(response) => {
+                        expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+                        expect(response.getMessage()).is.equal('Could not parse the CommunicationSet!');
+                    })
+                });
+                it('without booth', () => {
+                    const manipulatedCommunicationSetData = [{}, {}];
+                    part.extract({CommunicationSet: manipulatedCommunicationSetData, HMISet: {}, ServiceSet: {}, TextSet: {}},(response) => {
+                        expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+                        expect(response.getMessage()).is.equal('Could not parse the CommunicationSet!');
+                    })
+                });
+            });
+        })
     })
 });
 
