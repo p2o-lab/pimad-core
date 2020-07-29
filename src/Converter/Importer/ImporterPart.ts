@@ -19,6 +19,23 @@ abstract class AImporterPart implements ImporterPart {
         localResponse.initialize('Not implemented yet!', {})
         callback(localResponse)
     }
+
+    /**
+     * Extract a specific attribute from an Attribute Array. F.ex. the RefID-Attribute.
+     * @param attributeName - The name of the attribute.
+     * @param attributes - The attributes array.
+     * @param callback - A callback function with an instance of the Response-Interface.
+     */
+    protected getAttribute(attributeName: string, attributes: Attribute[], callback: (response: Response) => void): void {
+        attributes.forEach((attribute: Attribute) => {
+            if(attribute.Name === attributeName) {
+                const localResponse = this.responseVendor.buySuccessResponse();
+                localResponse.initialize('Success!', attribute);
+                callback(localResponse)
+            }
+        })
+    }
+
     constructor() {
         this.responseVendor = new ResponseVendor();
     }
@@ -117,7 +134,67 @@ export class MTPPart extends AImporterPart {
             const localDataItems: DataItem[] = []
             // iterate through all attributes
             dataAssembly.Attribute.forEach((attribute: Attribute) => {
-                localExternalInterfaces.some((localeInterface: DataItemSourceListExternalInterface) => {
+                switch (attribute.AttributeDataType) {
+                    case 'xs:IDREF':
+                        localExternalInterfaces.some((localeInterface: DataItemSourceListExternalInterface) => {
+                            // TODO: Extract description via new swicth case szenario
+                            if (localeInterface.ID === attribute.Value) {
+                                const opcuaNodeCommunication = this.opcuaNodeCommunicationFactory.create()
+                                let identifier: number | string = -1;
+                                let namespace = '';
+                                let access = '';
+                                localeInterface.Attribute.forEach((localeInterfaceAttribute: Attribute) => {
+                                    switch (localeInterfaceAttribute.Name) {
+                                        case ('Identifier'):
+                                            identifier = localeInterfaceAttribute.Value;
+                                            break;
+                                        case ('Namespace'):
+                                            namespace = localeInterfaceAttribute.Value;
+                                            break;
+                                        case ('Access'):
+                                            access = localeInterfaceAttribute.Value;
+                                            break;
+                                        default:
+                                            logger.warn('The opcua-node-communication object contains the unknown attribute <' + attribute.Name + '>! Ignoring ...')
+                                            break;
+                                    }
+                                    if (localeInterfaceAttribute == localeInterface.Attribute[localeInterface.Attribute.length - 1]) {
+                                        if (opcuaNodeCommunication.initialize({
+                                            name: attribute.Name,
+                                            namespaceIndex: namespace,
+                                            nodeId: identifier,
+                                            dataType: '???'
+                                        })) {
+                                            logger.info('Successfully add opcua-communication <' + attribute.Name + '> to DataAssembly <' + dataAssembly.Name + '>');
+                                        } else {
+                                            logger.warn('Could not add opcua-communication <' + attribute.Name + '> to DataAssembly <' + dataAssembly.Name + '>');
+                                        }
+                                    }
+                                })
+                                const localDataItem = this.baseDataItemFactory.create();
+                                if (localDataItem.initialize(attribute.Name, opcuaNodeCommunication, localeInterface.ID, localeInterface.RefBaseClassPath)) {
+                                    localDataItems.push(localDataItem);
+                                } else {
+                                    // logging
+                                }
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        })
+                        break;
+                    case 'xs:ID':
+                        switch(attribute.Name) {
+                            case 'RefID':
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                /*localExternalInterfaces.some((localeInterface: DataItemSourceListExternalInterface) => {
                     // TODO: Extract description via new swicth case szenario
                     if (localeInterface.ID === attribute.Value) {
                         const opcuaNodeCommunication = this.opcuaNodeCommunicationFactory.create()
@@ -162,14 +239,22 @@ export class MTPPart extends AImporterPart {
                     } else {
                         return false;
                     }
-                })
+                })*/
             })
             // finalizing: checking response of initialize() > logging the results
+            /*let dataAssemblyIdentifier: string = ''
+            this.getAttribute('RefID', dataAssembly.Attribute, response => {
+                if(response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
+                    const responseContent = response.getContent() as Attribute;
+                    dataAssemblyIdentifier = responseContent.Value
+                }
+            })*/
             if(localeDataAssembly.initialize({
                 tag: dataAssembly.Name,
                 description: 'inline TODO above',
                 dataItems: localDataItems,
                 identifier: dataAssembly.ID,
+                //identifier: dataAssemblyIdentifier, TODO: Maybe the line above is wrong.
                 metaModelRef: dataAssembly.RefBaseSystemUnitPath
             })) {
                 dataAssemblies.push(localeDataAssembly);
@@ -265,22 +350,6 @@ export class ServicePart extends AImporterPart {
             if(amlService == data.InternalElement[data.InternalElement.length - 1]) {
                 localResponse.initialize('???', extractedServiceData);
                 callback(localResponse);
-            }
-        })
-    }
-
-    /**
-     * Extract a specific attribute from an Attribute Array. F.ex. the RefID-Attribute.
-     * @param attributeName - The name of the attribute.
-     * @param attributes - The attributes array.
-     * @param callback - A callback function with an instance of the Response-Interface.
-     */
-    private getAttribute(attributeName: string, attributes: Attribute[], callback: (response: Response) => void): void {
-        attributes.forEach((attribute: Attribute) => {
-            if(attribute.Name === attributeName) {
-                const localResponse = this.responseVendor.buySuccessResponse();
-                localResponse.initialize('Success!', attribute);
-                callback(localResponse)
             }
         })
     }

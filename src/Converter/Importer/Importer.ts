@@ -10,12 +10,19 @@ import {
     ServicePartExtractInputDataType,
     TextPart
 } from './ImporterPart';
-import {AMLGateFactory, MTPGateFactory, XMLGateFactory, ZIPGateFactory} from '../Gate/GateFactory';
+import {AMLGateFactory, MTPGateFactory, XMLGateFactory, ZIPGateFactory, GateFactory} from '../Gate/GateFactory';
 import {InstanceHierarchy, ModuleTypePackage} from 'AML';
 import { CAEXFile } from 'PiMAd-types';
-import {DataAssembly} from '../../ModuleAutomation/DataAssembly';
+import {
+    BaseDataAssembly,
+    BaseDataAssemblyFactory,
+    DataAssembly,
+    DataAssemblyFactory
+} from '../../ModuleAutomation/DataAssembly';
 import {CommunicationInterfaceData} from '../../ModuleAutomation/CommunicationInterfaceData';
 import {BasePEAFactory} from '../../ModuleAutomation/PEA';
+import {BaseServiceFactory, Service} from '../../ModuleAutomation/Service';
+import {BaseProcedureFactory, Procedure, ProcedureFactory} from '../../ModuleAutomation/Procedure';
 abstract class AImporter implements  Importer {
 
     protected initialized: boolean;
@@ -83,11 +90,14 @@ export class MTPFreeze202001Importer extends AImporter {
     private mtpPart: ImporterPart;
     private textPart: ImporterPart;
     // Factories
-    private amlGateFactory: AMLGateFactory;
-    private mtpGateFactory: MTPGateFactory;
+    private amlGateFactory: GateFactory;
+    private dataAssemblyFactory: DataAssemblyFactory;
+    private mtpGateFactory: GateFactory;
     private peaFactory: BasePEAFactory;
-    private xmlGateFactory: XMLGateFactory;
-    private zipGateFactory: ZIPGateFactory;
+    private procedureFactory: ProcedureFactory;
+    private serviceFactory: BaseServiceFactory;
+    private xmlGateFactory: GateFactory;
+    private zipGateFactory: GateFactory;
 
     convertFrom(instructions: {source: string},
                 callback: (response: Response) => void): void {
@@ -224,13 +234,41 @@ export class MTPFreeze202001Importer extends AImporter {
             localResponse.initialize('Could not extract MTPSUCLib/CommunicationSet or MTPServiceSUCLib/ServiceSet. Aborting...', {})
             callback(localResponse);
         } else {
-            //const localPEA = this.
+            const localPEA = this.peaFactory.create();
+            const localeServices: Service[] = [];
+            servicePartResponseContent.forEach((service: InternalServiceType) => {
+                const localService = this.serviceFactory.create()
+                const localeServiceDataAssembly: DataAssembly | undefined = dataAssemblies.find(dataAssembly =>
+                    service.DataAssembly.Value === dataAssembly.getIdentifier()
+                )
+                if(localeServiceDataAssembly === undefined) {
+                    logger.warn('Could not find referenced DataAssembly for service <' + service.Name + '> Skipping this service ...');
+                } else {
+                    const localServiceProcedures: Procedure[] = [];
+                    service.Procedures.forEach(procedure => {
+                        const localProcedureDataAssembly: DataAssembly | undefined = dataAssemblies.find(dataAssembly => service.DataAssembly.Value === dataAssembly.getIdentifier())
+                        if(localProcedureDataAssembly === undefined) {
+                            logger.warn('Could not find referenced DataAssembly for procedure <' + service.Name + '> Skipping this procedure ...');
+                        } else {
+                            const localProcedure = this.procedureFactory.create();
+                            if(localProcedure.initialize(localProcedureDataAssembly, procedure.Identifier, procedure.MetaModelRef, procedure.Name, procedure.Attributes, procedure.Parameters)) {
+                                localServiceProcedures.push(localProcedure);
+                            }
+                        }
+                    })
+                    if(localService.initialize(service.Attributes, this.dataAssemblyFactory.create(), service.Identifier, service.MetaModelRef, service.Name, service.Parameters, localServiceProcedures)) {
+                        localeServices.push(localService);
+                    }
+                }
+            })
 
             const localResponse = this.responseVendor.buySuccessResponse();
             localResponse.initialize('Success!', {})
             callback(localResponse);
         }
     }
+
+
 
     constructor() {
         super();
@@ -240,11 +278,13 @@ export class MTPFreeze202001Importer extends AImporter {
         this.textPart = new TextPart();
         // Factories
         this.amlGateFactory = new AMLGateFactory();
+        this.dataAssemblyFactory = new BaseDataAssemblyFactory();
         this.mtpGateFactory = new MTPGateFactory();
         this.peaFactory = new BasePEAFactory();
+        this.procedureFactory = new BaseProcedureFactory();
+        this.serviceFactory = new BaseServiceFactory();
         this.xmlGateFactory = new XMLGateFactory();
         this.zipGateFactory = new ZIPGateFactory();
-
     }
 }
 
