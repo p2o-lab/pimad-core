@@ -30,7 +30,17 @@ describe('class: MTPFreeze202001Importer', () => {
         importer = new MTPFreeze202001Importer();
     });
     describe('method: convertFrom()', () => {
-        it('default', (done) => {
+        beforeEach(() => {
+            const lastChainLinkImporter = new LastChainLinkImporter()
+            importer.initialize(lastChainLinkImporter);
+        });
+        it('normal usage', (done) => {
+            importer.convertFrom({source: 'test/Converter/PiMAd-core.0-0-1.aml'}, response => {
+                expect(response.constructor.name).is.equal((new SuccessResponse()).constructor.name);
+                done();
+            })
+        })
+        it('unknown source', (done) => {
             const lastChainLinkImporter = new LastChainLinkImporter()
             importer.initialize(lastChainLinkImporter);
             importer.convertFrom({source: ''}, response => {

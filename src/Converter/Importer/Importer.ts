@@ -3,8 +3,10 @@ import {logger} from '../../Utils/Logger';
 import {BasicSemanticVersion, SemanticVersion} from '../../Backbone/SemanticVersion';
 import {HMIPart, ImporterPart, MTPPart, ServicePart, TextPart} from './ImporterPart';
 import {AMLGateFactory, MTPGateFactory, XMLGateFactory, ZIPGateFactory} from '../Gate/GateFactory';
-import {InstanceHierarchy} from 'AML';
+import {InstanceHierarchy, ModuleTypePackage} from 'AML';
 import { CAEXFile } from 'PiMAd-types';
+import {DataAssembly} from '../../ModuleAutomation/DataAssembly';
+import {CommunicationInterfaceData} from '../../ModuleAutomation/CommunicationInterfaceData';
 abstract class AImporter implements  Importer {
 
     protected initialized: boolean;
@@ -162,13 +164,37 @@ export class MTPFreeze202001Importer extends AImporter {
         })
     }
 
+    private getSet(refBaseSystemUnitPath: string, array: object[], callback: (set: object) => void): void {
+        array.forEach((content: {RefBaseSystemUnitPath?: string}) => {
+            if(refBaseSystemUnitPath === content.RefBaseSystemUnitPath) {
+                callback(content);
+            }
+        })
+    }
+
     private convert(data: CAEXFile, callback: (response: Response) => void): void {
         // Now the parsing starts...
-        //logger.info(data.InstanceHierarchy.length.toString());
+        const communicationInterfaceData: CommunicationInterfaceData[] = [];
+        const dataAssemblies: DataAssembly[] = []
         data.InstanceHierarchy.forEach((instance: InstanceHierarchy) => {
-            switch (instance.constructor.name) {
-                case 'ModuleTypePackage':
-                    const importerPart: MTPPart = new MTPPart();
+            const localInternalElement = instance.InternalElement as unknown as {RefBaseSystemUnitPath: string, InternalElement: object[]};
+            switch (localInternalElement.RefBaseSystemUnitPath) {
+                case 'MTPSUCLib/ModuleTypePackage':
+                    let communicationSet: object = {};
+                    this.getSet('MTPSUCLib/CommunicationSet', localInternalElement.InternalElement, set => {
+                        communicationSet = set;
+                    })
+                    let serviceSet: object = {};
+                    this.getSet('MTPServiceSUCLib/ServiceSet', localInternalElement.InternalElement, set => {
+                        serviceSet = set;
+                    })
+                    if(JSON.stringify(communicationSet) === JSON.stringify({}) || JSON.stringify(serviceSet) === JSON.stringify({})) {
+                        const localResponse = this.responseVendor.buySuccessResponse();
+                        localResponse.initialize('Could not extract MTPSUCLib/CommunicationSet or MTPServiceSUCLib/ServiceSet for ' + instance.Name , {})
+                        callback(localResponse);
+                    }
+                    //const importerPart: MTPPart = new MTPPart();
+
                     break;
                 default:
                     break;
