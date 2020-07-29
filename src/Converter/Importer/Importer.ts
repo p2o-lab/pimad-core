@@ -1,12 +1,21 @@
 import {Response, ResponseVendor} from '../../Backbone/Response';
 import {logger} from '../../Utils/Logger';
 import {BasicSemanticVersion, SemanticVersion} from '../../Backbone/SemanticVersion';
-import {HMIPart, ImporterPart, MTPPart, ServicePart, TextPart} from './ImporterPart';
+import {
+    HMIPart,
+    ImporterPart,
+    InternalServiceType,
+    MTPPart,
+    ServicePart,
+    ServicePartExtractInputDataType,
+    TextPart
+} from './ImporterPart';
 import {AMLGateFactory, MTPGateFactory, XMLGateFactory, ZIPGateFactory} from '../Gate/GateFactory';
 import {InstanceHierarchy, ModuleTypePackage} from 'AML';
 import { CAEXFile } from 'PiMAd-types';
 import {DataAssembly} from '../../ModuleAutomation/DataAssembly';
 import {CommunicationInterfaceData} from '../../ModuleAutomation/CommunicationInterfaceData';
+import {BasePEAFactory} from '../../ModuleAutomation/PEA';
 abstract class AImporter implements  Importer {
 
     protected initialized: boolean;
@@ -76,6 +85,7 @@ export class MTPFreeze202001Importer extends AImporter {
     // Factories
     private amlGateFactory: AMLGateFactory;
     private mtpGateFactory: MTPGateFactory;
+    private peaFactory: BasePEAFactory;
     private xmlGateFactory: XMLGateFactory;
     private zipGateFactory: ZIPGateFactory;
 
@@ -174,35 +184,52 @@ export class MTPFreeze202001Importer extends AImporter {
 
     private convert(data: CAEXFile, callback: (response: Response) => void): void {
         // Now the parsing starts...
-        const communicationInterfaceData: CommunicationInterfaceData[] = [];
-        const dataAssemblies: DataAssembly[] = []
+        let communicationInterfaceData: CommunicationInterfaceData[] = [];
+        let dataAssemblies: DataAssembly[] = []
+        let communicationSet: {InternalElement: object[]} = {} as {InternalElement: object[]};
+        let mtpPartResponseContent: {CommunicationInterfaceData: CommunicationInterfaceData[]; DataAssemblies: DataAssembly[]}= {} as {CommunicationInterfaceData: CommunicationInterfaceData[]; DataAssemblies: DataAssembly[]}
+        let servicePartResponseContent: InternalServiceType[] = [];
         data.InstanceHierarchy.forEach((instance: InstanceHierarchy) => {
-            const localInternalElement = instance.InternalElement as unknown as {RefBaseSystemUnitPath: string, InternalElement: object[]};
-            switch (localInternalElement.RefBaseSystemUnitPath) {
-                case 'MTPSUCLib/ModuleTypePackage':
-                    let communicationSet: object = {};
+            const localInternalElement = instance.InternalElement as unknown as {RefBaseSystemUnitPath: string; InternalElement: object[]};
+            // TODO: Very bad style
+            switch (instance.Name) {
+                case 'ModuleTypePackage':
                     this.getSet('MTPSUCLib/CommunicationSet', localInternalElement.InternalElement, set => {
-                        communicationSet = set;
+                        communicationSet = set as {InternalElement: object[]};
                     })
-                    let serviceSet: object = {};
-                    this.getSet('MTPServiceSUCLib/ServiceSet', localInternalElement.InternalElement, set => {
-                        serviceSet = set;
+                    const mtpImporterPart: MTPPart = new MTPPart();
+                    mtpImporterPart.extract({CommunicationSet: communicationSet.InternalElement, HMISet: {}, ServiceSet: {}, TextSet: {}}, mtpPartResponse => {
+                        if(mtpPartResponse.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
+                            mtpPartResponseContent = mtpPartResponse.getContent() as {CommunicationInterfaceData: CommunicationInterfaceData[]; DataAssemblies: DataAssembly[]}
+                            communicationInterfaceData = mtpPartResponseContent.CommunicationInterfaceData;
+                            dataAssemblies = mtpPartResponseContent.DataAssemblies
+                        } else {
+                          logger.warn('Could not extract CommunicationSet');
+                        }
                     })
-                    if(JSON.stringify(communicationSet) === JSON.stringify({}) || JSON.stringify(serviceSet) === JSON.stringify({})) {
-                        const localResponse = this.responseVendor.buySuccessResponse();
-                        localResponse.initialize('Could not extract MTPSUCLib/CommunicationSet or MTPServiceSUCLib/ServiceSet for ' + instance.Name , {})
-                        callback(localResponse);
-                    }
-                    //const importerPart: MTPPart = new MTPPart();
-
+                    break;
+                case 'Services':
+                    const serviceImporterPart = new ServicePart();
+                    serviceImporterPart.extract(instance as ServicePartExtractInputDataType, servicePartResponse => {
+                        servicePartResponseContent = servicePartResponse.getContent() as InternalServiceType[]
+                    })
                     break;
                 default:
                     break;
             }
-            if (instance == data.InstanceHierarchy[data.InstanceHierarchy.length-1]) {
-                callback(this.responseVendor.buySuccessResponse());
-            }
         })
+        // Checking the data for completeness
+        if(JSON.stringify(mtpPartResponseContent) === JSON.stringify({}) || JSON.stringify(servicePartResponseContent) === JSON.stringify({})) {
+            const localResponse = this.responseVendor.buyErrorResponse();
+            localResponse.initialize('Could not extract MTPSUCLib/CommunicationSet or MTPServiceSUCLib/ServiceSet. Aborting...', {})
+            callback(localResponse);
+        } else {
+            //const localPEA = this.
+
+            const localResponse = this.responseVendor.buySuccessResponse();
+            localResponse.initialize('Success!', {})
+            callback(localResponse);
+        }
     }
 
     constructor() {
@@ -214,6 +241,7 @@ export class MTPFreeze202001Importer extends AImporter {
         // Factories
         this.amlGateFactory = new AMLGateFactory();
         this.mtpGateFactory = new MTPGateFactory();
+        this.peaFactory = new BasePEAFactory();
         this.xmlGateFactory = new XMLGateFactory();
         this.zipGateFactory = new ZIPGateFactory();
 

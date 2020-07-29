@@ -54,7 +54,6 @@ export class MTPPart extends AImporterPart {
         communicationSet.forEach((setElement: object) => {
             // First of all: typing
             const elementWithListType = setElement as InstanceList| SourceList;
-
             if (elementWithListType.RefBaseSystemUnitPath === refBaseSystemUnitPath) {
                 callback(elementWithListType)
             }
