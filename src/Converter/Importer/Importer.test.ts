@@ -2,6 +2,8 @@ import {expect} from 'chai';
 import {LastChainElementImporterFactory, LastChainLinkImporter, MTPFreeze202001Importer} from './Importer';
 import {ErrorResponse, Response, SuccessResponse} from '../../Backbone/Response';
 import {BasicSemanticVersion} from '../../Backbone/SemanticVersion';
+import * as testResultNormalUsageMTPFreeze202001Importer from '../../../test/Converter/Results/test-result-MTPFreeze202001Importer-normal-usage.json';
+import {PEA} from '../../ModuleAutomation/PEA';
 
 describe('class: LastChainElementImporter', () => {
     let importer: LastChainLinkImporter;
@@ -38,6 +40,8 @@ describe('class: MTPFreeze202001Importer', () => {
             it('normal usage', (done) => {
                 importer.convertFrom({source: 'test/Converter/PiMAd-core.0-0-1.aml'}, response => {
                     expect(response.constructor.name).is.equal((new SuccessResponse()).constructor.name);
+                    const testResult = response.getContent();
+                    expect(JSON.stringify(testResultNormalUsageMTPFreeze202001Importer)).is.equal(JSON.stringify(testResult));
                     done();
                 })
             })
