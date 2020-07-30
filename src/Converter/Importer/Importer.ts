@@ -2,6 +2,7 @@ import {Response, ResponseVendor} from '../../Backbone/Response';
 import {logger} from '../../Utils/Logger';
 import {BasicSemanticVersion, SemanticVersion} from '../../Backbone/SemanticVersion';
 import {
+    BuildCommunicationSetResponseType,
     HMIPart,
     ImporterPart,
     InternalServiceType,
@@ -11,10 +12,9 @@ import {
     TextPart
 } from './ImporterPart';
 import {AMLGateFactory, MTPGateFactory, XMLGateFactory, ZIPGateFactory, GateFactory} from '../Gate/GateFactory';
-import {InstanceHierarchy, ModuleTypePackage} from 'AML';
+import {InstanceHierarchy} from 'AML';
 import { CAEXFile } from 'PiMAd-types';
 import {
-    BaseDataAssembly,
     BaseDataAssemblyFactory,
     DataAssembly,
     DataAssemblyFactory
@@ -192,13 +192,20 @@ export class MTPFreeze202001Importer extends AImporter {
         })
     }
 
+    /**
+     * Converting the interface data of the MTP into PiMAd-core PEA object.
+     * @param data - The data as CAEXFile.
+     * @param callback - ???
+     * @private
+     */
     private convert(data: CAEXFile, callback: (response: Response) => void): void {
-        // Now the parsing starts...
+        // These variables will be continuously filled
         let communicationInterfaceData: CommunicationInterfaceData[] = [];
         let dataAssemblies: DataAssembly[] = []
         let communicationSet: {InternalElement: object[]} = {} as {InternalElement: object[]};
-        let mtpPartResponseContent: {CommunicationInterfaceData: CommunicationInterfaceData[]; DataAssemblies: DataAssembly[]}= {} as {CommunicationInterfaceData: CommunicationInterfaceData[]; DataAssemblies: DataAssembly[]}
+        let mtpPartResponseContent: BuildCommunicationSetResponseType = {} as BuildCommunicationSetResponseType
         let servicePartResponseContent: InternalServiceType[] = [];
+        // looping through the first level instance hierarchy of the CAEX-File.
         data.InstanceHierarchy.forEach((instance: InstanceHierarchy) => {
             const localInternalElement = instance.InternalElement as unknown as {RefBaseSystemUnitPath: string; InternalElement: object[]};
             // TODO: Very bad style
@@ -234,7 +241,6 @@ export class MTPFreeze202001Importer extends AImporter {
             localResponse.initialize('Could not extract MTPSUCLib/CommunicationSet or MTPServiceSUCLib/ServiceSet. Aborting...', {})
             callback(localResponse);
         } else {
-            const localPEA = this.peaFactory.create();
             const localeServices: Service[] = [];
             servicePartResponseContent.forEach((service: InternalServiceType) => {
                 const localService = this.serviceFactory.create()
@@ -246,7 +252,7 @@ export class MTPFreeze202001Importer extends AImporter {
                 } else {
                     const localServiceProcedures: Procedure[] = [];
                     service.Procedures.forEach(procedure => {
-                        const localProcedureDataAssembly: DataAssembly | undefined = dataAssemblies.find(dataAssembly => service.DataAssembly.Value === dataAssembly.getIdentifier())
+                        const localProcedureDataAssembly: DataAssembly | undefined = dataAssemblies.find(dataAssembly => procedure.DataAssembly.Value === dataAssembly.getIdentifier())
                         if(localProcedureDataAssembly === undefined) {
                             logger.warn('Could not find referenced DataAssembly for procedure <' + service.Name + '> Skipping this procedure ...');
                         } else {
@@ -261,6 +267,7 @@ export class MTPFreeze202001Importer extends AImporter {
                     }
                 }
             })
+            const localPEA = this.peaFactory.create();
 
             const localResponse = this.responseVendor.buySuccessResponse();
             localResponse.initialize('Success!', {})

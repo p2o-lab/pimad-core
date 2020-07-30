@@ -275,8 +275,8 @@ export class ServicePart extends AImporterPart {
         /* One big issue: In the ServicePart of the MTP are not all data to build a PiMAd-core Service. There are
         references to DataAssemblies extracted via the MTPPart. Therefore this one extracts the data like a quasi
         service. Later one the Importer merges the data of quasi service and the referenced DataAssembly to one
-        PiMAd-core Service.*/
-        const extractedServiceData: InternalServiceType[] = [];
+        PiMAd-core Service. */
+        const extractedServiceData: InternalServiceType[] = []; // will be the content of the response.
         // typing
         const services = data.InternalElement as ServiceInternalElement[]
         // looping through all elements of the array.
@@ -309,25 +309,25 @@ export class ServicePart extends AImporterPart {
                 localService.Attributes = response.getContent() as Attribute[];
             }))
             // extract all Procedures, etc
-            amlService.InternalElement.forEach((amlDataItem: DataItemInstanceList) => {
-                switch (amlDataItem.RefBaseSystemUnitPath) {
+            amlService.InternalElement.forEach((amlServiceInternalElementItem: DataItemInstanceList) => {
+                switch (amlServiceInternalElementItem.RefBaseSystemUnitPath) {
                     case 'MTPServiceSUCLib/ServiceProcedure':
                         /* like the services above the data of the procedures in the MTP-ServiceSet is insufficient.
                         Therefore use again a quasi procedure. The importer will later merge the quasi procedure and the
                         referenced DataAssembly. */
                         const localProcedure = {} as InternalProcedureType
                         localProcedure.Attributes = [];
-                        localProcedure.Identifier = amlDataItem.ID;
-                        localProcedure.MetaModelRef = amlDataItem.RefBaseSystemUnitPath;
-                        localProcedure.Name = amlDataItem.Name;
+                        localProcedure.Identifier = amlServiceInternalElementItem.ID;
+                        localProcedure.MetaModelRef = amlServiceInternalElementItem.RefBaseSystemUnitPath;
+                        localProcedure.Name = amlServiceInternalElementItem.Name;
                         localProcedure.Parameters = [];
-                        this.getAttribute('RefID', amlDataItem.Attribute, (response: Response) => {
+                        this.getAttribute('RefID', amlServiceInternalElementItem.Attribute, (response: Response) => {
                             if(response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
                                 localProcedure.DataAssembly = response.getContent() as Attribute;
                             }
                         });
                         // extract all the other Attributes
-                        this.extractAttributes(amlDataItem.Attribute, (response => {
+                        this.extractAttributes(amlServiceInternalElementItem.Attribute, (response => {
                             localProcedure.Attributes = response.getContent() as Attribute[];
                         }))
                         localService.Procedures.push(localProcedure);
@@ -392,7 +392,7 @@ export interface ImporterPart {
     extract(data: object, callback: (response: Response) => void): void;
 }
 
-type BuildCommunicationSetResponseType = {
+export type BuildCommunicationSetResponseType = {
     CommunicationInterfaceData: CommunicationInterfaceData[];
     DataAssemblies: DataAssembly[];
 }
