@@ -272,17 +272,24 @@ export class ServicePart extends AImporterPart {
      * @param callback - A callback function with an instance of the Response-Interface.
      */
     extract(data: ServicePartExtractInputDataType, callback: (response: Response) => void): void {
-        const localResponse = this.responseVendor.buySuccessResponse();
-        const extractedServiceData: InternalServiceType[] = []
+        /* One big issue: In the ServicePart of the MTP are not all data to build a PiMAd-core Service. There are
+        references to DataAssemblies extracted via the MTPPart. Therefore this one extracts the data like a quasi
+        service. Later one the Importer merges the data of quasi service and the referenced DataAssembly to one
+        PiMAd-core Service.*/
+        const extractedServiceData: InternalServiceType[] = [];
+        // typing
         const services = data.InternalElement as ServiceInternalElement[]
+        // looping through all elements of the array.
         services.forEach((amlService: ServiceInternalElement) => {
+            // TODO > Better solution possible?
+            // TODO > Why no check? RefBaseSystemUnitPath
             let localAMLServiceAttributes: Attribute[] = [];
             if(!Array.isArray(amlService.Attribute)) {
                 localAMLServiceAttributes.push(amlService.Attribute as Attribute);
             } else {
                 localAMLServiceAttributes = amlService.Attribute;
             }
-
+            // will be continuously filled while in the loop circle
             const localService = {} as InternalServiceType;
             localService.Attributes = [];
             localService.Identifier = amlService.ID;
@@ -290,13 +297,14 @@ export class ServicePart extends AImporterPart {
             localService.Name = amlService.Name;
             localService.Parameters = [];
             localService.Procedures = [];
-            // extract the 'RefID'-Attribute
+            /* extract the 'RefID'-Attribute. It's important! and referencing to the DataAssembly of the service which
+            stores all the interface data to the hardware. */
             this.getAttribute('RefID', localAMLServiceAttributes, (response: Response) => {
                 if(response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
                     localService.DataAssembly = response.getContent() as Attribute;
                 }
             });
-            // extract all other attributes
+            // extract and store all other attributes
             this.extractAttributes(localAMLServiceAttributes, (response => {
                 localService.Attributes = response.getContent() as Attribute[];
             }))
@@ -304,6 +312,9 @@ export class ServicePart extends AImporterPart {
             amlService.InternalElement.forEach((amlDataItem: DataItemInstanceList) => {
                 switch (amlDataItem.RefBaseSystemUnitPath) {
                     case 'MTPServiceSUCLib/ServiceProcedure':
+                        /* like the services above the data of the procedures in the MTP-ServiceSet is insufficient.
+                        Therefore use again a quasi procedure. The importer will later merge the quasi procedure and the
+                        referenced DataAssembly. */
                         const localProcedure = {} as InternalProcedureType
                         localProcedure.Attributes = [];
                         localProcedure.Identifier = amlDataItem.ID;
@@ -328,10 +339,11 @@ export class ServicePart extends AImporterPart {
                         break;
                 }
             })
-
+            // push the extracted service data to the variable which will be used in the callback.
             extractedServiceData.push(localService);
             if(amlService == data.InternalElement[data.InternalElement.length - 1]) {
-                localResponse.initialize('???', extractedServiceData);
+                const localResponse = this.responseVendor.buySuccessResponse();
+                localResponse.initialize('Successfully extracting the ServicePart!', extractedServiceData);
                 callback(localResponse);
             }
         })
