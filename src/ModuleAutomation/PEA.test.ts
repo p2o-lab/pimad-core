@@ -1,4 +1,4 @@
-import {BasePEAFactory, BasePEA} from './PEA';
+import {BasePEAFactory, BasePEA, BasePEAInitializeDataType} from './PEA';
 import {expect} from 'chai';
 import {ErrorResponse} from '../Backbone/Response';
 
@@ -43,8 +43,9 @@ describe('class: BasePEA', () => {
         expect(typeof pea.getService(tag)).is.equal(typeof new ErrorResponse())
     });
     it('method: initialize(firstChainElement: Importer)', () => {
-        expect(pea.initialize()).is.true;
-        expect(pea.initialize()).is.false;
+        // TODO > Generate test data
+        expect(pea.initialize({} as BasePEAInitializeDataType)).is.true;
+        expect(pea.initialize({} as BasePEAInitializeDataType)).is.false;
     });
 })
 
