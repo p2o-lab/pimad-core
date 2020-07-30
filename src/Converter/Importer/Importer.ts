@@ -185,6 +185,13 @@ export class MTPFreeze202001Importer extends AImporter {
         })
     }
 
+    /**
+     * Get a specific ModuleTypePackageSet-Set.
+     * @param refBaseSystemUnitPath - The meta model path.
+     * @param array - An array with ModuleTypePackage-Sets
+     * @param callback - ???
+     * @private
+     */
     private getSet(refBaseSystemUnitPath: string, array: object[], callback: (set: object) => void): void {
         array.forEach((content: {RefBaseSystemUnitPath?: string}) => {
             if(refBaseSystemUnitPath === content.RefBaseSystemUnitPath) {
@@ -201,7 +208,7 @@ export class MTPFreeze202001Importer extends AImporter {
      */
     private convert(data: CAEXFile, callback: (response: Response) => void): void {
         // These variables will be continuously filled
-        let communicationInterfaceData: CommunicationInterfaceData[] = [];
+        let communicationInterfaceData: CommunicationInterfaceData[] = []; // TODO > link to communication interface
         let dataAssemblies: DataAssembly[] = []
         let communicationSet: {InternalElement: object[]} = {} as {InternalElement: object[]};
         let mtpPartResponseContent: BuildCommunicationSetResponseType = {} as BuildCommunicationSetResponseType
@@ -218,9 +225,9 @@ export class MTPFreeze202001Importer extends AImporter {
                     const mtpImporterPart: MTPPart = new MTPPart();
                     mtpImporterPart.extract({CommunicationSet: communicationSet.InternalElement, HMISet: {}, ServiceSet: {}, TextSet: {}}, mtpPartResponse => {
                         if(mtpPartResponse.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
-                            mtpPartResponseContent = mtpPartResponse.getContent() as {CommunicationInterfaceData: CommunicationInterfaceData[]; DataAssemblies: DataAssembly[]}
+                            mtpPartResponseContent = mtpPartResponse.getContent() as BuildCommunicationSetResponseType;
                             communicationInterfaceData = mtpPartResponseContent.CommunicationInterfaceData;
-                            dataAssemblies = mtpPartResponseContent.DataAssemblies
+                            dataAssemblies = mtpPartResponseContent.DataAssemblies;
                         } else {
                           logger.warn('Could not extract CommunicationSet');
                         }
@@ -239,21 +246,25 @@ export class MTPFreeze202001Importer extends AImporter {
         // Checking the data for completeness
         if(JSON.stringify(mtpPartResponseContent) === JSON.stringify({}) || JSON.stringify(servicePartResponseContent) === JSON.stringify({})) {
             const localResponse = this.responseVendor.buyErrorResponse();
-            localResponse.initialize('Could not extract MTPSUCLib/CommunicationSet or MTPServiceSUCLib/ServiceSet. Aborting...', {})
+            localResponse.initialize('Could not extract MTPSUCLib/CommunicationSet and/or MTPServiceSUCLib/ServiceSet. Aborting...', {})
             callback(localResponse);
         } else {
+            // data is fine -> Now merging Services and Procedures with DataAssemblies.
             const localServices: Service[] = [];
             servicePartResponseContent.forEach((service: InternalServiceType) => {
                 const localService = this.serviceFactory.create()
                 const localServiceDataAssembly: DataAssembly | undefined = dataAssemblies.find(dataAssembly =>
                     service.DataAssembly.Value === dataAssembly.getIdentifier()
-                )
+                );
                 if(localServiceDataAssembly === undefined) {
                     logger.warn('Could not find referenced DataAssembly for service <' + service.Name + '> Skipping this service ...');
                 } else {
                     const localServiceProcedures: Procedure[] = [];
+                    // merging Procedures with DataAssemblies
                     service.Procedures.forEach(procedure => {
-                        const localProcedureDataAssembly: DataAssembly | undefined = dataAssemblies.find(dataAssembly => procedure.DataAssembly.Value === dataAssembly.getIdentifier())
+                        const localProcedureDataAssembly: DataAssembly | undefined = dataAssemblies.find(dataAssembly =>
+                            procedure.DataAssembly.Value === dataAssembly.getIdentifier()
+                        );
                         if(localProcedureDataAssembly === undefined) {
                             logger.warn('Could not find referenced DataAssembly for procedure <' + service.Name + '> Skipping this procedure ...');
                         } else {
@@ -263,17 +274,22 @@ export class MTPFreeze202001Importer extends AImporter {
                             }
                         }
                     })
+                    // initialize the new service object ...
                     if(localService.initialize(service.Attributes, localServiceDataAssembly, service.Identifier, service.MetaModelRef, service.Name, service.Parameters, localServiceProcedures)) {
+                        // ... and push it to the array.
                         localServices.push(localService);
                     }
                 }
             })
             const localPEA = this.peaFactory.create();
+            // Initializing the local pea
             if(localPEA.initialize({DataAssemblies: dataAssemblies, DataModel: '', DataModelVersion: new BasicSemanticVersion(), FEAs: [], Name: '', Services: localServices,})) {
+                // successful -> callback with successful response
                 const localSuccessResponse = this.responseVendor.buySuccessResponse();
                 localSuccessResponse.initialize('Success!', localPEA)
                 callback(localSuccessResponse);
             } else {
+                // error -> callback with error response
                 const localErrorResponse = this.responseVendor.buyErrorResponse();
                 localErrorResponse.initialize('Could not extract PEA from ???. Aborting', {})
                 callback(localErrorResponse);
