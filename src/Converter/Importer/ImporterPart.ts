@@ -110,54 +110,60 @@ export class MTPPart extends AImporterPart {
                 DataAssemblies: []
             }
         }
-        // Easier handling of 'single' and 'multiple' sources in one code section. Therefore a single source is transferred to an array with one entry.
+        /* Easier handling of 'single' and 'multiple' sources in one code section. Therefore a single source is
+        transferred to an array with one entry. */
         if(!(Array.isArray(sourceList.InternalElement))) {
             sourceList.InternalElement = [sourceList.InternalElement];
         }
-        // Handle the SourceList
-        sourceList.InternalElement.forEach((source: DataItemSourceList) => {
+        // Handle the SourceList. Mainly extracting the server communication interfaces.
+        sourceList.InternalElement.forEach((sourceListItem: DataItemSourceList) => {
             // So far we only know MTPs with a OPCUAServer as source.
-            switch (source.RefBaseSystemUnitPath) {
+            switch (sourceListItem.RefBaseSystemUnitPath) {
                 case 'MTPCommunicationSUCLib/ServerAssembly/OPCUAServer':
-                    // Extract the data
+                    // Extract the server communication interface.
                     const localeComIntData = this.opcuaServerCommunicationFactory.create();
-                    if(localeComIntData.initialize({name: source.Name, serverURL: source.Attribute.Value})) {
+                    if(localeComIntData.initialize({name: sourceListItem.Name, serverURL: sourceListItem.Attribute.Value})) {
                         communicationInterfaceData.push(localeComIntData);
                     } else {
-                        logger.warn('Cannot extract source <' + source.Name + '> need MTPFreeze-2020-01!');
+                        logger.warn('Cannot extract source <' + sourceListItem.Name + '> need MTPFreeze-2020-01!');
                     }
-                    // Store the source specific 'ExternalInterface' data temporary. You need these in the next parsing step.
-                    source.ExternalInterface.forEach((dataItem: DataItemSourceListExternalInterface) => {
-                        localExternalInterfaces.push(dataItem);
+                    /* Store the source specific 'ExternalInterface' data temporary. You need these in the next parsing
+                    step. */
+                    sourceListItem.ExternalInterface.forEach((sourceListElementExternalInterfaceItem: DataItemSourceListExternalInterface) => {
+                        localExternalInterfaces.push(sourceListElementExternalInterfaceItem);
                     })
                     break;
                 default:
-                    logger.warn('Unknown RefBaseSystemUnitPath of source' + source.Name + '! Skipping ...');
+                    logger.warn('Unknown RefBaseSystemUnitPath of source' + sourceListItem.Name + '! Skipping ...');
                     break;
             }
         })
-        // Handle the InstanceList
-        instanceList.InternalElement.forEach((dataAssembly: DataItemInstanceList) => {
+        // Handle the InstanceList. Merging data with SourceList and generating mainly PiMAd-core-DataAssemblies.
+        instanceList.InternalElement.forEach((instanceListElement: DataItemInstanceList) => {
             // like above these variables will be continuously filled with data in the following lines.
             const localDataItems: DataItem[] = [];
             let dataAssemblyIdentifier = '';
             // iterate through all attributes
-            dataAssembly.Attribute.forEach((attribute: Attribute) => {
-                // These are treated differently depending on the data type.
-                switch (attribute.AttributeDataType) {
+            instanceListElement.Attribute.forEach((instanceListElementAttribute: Attribute) => {
+                // These are treated differently depending on the attribute data type.
+                switch (instanceListElementAttribute.AttributeDataType) {
                     /* In this case the attribute references to an ExternalInterface. Later both data sources will be
-                    merged as one PiMAd-core-DataAssembly. */
+                    merged as one PiMAd-core-DataItem. */
                     case 'xs:IDREF':
                         /* First we need the element with the correct ID from the ExternalInterfaceList. Safe some time
                         with Array.prototype.some(). Therefore the 'strange' syntax in the last part. */
-                        localExternalInterfaces.some((localeInterface: DataItemSourceListExternalInterface) => {
-                            // TODO: Extract description via new swicth case szenario
-                            if (localeInterface.ID === attribute.Value) {
-                                const opcuaNodeCommunication = this.opcuaNodeCommunicationFactory.create()
+                        localExternalInterfaces.some((localeExternalInterface: DataItemSourceListExternalInterface) => {
+                            // TODO: Extract description via new switch case szenario
+                            if (localeExternalInterface.ID === instanceListElementAttribute.Value) {
+                                /* Merging attribute and external interface data to one communication interface. */
+                                // TODO: Aktuell gehen wir immer von opcua nodes aus. Kann sich in Zukunft ändern!
+                                const opcuaNodeCommunication = this.opcuaNodeCommunicationFactory.create();
+                                // ... continuously filled ...
                                 let identifier: number | string = -1;
                                 let namespace = '';
                                 let access = '';
-                                localeInterface.Attribute.forEach((localeInterfaceAttribute: Attribute) => {
+                                /* There are again attributes...  looping and extracting */
+                                localeExternalInterface.Attribute.forEach((localeInterfaceAttribute: Attribute) => {
                                     switch (localeInterfaceAttribute.Name) {
                                         case ('Identifier'):
                                             identifier = localeInterfaceAttribute.Value;
@@ -169,38 +175,50 @@ export class MTPPart extends AImporterPart {
                                             access = localeInterfaceAttribute.Value;
                                             break;
                                         default:
-                                            logger.warn('The opcua-node-communication object contains the unknown attribute <' + attribute.Name + '>! Ignoring ...')
+                                            logger.warn('The opcua-node-communication object contains the unknown attribute <' + instanceListElementAttribute.Name + '>! Ignoring ...')
                                             break;
                                     }
-                                    if (localeInterfaceAttribute == localeInterface.Attribute[localeInterface.Attribute.length - 1]) {
+                                    // in the last loop circle initialize the communication interface.
+                                    if (localeInterfaceAttribute == localeExternalInterface.Attribute[localeExternalInterface.Attribute.length - 1]) {
                                         if (opcuaNodeCommunication.initialize({
-                                            name: attribute.Name,
+                                            name: instanceListElementAttribute.Name,
                                             namespaceIndex: namespace,
                                             nodeId: identifier,
                                             dataType: '???'
                                         })) {
-                                            logger.info('Successfully add opcua-communication <' + attribute.Name + '> to DataAssembly <' + dataAssembly.Name + '>');
+                                            logger.info('Successfully add opcua-communication <' + instanceListElementAttribute.Name + '> to DataAssembly <' + instanceListElement.Name + '>');
                                         } else {
-                                            logger.warn('Could not add opcua-communication <' + attribute.Name + '> to DataAssembly <' + dataAssembly.Name + '>');
+                                            logger.warn('Could not add opcua-communication <' + instanceListElementAttribute.Name + '> to DataAssembly <' + instanceListElement.Name + '>');
                                         }
                                     }
                                 })
+                                // Create and initialize the data item.
                                 const localDataItem = this.baseDataItemFactory.create();
-                                if (localDataItem.initialize(attribute.Name, opcuaNodeCommunication, localeInterface.ID, localeInterface.RefBaseClassPath)) {
+                                if (localDataItem.initialize(instanceListElementAttribute.Name, opcuaNodeCommunication, localeExternalInterface.ID, localeExternalInterface.RefBaseClassPath)) {
+                                    /* no error -> pushing it to the list of data items. later it will be aggregated in
+                                    the data assembly object. */
                                     localDataItems.push(localDataItem);
                                 } else {
                                     // logging
                                 }
+                                // Array.prototype.some() stuff...
                                 return true;
                             } else {
+                                //Array.prototype.some() stuff...
                                 return false;
                             }
                         })
                         break;
+                    /* Now the attributes are id's and doesn't referencing to an DataAssembly/DataItem. In this case the
+                    id connect different data items in the MTP. (Real talk) me (CHe) as an software engineer, i don't
+                    understand this concept... why fucking up the system above with ID & RefIDs in the
+                    DataItems... never mind */
                     case 'xs:ID':
-                        switch(attribute.Name) {
+                        switch(instanceListElementAttribute.Name) {
+                            /* Take this data for the data assembly identifier. Why? The services f.ex. referencing on
+                            this id instead of the AML-ID. */
                             case 'RefID':
-                                dataAssemblyIdentifier = attribute.Value;
+                                dataAssemblyIdentifier = instanceListElementAttribute.Value;
                                 break;
                             default:
                                 break;
@@ -210,21 +228,24 @@ export class MTPPart extends AImporterPart {
                         break;
                 }
             })
+            // All data for creating a DataAssembly has now been collected. Now creating ...
             const localeDataAssembly = this.baseDataAssemblyFactory.create();
+            // ... and initializing.
             if(localeDataAssembly.initialize({
-                tag: dataAssembly.Name,
+                tag: instanceListElement.Name,
                 description: 'inline TODO above',
                 dataItems: localDataItems,
-                //identifier: dataAssembly.ID,
-                identifier: dataAssemblyIdentifier, //TODO: Maybe the line above is wrong.
-                metaModelRef: dataAssembly.RefBaseSystemUnitPath
+                identifier: dataAssemblyIdentifier,
+                metaModelRef: instanceListElement.RefBaseSystemUnitPath
             })) {
+                // initializing successful -> push the new data assembly to the return variable.
                 dataAssemblies.push(localeDataAssembly);
                 logger.info('Add DataAssembly <' + localeDataAssembly.getTagName() + '>');
             } else {
-                logger.warn('Cannot extract all data from DataAssembly <' + dataAssembly.Name + '> need MTPFreeze-2020-01!');
+                logger.warn('Cannot extract all data from DataAssembly <' + instanceListElement.Name + '> need MTPFreeze-2020-01! Skipping ...');
             }
         })
+        // We are done. Return the extracted Data.
         return {
             CommunicationInterfaceData: communicationInterfaceData,
             DataAssemblies: dataAssemblies
