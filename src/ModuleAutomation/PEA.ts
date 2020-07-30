@@ -1,8 +1,97 @@
-import {Actuator, DataAssembly, Sensor} from './DataAssembly';
+import {DataAssembly} from './DataAssembly';
 import {FEA} from './FEA';
 import {Service} from './Service';
 import {Response, ResponseVendor} from '../Backbone/Response';
 import {BasicSemanticVersion, SemanticVersion} from '../Backbone/SemanticVersion';
+
+export interface PEA {
+    /**
+     * NOT YET IMPLEMENTED
+     * Getter for all actuators  within this.dataAssemblies of the PEA object.
+     * @returns A response object.
+     */
+    getAllActuators(callback: (response: Response) => void): void;
+    /**
+     * Getter for this.feas of the PEA object.
+     * @returns A response object.
+     */
+    getAllFEAs(): Response;
+    /**
+     * Getter for this.dataAssemblies of the PEA object.
+     * @returns A response object.
+     */
+    getAllDataAssemblies(): Response;
+    /**
+     * NOT YET IMPLEMENTED
+     * Getter for all sensors within this.dataAssemblies of the PEA object.
+     * @returns A response object.
+     */
+    getAllSensors(callback: (response: Response) => void): void;
+    /**
+     * Getter for this.services of the PEA object.
+     * @returns A response object.
+     */
+    getAllServices(): Response;
+    /**
+     * NOT YET IMPLEMENTED
+     * Get a specific actuator of the PEA object.
+     * @param tag - The tag of the actuator.
+     * @param callback - A callback function. Use an instance of the interface Response as input.
+     */
+    getActuator(tag: string, callback: (response: Response) => void): void;
+    /**
+     * NOT YET IMPLEMENTED
+     * Get a specific FEA of the PEA object.
+     * @param tag - The tag of the FEA.
+     * @param callback - A callback function. Use an instance of the interface Response as input.
+     */
+    getFEA(tag: string, callback: (response: Response) => void): void;
+    /**
+     * Get a specific dataAssembly of the PEA object.
+     * @param tag - The tag of the dataAssembly.
+     * @param callback - A callback function. Use an instance of the interface Response as input.
+     */
+    getDataAssembly(tag: string, callback: (response: Response) => void): void;
+    /**
+     * NOT YET IMPLEMENTED
+     * Get a specific sensor of the PEA object.
+     * @param tag - The tag of the sensor.
+     * @param callback - A callback function. Use an instance of the interface Response as input.
+     */
+    getSensor(tag: string, callback: (response: Response) => void): void;
+    /**
+     * Get a specific service of the PEA object.
+     * @param name - The name of the service.
+     * @param callback - A callback function. Use an instance of the interface Response as input.
+     */
+    getService(name: string, callback: (response: Response) => void): void;
+    /**
+     * Getter for this.name of the PEA object.
+     * @returns A response object.
+     */
+    getName(): Response;
+    /**
+     * Getter for this.dataModel of the PEA object.
+     * @returns A response object.
+     */
+    getDataModel(): Response;
+    /**
+     * Getter for this.dataModelVersion of the PEA object.
+     * @returns A response object.
+     */
+    getDataModelVersion(): Response;
+    /**
+     * Initialize the PEA object with data. This one works like a constructor.
+     * @param DataAssemblies - The data assembly of the PEA object.. F. ex. with the communication interface data.
+     * @param DataModel - A reference to a data-model describing the PEA object.
+     * @param DataModelVersion - A reference to a data-model version valid for the PEA object.
+     * @param Name - The name of the PEA object.
+     * @param FEAs - An Array with the PEA related FEAs.
+     * @param Services - An Array with the PEA related Services.
+     * @returns True for a successful initialisation. False for a not successful initialisation.
+     * */
+    initialize(data: object): boolean;
+}
 
 abstract class APEA implements PEA {
     protected dataAssemblies: DataAssembly[];
@@ -25,39 +114,86 @@ abstract class APEA implements PEA {
         this.initialized = false;
     };
 
-    getAllActuators(): Response {
-        return this.responseVendor.buyErrorResponse();
+    getAllActuators(callback: (response: Response) => void){
+        const response = this.responseVendor.buyErrorResponse();
+        callback(response);
     };
-
     getAllFEAs(): Response {
-        return this.responseVendor.buyErrorResponse();
+        const response = this.responseVendor.buySuccessResponse();
+        response.initialize('Success!', {data: this.feas});
+        return response;
     };
-
     getAllDataAssemblies(): Response {
-        return this.responseVendor.buyErrorResponse();
+        const response = this.responseVendor.buySuccessResponse();
+        response.initialize('Success!', {data: this.dataAssemblies});
+        return response;
     };
-    getAllSensors(): Response {
-        return this.responseVendor.buyErrorResponse();
+    getAllSensors(callback: (response: Response) => void){
+        const response = this.responseVendor.buyErrorResponse();
+        callback(response);
     };
     getAllServices(): Response {
-        return this.responseVendor.buyErrorResponse();
+        const response = this.responseVendor.buySuccessResponse();
+        response.initialize('Success!', {data: this.services});
+        return response;
     };
-    getActuator(tag: string): Response {
-        return this.responseVendor.buyErrorResponse();
+    getActuator(tag: string, callback: (response: Response) => void){
+        const response = this.responseVendor.buyErrorResponse();
+        callback(response);
     };
-    getFEA(tag: string): Response {
-        return this.responseVendor.buyErrorResponse();
+    getFEA(tag: string, callback: (response: Response) => void) {
+        const response = this.responseVendor.buyErrorResponse();
+        callback(response);
+    }
+    getDataAssembly(tag: string, callback: (response: Response) => void){
+        this.dataAssemblies.forEach((dataAssembly: DataAssembly) => {
+            if(dataAssembly.getTagName() === tag) {
+                const response = this.responseVendor.buySuccessResponse();
+                response.initialize('Success!', dataAssembly);
+                callback(response);
+            }
+            if(dataAssembly === this.dataAssemblies[this.dataAssemblies.length -1]) {
+                const response = this.responseVendor.buyErrorResponse();
+                response.initialize('Could not find dataAssembly <' + tag + '> in PEA <' + this.name + '>', {});
+                callback(response);
+            }
+        })
+    };
+    getSensor(tag: string, callback: (response: Response) => void){
+        const response = this.responseVendor.buyErrorResponse();
+        callback(response);
+    };
+    getService(name: string, callback: (response: Response) => void){
+        this.services.forEach((service: Service) => {
+            const response =service.getName().getContent() as {data: string};
+            if(response.data === name) {
+                const response = this.responseVendor.buySuccessResponse();
+                response.initialize('Success!', service);
+                callback(response);
+            }
+            if(service === this.services[this.services.length -1]) {
+                const response = this.responseVendor.buyErrorResponse();
+                response.initialize('Could not find service <' + name + '> in PEA <' + this.name + '>', {});
+                callback(response);
+            }
+        })
+    };
+    getName(): Response{
+        const response = this.responseVendor.buySuccessResponse();
+        response.initialize('Success!', {data: this.name});
+        return response;
+    };
+    getDataModel(): Response{
+        const response = this.responseVendor.buySuccessResponse();
+        response.initialize('Success!', {data: this.dataModel});
+        return response;
+    };
+    getDataModelVersion(): Response{
+        const response = this.responseVendor.buySuccessResponse();
+        response.initialize('Success!', {data: this.dataModelVersion});
+        return response;
     };
 
-    getDataAssembly(tag: string): Response {
-        return this.responseVendor.buyErrorResponse();
-    };
-    getSensor(tag: string): Response {
-        return this.responseVendor.buyErrorResponse();
-    };
-    getService(tag: string): Response {
-        return this.responseVendor.buyErrorResponse();
-    };
     initialize(data: BasePEAInitializeDataType): boolean {
         if (!this.initialized) {
             this.dataAssemblies = data.DataAssemblies;
@@ -82,20 +218,6 @@ abstract class APEA implements PEA {
 
 export class BasePEA extends APEA {
 
-}
-
-export interface PEA {
-    getAllActuators(): Response;
-    getAllFEAs(): Response;
-    getAllDataAssemblies(): Response;
-    getAllSensors(): Response;
-    getAllServices(): Response;
-    getActuator(tag: string): Response;
-    getFEA(tag: string): Response;
-    getDataAssembly(tag: string): Response;
-    getSensor(tag: string): Response;
-    getService(tag: string): Response;
-    initialize(data: object): boolean;
 }
 
 /* Factories */
