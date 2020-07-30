@@ -12,7 +12,8 @@ import {
     TextPart
 } from './ImporterPart';
 import {AMLGateFactory, MTPGateFactory, XMLGateFactory, ZIPGateFactory, GateFactory} from '../Gate/GateFactory';
-import {InstanceHierarchy} from 'AML';
+import {AML} from 'PiMAd-types';
+import InstanceHierarchy = AML.InstanceHierarchy
 import { CAEXFile } from 'PiMAd-types';
 import {
     BaseDataAssemblyFactory,
@@ -23,7 +24,6 @@ import {CommunicationInterfaceData} from '../../ModuleAutomation/CommunicationIn
 import {BasePEA, BasePEAFactory} from '../../ModuleAutomation/PEA';
 import {BaseServiceFactory, Service} from '../../ModuleAutomation/Service';
 import {BaseProcedureFactory, Procedure, ProcedureFactory} from '../../ModuleAutomation/Procedure';
-import {FEA} from '../../ModuleAutomation/FEA';
 abstract class AImporter implements  Importer {
 
     protected initialized: boolean;
@@ -61,6 +61,7 @@ export class LastChainLinkImporter extends AImporter {
     /**
      * All prioritized importers could not perform the import. Error message with debug information is created and
      * returned to the calling one.
+     *
      * @param instructions - A set of instructions, configuring the importer.
      * @param callback - Passing the result back via a callback function.
      */

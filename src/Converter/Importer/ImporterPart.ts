@@ -4,7 +4,12 @@ import {
     OPCUAServerCommunicationFactory
 } from '../../ModuleAutomation/CommunicationInterfaceData';
 import { DataAssembly,BaseDataAssemblyFactory} from '../../ModuleAutomation/DataAssembly';
-import { DataItemInstanceList, DataItemSourceList, DataItemSourceListExternalInterface, Attribute, ServiceInternalElement } from 'AML';
+import {AML} from 'PiMAd-types'
+import DataItemInstanceList = AML.DataItemInstanceList;
+import DataItemSourceList = AML.DataItemSourceList;
+import DataItemSourceListExternalInterface = AML.DataItemSourceListExternalInterface;
+import Attribute = AML.Attribute;
+import ServiceInternalElement = AML.ServiceInternalElement;
 import { InstanceList, SourceList } from 'PiMAd-types';
 import {logger} from '../../Utils/Logger';
 import {BaseDataItemFactory, DataItem} from '../../ModuleAutomation/DataItem';
@@ -85,6 +90,24 @@ export class MTPPart extends AImporterPart {
 
     /**
      * Initialize all relevant Data of 'MTP-CommunicationSet' as instances of PiMAd-core-IM.
+     *
+     * <uml>
+     *     skinparam shadowing false
+     *     partition buildCommunicationSet {
+     *       start
+     *       :extract InstanceList & \nSourceList;
+     *       if(extracted data seems valid) then (yes)
+     *           :parsing SourceList;
+     *           :parsing InstanceList;
+     *           :CommunicationInterfaceData: communicationInterfaceData, \nDataAssemblies: dataAssemblies ]
+     *           stop
+     *       else (no)
+     *       endif
+     *       :CommunicationInterfaceData: [], \nDataAssemblies: [] ]
+     *       stop
+     *     }
+     * </uml>
+     *
      * @param communicationSet - The bare CommunicationSet-object of the MTP.
      */
     private buildCommunicationSet(communicationSet: object[]): BuildCommunicationSetResponseType  {
