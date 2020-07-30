@@ -20,9 +20,10 @@ import {
     DataAssemblyFactory
 } from '../../ModuleAutomation/DataAssembly';
 import {CommunicationInterfaceData} from '../../ModuleAutomation/CommunicationInterfaceData';
-import {BasePEAFactory} from '../../ModuleAutomation/PEA';
+import {BasePEA, BasePEAFactory} from '../../ModuleAutomation/PEA';
 import {BaseServiceFactory, Service} from '../../ModuleAutomation/Service';
 import {BaseProcedureFactory, Procedure, ProcedureFactory} from '../../ModuleAutomation/Procedure';
+import {FEA} from '../../ModuleAutomation/FEA';
 abstract class AImporter implements  Importer {
 
     protected initialized: boolean;
@@ -241,13 +242,13 @@ export class MTPFreeze202001Importer extends AImporter {
             localResponse.initialize('Could not extract MTPSUCLib/CommunicationSet or MTPServiceSUCLib/ServiceSet. Aborting...', {})
             callback(localResponse);
         } else {
-            const localeServices: Service[] = [];
+            const localServices: Service[] = [];
             servicePartResponseContent.forEach((service: InternalServiceType) => {
                 const localService = this.serviceFactory.create()
-                const localeServiceDataAssembly: DataAssembly | undefined = dataAssemblies.find(dataAssembly =>
+                const localServiceDataAssembly: DataAssembly | undefined = dataAssemblies.find(dataAssembly =>
                     service.DataAssembly.Value === dataAssembly.getIdentifier()
                 )
-                if(localeServiceDataAssembly === undefined) {
+                if(localServiceDataAssembly === undefined) {
                     logger.warn('Could not find referenced DataAssembly for service <' + service.Name + '> Skipping this service ...');
                 } else {
                     const localServiceProcedures: Procedure[] = [];
@@ -262,16 +263,21 @@ export class MTPFreeze202001Importer extends AImporter {
                             }
                         }
                     })
-                    if(localService.initialize(service.Attributes, localeServiceDataAssembly, service.Identifier, service.MetaModelRef, service.Name, service.Parameters, localServiceProcedures)) {
-                        localeServices.push(localService);
+                    if(localService.initialize(service.Attributes, localServiceDataAssembly, service.Identifier, service.MetaModelRef, service.Name, service.Parameters, localServiceProcedures)) {
+                        localServices.push(localService);
                     }
                 }
             })
             const localPEA = this.peaFactory.create();
-
-            const localResponse = this.responseVendor.buySuccessResponse();
-            localResponse.initialize('Success!', {})
-            callback(localResponse);
+            if(localPEA.initialize({DataAssemblies: dataAssemblies, DataModel: '', DataModelVersion: new BasicSemanticVersion(), FEAs: [], Name: '', Services: localServices,})) {
+                const localSuccessResponse = this.responseVendor.buySuccessResponse();
+                localSuccessResponse.initialize('Success!', localPEA)
+                callback(localSuccessResponse);
+            } else {
+                const localErrorResponse = this.responseVendor.buyErrorResponse();
+                localErrorResponse.initialize('Could not extract PEA from ???. Aborting', {})
+                callback(localErrorResponse);
+            }
         }
     }
 
