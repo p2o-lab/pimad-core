@@ -16,11 +16,6 @@ describe('class: BasePEA', () => {
     beforeEach(function () {
         pea = new BasePEA();
     });
-    it('method: initialize(firstChainElement: Importer)', () => {
-        // TODO > Generate test data
-        expect(pea.initialize({} as BasePEAInitializeDataType)).is.true;
-        expect(pea.initialize({} as BasePEAInitializeDataType)).is.false;
-    });
     describe('check getter', () => {
         beforeEach(function () {
 
@@ -41,7 +36,7 @@ describe('class: BasePEA', () => {
                 dataItems: []
             });
 
-            const service = new BaseService();
+
             const attributes: Attribute[] = [
                 {Name: 'Test-Attribute0', AttributeDataType: '', Value:''},
                 {Name: 'Test-Attribute1', AttributeDataType: '', Value:'1'},
@@ -55,7 +50,11 @@ describe('class: BasePEA', () => {
             procedure0.initialize({} as DataAssembly, '','', 'Test-Procedure0', [],[]);
             const procedure1 = new BaseProcedure();
             procedure1.initialize({} as DataAssembly, '','', 'Test-Procedure1', [],[]);
-            service.initialize(attributes, dataAssembly1,'Test-Identifier','Test-MetaModelRef','Test-Service1', [parameter, parameter2], [procedure0, procedure1]);
+
+            const service1 = new BaseService();
+            service1.initialize(attributes, dataAssembly1,'Test-Identifier1','Test-MetaModelRef1','Test-Service1', [parameter, parameter2], [procedure0, procedure1]);
+            const service2 = new BaseService();
+            service2.initialize(attributes, dataAssembly1,'Test-Identifier2','Test-MetaModelRef2','Test-Service2', [parameter], [procedure1]);
 
             pea.initialize({
                 DataAssemblies: [dataAssembly1,dataAssembly2],
@@ -63,7 +62,7 @@ describe('class: BasePEA', () => {
                 DataModelVersion: new BasicSemanticVersion(),
                 FEAs:[],
                 Name:'Test-PEA',
-                Services:[service]
+                Services:[service1]
             } as BasePEAInitializeDataType);
         });
         describe('method: getActuator()', () => {
@@ -159,6 +158,11 @@ describe('class: BasePEA', () => {
                 })
             });
         });
+    });
+    it('method: initialize(firstChainElement: Importer)', () => {
+        expect(pea.initialize({DataAssemblies: [{} as DataAssembly], DataModel: '', DataModelVersion: {} as SemanticVersion, FEAs:[{} as FEA], Name:'', Services:[{} as Service]} as BasePEAInitializeDataType)).is.true;
+        expect(pea.initialize({DataAssemblies: [{} as DataAssembly], DataModel: '', DataModelVersion: {} as SemanticVersion, FEAs:[{} as FEA], Name:'', Services:[{} as Service]} as BasePEAInitializeDataType)).is.false;
+
     });
 });
 describe('class: BasePEAFactory', () => {
