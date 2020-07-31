@@ -2,7 +2,6 @@ import {expect} from 'chai';
 import {LastChainElementImporterFactory, LastChainLinkImporter, MTPFreeze202001Importer} from './Importer';
 import {ErrorResponse, Response, SuccessResponse} from '../../Backbone/Response';
 import {BasicSemanticVersion, SemanticVersion} from '../../Backbone/SemanticVersion';
-import * as testResultNormalUsageMTPFreeze202001Importer from '../../../test/Converter/Results/test-result-MTPFreeze202001Importer-normal-usage.json';
 import {PEA} from '../../ModuleAutomation/PEA';
 import {DataAssembly} from '../../ModuleAutomation/DataAssembly';
 import {Service} from '../../ModuleAutomation/Service';

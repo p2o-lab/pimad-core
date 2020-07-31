@@ -116,11 +116,11 @@ abstract class APEA implements PEA {
         this.initialized = false;
     };
 
-    getActuator(tag: string, callback: (response: Response) => void){
+    getActuator(tag: string, callback: (response: Response) => void): void {
         const response = this.responseVendor.buyErrorResponse();
         callback(response);
     };
-    getAllActuators(callback: (response: Response) => void){
+    getAllActuators(callback: (response: Response) => void): void {
         const response = this.responseVendor.buyErrorResponse();
         callback(response);
     };
@@ -134,7 +134,7 @@ abstract class APEA implements PEA {
         response.initialize('Success!', {data: this.feas});
         return response;
     };
-    getAllSensors(callback: (response: Response) => void){
+    getAllSensors(callback: (response: Response) => void): void {
         const response = this.responseVendor.buyErrorResponse();
         callback(response);
     };
@@ -143,7 +143,7 @@ abstract class APEA implements PEA {
         response.initialize('Success!', {data: this.services});
         return response;
     };
-    getDataAssembly(tag: string, callback: (response: Response) => void){
+    getDataAssembly(tag: string, callback: (response: Response) => void): void {
         this.dataAssemblies.forEach((dataAssembly: DataAssembly) => {
             if(dataAssembly.getTagName() === tag) {
                 const response = this.responseVendor.buySuccessResponse();
@@ -167,7 +167,7 @@ abstract class APEA implements PEA {
         response.initialize('Success!', {data: this.dataModelVersion});
         return response;
     };
-    getFEA(tag: string, callback: (response: Response) => void) {
+    getFEA(tag: string, callback: (response: Response) => void): void {
         const response = this.responseVendor.buyErrorResponse();
         callback(response);
     }
@@ -176,11 +176,11 @@ abstract class APEA implements PEA {
         response.initialize('Success!', {data: this.name});
         return response;
     };
-    getSensor(tag: string, callback: (response: Response) => void){
+    getSensor(tag: string, callback: (response: Response) => void): void {
         const response = this.responseVendor.buyErrorResponse();
         callback(response);
     };
-    getService(name: string, callback: (response: Response) => void){
+    getService(name: string, callback: (response: Response) => void): void {
         this.services.forEach((service: Service) => {
             const receive = service.getName().getContent() as {data: string};
             if(receive.data === name) {

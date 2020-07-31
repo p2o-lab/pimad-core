@@ -39,6 +39,7 @@ abstract class AImporter implements  Importer {
 
         this.metaModelVersion.initialize(0,0,1);
     }
+    /** @inheritDoc */
     abstract convertFrom(instructions: object, callback: (response: Response) => void): void;
     getMetaModelVersion(): SemanticVersion {
         return this.metaModelVersion;
@@ -101,6 +102,7 @@ export class MTPFreeze202001Importer extends AImporter {
     private xmlGateFactory: GateFactory;
     private zipGateFactory: GateFactory;
 
+    /** @inheritDoc */
     convertFrom(instructions: {source: string},
                 callback: (response: Response) => void): void {
         if(this.initialized) {
@@ -202,7 +204,60 @@ export class MTPFreeze202001Importer extends AImporter {
     }
 
     /**
-     * Converting the interface data of the MTP into PiMAd-core PEA object.
+     * This method translates the interface description of the ModuleTypePackage within the CAEX file into a PEA of the
+     * PiMAd-core-IM. After the different MTP parts are extracted by {@linkcode ImporterPart}s, DataAssemblies, Services
+     * and Procedures are merged. The reference system of the MTP is used for this. The import of the MTP is then
+     * completed.
+     *
+     * Detailed inline code documentation exists for this method. Nevertheless, it is important to read the MTP
+     * standard.
+     *
+     * <uml>
+     *     skinparam shadowing false
+     *     partition "convert" {
+     *          start
+     *          :prepare pea-data-storage;
+     *          :loop through the InstanceHierarchy\nand extract data for different\nModuleTypePackage parts;
+     *          if(extracted data\nis valid?) then (no)
+     *              :callback an ErrorResponse;
+     *              stop
+     *          else (yes)
+     *              while (are there\nmore services?) is (yes)
+     *                  :take next service;
+     *                  :get and store the\nreferenced DataAssembly;
+     *                  if (is referenced DataAssembly undefined?) then (yes)
+     *                      :skipping this service;
+     *                  else (no)
+     *                      :prepare service-data-storage;
+     *                      while (are there\nmore procedures?) is (yes)
+     *                          :take next procedure;
+     *                          :get and store the\nreferenced DataAssembly;
+     *                          if (is referenced DataAssembly undefined?) then (yes)
+     *                              :skipping this procedure;
+     *                          else (no)
+     *                              :initialize procedure;
+     *                              if (initialization successful?) then (yes)
+     *                                  :push procedure to\nservice-data-storage;
+     *                              endif
+     *                          endif
+     *                      endwhile (no)
+     *                      :initialize service;
+     *                      if (initialization successful?) then (yes)
+     *                          :push service to\npea-data-storage;
+     *                      endif
+     *                  endif
+     *              endwhile (no)
+     *              :initialize a PEA object;
+     *              if (initialization successful?) then (yes)
+     *                  :callback the PEA\nvia SuccessResponse;
+     *              else (no)
+     *                  :callback error\nvia ErrorResponse;
+     *              endif
+     *          endif
+     *          stop
+     *     }
+     * </uml>
+     *
      * @param data - The data as CAEXFile.
      * @param callback - ???
      * @private
@@ -317,6 +372,33 @@ export class MTPFreeze202001Importer extends AImporter {
 }
 
 export interface Importer {
+    /**
+     * TODO
+     *
+     * <uml>
+     *     skinparam shadowing false
+     *     partition convertFrom {
+     *          start
+     *          :parse instructions;
+     *          if(Can I follow\nthe instructions?) then (yes)
+     *              if(Can I access\nthe data source?) then (yes)
+     *                  if(Do I understand the\ninformation model?) then (yes)
+     *                      :Convert it;
+     *                      :Fire callback;
+     *                      stop
+     *                  else (no)
+     *                  endif
+     *              else (no)
+     *              endif
+     *          else (no)
+     *          endif
+     *          :Pass to the next\nchain element;
+     *          stop
+     *     }
+     * </uml>
+     * @param instructions - TODO
+     * @param callback - TODO
+     */
     convertFrom(instructions: object, callback: (response: Response) => void): void;
     initialize(nextImporter: Importer): boolean;
     getMetaModelVersion(): SemanticVersion;
