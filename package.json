@@ -7,7 +7,7 @@
     "prebuild": "npm run lint",
     "build": "tsc",
     "build-gdocs": "typedoc --out docs src",
-    "lint": "eslint -f pretty 'src/**/*.ts'",
+    "lint": "eslint -f pretty --ext \".ts\" src",
     "prestart": "npm run build",
     "start": "node .",
     "test": "nyc mocha -r ts-node/register 'src/**/*.ts'"

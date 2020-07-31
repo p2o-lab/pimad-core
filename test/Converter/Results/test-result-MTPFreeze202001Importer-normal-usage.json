@@ -1,5 +1,4 @@
 {
-  "feas": [],
   "dataAssemblies": [
     {
       "dataItems": [],
@@ -1195,7 +1194,12 @@
     "patch": -1,
     "initialized": false
   },
+  "feas": [],
   "name": "",
+  "responseVendor": {
+    "fErrorResponse": {},
+    "fSuccessResponse": {}
+  },
   "services": [
     {
       "attributes": [],
@@ -2580,9 +2584,5 @@
       }
     }
   ],
-  "responseVendor": {
-    "fErrorResponse": {},
-    "fSuccessResponse": {}
-  },
   "initialized": true
 }
