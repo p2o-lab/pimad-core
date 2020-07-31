@@ -60,13 +60,29 @@ export class MTPPart extends AImporterPart {
     private baseDataItemFactory: BaseDataItemFactory;
 
     /**
-     * Parsing the relevant data of the ModuleTypePackage-object and copy that to different instances of PiMAd-core-IM.
+     * This method extracts data from the MTPPart of the ModuleTypePackage and converts it into different objects of the PiMAd-core-IM.
+     *
+     * Attention! Currently (31.07.2020) only data from the CommunicationSet is processed!
+     *
+     * <uml>
+     *     skinparam shadowing false
+     *     partition "extract" {
+     *          start
+     *          :extract communicationSet;
+     *          if (extracted data is valid?) is (true)
+     *              :callback the data\nwith SuccessResponse;
+     *          else (false)
+     *              :callback an\nErrorResponse;
+     *          endif
+     *          stop
+     *     }
+     * </uml>
+     *
      * @param data - The bare ModuleTypePackage-object of the MTP. Containing a CommunicationSet, HMISet, ServiceSet and TextSet.
-     * @param callback - A callback function with an instance of the Response-Interface.
+     * @param callback - A callback function with an instance of the Response-Interface. The type of the response-content-object-attribute data is {@linkcode ExtractDataFromCommunicationSetResponseType}
      */
     extract(data: {CommunicationSet: object[]; HMISet: object; ServiceSet: object; TextSet: object}, callback: (response: Response) => void): void {
         const communicationSet = this.extractDataFromCommunicationSet(data.CommunicationSet);
-        // TODO: Überprüfen ob Extraktion erfolgreich war.
         if(communicationSet.CommunicationInterfaceData.length === 0 && communicationSet.DataAssemblies.length === 0) {
             const localeResponse = this.responseVendor.buyErrorResponse();
             localeResponse.initialize('Could not parse the CommunicationSet!', {});
@@ -331,7 +347,32 @@ export class ServicePart extends AImporterPart {
     private baseProcedureFactory: BaseProcedureFactory;
 
     /**
-     * Parsing the relevant data of \<MTPServiceSUCLib/Service\> and copy that to different instances of PiMAd-core-IM.
+     * This method extracts data from the service part of the ModuleTypePackage and converts it into an intermediate
+     * format very similar to the {@linkcode Service} interface of the PiMAd core IM.
+     *
+     * <uml>
+     *     skinparam shadowing false
+     *     partition "extract" {
+     *          start
+     *          while (more services?) is (yes)
+     *              :take the next service;
+     *              :extract and store\nfirst level data of\nthe service;
+     *              while (more InternalElements?) is (yes)
+     *                  :take the next element;
+     *                  if (element == ServiceProcedure) is (true)
+     *                      :extract the data\nof the service procedure;
+     *                      :push procedure to service;
+     *                  else (no)
+     *                      :Skipping this element;
+     *                  endif
+     *              endwhile (no)
+     *              :push service to storage;
+     *          endwhile (no)
+     *          :callback the extracted\nservices with a\nSuccessResponse;
+     *          stop
+     *     }
+     * </uml>
+     *
      * @param data - All service data as object.
      * @param callback - A callback function with an instance of the Response-Interface.
      */
@@ -403,18 +444,16 @@ export class ServicePart extends AImporterPart {
                         break;
                 }
             })
-            // push the extracted service data to the variable which will be used in the callback.
             extractedServiceData.push(localService);
-            if(amlService == data.InternalElement[data.InternalElement.length - 1]) {
-                const localResponse = this.responseVendor.buySuccessResponse();
-                localResponse.initialize('Successfully extracting the ServicePart!', extractedServiceData);
-                callback(localResponse);
-            }
         })
+        const localResponse = this.responseVendor.buySuccessResponse();
+        localResponse.initialize('Successfully extracting the ServicePart!', extractedServiceData);
+        callback(localResponse);
     }
 
     /**
-     * Transforming AML-Attributes into AML-Attributes. Ignoring specific one. f. ex. RefID. Needs a Refactor -\> PiMAd needs an attribute interface too!
+     * Transforming AML-Attributes into AML-Attributes. Ignoring specific one. f. ex. RefID. Needs a Refactor -\> PiMAd
+     * needs an attribute interface too!
      * @param attributes - The attributes array.
      * @param callback - A callback function with an instance of the Response-Interface.
      */
