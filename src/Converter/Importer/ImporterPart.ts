@@ -65,7 +65,7 @@ export class MTPPart extends AImporterPart {
      * @param callback - A callback function with an instance of the Response-Interface.
      */
     extract(data: {CommunicationSet: object[]; HMISet: object; ServiceSet: object; TextSet: object}, callback: (response: Response) => void): void {
-        const communicationSet = this.buildCommunicationSet(data.CommunicationSet);
+        const communicationSet = this.extractDataFromCommunicationSet(data.CommunicationSet);
         // TODO: Überprüfen ob Extraktion erfolgreich war.
         if(communicationSet.CommunicationInterfaceData.length === 0 && communicationSet.DataAssemblies.length === 0) {
             const localeResponse = this.responseVendor.buyErrorResponse();
@@ -89,18 +89,19 @@ export class MTPPart extends AImporterPart {
     };
 
     /**
-     * Initialize all relevant Data of 'MTP-CommunicationSet' as instances of PiMAd-core-IM.
+     * This method extracts data from the ModuleTypePackage-CommunicationSet, evaluates it and then transfers it to the
+     * PiMAd-core internal data model. The following diagram visualizes the general method flow:
      *
      * <uml>
      *     skinparam shadowing false
-     *     partition buildCommunicationSet {
-     *       start
+     *     partition "extractDataFromCommunicationSet" {
+     *     start
      *       :extract InstanceList & \nSourceList;
      *       if(extracted data seems valid) then (yes)
-     *           :parsing SourceList;
-     *           :parsing InstanceList;
-     *           :CommunicationInterfaceData: communicationInterfaceData, \nDataAssemblies: dataAssemblies ]
-     *           stop
+     *         :parsing SourceList;
+     *         :parsing InstanceList;
+     *         :CommunicationInterfaceData: communicationInterfaceData, \nDataAssemblies: dataAssemblies ]
+     *         stop
      *       else (no)
      *       endif
      *       :CommunicationInterfaceData: [], \nDataAssemblies: [] ]
@@ -108,9 +109,49 @@ export class MTPPart extends AImporterPart {
      *     }
      * </uml>
      *
+     * The following activity diagram shows the detailed steps for parsing the SourceList:
+     *
+     * <uml>
+     *     skinparam shadowing false
+     *     partition "extractDataFromCommunicationSet:parsing-SourceList" {
+     *       start
+     *       while (more InternalElements?) is (true)
+     *         if (element == OPCUAServer?) then (yes)
+     *           :extract opcua-\nserver interface;
+     *           :extract external interfaces;
+     *          else (no)
+     *            stop
+     *          endif
+     *       endwhile (no)
+     *       stop
+     *      }
+     * </uml>
+     *
+     * The following activity diagram shows the detailed steps for parsing the InstanceList:
+     *
+     * <uml>
+     *   skinparam shadowing false
+     *   partition "buildCommunicationSet:parsing-InstanceList" {
+     *     start
+     *     while (more InternalElements\nin InstanceList?) is (true)
+     *       :setup local\ndata storage;
+     *       while (more Attributes\nin InternalElement?) is (true)
+     *         if(attributeDataType == xs:IDREF)
+     *           :merging attribute data\nwith external interface data;
+     *           :initialize DataItem with\nmerged data and push\nit to the local storage;
+     *         elseif (attributeDataType == xs:ID)
+     *           :save the RefID as\nDataAssembly-Identifier;
+     *         endif
+     *       endwhile (no)
+     *     :initialize DataAssembly with\nparsed data and push it\to the local storage;
+     *     endwhile (no)
+     *     stop
+     *   }
+     * </uml>
+     *
      * @param communicationSet - The bare CommunicationSet-object of the MTP.
      */
-    private buildCommunicationSet(communicationSet: object[]): BuildCommunicationSetResponseType  {
+    private extractDataFromCommunicationSet(communicationSet: object[]): ExtractDataFromCommunicationSetResponseType  {
         // The following arrays will be continuously filled with data in the following lines.
         const communicationInterfaceData: CommunicationInterfaceData[] = [];
         const dataAssemblies: DataAssembly[] = [];
@@ -415,15 +456,24 @@ export interface ImporterPart {
     extract(data: object, callback: (response: Response) => void): void;
 }
 
-export type BuildCommunicationSetResponseType = {
+/**
+ * Type of the object that is created by the method {@linkcode extractDataFromCommunicationSet}
+ */
+export type ExtractDataFromCommunicationSetResponseType = {
     CommunicationInterfaceData: CommunicationInterfaceData[];
     DataAssemblies: DataAssembly[];
 }
 
+/**
+ * Types the content object in the {@linkcode SuccessResponse} from {@linkcode ServicePart.extract}
+ */
 export type InternalServiceType = InternalProcedureType & {
     Procedures: InternalProcedureType[];
 }
 
+/**
+ * Types the Procedures in {@linkcode InternalServiceType}
+ */
 export type InternalProcedureType = {
     Attributes: Attribute[];
     DataAssembly: Attribute;
@@ -433,6 +483,9 @@ export type InternalProcedureType = {
     Parameters: Parameter[];
 }
 
+/**
+ * Types the object that the method {@linkcode ServicePart.extract} expects as input.
+ */
 export type ServicePartExtractInputDataType = {
     Name: string;
     ID: string;

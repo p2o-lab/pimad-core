@@ -2,7 +2,7 @@ import {Response, ResponseVendor} from '../../Backbone/Response';
 import {logger} from '../../Utils/Logger';
 import {BasicSemanticVersion, SemanticVersion} from '../../Backbone/SemanticVersion';
 import {
-    BuildCommunicationSetResponseType,
+    ExtractDataFromCommunicationSetResponseType,
     HMIPart,
     ImporterPart,
     InternalServiceType,
@@ -212,7 +212,7 @@ export class MTPFreeze202001Importer extends AImporter {
         let communicationInterfaceData: CommunicationInterfaceData[] = []; // TODO > link to communication interface
         let dataAssemblies: DataAssembly[] = []
         let communicationSet: {InternalElement: object[]} = {} as {InternalElement: object[]};
-        let mtpPartResponseContent: BuildCommunicationSetResponseType = {} as BuildCommunicationSetResponseType
+        let mtpPartResponseContent: ExtractDataFromCommunicationSetResponseType = {} as ExtractDataFromCommunicationSetResponseType
         let servicePartResponseContent: InternalServiceType[] = [];
         // looping through the first level instance hierarchy of the CAEX-File.
         data.InstanceHierarchy.forEach((instance: InstanceHierarchy) => {
@@ -226,7 +226,7 @@ export class MTPFreeze202001Importer extends AImporter {
                     const mtpImporterPart: MTPPart = new MTPPart();
                     mtpImporterPart.extract({CommunicationSet: communicationSet.InternalElement, HMISet: {}, ServiceSet: {}, TextSet: {}}, mtpPartResponse => {
                         if(mtpPartResponse.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
-                            mtpPartResponseContent = mtpPartResponse.getContent() as BuildCommunicationSetResponseType;
+                            mtpPartResponseContent = mtpPartResponse.getContent() as ExtractDataFromCommunicationSetResponseType;
                             communicationInterfaceData = mtpPartResponseContent.CommunicationInterfaceData;
                             dataAssemblies = mtpPartResponseContent.DataAssemblies;
                         } else {
