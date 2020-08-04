@@ -141,7 +141,7 @@ export class MTPFreeze202001Importer extends AImporter {
      */
     private followInstructions(instructions: {source: string}, callback: (response: Response) => void): void {
         // Instructions
-        if(instructions.source != undefined) {
+        if(instructions.source != '') {
             // access data source
             this.accessDataSource(instructions, response => {
                 callback(response)
@@ -183,27 +183,33 @@ export class MTPFreeze202001Importer extends AImporter {
                 break;
         }
 
-        gate.initialize(instructions.source);
-        gate.receive({}, response => {
-            //TODO > Fix gate + address issue in Gate.ts
-            //TODO > Fix that array shit.
-            let localCAEXFile: { data?: {CAEXFile: CAEXFile}} = {} as { data: {CAEXFile: CAEXFile}};
-            const caexFile: { data?: {CAEXFile: CAEXFile}} = response.getContent();
-            if(Array.isArray(caexFile.data)) {
-                localCAEXFile.data = caexFile.data[0].data;
-            } else {
-                localCAEXFile.data = caexFile.data ;
-            }
-            if(localCAEXFile.data?.CAEXFile != undefined) {
-                this.checkInformationModel(localCAEXFile.data.CAEXFile, checkIMResponse => {
-                    callback(checkIMResponse);
-                })
-            } else {
-                const followInstructionResponse = this.responseVendor.buyErrorResponse()
-                followInstructionResponse.initialize('The File at ' + instructions.source + ' is not valid CAEX!', {})
-                callback(followInstructionResponse)
-            }
-        })
+        if(gate.constructor.name === new MockGateFactory().create().constructor.name) {
+            const unknownSourceType = this.responseVendor.buyErrorResponse();
+            unknownSourceType.initialize('Unknown source type <' + instructions.source + '>', {});
+            callback(unknownSourceType);
+        } else {
+            gate.initialize(instructions.source);
+            gate.receive({}, response => {
+                //TODO > Fix gate + address issue in Gate.ts
+                //TODO > Fix that array shit.
+                let localCAEXFile: { data?: {CAEXFile: CAEXFile}} = {} as { data: {CAEXFile: CAEXFile}};
+                const caexFile: { data?: {CAEXFile: CAEXFile}} = response.getContent();
+                if(Array.isArray(caexFile.data)) {
+                    localCAEXFile.data = caexFile.data[0].data;
+                } else {
+                    localCAEXFile.data = caexFile.data ;
+                }
+                if(localCAEXFile.data?.CAEXFile != undefined) {
+                    this.checkInformationModel(localCAEXFile.data.CAEXFile, checkIMResponse => {
+                        callback(checkIMResponse);
+                    })
+                } else {
+                    const followInstructionResponse = this.responseVendor.buyErrorResponse()
+                    followInstructionResponse.initialize('The File at ' + instructions.source + ' is not valid CAEX!', {})
+                    callback(followInstructionResponse)
+                }
+            })
+        }
     }
 
     /**
@@ -334,7 +340,7 @@ export class MTPFreeze202001Importer extends AImporter {
             }
         })
         // Checking the data for completeness
-        if(JSON.stringify(mtpPartResponseContent) === JSON.stringify({}) || JSON.stringify(servicePartResponseContent) === JSON.stringify({})) {
+        if(JSON.stringify(mtpPartResponseContent) === JSON.stringify({}) || servicePartResponseContent.length === 0) {
             const localResponse = this.responseVendor.buyErrorResponse();
             localResponse.initialize('Could not extract MTPSUCLib/CommunicationSet and/or MTPServiceSUCLib/ServiceSet. Aborting...', {})
             callback(localResponse);
