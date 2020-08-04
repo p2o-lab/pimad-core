@@ -39,19 +39,6 @@ describe('class: MTPFreeze202001Importer', () => {
                 const lastChainLinkImporter = new LastChainLinkImporter();
                 importer.initialize(lastChainLinkImporter);
             });
-            it('normal usage', (done) => {
-                importer.convertFrom({source: 'test/Converter/PiMAd-core.0-0-1.aml'}, response => {
-                    expect(response.constructor.name).is.equal((new SuccessResponse()).constructor.name);
-                    const testResult = response.getContent() as PEA;
-                    expect((testResult.getAllDataAssemblies().getContent() as {data: DataAssembly[]}).data.length).is.equal(8);
-                    expect((testResult.getAllFEAs().getContent() as {data: FEA[]}).data.length).is.equal(0);
-                    expect((testResult.getAllServices().getContent() as {data: Service[]}).data.length).is.equal(2);
-                    expect(JSON.stringify(testResult.getDataModel().getContent() as {data: string})).is.equal(JSON.stringify({data: ''}));
-                    expect(typeof (testResult.getDataModelVersion().getContent() as SemanticVersion)).is.equal(typeof new BasicSemanticVersion());
-                    expect(JSON.stringify(testResult.getName().getContent() as {data: string})).is.equal(JSON.stringify({data: ''}));
-                    done();
-                })
-            });
             it('unknown source', (done) => {
                 const lastChainLinkImporter = new LastChainLinkImporter();
                 importer.initialize(lastChainLinkImporter);
@@ -69,6 +56,11 @@ describe('class: MTPFreeze202001Importer', () => {
                         expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name);
                         expect(response.getMessage()).is.equal('The File at ' + source + ' is not valid CAEX!');
                         done();
+                    })
+                });
+                it('normal usage', (done) => {
+                    importer.convertFrom({source: 'test/Converter/PiMAd-core.0-0-1.aml'}, response => {
+                        evaluateMTPFreeze202001Importer(response, done);
                     })
                 });
             });
@@ -134,6 +126,18 @@ describe('class: MTPFreeze202001Importer', () => {
         })
     });
 });
+
+function evaluateMTPFreeze202001Importer(response: Response, callback: () => void): void {
+    expect(response.constructor.name).is.equal((new SuccessResponse()).constructor.name);
+    const testResult = response.getContent() as PEA;
+    expect((testResult.getAllDataAssemblies().getContent() as {data: DataAssembly[]}).data.length).is.equal(8);
+    expect((testResult.getAllFEAs().getContent() as {data: FEA[]}).data.length).is.equal(0);
+    expect((testResult.getAllServices().getContent() as {data: Service[]}).data.length).is.equal(2);
+    expect(JSON.stringify(testResult.getDataModel().getContent() as {data: string})).is.equal(JSON.stringify({data: ''}));
+    expect(typeof (testResult.getDataModelVersion().getContent() as SemanticVersion)).is.equal(typeof new BasicSemanticVersion());
+    expect(JSON.stringify(testResult.getName().getContent() as {data: string})).is.equal(JSON.stringify({data: ''}));
+    callback();
+}
 
 describe('class: LastChainElementImporterFactory', () => {
     const factory = new LastChainElementImporterFactory();
