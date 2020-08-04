@@ -11,7 +11,14 @@ import {
     ServicePartExtractInputDataType,
     TextPart
 } from './ImporterPart';
-import {AMLGateFactory, MTPGateFactory, XMLGateFactory, ZIPGateFactory, GateFactory} from '../Gate/GateFactory';
+import {
+    AMLGateFactory,
+    MTPGateFactory,
+    XMLGateFactory,
+    ZIPGateFactory,
+    GateFactory,
+    MockGateFactory
+} from '../Gate/GateFactory';
 import {AML} from 'PiMAd-types';
 import InstanceHierarchy = AML.InstanceHierarchy
 import { CAEXFile } from 'PiMAd-types';
@@ -24,6 +31,7 @@ import {CommunicationInterfaceData} from '../../ModuleAutomation/CommunicationIn
 import {BasePEAFactory} from '../../ModuleAutomation/PEA';
 import {BaseServiceFactory, Service} from '../../ModuleAutomation/Service';
 import {BaseProcedureFactory, Procedure, ProcedureFactory} from '../../ModuleAutomation/Procedure';
+import {Gate} from '../Gate/Gate';
 abstract class AImporter implements  Importer {
 
     protected initialized: boolean;
@@ -122,11 +130,10 @@ export class MTPFreeze202001Importer extends AImporter {
     }
 
     /**
-     * This method parses the statements and checks if their content satisfies the object XYZ. If this is successful, a
-     * gate is opened for the specified source. This gate converts the data content of the source into a JSON object.
-     * This is passed to {@linkcode checkInformationModel} for evaluation of the IM.
+     * This method evaluates the instructions to the importer. Valid instructions are forwarded to {@linkcode accessDataSource} to gain
+     * access to the source and the data stored in it.
      *
-     * Answers the first and second question of the activity {@linkcode Importer.convertFrom} for this importer.
+     * Answers the first question of the activity {@linkcode Importer.convertFrom} for this importer.
      *
      * @param instructions - Pass the address of the source via the source attribute of the object.
      * @param callback - Returns a successful {@linkcode SuccessResponse} with PEA or an {@linkcode ErrorResponse} with
@@ -147,55 +154,49 @@ export class MTPFreeze202001Importer extends AImporter {
     }
 
     /**
+     * This method reads the data from the source and converts it into a JSON-object, which is then passed to the
+     * {@linkcode checkInformationModel} to check the meta model.
      *
-     * @param instructions
-     * @param callback
+     * Answers the second question of the activity {@linkcode Importer.convertFrom} for this importer.
+     *
+     * @param instructions - Pass the address of the source via the source attribute of the object.
+     * @param callback - Returns a successful {@linkcode SuccessResponse} with PEA or an {@linkcode ErrorResponse} with
+     * a message why this step has finally failed.
      * @private
      */
     private accessDataSource(instructions: {source: string}, callback: (response: Response) => void): void {
+        let gate: Gate = new MockGateFactory().create();
         switch (instructions.source.slice(-4)) {
             case '.aml':
-                const amlGate = this.amlGateFactory.create();
-                amlGate.initialize(instructions.source);
-                amlGate.receive({}, response => {
-                    //TODO: Fix that in Gate.ts
-                    const caexFile: { data?: {CAEXFile: CAEXFile}} = response.getContent();
-                    if(caexFile.data?.CAEXFile != undefined) {
-                        this.checkInformationModel(caexFile.data.CAEXFile, checkIMResponse => {
-                            callback(checkIMResponse);
-                        })
-                    } else {
-                        const followInstructionResponse = this.responseVendor.buyErrorResponse()
-                        followInstructionResponse.initialize('The File at ' + instructions.source + ' is not valid CAEX!', {})
-                        callback(followInstructionResponse)
-                    }
-                })
+                gate = this.amlGateFactory.create();
                 break;
             case '.mtp':
-                const mtpGate = this.mtpGateFactory.create();
-                mtpGate.initialize(instructions.source);
-                mtpGate.receive({}, response => {
-                    callback(response);
-                })
+                gate = this.mtpGateFactory.create();
                 break;
             case '.xml':
-                const xmlGate = this.xmlGateFactory.create();
-                xmlGate.initialize(instructions.source);
-                xmlGate.receive({}, response => {
-                    callback(response);
-                })
+                gate = this.xmlGateFactory.create();
                 break;
             case '.zip':
-                const zipGate = this.zipGateFactory.create();
-                zipGate.initialize(instructions.source);
-                zipGate.receive({}, response => {
-                    callback(response);
-                })
+                gate = this.zipGateFactory.create();
                 break;
             default:
-                callback(this.responseVendor.buyErrorResponse())
                 break;
         }
+
+        gate.initialize(instructions.source);
+        gate.receive({}, response => {
+            //TODO: Fix that in Gate.ts
+            const caexFile: { data?: {CAEXFile: CAEXFile}} = response.getContent();
+            if(caexFile.data?.CAEXFile != undefined) {
+                this.checkInformationModel(caexFile.data.CAEXFile, checkIMResponse => {
+                    callback(checkIMResponse);
+                })
+            } else {
+                const followInstructionResponse = this.responseVendor.buyErrorResponse()
+                followInstructionResponse.initialize('The File at ' + instructions.source + ' is not valid CAEX!', {})
+                callback(followInstructionResponse)
+            }
+        })
     }
 
     /**

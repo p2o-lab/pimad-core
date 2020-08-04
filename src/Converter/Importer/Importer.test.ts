@@ -77,7 +77,7 @@ describe('class: MTPFreeze202001Importer', () => {
                     const lastChainLinkImporter = new LastChainLinkImporter();
                     importer.initialize(lastChainLinkImporter);
                     importer.convertFrom({source: 'test/Converter/test-aml.mtp'}, response => {
-                        expect(response.constructor.name).is.equal((new SuccessResponse()).constructor.name);
+                        expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name);
                         done();
                     })
                 });
@@ -85,7 +85,7 @@ describe('class: MTPFreeze202001Importer', () => {
                     const lastChainLinkImporter = new LastChainLinkImporter();
                     importer.initialize(lastChainLinkImporter);
                     importer.convertFrom({source: 'test/Converter/test-xml.mtp'}, response => {
-                        expect(response.constructor.name).is.equal((new SuccessResponse()).constructor.name);
+                        expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name);
                         done();
                     })
                 });
@@ -94,7 +94,7 @@ describe('class: MTPFreeze202001Importer', () => {
                 const lastChainLinkImporter = new LastChainLinkImporter();
                 importer.initialize(lastChainLinkImporter);
                 importer.convertFrom({source: 'test/Converter/test.xml'}, response => {
-                    expect(response.constructor.name).is.equal((new SuccessResponse()).constructor.name);
+                    expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name);
                     done();
                 })
             });
@@ -103,7 +103,7 @@ describe('class: MTPFreeze202001Importer', () => {
                     const lastChainLinkImporter = new LastChainLinkImporter();
                     importer.initialize(lastChainLinkImporter);
                     importer.convertFrom({source: 'test/Converter/test-aml.zip'}, response => {
-                        expect(response.constructor.name).is.equal((new SuccessResponse()).constructor.name);
+                        expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name);
                         done();
                     })
                 });
@@ -111,7 +111,7 @@ describe('class: MTPFreeze202001Importer', () => {
                     const lastChainLinkImporter = new LastChainLinkImporter();
                     importer.initialize(lastChainLinkImporter);
                     importer.convertFrom({source: 'test/Converter/test-xml.zip'}, response => {
-                        expect(response.constructor.name).is.equal((new SuccessResponse()).constructor.name);
+                        expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name);
                         done();
                     })
                 });
