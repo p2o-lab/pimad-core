@@ -21,7 +21,7 @@ import {
     DataAssemblyFactory
 } from '../../ModuleAutomation/DataAssembly';
 import {CommunicationInterfaceData} from '../../ModuleAutomation/CommunicationInterfaceData';
-import {BasePEA, BasePEAFactory} from '../../ModuleAutomation/PEA';
+import {BasePEAFactory} from '../../ModuleAutomation/PEA';
 import {BaseServiceFactory, Service} from '../../ModuleAutomation/Service';
 import {BaseProcedureFactory, Procedure, ProcedureFactory} from '../../ModuleAutomation/Procedure';
 abstract class AImporter implements  Importer {
@@ -87,6 +87,9 @@ export class LastChainLinkImporter extends AImporter {
     };
 }
 
+/**
+ * Importer for MTPFreeze 2020.01.
+ */
 export class MTPFreeze202001Importer extends AImporter {
     private servicePart: ImporterPart;
     private hmiPart: ImporterPart;
@@ -119,9 +122,15 @@ export class MTPFreeze202001Importer extends AImporter {
     }
 
     /**
+     * This method parses the statements and checks if their content satisfies the object XYZ. If this is successful, a
+     * gate is opened for the specified source. This gate converts the data content of the source into a JSON object.
+     * This is passed to {@linkcode checkInformationModel} for evaluation of the IM.
      *
-     * @param instructions - To do.
-     * @param callback - To do.
+     * Answers the first and second question of the activity {@linkcode Importer.convertFrom} for this importer.
+     *
+     * @param instructions - Pass the address of the source via the source attribute of the object.
+     * @param callback - Returns a successful {@linkcode SuccessResponse} with PEA or an {@linkcode ErrorResponse} with
+     * a message why this step has finally failed.
      */
     private followInstructions(instructions: {source: string}, callback: (response: Response) => void): void {
         // Instructions
@@ -177,10 +186,15 @@ export class MTPFreeze202001Importer extends AImporter {
         }
     }
 
-    /** Uff... actually there is no real possibility to check IM of MTP. Missing SemVer. Therefore passing to the
+    /**
+     * Uff... actually there is no real possibility to check IM of MTP. Missing SemVer. Therefore passing to the
      * next stage.
-     * @param data - To do.
-     * @param callback - To do.
+     *
+     * Answers the third question of the activity {@linkcode Importer.convertFrom} for this importer.
+     *
+     * @param data - The content of a CAEXFile as a JSON-object.
+     * @param callback - TODO after rework!
+     * @private
      */
     private checkInformationModel(data: CAEXFile, callback: (response: Response) => void): void {
         this.convert(data, response => {
@@ -373,7 +387,11 @@ export class MTPFreeze202001Importer extends AImporter {
 
 export interface Importer {
     /**
-     * TODO
+     * This method converts a set of data into a PEA of the PiMAd core IM. It first checks whether the instructions
+     * given are understood. Then, whether the data source can be tapped. Then whether the information model of the data
+     * source is understood. If all responses are positive, the actual conversion into a PEA takes place. If parts of
+     * the responses are negative, the next element in the chain of importers (Chain-of-Responsibility pattern) is
+     * called.
      *
      * <uml>
      *     skinparam shadowing false
@@ -396,16 +414,22 @@ export interface Importer {
      *          stop
      *     }
      * </uml>
-     * @param instructions - TODO
-     * @param callback - TODO
+     *
+     * @param instructions - Pass the address of the source via the source attribute of the object.
+     * @param callback - Returns a successful {@linkcode SuccessResponse} with PEA or an {@linkcode ErrorResponse} with
+     * a message why the converting has finally failed.
      */
     convertFrom(instructions: object, callback: (response: Response) => void): void;
+
+    /**
+     * Initialize this importer object.
+     * @param nextImporter - The next importer in the Chain-of-Responsibility.
+     */
     initialize(nextImporter: Importer): boolean;
     getMetaModelVersion(): SemanticVersion;
 }
 
 /* Factory */
-
 abstract class AImporterFactory implements ImporterFactory {
     abstract create(): Importer;
 }
