@@ -1,6 +1,5 @@
 import {expect} from 'chai';
 import {BaseProcedureFactory, BaseProcedure} from './Procedure';
-//import {BaseParameter, Parameter} from './Parameter';
 import {BaseDataAssembly, DataAssembly} from './DataAssembly';
 import {AML} from 'PiMAd-types';
 import Attribute = AML.Attribute;

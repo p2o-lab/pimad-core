@@ -10,6 +10,7 @@ import * as servicePartData from '../../../test/Converter/testdata-ServicePart.j
 import {OPCUAServerCommunication} from '../../ModuleAutomation/CommunicationInterfaceData';
 import {DataAssembly} from '../../ModuleAutomation/DataAssembly';
 
+
 describe('class: MTPPart', () => {
     let part = new MTPPart();
     beforeEach(() => {
@@ -20,6 +21,7 @@ describe('class: MTPPart', () => {
             part.extract({CommunicationSet: communicationsSetData, HMISet: {}, ServiceSet: {}, TextSet: {}},(response) => {
                 expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
                 const testData: {CommunicationInterfaceData?: OPCUAServerCommunication[]; DataAssemblies?: DataAssembly[]} = response.getContent();
+
                 expect(JSON.stringify(testData.CommunicationInterfaceData)).is.equal(JSON.stringify(communicationInterfaceDataTestResultData));
                 expect(JSON.stringify(testData.DataAssemblies)).is.equal(JSON.stringify(dataAssemblyTestResultData));
             })

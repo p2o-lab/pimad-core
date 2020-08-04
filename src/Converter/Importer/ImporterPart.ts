@@ -506,6 +506,7 @@ export type ExtractDataFromCommunicationSetResponseType = {
 /**
  * Types the content object in the {@link SuccessResponse} from {@link ServicePart.extract}
  */
+
 export type InternalServiceType = InternalProcedureType & {
     Procedures: InternalProcedureType[];
 }
