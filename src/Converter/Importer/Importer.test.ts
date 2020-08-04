@@ -66,11 +66,10 @@ describe('class: MTPFreeze202001Importer', () => {
             });
             describe('MTP', () => {
                 it('MTP-AML', (done) => {
-                    const lastChainLinkImporter = new LastChainLinkImporter();
-                    importer.initialize(lastChainLinkImporter);
-                    importer.convertFrom({source: 'test/Converter/test-aml.mtp'}, response => {
-                        expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name);
-                        done();
+                    //const lastChainLinkImporter = new LastChainLinkImporter();
+                    //importer.initialize(lastChainLinkImporter);
+                    importer.convertFrom({source: 'test/Converter/PiMAd-core.0-0-1.mtp'}, response => {
+                        evaluateMTPFreeze202001Importer(response, done);
                     })
                 });
                 it('MTP-XML', (done) => {

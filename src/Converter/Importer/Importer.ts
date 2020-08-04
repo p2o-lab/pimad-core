@@ -185,10 +185,17 @@ export class MTPFreeze202001Importer extends AImporter {
 
         gate.initialize(instructions.source);
         gate.receive({}, response => {
-            //TODO: Fix that in Gate.ts
+            //TODO > Fix gate + address issue in Gate.ts
+            //TODO > Fix that array shit.
+            let localCAEXFile: { data?: {CAEXFile: CAEXFile}} = {} as { data: {CAEXFile: CAEXFile}};
             const caexFile: { data?: {CAEXFile: CAEXFile}} = response.getContent();
-            if(caexFile.data?.CAEXFile != undefined) {
-                this.checkInformationModel(caexFile.data.CAEXFile, checkIMResponse => {
+            if(Array.isArray(caexFile.data)) {
+                localCAEXFile.data = caexFile.data[0].data;
+            } else {
+                localCAEXFile.data = caexFile.data ;
+            }
+            if(localCAEXFile.data?.CAEXFile != undefined) {
+                this.checkInformationModel(localCAEXFile.data.CAEXFile, checkIMResponse => {
                     callback(checkIMResponse);
                 })
             } else {
