@@ -135,54 +135,66 @@ export class MTPFreeze202001Importer extends AImporter {
     private followInstructions(instructions: {source: string}, callback: (response: Response) => void): void {
         // Instructions
         if(instructions.source != undefined) {
-            // data source access
-            switch (instructions.source.slice(-4)) {
-                case '.aml':
-                    const amlGate = this.amlGateFactory.create();
-                    amlGate.initialize(instructions.source);
-                    amlGate.receive({}, response => {
-                        //TODO: Fix that in Gate.ts
-                        const caexFile: { data?: {CAEXFile: CAEXFile}} = response.getContent();
-                        if(caexFile.data?.CAEXFile != undefined) {
-                            this.checkInformationModel(caexFile.data.CAEXFile, checkIMResponse => {
-                                callback(checkIMResponse);
-                            })
-                        } else {
-                            const followInstructionResponse = this.responseVendor.buyErrorResponse()
-                            followInstructionResponse.initialize('The File at ' + instructions.source + ' is not valid CAEX!', {})
-                            callback(followInstructionResponse)
-                        }
-                    })
-                    break;
-                case '.mtp':
-                    const mtpGate = this.mtpGateFactory.create();
-                    mtpGate.initialize(instructions.source);
-                    mtpGate.receive({}, response => {
-                        callback(response);
-                    })
-                    break;
-                case '.xml':
-                    const xmlGate = this.xmlGateFactory.create();
-                    xmlGate.initialize(instructions.source);
-                    xmlGate.receive({}, response => {
-                        callback(response);
-                    })
-                    break;
-                case '.zip':
-                    const zipGate = this.zipGateFactory.create();
-                    zipGate.initialize(instructions.source);
-                    zipGate.receive({}, response => {
-                        callback(response);
-                    })
-                    break;
-                default:
-                    callback(this.responseVendor.buyErrorResponse())
-                    break;
-            }
+            // access data source
+            this.accessDataSource(instructions, response => {
+                callback(response)
+            })
         } else {
             this.nextImporter?.convertFrom(instructions, response => {
                 callback(response);
             })
+        }
+    }
+
+    /**
+     *
+     * @param instructions
+     * @param callback
+     * @private
+     */
+    private accessDataSource(instructions: {source: string}, callback: (response: Response) => void): void {
+        switch (instructions.source.slice(-4)) {
+            case '.aml':
+                const amlGate = this.amlGateFactory.create();
+                amlGate.initialize(instructions.source);
+                amlGate.receive({}, response => {
+                    //TODO: Fix that in Gate.ts
+                    const caexFile: { data?: {CAEXFile: CAEXFile}} = response.getContent();
+                    if(caexFile.data?.CAEXFile != undefined) {
+                        this.checkInformationModel(caexFile.data.CAEXFile, checkIMResponse => {
+                            callback(checkIMResponse);
+                        })
+                    } else {
+                        const followInstructionResponse = this.responseVendor.buyErrorResponse()
+                        followInstructionResponse.initialize('The File at ' + instructions.source + ' is not valid CAEX!', {})
+                        callback(followInstructionResponse)
+                    }
+                })
+                break;
+            case '.mtp':
+                const mtpGate = this.mtpGateFactory.create();
+                mtpGate.initialize(instructions.source);
+                mtpGate.receive({}, response => {
+                    callback(response);
+                })
+                break;
+            case '.xml':
+                const xmlGate = this.xmlGateFactory.create();
+                xmlGate.initialize(instructions.source);
+                xmlGate.receive({}, response => {
+                    callback(response);
+                })
+                break;
+            case '.zip':
+                const zipGate = this.zipGateFactory.create();
+                zipGate.initialize(instructions.source);
+                zipGate.receive({}, response => {
+                    callback(response);
+                })
+                break;
+            default:
+                callback(this.responseVendor.buyErrorResponse())
+                break;
         }
     }
 
