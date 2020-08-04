@@ -130,13 +130,13 @@ export class MTPFreeze202001Importer extends AImporter {
     }
 
     /**
-     * This method evaluates the instructions to the importer. Valid instructions are forwarded to {@linkcode accessDataSource} to gain
+     * This method evaluates the instructions to the importer. Valid instructions are forwarded to {@link accessDataSource} to gain
      * access to the source and the data stored in it.
      *
-     * Answers the first question of the activity {@linkcode Importer.convertFrom} for this importer.
+     * Answers the first question of the activity {@link Importer.convertFrom} for this importer.
      *
      * @param instructions - Pass the address of the source via the source attribute of the object.
-     * @param callback - Returns a successful {@linkcode SuccessResponse} with PEA or an {@linkcode ErrorResponse} with
+     * @param callback - Returns a successful {@link SuccessResponse} with PEA or an {@link ErrorResponse} with
      * a message why this step has finally failed.
      */
     private followInstructions(instructions: {source: string}, callback: (response: Response) => void): void {
@@ -155,12 +155,12 @@ export class MTPFreeze202001Importer extends AImporter {
 
     /**
      * This method reads the data from the source and converts it into a JSON-object, which is then passed to the
-     * {@linkcode checkInformationModel} to check the meta model.
+     * {@link checkInformationModel} to check the meta model.
      *
-     * Answers the second question of the activity {@linkcode Importer.convertFrom} for this importer.
+     * Answers the second question of the activity {@link Importer.convertFrom} for this importer.
      *
      * @param instructions - Pass the address of the source via the source attribute of the object.
-     * @param callback - Returns a successful {@linkcode SuccessResponse} with PEA or an {@linkcode ErrorResponse} with
+     * @param callback - Returns a successful {@link SuccessResponse} with PEA or an {@link ErrorResponse} with
      * a message why this step has finally failed.
      * @private
      */
@@ -192,7 +192,7 @@ export class MTPFreeze202001Importer extends AImporter {
             gate.receive({}, response => {
                 //TODO > Fix gate + address issue in Gate.ts
                 //TODO > Fix that array shit.
-                let localCAEXFile: { data?: {CAEXFile: CAEXFile}} = {} as { data: {CAEXFile: CAEXFile}};
+                const localCAEXFile: { data?: {CAEXFile: CAEXFile}} = {} as { data: {CAEXFile: CAEXFile}};
                 const caexFile: { data?: {CAEXFile: CAEXFile}} = response.getContent();
                 if(Array.isArray(caexFile.data)) {
                     localCAEXFile.data = caexFile.data[0].data;
@@ -216,7 +216,7 @@ export class MTPFreeze202001Importer extends AImporter {
      * Uff... actually there is no real possibility to check IM of MTP. Missing SemVer. Therefore passing to the
      * next stage.
      *
-     * Answers the third question of the activity {@linkcode Importer.convertFrom} for this importer.
+     * Answers the third question of the activity {@link Importer.convertFrom} for this importer.
      *
      * @param data - The content of a CAEXFile as a JSON-object.
      * @param callback - TODO after rework!
@@ -245,7 +245,7 @@ export class MTPFreeze202001Importer extends AImporter {
 
     /**
      * This method translates the interface description of the ModuleTypePackage within the CAEX file into a PEA of the
-     * PiMAd-core-IM. After the different MTP parts are extracted by {@linkcode ImporterPart}s, DataAssemblies, Services
+     * PiMAd-core-IM. After the different MTP parts are extracted by {@link ImporterPart}s, DataAssemblies, Services
      * and Procedures are merged. The reference system of the MTP is used for this. The import of the MTP is then
      * completed.
      *
@@ -442,7 +442,7 @@ export interface Importer {
      * </uml>
      *
      * @param instructions - Pass the address of the source via the source attribute of the object.
-     * @param callback - Returns a successful {@linkcode SuccessResponse} with PEA or an {@linkcode ErrorResponse} with
+     * @param callback - Returns a successful {@link SuccessResponse} with PEA or an {@link ErrorResponse} with
      * a message why the converting has finally failed.
      */
     convertFrom(instructions: object, callback: (response: Response) => void): void;

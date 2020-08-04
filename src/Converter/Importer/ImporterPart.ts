@@ -79,7 +79,7 @@ export class MTPPart extends AImporterPart {
      * </uml>
      *
      * @param data - The bare ModuleTypePackage-object of the MTP. Containing a CommunicationSet, HMISet, ServiceSet and TextSet.
-     * @param callback - A callback function with an instance of the Response-Interface. The type of the response-content-object-attribute data is {@linkcode ExtractDataFromCommunicationSetResponseType}
+     * @param callback - A callback function with an instance of the Response-Interface. The type of the response-content-object-attribute data is {@link ExtractDataFromCommunicationSetResponseType}
      */
     extract(data: {CommunicationSet: object[]; HMISet: object; ServiceSet: object; TextSet: object}, callback: (response: Response) => void): void {
         const communicationSet = this.extractDataFromCommunicationSet(data.CommunicationSet);
@@ -348,7 +348,7 @@ export class ServicePart extends AImporterPart {
 
     /**
      * This method extracts data from the service part of the ModuleTypePackage and converts it into an intermediate
-     * format very similar to the {@linkcode Service} interface of the PiMAd core IM.
+     * format very similar to the {@link Service} interface of the PiMAd core IM.
      *
      * <uml>
      *     skinparam shadowing false
@@ -496,7 +496,7 @@ export interface ImporterPart {
 }
 
 /**
- * Type of the object that is created by the method {@linkcode extractDataFromCommunicationSet}
+ * Type of the object that is created by the method {@link extractDataFromCommunicationSet}
  */
 export type ExtractDataFromCommunicationSetResponseType = {
     CommunicationInterfaceData: CommunicationInterfaceData[];
@@ -504,14 +504,14 @@ export type ExtractDataFromCommunicationSetResponseType = {
 }
 
 /**
- * Types the content object in the {@linkcode SuccessResponse} from {@linkcode ServicePart.extract}
+ * Types the content object in the {@link SuccessResponse} from {@link ServicePart.extract}
  */
 export type InternalServiceType = InternalProcedureType & {
     Procedures: InternalProcedureType[];
 }
 
 /**
- * Types the Procedures in {@linkcode InternalServiceType}
+ * Types the Procedures in {@link InternalServiceType}
  */
 export type InternalProcedureType = {
     Attributes: Attribute[];
@@ -523,7 +523,7 @@ export type InternalProcedureType = {
 }
 
 /**
- * Types the object that the method {@linkcode ServicePart.extract} expects as input.
+ * Types the object that the method {@link ServicePart.extract} expects as input.
  */
 export type ServicePartExtractInputDataType = {
     Name: string;
