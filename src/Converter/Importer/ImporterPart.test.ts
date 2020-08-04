@@ -8,7 +8,8 @@ import * as servicePartTestResult from '../../../test/Converter/Results/test-res
 import * as communicationInterfaceDataTestResultData from '../../../test/Converter/Results/tes-result-CommunicationInterfaceData.json';
 import * as servicePartData from '../../../test/Converter/testdata-ServicePart.json';
 import {OPCUAServerCommunication} from '../../ModuleAutomation/CommunicationInterfaceData';
-import {DataAssemblyFactory} from '../../ModuleAutomation/DataAssembly';
+import {DataAssembly} from '../../ModuleAutomation/DataAssembly';
+
 
 describe('class: MTPPart', () => {
     let part = new MTPPart();
@@ -19,7 +20,8 @@ describe('class: MTPPart', () => {
         it('test case: standard way', () => {
             part.extract({CommunicationSet: communicationsSetData, HMISet: {}, ServiceSet: {}, TextSet: {}},(response) => {
                 expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
-                const testData: {CommunicationInterfaceData?: OPCUAServerCommunication[]; DataAssemblies?: DataAssemblyFactory[]} = response.getContent();
+                const testData: {CommunicationInterfaceData?: OPCUAServerCommunication[]; DataAssemblies?: DataAssembly[]} = response.getContent();
+
                 expect(JSON.stringify(testData.CommunicationInterfaceData)).is.equal(JSON.stringify(communicationInterfaceDataTestResultData));
                 expect(JSON.stringify(testData.DataAssemblies)).is.equal(JSON.stringify(dataAssemblyTestResultData));
             })
@@ -27,10 +29,35 @@ describe('class: MTPPart', () => {
         it('test case: mixing data structure', () => {
             part.extract({CommunicationSet: communicationsSetDataMixingDataStructure, HMISet: {}, ServiceSet: {}, TextSet: {}},(response) => {
                 expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
-                const testData: {CommunicationInterfaceData?: OPCUAServerCommunication[]; DataAssemblies?: DataAssemblyFactory[]} = response.getContent();
+                const testData: {CommunicationInterfaceData?: OPCUAServerCommunication[]; DataAssemblies?: DataAssembly[]} = response.getContent();
                 expect(JSON.stringify(testData.CommunicationInterfaceData)).is.equal(JSON.stringify(communicationInterfaceDataTestResultData));
                 expect(JSON.stringify(testData.DataAssemblies)).is.equal(JSON.stringify(dataAssemblyTestResultData));
             })
+        })
+        describe('Messing with CommunicationSet-Data', () => {
+            describe('CommunicationSet without InstanceList and/or SourceList', () => {
+                it('without InstanceList', () => {
+                    const manipulatedCommunicationSetData = [communicationsSetData[0], {}];
+                    part.extract({CommunicationSet: manipulatedCommunicationSetData, HMISet: {}, ServiceSet: {}, TextSet: {}},(response) => {
+                        expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+                        expect(response.getMessage()).is.equal('Could not parse the CommunicationSet!');
+                    });
+                });
+                it('without SourceList', () => {
+                    const manipulatedCommunicationSetData = [{}, communicationsSetData[1]];
+                    part.extract({CommunicationSet: manipulatedCommunicationSetData, HMISet: {}, ServiceSet: {}, TextSet: {}},(response) => {
+                        expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+                        expect(response.getMessage()).is.equal('Could not parse the CommunicationSet!');
+                    })
+                });
+                it('without booth', () => {
+                    const manipulatedCommunicationSetData = [{}, {}];
+                    part.extract({CommunicationSet: manipulatedCommunicationSetData, HMISet: {}, ServiceSet: {}, TextSet: {}},(response) => {
+                        expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+                        expect(response.getMessage()).is.equal('Could not parse the CommunicationSet!');
+                    })
+                });
+            });
         })
     })
 });

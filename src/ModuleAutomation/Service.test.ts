@@ -2,7 +2,8 @@ import {BaseServiceFactory, BaseService} from './Service';
 import {expect} from 'chai';
 import {BaseParameter, Parameter} from './Parameter';
 import {BaseDataAssembly, DataAssembly} from './DataAssembly';
-import {Attribute} from 'AML';
+import {AML} from 'PiMAd-types';
+import Attribute = AML.Attribute;
 import {BaseProcedure} from './Procedure';
 import {ErrorResponse, SuccessResponse} from '../Backbone/Response';
 

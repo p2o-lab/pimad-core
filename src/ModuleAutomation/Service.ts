@@ -3,7 +3,8 @@ import {Response, ResponseVendor} from '../Backbone/Response';
 import {logger} from '../Utils/Logger';
 import {DataAssembly} from './DataAssembly';
 import {Procedure} from './Procedure';
-import { Attribute } from 'AML';
+import {AML} from 'PiMAd-types';
+import Attribute = AML.Attribute;
 
 export interface Service {
     /**
