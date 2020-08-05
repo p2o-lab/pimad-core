@@ -310,12 +310,18 @@ export class MTPFreeze202001Importer extends AImporter {
         let communicationSet: {InternalElement: object[]} = {} as {InternalElement: object[]};
         let mtpPartResponseContent: ExtractDataFromCommunicationSetResponseType = {} as ExtractDataFromCommunicationSetResponseType
         let servicePartResponseContent: InternalServiceType[] = [];
+        let peaName = 'name: undefined';
+        let peaMetaModelRef = 'metaModelRef: undefined';
         // looping through the first level instance hierarchy of the CAEX-File.
         data.InstanceHierarchy.forEach((instance: InstanceHierarchy) => {
-            const localInternalElement = instance.InternalElement as unknown as {RefBaseSystemUnitPath: string; InternalElement: object[]};
+            const localInternalElement = instance.InternalElement as unknown as {Name: string; ID: string; RefBaseSystemUnitPath: string; InternalElement: object[]};
             // TODO: Very bad style
             switch (instance.Name) {
                 case 'ModuleTypePackage':
+                    // store characteristic pea attributes
+                    peaName = localInternalElement.Name;
+                    peaMetaModelRef = localInternalElement.RefBaseSystemUnitPath;
+                    // get the CommunicationSet
                     this.getSet('MTPSUCLib/CommunicationSet', localInternalElement.InternalElement, set => {
                         communicationSet = set as {InternalElement: object[]};
                     })
@@ -380,7 +386,7 @@ export class MTPFreeze202001Importer extends AImporter {
             })
             const localPEA = this.peaFactory.create();
             // Initializing the local pea
-            if(localPEA.initialize({DataAssemblies: dataAssemblies, DataModel: '', DataModelVersion: new BasicSemanticVersion(), FEAs: [], Name: '', Services: localServices,})) {
+            if(localPEA.initialize({DataAssemblies: dataAssemblies, DataModel: peaMetaModelRef, DataModelVersion: new BasicSemanticVersion(), FEAs: [], Name: peaName, Services: localServices,})) {
                 // successful -> callback with successful response
                 const localSuccessResponse = this.responseVendor.buySuccessResponse();
                 localSuccessResponse.initialize('Success!', localPEA)
