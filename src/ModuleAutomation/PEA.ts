@@ -210,6 +210,7 @@ abstract class APEA implements PEA {
             this.dataModel = data.DataModel;
             this.dataModelVersion = data.DataModelVersion;
             this.feas = data.FEAs;
+            this.identifier = data.Identifier;
             this.name = data.Name;
             this.services = data.Services;
             this.initialized = (JSON.stringify(this.dataAssemblies) === JSON.stringify(data.DataAssemblies) &&
@@ -249,6 +250,7 @@ export type BasePEAInitializeDataType = {
     DataAssemblies: DataAssembly[];
     DataModel: string; // PiMAd-core DataModel
     DataModelVersion: SemanticVersion;
+    Identifier: string;
     FEAs: FEA[];
     Name: string;
     Services: Service[];

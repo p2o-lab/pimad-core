@@ -62,6 +62,7 @@ describe('class: BasePEA', () => {
                 DataModelVersion: new BasicSemanticVersion(),
                 FEAs:[],
                 Name:'Test-PEA',
+                Identifier: 'Test-Identifier',
                 Services:[service1]
             } as BasePEAInitializeDataType);
         });
@@ -135,7 +136,7 @@ describe('class: BasePEA', () => {
             expect(pea.getName()).is.equal('Test-PEA');
         });
         it('method: getIdentifier()', () => {
-            expect(pea.getIdentifier()).is.equal('identifier: undefined');
+            expect(pea.getIdentifier()).is.equal('Test-Identifier');
         });
         describe('method: getSensor()', () => {
             it('test case: standard usage', done => {
