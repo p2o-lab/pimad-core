@@ -31,11 +31,19 @@ abstract class AResponse implements Response {
     }
 }
 
+export class ErrorResponse extends AResponse {
+
+}
+
+export class DummyResponse extends AResponse {
+
+}
+
 export class SuccessResponse extends AResponse {
 
 }
 
-export class ErrorResponse extends AResponse {
+export class WarningResponse extends AResponse {
 
 }
 
@@ -55,14 +63,6 @@ abstract class AResponseFactory implements ResponseFactory {
     abstract create(): Response;
 }
 
-export class SuccessResponseFactory extends AResponseFactory {
-    create(): Response {
-        const response = new SuccessResponse()
-        logger.debug(this.constructor.name + ' creates a ' + response.constructor.name);
-        return response;
-    }
-}
-
 export class ErrorResponseFactory extends AResponseFactory {
     create(): Response {
         const response = new ErrorResponse()
@@ -71,18 +71,81 @@ export class ErrorResponseFactory extends AResponseFactory {
     }
 }
 
+export class DummyResponseFactory extends AResponseFactory {
+    create(): Response {
+        const response = new DummyResponse()
+        logger.debug(this.constructor.name + ' creates a ' + response.constructor.name);
+        return response;
+    }
+}
+
+export class SuccessResponseFactory extends AResponseFactory {
+    create(): Response {
+        const response = new SuccessResponse()
+        logger.debug(this.constructor.name + ' creates a ' + response.constructor.name);
+        return response;
+    }
+}
+
+export class WarningResponseFactory extends AResponseFactory {
+    create(): Response {
+        const response = new WarningResponse()
+        logger.debug(this.constructor.name + ' creates a ' + response.constructor.name);
+        return response;
+    }
+}
+
+
 export class ResponseVendor {
+    private fDummyResponse: ResponseFactory;
     private fErrorResponse: ResponseFactory;
     private fSuccessResponse: ResponseFactory;
+    private fWarningResponse: ResponseFactory;
 
     constructor() {
         this.fErrorResponse = new ErrorResponseFactory();
+        this.fDummyResponse = new DummyResponseFactory();
         this.fSuccessResponse = new SuccessResponseFactory();
+        this.fWarningResponse = new WarningResponseFactory();
     }
     public buyErrorResponse(): Response {
         return this.fErrorResponse.create()
     }
+    public buyDummyResponse(): Response {
+        return this.fSuccessResponse.create()
+    }
     public buySuccessResponse(): Response {
         return this.fSuccessResponse.create()
+    }
+    public buyWarningResponse(): Response {
+        return this.fWarningResponse.create()
+    }
+}
+
+export class ResponseHandler {
+    private responseVendor: ResponseVendor;
+
+    constructor() {
+        this.responseVendor = new ResponseVendor();
+    }
+
+    public handleCallbackWithResponse(type: string, message: string, content: {}, callback: (response: Response) => void): void {
+        let response: Response = this.responseVendor.buyDummyResponse();
+        switch (type) {
+            case 'dummy':
+                response = this.responseVendor.buyDummyResponse();
+                break;
+            case 'error':
+                response = this.responseVendor.buyErrorResponse();
+                break;
+            case 'success':
+                response = this.responseVendor.buySuccessResponse();
+                break;
+            case 'warning':
+                response = this.responseVendor.buyWarningResponse();
+                break;
+        }
+        response.initialize(message, content);
+        callback(response);
     }
 }

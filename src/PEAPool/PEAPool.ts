@@ -1,4 +1,4 @@
-import {Response, ResponseVendor} from '../Backbone/Response';
+import {Response, ResponseHandler, ResponseVendor} from '../Backbone/Response';
 import {PEA} from '../ModuleAutomation/PEA';
 import {Importer} from '../Converter/Importer/Importer';
 import {logger} from '../Utils/Logger';
@@ -6,14 +6,16 @@ import {logger} from '../Utils/Logger';
 abstract class APEAPool implements PEAPool {
     private initialized: boolean;
     protected importerChainFirstElement: Importer | undefined;
-    protected peas: PEA[]
+    protected peas: PEA[];
     protected responseVendor: ResponseVendor;
+    protected responseHandler: ResponseHandler;
 
     constructor() {
         this.initialized = false;
-        this.peas = []
+        this.peas = [];
         this.importerChainFirstElement = undefined;
         this.responseVendor = new ResponseVendor();
+        this.responseHandler = new ResponseHandler();
     }
 
     initialize(firstChainElement: Importer): boolean {
@@ -26,9 +28,16 @@ abstract class APEAPool implements PEAPool {
         }
     }
 
-    abstract addPEA(any: object): Response;
-    abstract deletePEA(tag: string): Response;
-    abstract getPEA(tag: string): Response;
+    abstract addPEA(instructions: object, callback: (response: Response) => void): void;
+    abstract deletePEA(identifier: string): Response;
+    getPEA(identifier: string, callback: (response: Response) => void): void {
+        const localPEA: PEA | undefined = this.peas.find(pea => identifier === pea.getIdentifier());
+        if (localPEA === undefined)  {
+            this.responseHandler.handleCallbackWithResponse('error', 'PEA <' + identifier + '> is not part of the pool party!', {}, callback);
+        } else {
+            this.responseHandler.handleCallbackWithResponse('success', 'Success!', localPEA, callback);
+        }
+    };
 }
 
 export class BasePEAPool extends APEAPool {
@@ -38,15 +47,12 @@ export class BasePEAPool extends APEAPool {
     deletePEA(tag: string) {
         return this.responseVendor.buyErrorResponse();
     }
-    getPEA(tag: string) {
-        return this.responseVendor.buyErrorResponse();
-    }
 }
 
 interface PEAPool {
-    addPEA(any: object): Response;
-    deletePEA(tag: string): Response;
-    getPEA(tag: string): Response;
+    addPEA(instructions: object, callback: (response: Response) => void): void;
+    deletePEA(identifier: string): Response;
+    getPEA(identifier: string, callback: (response: Response) => void): void;
     initialize(firstChainElement: Importer): boolean;
 }
 

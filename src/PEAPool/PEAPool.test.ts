@@ -22,8 +22,11 @@ describe('class: BasePEAStore', () => {
         expect(typeof store.deletePEA('')).is.equal(typeof new ErrorResponse())
     })
     it('method: getPEA(tag: string)', () => {
-        expect(typeof store.getPEA('')).is.equal(typeof new ErrorResponse())
+        store.getPEA('', response => {
+            expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name)
+        })
     })
+
 });
 
 describe('class: BasePEAPoolFactory', () => {

@@ -132,7 +132,10 @@ describe('class: BasePEA', () => {
             });
         });
         it('method: getName()', () => {
-            expect(JSON.stringify(pea.getName().getContent())).is.equal(JSON.stringify({data: 'Test-PEA'}));
+            expect(pea.getName()).is.equal('Test-PEA');
+        });
+        it('method: getIdentifier()', () => {
+            expect(pea.getIdentifier()).is.equal('identifier: undefined');
         });
         describe('method: getSensor()', () => {
             it('test case: standard usage', done => {

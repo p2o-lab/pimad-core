@@ -15,7 +15,9 @@
         "initialized": true,
         "responseVendor": {
           "fErrorResponse": {},
-          "fSuccessResponse": {}
+          "fDummyResponse": {},
+          "fSuccessResponse": {},
+          "fWarningResponse": {}
         }
       },
       {
@@ -32,7 +34,9 @@
         "initialized": true,
         "responseVendor": {
           "fErrorResponse": {},
-          "fSuccessResponse": {}
+          "fDummyResponse": {},
+          "fSuccessResponse": {},
+          "fWarningResponse": {}
         }
       },
       {
@@ -49,7 +53,9 @@
         "initialized": true,
         "responseVendor": {
           "fErrorResponse": {},
-          "fSuccessResponse": {}
+          "fDummyResponse": {},
+          "fSuccessResponse": {},
+          "fWarningResponse": {}
         }
       },
       {
@@ -66,7 +72,9 @@
         "initialized": true,
         "responseVendor": {
           "fErrorResponse": {},
-          "fSuccessResponse": {}
+          "fDummyResponse": {},
+          "fSuccessResponse": {},
+          "fWarningResponse": {}
         }
       },
       {
@@ -83,7 +91,9 @@
         "initialized": true,
         "responseVendor": {
           "fErrorResponse": {},
-          "fSuccessResponse": {}
+          "fDummyResponse": {},
+          "fSuccessResponse": {},
+          "fWarningResponse": {}
         }
       }
     ],
@@ -94,7 +104,9 @@
     "metaModelRef": "MTPDataObjectSUCLib/DataAssembly/ServiceControl",
     "responseVendor": {
       "fErrorResponse": {},
-      "fSuccessResponse": {}
+      "fDummyResponse": {},
+      "fSuccessResponse": {},
+      "fWarningResponse": {}
     }
   }
 ]

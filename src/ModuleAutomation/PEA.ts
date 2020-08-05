@@ -63,10 +63,15 @@ export interface PEA {
      */
     getFEA(tag: string, callback: (response: Response) => void): void;
     /**
-     * Getter for this.name of the PEA object.
-     * @returns A response object.
+     * Getter for this.identifier of the PEA object.
+     * @returns The identifier of the PEA.
      */
-    getName(): Response;
+    getIdentifier(): string;
+    /**
+     * Getter for this.name of the PEA object.
+     * @returns The name of the PEA..
+     */
+    getName(): string;
     /**
      * NOT YET IMPLEMENTED
      * Get a specific sensor of the PEA object.
@@ -98,6 +103,7 @@ abstract class APEA implements PEA {
     protected dataModel: string; // PiMAd-core DataModel
     protected dataModelVersion: SemanticVersion;
     protected feas: FEA[];
+    protected identifier: string;
     protected name: string;
     protected responseVendor: ResponseVendor;
     protected services: Service[];
@@ -110,6 +116,7 @@ abstract class APEA implements PEA {
         this.dataModelVersion = new BasicSemanticVersion();
         this.feas = [];
         this.name = 'name: undefined';
+        this.identifier = 'identifier: undefined';
         this.responseVendor = new ResponseVendor();
         this.services = [];
 
@@ -171,10 +178,11 @@ abstract class APEA implements PEA {
         const response = this.responseVendor.buyErrorResponse();
         callback(response);
     }
-    getName(): Response{
-        const response = this.responseVendor.buySuccessResponse();
-        response.initialize('Success!', {data: this.name});
-        return response;
+    getIdentifier(): string {
+        return this.identifier;
+    };
+    getName(): string {
+        return this.name;
     };
     getSensor(tag: string, callback: (response: Response) => void): void {
         const response = this.responseVendor.buyErrorResponse();

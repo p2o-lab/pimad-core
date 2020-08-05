@@ -36,7 +36,7 @@ function evaluateMTPFreeze202001Importer(response: Response, callback: () => voi
     expect((testResult.getAllServices().getContent() as {data: Service[]}).data.length).is.equal(2);
     expect(JSON.stringify(testResult.getDataModel().getContent() as {data: string})).is.equal(JSON.stringify({data: ''}));
     expect(typeof (testResult.getDataModelVersion().getContent() as SemanticVersion)).is.equal(typeof new BasicSemanticVersion());
-    expect(JSON.stringify(testResult.getName().getContent() as {data: string})).is.equal(JSON.stringify({data: ''}));
+    expect(testResult.getName()).is.equal('');
     callback();
 }
 
