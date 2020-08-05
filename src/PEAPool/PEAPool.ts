@@ -2,6 +2,7 @@ import {Response, ResponseHandler, ResponseVendor} from '../Backbone/Response';
 import {PEA} from '../ModuleAutomation/PEA';
 import {Importer} from '../Converter/Importer/Importer';
 import {logger} from '../Utils/Logger';
+import * as crypto from 'crypto';
 
 abstract class APEAPool implements PEAPool {
     private initialized: boolean;
@@ -18,7 +19,19 @@ abstract class APEAPool implements PEAPool {
         this.responseHandler = new ResponseHandler();
     }
 
-    initialize(firstChainElement: Importer): boolean {
+    private generateUniqueIdentifier(callback: (identifier: string) => void): void {
+        const identifier = crypto.randomBytes(16).toString('hex');
+        this.getPEA(identifier, response => {
+            if(response.constructor.name === this.responseVendor.buyErrorResponse().constructor.name) {
+                callback(identifier);
+            } else {
+                // olala recursive!! :D
+                this.generateUniqueIdentifier(callback)
+            }
+        })
+    }
+
+    public initialize(firstChainElement: Importer): boolean {
         if (!this.initialized) {
             this.initialized = true;
             this.importerChainFirstElement = firstChainElement;
@@ -28,9 +41,16 @@ abstract class APEAPool implements PEAPool {
         }
     }
 
-    public addPEA(instructions: object, callback: (response: Response) => void): void {
+    public addPEA(instructions: {source: string}, callback: (response: Response) => void): void {
         if(this.initialized) {
-            this.importerChainFirstElement?.convertFrom(instructions, callback);
+            let localIdentifier = '';
+            this.generateUniqueIdentifier(identifier => {
+                localIdentifier = identifier;
+            })
+            this.importerChainFirstElement.convertFrom({
+                source: instructions.source,
+                identifier: localIdentifier
+            }, callback);
             //this.responseHandler.handleCallbackWithResponse('error', '', {}, callback);
         } else {
             this.responseHandler.handleCallbackWithResponse('error', 'PEAPool is not initialized!', {}, callback);
@@ -60,6 +80,7 @@ abstract class APEAPool implements PEAPool {
 }
 
 export class BasePEAPool extends APEAPool {
+
 }
 
 interface PEAPool {

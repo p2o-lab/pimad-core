@@ -21,7 +21,7 @@ describe('class: BasePEAStore', () => {
     });
     describe('without initialization', () => {
         it('method: addPEA()', () => {
-            pool.addPEA({}, response => {
+            pool.addPEA({source: ''}, response => {
                 expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name)
             });
         });
