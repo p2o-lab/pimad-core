@@ -461,6 +461,14 @@ abstract class AImporterFactory implements ImporterFactory {
     abstract create(): Importer;
 }
 
+export class MTPFreeze202001ImporterFactory extends AImporterFactory {
+    create(): Importer {
+        const importer = new MTPFreeze202001Importer();
+        logger.debug(this.constructor.name + ' creates a ' + importer.constructor.name);
+        return importer;
+    }
+}
+
 export class LastChainElementImporterFactory extends AImporterFactory {
     create(): Importer {
         const importer = new LastChainLinkImporter();

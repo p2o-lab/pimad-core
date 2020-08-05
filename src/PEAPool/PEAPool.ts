@@ -5,7 +5,7 @@ import {logger} from '../Utils/Logger';
 
 abstract class APEAPool implements PEAPool {
     private initialized: boolean;
-    protected importerChainFirstElement: Importer | undefined;
+    protected importerChainFirstElement: Importer;
     protected peas: PEA[];
     protected responseVendor: ResponseVendor;
     protected responseHandler: ResponseHandler;
@@ -13,7 +13,7 @@ abstract class APEAPool implements PEAPool {
     constructor() {
         this.initialized = false;
         this.peas = [];
-        this.importerChainFirstElement = undefined;
+        this.importerChainFirstElement = {} as Importer;
         this.responseVendor = new ResponseVendor();
         this.responseHandler = new ResponseHandler();
     }
@@ -28,30 +28,43 @@ abstract class APEAPool implements PEAPool {
         }
     }
 
-    abstract addPEA(instructions: object, callback: (response: Response) => void): void;
-    abstract deletePEA(identifier: string): Response;
-    getPEA(identifier: string, callback: (response: Response) => void): void {
-        const localPEA: PEA | undefined = this.peas.find(pea => identifier === pea.getIdentifier());
-        if (localPEA === undefined)  {
-            this.responseHandler.handleCallbackWithResponse('error', 'PEA <' + identifier + '> is not part of the pool party!', {}, callback);
+    public addPEA(instructions: object, callback: (response: Response) => void): void {
+        if(this.initialized) {
+            this.importerChainFirstElement?.convertFrom(instructions, callback);
+            //this.responseHandler.handleCallbackWithResponse('error', '', {}, callback);
         } else {
-            this.responseHandler.handleCallbackWithResponse('success', 'Success!', localPEA, callback);
+            this.responseHandler.handleCallbackWithResponse('error', 'PEAPool is not initialized!', {}, callback);
+        }
+    };
+
+    public deletePEA(identifier: string, callback: (response: Response) => void): void {
+        if(this.initialized) {
+            this.responseHandler.handleCallbackWithResponse('error', '', {}, callback);
+        } else {
+            this.responseHandler.handleCallbackWithResponse('error', 'PEAPool is not initialized!', {}, callback);
+        }
+    };
+
+    public getPEA(identifier: string, callback: (response: Response) => void): void {
+        if(this.initialized) {
+            const localPEA: PEA | undefined = this.peas.find(pea => identifier === pea.getIdentifier());
+            if (localPEA === undefined)  {
+                this.responseHandler.handleCallbackWithResponse('error', 'PEA <' + identifier + '> is not part of the pool party!', {}, callback);
+            } else {
+                this.responseHandler.handleCallbackWithResponse('success', 'Success!', localPEA, callback);
+            }
+        } else {
+            this.responseHandler.handleCallbackWithResponse('error', 'PEAPool is not initialized!', {}, callback);
         }
     };
 }
 
 export class BasePEAPool extends APEAPool {
-    addPEA(any: object) {
-        return this.responseVendor.buyErrorResponse();
-    }
-    deletePEA(tag: string) {
-        return this.responseVendor.buyErrorResponse();
-    }
 }
 
 interface PEAPool {
     addPEA(instructions: object, callback: (response: Response) => void): void;
-    deletePEA(identifier: string): Response;
+    deletePEA(identifier: string, callback: (response: Response) => void): void;
     getPEA(identifier: string, callback: (response: Response) => void): void;
     initialize(firstChainElement: Importer): boolean;
 }
