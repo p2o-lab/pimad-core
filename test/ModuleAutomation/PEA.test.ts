@@ -1,10 +1,10 @@
-import {BasePEAFactory, BaseProcedureFactory} from '../../src/ModuleAutomation';
+import {BasePEAFactory, BaseProcedureFactory, BaseServiceFactory} from '../../src/ModuleAutomation';
 import {expect} from 'chai';
 import {ErrorResponse, SuccessResponse} from '../../src/Backbone/Response';
 import {DataAssembly} from '../../src/ModuleAutomation';
 import {BasicSemanticVersion, SemanticVersion} from '../../src/Backbone/SemanticVersion';
 import {FEA} from '../../src/ModuleAutomation';
-import {BaseService, Service} from '../../src/ModuleAutomation';
+import {Service} from '../../src/ModuleAutomation';
 import {AML} from 'PiMAd-types';
 import Attribute = AML.Attribute;
 import {BaseDataAssemblyFactory, BaseParameterFactory} from '../../build/ModuleAutomation';
@@ -52,10 +52,10 @@ describe('class: BasePEA', () => {
             procedure0.initialize({} as DataAssembly, '','', 'Test-Procedure0', [],[]);
             const procedure1 = procedureFactory.create();
             procedure1.initialize({} as DataAssembly, '','', 'Test-Procedure1', [],[]);
-
-            const service1 = new BaseService();
+            const serviceFactory = new BaseServiceFactory();
+            const service1 = serviceFactory.create();
             service1.initialize(attributes, dataAssembly1,'Test-Identifier1','Test-MetaModelRef1','Test-Service1', [parameter, parameter2], [procedure0, procedure1]);
-            const service2 = new BaseService();
+            const service2 = serviceFactory.create();
             service2.initialize(attributes, dataAssembly1,'Test-Identifier2','Test-MetaModelRef2','Test-Service2', [parameter], [procedure1]);
 
             pea.initialize({

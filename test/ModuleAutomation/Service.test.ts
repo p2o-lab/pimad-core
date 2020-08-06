@@ -1,4 +1,4 @@
-import {BaseServiceFactory, BaseService, BaseParameterFactory, BaseProcedureFactory} from '../../src/ModuleAutomation';
+import {BaseServiceFactory, BaseParameterFactory, BaseProcedureFactory, Service} from '../../src/ModuleAutomation';
 import {expect} from 'chai';
 import {Parameter} from '../../src/ModuleAutomation';
 import {DataAssembly} from '../../src/ModuleAutomation';
@@ -8,9 +8,10 @@ import {ErrorResponse, SuccessResponse} from '../../src/Backbone/Response';
 import {BaseDataAssemblyFactory} from '../../build/ModuleAutomation';
 
 describe('class: BaseService', () => {
-    let service: BaseService;
+    let service: Service;
+    const serviceFactory = new BaseServiceFactory();
     beforeEach(function () {
-        service = new BaseService();
+        service = serviceFactory.create();
     });
     describe('check getter', () => {
         beforeEach(function () {
@@ -117,6 +118,6 @@ describe('class: BaseService', () => {
 describe('class: BaseServiceFactory', () => {
     it('method: create()', () => {
         const factory = new BaseServiceFactory();
-        expect(typeof factory.create()).is.equal(typeof new BaseService());
+        expect(factory.create().constructor.name).is.equal('BaseService');
     });
 });

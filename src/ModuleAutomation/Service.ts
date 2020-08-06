@@ -194,15 +194,19 @@ abstract class AService implements Service{
         }
     };
 }
-export class BaseService extends AService {
+
+class BaseService extends AService {
+
 }
 
 export interface ServiceFactory {
     create(): Service;
 }
+
 abstract class AServiceFactory implements ServiceFactory {
     abstract create(): Service;
 }
+
 export class BaseServiceFactory extends AServiceFactory {
     create(): Service{
         const service = new BaseService();
