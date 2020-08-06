@@ -66,7 +66,7 @@ export interface PEA {
      * Getter for this.identifier of the PEA object.
      * @returns The identifier of the PEA.
      */
-    getIdentifier(): string;
+    getPiMAdIdentifier(): string;
     /**
      * Getter for this.name of the PEA object.
      * @returns The name of the PEA..
@@ -87,15 +87,10 @@ export interface PEA {
     getService(name: string, callback: (response: Response) => void): void;
     /**
      * Initialize the PEA object with data. This one works like a constructor.
-     * @param DataAssemblies - The data assembly of the PEA object.. F. ex. with the communication interface data.
-     * @param DataModel - A reference to a data-model describing the PEA object.
-     * @param DataModelVersion - A reference to a data-model version valid for the PEA object.
-     * @param Name - The name of the PEA object.
-     * @param FEAs - An Array with the PEA related FEAs.
-     * @param Services - An Array with the PEA related Services.
+     * @param data - Various data for initialization of the PEA.
      * @returns True for a successful initialisation. False for a not successful initialisation.
      * */
-    initialize(data: object): boolean;
+    initialize(data: PEAInitializeDataType): boolean;
 }
 
 abstract class APEA implements PEA {
@@ -103,7 +98,7 @@ abstract class APEA implements PEA {
     protected dataModel: string; // PiMAd-core DataModel
     protected dataModelVersion: SemanticVersion;
     protected feas: FEA[];
-    protected identifier: string;
+    protected pimadIdentifier: string;
     protected name: string;
     protected responseVendor: ResponseVendor;
     protected services: Service[];
@@ -116,10 +111,9 @@ abstract class APEA implements PEA {
         this.dataModelVersion = new BasicSemanticVersion();
         this.feas = [];
         this.name = 'name: undefined';
-        this.identifier = 'identifier: undefined';
+        this.pimadIdentifier = 'identifier: undefined';
         this.responseVendor = new ResponseVendor();
         this.services = [];
-
         this.initialized = false;
     };
 
@@ -177,9 +171,9 @@ abstract class APEA implements PEA {
     getFEA(tag: string, callback: (response: Response) => void): void {
         const response = this.responseVendor.buyErrorResponse();
         callback(response);
-    }
-    getIdentifier(): string {
-        return this.identifier;
+    };
+    getPiMAdIdentifier(): string {
+        return this.pimadIdentifier;
     };
     getName(): string {
         return this.name;
@@ -204,13 +198,13 @@ abstract class APEA implements PEA {
         })
     };
 
-    initialize(data: BasePEAInitializeDataType): boolean {
+    initialize(data: PEAInitializeDataType): boolean {
         if (!this.initialized) {
             this.dataAssemblies = data.DataAssemblies;
             this.dataModel = data.DataModel;
             this.dataModelVersion = data.DataModelVersion;
             this.feas = data.FEAs;
-            this.identifier = data.Identifier;
+            this.pimadIdentifier = data.PiMAdIdentifier;
             this.name = data.Name;
             this.services = data.Services;
             this.initialized = (JSON.stringify(this.dataAssemblies) === JSON.stringify(data.DataAssemblies) &&
@@ -218,6 +212,7 @@ abstract class APEA implements PEA {
                     this.dataModelVersion === data.DataModelVersion &&
                     this.feas === data.FEAs &&
                     this.name === data.Name &&
+                    this.pimadIdentifier != undefined &&
                     JSON.stringify(this.services) === JSON.stringify(data.Services)
             );
             return this.initialized;
@@ -246,12 +241,33 @@ export interface PEAFactory {
     create(): PEA;
 }
 
-export type BasePEAInitializeDataType = {
+export type PEAInitializeDataType = {
+    /**
+     * The data assembly of the PEA object.. F. ex. with the communication interface data.
+     */
     DataAssemblies: DataAssembly[];
+    /**
+     * A reference to a data-model describing the PEA object.
+     */
     DataModel: string; // PiMAd-core DataModel
+    /**
+     * A reference to a data-model describing the PEA object.
+     */
     DataModelVersion: SemanticVersion;
-    Identifier: string;
+    /**
+     * The identifier for the PiMAd-Database.
+     */
+    PiMAdIdentifier: string;
+    /**
+     * An Array with the PEA related FEAs.
+     */
     FEAs: FEA[];
+    /**
+     * The name of the PEA object.
+     */
     Name: string;
+    /**
+     * An Array with the PEA related Services.
+     */
     Services: Service[];
 }

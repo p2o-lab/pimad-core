@@ -2,6 +2,7 @@ import {Response, ResponseHandler, ResponseVendor} from '../Backbone/Response';
 import {PEA} from '../ModuleAutomation/PEA';
 import {Importer} from '../Converter/Importer/Importer';
 import {logger} from '../Utils/Logger';
+import * as crypto from 'crypto';
 
 abstract class APEAPool implements PEAPool {
     private initialized: boolean;
@@ -18,7 +19,18 @@ abstract class APEAPool implements PEAPool {
         this.responseHandler = new ResponseHandler();
     }
 
-    initialize(firstChainElement: Importer): boolean {
+    private generateUniqueIdentifier(callback: (identifier: string) => void): void {
+        const identifier = crypto.randomBytes(16).toString('hex');
+        this.getPEA(identifier, response => {
+            if(response.constructor.name === this.responseVendor.buyErrorResponse().constructor.name) {
+                callback(identifier);
+            } else {
+                this.generateUniqueIdentifier(callback)
+            }
+        })
+    }
+
+    public initialize(firstChainElement: Importer): boolean {
         if (!this.initialized) {
             this.initialized = true;
             this.importerChainFirstElement = firstChainElement;
@@ -28,10 +40,14 @@ abstract class APEAPool implements PEAPool {
         }
     }
 
-    public addPEA(instructions: object, callback: (response: Response) => void): void {
+    public addPEA(instructions: {source: string}, callback: (response: Response) => void): void {
         if(this.initialized) {
-            this.importerChainFirstElement?.convertFrom(instructions, callback);
-            //this.responseHandler.handleCallbackWithResponse('error', '', {}, callback);
+            this.generateUniqueIdentifier(identifier => {
+                this.importerChainFirstElement.convertFrom({
+                    source: instructions.source,
+                    identifier: identifier
+                }, callback);
+            })
         } else {
             this.responseHandler.handleCallbackWithResponse('error', 'PEAPool is not initialized!', {}, callback);
         }
@@ -47,7 +63,7 @@ abstract class APEAPool implements PEAPool {
 
     public getPEA(identifier: string, callback: (response: Response) => void): void {
         if(this.initialized) {
-            const localPEA: PEA | undefined = this.peas.find(pea => identifier === pea.getIdentifier());
+            const localPEA: PEA | undefined = this.peas.find(pea => identifier === pea.getPiMAdIdentifier());
             if (localPEA === undefined)  {
                 this.responseHandler.handleCallbackWithResponse('error', 'PEA <' + identifier + '> is not part of the pool party!', {}, callback);
             } else {
@@ -60,6 +76,7 @@ abstract class APEAPool implements PEAPool {
 }
 
 export class BasePEAPool extends APEAPool {
+
 }
 
 interface PEAPool {

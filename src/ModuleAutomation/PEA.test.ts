@@ -1,4 +1,4 @@
-import {BasePEAFactory, BasePEA, BasePEAInitializeDataType} from './PEA';
+import {BasePEAFactory, BasePEA, PEAInitializeDataType} from './PEA';
 import {expect} from 'chai';
 import {ErrorResponse, SuccessResponse} from '../Backbone/Response';
 import {BaseDataAssembly, DataAssembly} from './DataAssembly';
@@ -36,7 +36,6 @@ describe('class: BasePEA', () => {
                 dataItems: []
             });
 
-
             const attributes: Attribute[] = [
                 {Name: 'Test-Attribute0', AttributeDataType: '', Value:''},
                 {Name: 'Test-Attribute1', AttributeDataType: '', Value:'1'},
@@ -62,9 +61,9 @@ describe('class: BasePEA', () => {
                 DataModelVersion: new BasicSemanticVersion(),
                 FEAs:[],
                 Name:'Test-PEA',
-                Identifier: 'Test-Identifier',
+                PiMAdIdentifier: 'Test-Identifier',
                 Services:[service1]
-            } as BasePEAInitializeDataType);
+            } as PEAInitializeDataType);
         });
         describe('method: getActuator()', () => {
             it('test case: standard usage', done => {
@@ -136,7 +135,7 @@ describe('class: BasePEA', () => {
             expect(pea.getName()).is.equal('Test-PEA');
         });
         it('method: getIdentifier()', () => {
-            expect(pea.getIdentifier()).is.equal('Test-Identifier');
+            expect(pea.getPiMAdIdentifier()).is.equal('Test-Identifier');
         });
         describe('method: getSensor()', () => {
             it('test case: standard usage', done => {
@@ -163,11 +162,22 @@ describe('class: BasePEA', () => {
             });
         });
     });
-    it('method: initialize(firstChainElement: Importer)', () => {
-        expect(pea.initialize({DataAssemblies: [{} as DataAssembly], DataModel: '', DataModelVersion: {} as SemanticVersion, FEAs:[{} as FEA], Name:'', Services:[{} as Service]} as BasePEAInitializeDataType)).is.true;
-        expect(pea.initialize({DataAssemblies: [{} as DataAssembly], DataModel: '', DataModelVersion: {} as SemanticVersion, FEAs:[{} as FEA], Name:'', Services:[{} as Service]} as BasePEAInitializeDataType)).is.false;
-
-    });
+    describe('method: initialize', () => {
+        it('normal behavior', () => {
+            expect(pea.initialize({DataAssemblies: [{} as DataAssembly], DataModel: '', DataModelVersion: {} as SemanticVersion, FEAs:[{} as FEA], PiMAdIdentifier: '', Name:'', Services:[{} as Service]} as PEAInitializeDataType)).is.true;
+        });
+        it('initializing twice', () => {
+            expect(pea.initialize({DataAssemblies: [{} as DataAssembly], DataModel: '', DataModelVersion: {} as SemanticVersion, FEAs:[{} as FEA], PiMAdIdentifier: '', Name:'', Services:[{} as Service]} as PEAInitializeDataType)).is.true;
+            expect(pea.initialize({DataAssemblies: [{} as DataAssembly], DataModel: '', DataModelVersion: {} as SemanticVersion, FEAs:[{} as FEA], PiMAdIdentifier: '', Name:'', Services:[{} as Service]} as PEAInitializeDataType)).is.false;
+        });
+        it('initializing with missing data', () => {
+            expect(pea.initialize({DataAssemblies: [{} as DataAssembly], DataModel: '', DataModelVersion: {} as SemanticVersion, FEAs:[{} as FEA], Name:'', Services:[{} as Service]} as PEAInitializeDataType)).is.false;
+        });
+        it('second initializing try after failing the first one', () => {
+            expect(pea.initialize({DataAssemblies: [{} as DataAssembly], DataModel: '', DataModelVersion: {} as SemanticVersion, FEAs:[{} as FEA], Name:'', Services:[{} as Service]} as PEAInitializeDataType)).is.false;
+            expect(pea.initialize({DataAssemblies: [{} as DataAssembly], DataModel: '', DataModelVersion: {} as SemanticVersion, FEAs:[{} as FEA], PiMAdIdentifier: '', Name:'', Services:[{} as Service]} as PEAInitializeDataType)).is.true;
+        });
+    })
 });
 describe('class: BasePEAFactory', () => {
     it('method: create()', () => {
