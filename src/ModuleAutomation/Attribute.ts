@@ -1,26 +1,60 @@
 import {logger} from '../Utils/Logger';
+import {ResponseVendor, Response} from '../Backbone/Response';
 
 export interface Attribute {
+    getDataType(): Response;
     initialize(data: InitializeAttribute): boolean;
 }
 
 abstract class AAttribute implements Attribute {
+    private dataType: string;
+    private name: string;
+    private initialized: boolean;
+    private responseVendor: ResponseVendor;
+    private value: string;
+
+    getDataType(): Response {
+        let response: Response;
+        if(this.initialized) {
+            response = this.responseVendor.buySuccessResponse();
+            response.initialize('Success!', {data: this.dataType});
+        } else {
+            response = this.responseVendor.buyErrorResponse();
+            response.initialize('Attribute is not initialized!', {});
+        }
+        return response;
+    }
+
     initialize(data: InitializeAttribute): boolean {
-        return false;
+        if(!this.initialized) {
+            this.dataType = data.DataType;
+            this.name = data.Name;
+            this.value = data.Value;
+            this.initialized = (this.dataType === data.DataType && this.name === data.Name && this.value === data.Value);
+            return this.initialized;
+        } else {
+            return false;
+        }
     };
+
+    constructor() {
+        this.dataType = 'dataType: undefined';
+        this.name = 'name: undefined';
+        this.initialized = false;
+        this.responseVendor = new ResponseVendor();
+        this.value = 'value: undefined';
+    }
 }
 
 class ServiceAttribute extends AAttribute {
     initialize(data: InitializeServiceAttribute): boolean {
-        super.initialize(data);
-        return false;
+        return super.initialize(data);
     };
 }
 
 class ProcedureAttribute extends AAttribute {
     initialize(data: InitializeProcedureAttribute): boolean {
-        super.initialize(data);
-        return false;
+        return super.initialize(data);
     };
 }
 
@@ -52,7 +86,7 @@ class ProcedureAttributeFactory extends AAttributeFactory {
 
 export class AttributeFactoryVendor {
     public buyServiceAttributeFactory(): AttributeFactory {
-        const localAttributeFactory = new ServiceAttributeFactory()
+        const localAttributeFactory = new ServiceAttributeFactory();
         logger.debug(this.constructor.name + ' sells a ' + localAttributeFactory.constructor.name);
         return localAttributeFactory;
     };
@@ -66,7 +100,9 @@ export class AttributeFactoryVendor {
 /* types */
 
 export type InitializeAttribute = {
-
+    DataType: string;
+    Name: string;
+    Value: string;
 }
 
 export type InitializeServiceAttribute = InitializeAttribute & {

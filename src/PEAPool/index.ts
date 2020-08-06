@@ -1,1 +1,1 @@
-export * from './PEAPool'
+export * from './PEAPool';

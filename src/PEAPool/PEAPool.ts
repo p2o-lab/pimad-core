@@ -25,16 +25,16 @@ abstract class APEAPool implements PEAPool {
             if(response.constructor.name === this.responseVendor.buyErrorResponse().constructor.name) {
                 callback(identifier);
             } else {
-                this.generateUniqueIdentifier(callback)
+                this.generateUniqueIdentifier(callback);
             }
-        })
+        });
     }
 
     public initialize(firstChainElement: Importer): boolean {
         if (!this.initialized) {
             this.initialized = true;
             this.importerChainFirstElement = firstChainElement;
-            return (JSON.stringify(this.importerChainFirstElement) == JSON.stringify(firstChainElement))
+            return (JSON.stringify(this.importerChainFirstElement) == JSON.stringify(firstChainElement));
         } else {
             return false;
         }
@@ -47,7 +47,7 @@ abstract class APEAPool implements PEAPool {
                     source: instructions.source,
                     identifier: identifier
                 }, callback);
-            })
+            });
         } else {
             this.responseHandler.handleCallbackWithResponse(ResponseTypes.ERROR, 'PEAPool is not initialized!', {}, callback);
         }
@@ -94,7 +94,7 @@ abstract class APEAPoolFactory implements PEAPoolFactory {
 
 class BasePEAPoolFactory extends APEAPoolFactory {
     create(): PEAPool {
-        logger.debug('BasePEAPool generated via Factory')
+        logger.debug('BasePEAPool generated via Factory');
         return new BasePEAPool();
     };
 }
