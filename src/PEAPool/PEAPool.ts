@@ -63,7 +63,7 @@ abstract class APEAPool implements PEAPool {
 
     public getPEA(identifier: string, callback: (response: Response) => void): void {
         if(this.initialized) {
-            const localPEA: PEA | undefined = this.peas.find(pea => identifier === pea.getIdentifier());
+            const localPEA: PEA | undefined = this.peas.find(pea => identifier === pea.getPiMAdIdentifier());
             if (localPEA === undefined)  {
                 this.responseHandler.handleCallbackWithResponse('error', 'PEA <' + identifier + '> is not part of the pool party!', {}, callback);
             } else {

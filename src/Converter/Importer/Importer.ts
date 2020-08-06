@@ -387,7 +387,7 @@ export class MTPFreeze202001Importer extends AImporter {
             })
             const localPEA = this.peaFactory.create();
             // Initializing the local pea
-            if(localPEA.initialize({DataAssemblies: dataAssemblies, DataModel: peaMetaModelRef, DataModelVersion: new BasicSemanticVersion(), FEAs: [], Name: peaName, Identifier: pimadIdentifier, Services: localServices})) {
+            if(localPEA.initialize({DataAssemblies: dataAssemblies, DataModel: peaMetaModelRef, DataModelVersion: new BasicSemanticVersion(), FEAs: [], Name: peaName, PiMAdIdentifier: pimadIdentifier, Services: localServices})) {
                 // successful -> callback with successful response
                 const localSuccessResponse = this.responseVendor.buySuccessResponse();
                 localSuccessResponse.initialize('Success!', localPEA)
