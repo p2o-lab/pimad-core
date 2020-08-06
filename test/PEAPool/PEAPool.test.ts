@@ -2,12 +2,11 @@ import {
     BasePEAPool,
     BasePEAPoolFactory,
     PEAPoolVendor
-} from '../../src/PEAPool/PEAPool';
+} from '../../src/PEAPool';
 import {LastChainElementImporterFactory, MTPFreeze202001ImporterFactory} from '../../src/Converter/Importer/Importer'
 
 import {expect} from 'chai';
 import {ErrorResponse, SuccessResponse} from '../../src/Backbone/Response';
-import {BasePEA} from '../../src/ModuleAutomation/PEA';
 
 describe('class: BasePEAStore', () => {
     const fImporter = new LastChainElementImporterFactory()
@@ -45,7 +44,7 @@ describe('class: BasePEAStore', () => {
         it('method: addPEA()', (done) => {
             pool.addPEA({source: 'test/Converter/PiMAd-core.0-0-1.aml'}, response => {
                 expect(response.constructor.name).is.equal((new SuccessResponse().constructor.name));
-                expect(response.getContent().constructor.name).is.equal((new BasePEA()).constructor.name)
+                expect(response.getContent().constructor.name).is.equal('BasePEA')
                 done();
             });
         });
