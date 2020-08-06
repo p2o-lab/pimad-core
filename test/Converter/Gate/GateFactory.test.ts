@@ -1,4 +1,4 @@
-import {AMLGateFactory, MockGateFactory, MTPGateFactory, XMLGateFactory, ZIPGateFactory} from './GateFactory';
+import {AMLGateFactory, MockGateFactory, MTPGateFactory, XMLGateFactory, ZIPGateFactory} from '../../../src/Converter/Gate/GateFactory';
 import {expect} from 'chai';
 
 describe('class: AMLGateFactory', () => {

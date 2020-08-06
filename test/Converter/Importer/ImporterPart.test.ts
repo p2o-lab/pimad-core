@@ -1,15 +1,14 @@
 import {expect} from 'chai';
-import {HMIPart, InternalServiceType, MTPPart, ServicePart, TextPart} from './ImporterPart';
-import {ErrorResponse, SuccessResponse} from '../../Backbone/Response';
-import * as communicationsSetData from '../../../test/Converter/testdata-CommunicationSet-parser-logic.json';
-import * as communicationsSetDataMixingDataStructure from '../../../test/Converter/testdata-CommunicationSet-mixing-data-structure.json';
-import * as dataAssemblyTestResultData from '../../../test/Converter/Results/test-result-DataAssembly.json';
-import * as servicePartTestResult from '../../../test/Converter/Results/test-result-ServicePart.json';
-import * as communicationInterfaceDataTestResultData from '../../../test/Converter/Results/tes-result-CommunicationInterfaceData.json';
-import * as servicePartData from '../../../test/Converter/testdata-ServicePart.json';
-import {OPCUAServerCommunication} from '../../ModuleAutomation/CommunicationInterfaceData';
-import {DataAssembly} from '../../ModuleAutomation/DataAssembly';
-
+import {HMIPart, InternalServiceType, MTPPart, ServicePart, TextPart} from '../../../src/Converter/Importer/ImporterPart';
+import {ErrorResponse, SuccessResponse} from '../../../src/Backbone/Response';
+import * as communicationsSetData from '../testdata-CommunicationSet-parser-logic.json';
+import * as communicationsSetDataMixingDataStructure from '../testdata-CommunicationSet-mixing-data-structure.json';
+import * as dataAssemblyTestResultData from '../Results/test-result-DataAssembly.json';
+import * as servicePartTestResult from '../Results/test-result-ServicePart.json';
+import * as communicationInterfaceDataTestResultData from '../Results/tes-result-CommunicationInterfaceData.json';
+import * as servicePartData from '../testdata-ServicePart.json';
+import {DataAssembly} from '../../../src/ModuleAutomation';
+import { OPCUAServerCommunication } from '../../../src/ModuleAutomation/CommunicationInterfaceData';
 
 describe('class: MTPPart', () => {
     let part = new MTPPart();

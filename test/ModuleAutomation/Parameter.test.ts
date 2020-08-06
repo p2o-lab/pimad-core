@@ -1,12 +1,13 @@
-import {BaseParameterFactory, BaseParameter} from './Parameter';
+import {BaseParameterFactory} from '../../src/ModuleAutomation/Parameter';
 import {expect} from 'chai';
-import {ErrorResponse} from '../Backbone/Response';
-import {OPCUANodeCommunication} from './CommunicationInterfaceData';
+import {ErrorResponse} from '../../src/Backbone/Response';
+import {OPCUANodeCommunication} from '../../src/ModuleAutomation/CommunicationInterfaceData';
+import {Parameter} from '../../build/ModuleAutomation';
 
 describe('class: BaseParameter', () => {
-    let parameter: BaseParameter;
+    let parameter: Parameter;
     beforeEach(function () {
-        parameter = new BaseParameter();
+        parameter = new BaseParameterFactory().create();
     });
     it('method: getAllCommunicationInterfaceData()', () => {
         expect(typeof parameter.getAllCommunicationInterfaceData()).is.equal(typeof new OPCUANodeCommunication());
@@ -28,6 +29,6 @@ describe('class: BaseParameter', () => {
 describe('class: BaseParameterFactory', () => {
     it('method: create()', () => {
         const factory = new BaseParameterFactory();
-        expect(typeof factory.create()).is.equal(typeof new BaseParameter());
+        expect(factory.create().constructor.name).is.equal('BaseParameter');
     });
 });

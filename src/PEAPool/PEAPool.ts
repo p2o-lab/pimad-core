@@ -75,11 +75,11 @@ abstract class APEAPool implements PEAPool {
     };
 }
 
-export class BasePEAPool extends APEAPool {
+class BasePEAPool extends APEAPool {
 
 }
 
-interface PEAPool {
+export interface PEAPool {
     addPEA(instructions: object, callback: (response: Response) => void): void;
     deletePEA(identifier: string, callback: (response: Response) => void): void;
     getPEA(identifier: string, callback: (response: Response) => void): void;
@@ -92,14 +92,14 @@ abstract class APEAPoolFactory implements PEAPoolFactory {
     abstract create(): PEAPool;
 }
 
-export class BasePEAPoolFactory extends APEAPoolFactory {
+class BasePEAPoolFactory extends APEAPoolFactory {
     create(): PEAPool {
         logger.debug('BasePEAPool generated via Factory')
         return new BasePEAPool();
     };
 }
 
-interface PEAPoolFactory {
+export interface PEAPoolFactory {
     create(): PEAPool;
 }
 

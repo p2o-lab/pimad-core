@@ -1,20 +1,21 @@
-import {BaseServiceFactory, BaseService} from './Service';
+import {BaseServiceFactory, BaseParameterFactory, BaseProcedureFactory, Service} from '../../src/ModuleAutomation';
 import {expect} from 'chai';
-import {BaseParameter, Parameter} from './Parameter';
-import {BaseDataAssembly, DataAssembly} from './DataAssembly';
+import {Parameter} from '../../src/ModuleAutomation';
+import {DataAssembly} from '../../src/ModuleAutomation';
 import {AML} from 'PiMAd-types';
 import Attribute = AML.Attribute;
-import {BaseProcedure} from './Procedure';
-import {ErrorResponse, SuccessResponse} from '../Backbone/Response';
+import {ErrorResponse, SuccessResponse} from '../../src/Backbone/Response';
+import {BaseDataAssemblyFactory} from '../../build/ModuleAutomation';
 
 describe('class: BaseService', () => {
-    let service: BaseService;
+    let service: Service;
+    const serviceFactory = new BaseServiceFactory();
     beforeEach(function () {
-        service = new BaseService();
+        service = serviceFactory.create();
     });
     describe('check getter', () => {
         beforeEach(function () {
-            const dataAssembly = new BaseDataAssembly();
+            const dataAssembly = new BaseDataAssemblyFactory().create();
             dataAssembly.initialize({
                 tag: 'Test-DataAssembly',
                 description: '',
@@ -27,13 +28,15 @@ describe('class: BaseService', () => {
                 {Name: 'Test-Attribute1', AttributeDataType: '', Value:'1'},
                 {Name: 'Test-Attribute2', AttributeDataType: '', Value:''}
             ];
-            const parameter = new BaseParameter();
+            const parameterFactory = new BaseParameterFactory();
+            const parameter = parameterFactory.create();
             parameter.initialize('Test-Parameter0', [], '');
-            const parameter2 = new BaseParameter();
+            const parameter2 = parameterFactory.create();
             parameter2.initialize('Test-Parameter1', [], '');
-            const procedure0 = new BaseProcedure();
+            const procedureFactory = new BaseProcedureFactory();
+            const procedure0 = procedureFactory.create();
             procedure0.initialize({} as DataAssembly, '','', 'Test-Procedure0', [],[]);
-            const procedure1 = new BaseProcedure();
+            const procedure1 = procedureFactory.create();
             procedure1.initialize({} as DataAssembly, '','', 'Test-Procedure1', [],[]);
             service.initialize(attributes, dataAssembly,'Test-Identifier','Test-MetaModelRef','Test-Name', [parameter, parameter2], [procedure0, procedure1]);
         });
@@ -115,6 +118,6 @@ describe('class: BaseService', () => {
 describe('class: BaseServiceFactory', () => {
     it('method: create()', () => {
         const factory = new BaseServiceFactory();
-        expect(typeof factory.create()).is.equal(typeof new BaseService());
+        expect(factory.create().constructor.name).is.equal('BaseService');
     });
 });

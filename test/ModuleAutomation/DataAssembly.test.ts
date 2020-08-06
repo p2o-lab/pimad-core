@@ -1,12 +1,12 @@
-import {BaseDataAssemblyFactory, BaseDataAssembly} from './DataAssembly';
+import {BaseDataAssemblyFactory} from '../../src/ModuleAutomation/DataAssembly';
 import {expect} from 'chai';
-import {ErrorResponse} from '../Backbone/Response';
-import {BaseDataItem, DataItem} from './DataItem';
+import {ErrorResponse} from '../../src/Backbone/Response';
+import {DataAssembly} from '../../build/ModuleAutomation';
 
 describe('class: BaseDataAssembly', () => {
-    let dataAssembly: BaseDataAssembly;
+    let dataAssembly: DataAssembly;
     beforeEach(function () {
-        dataAssembly = new BaseDataAssembly();
+        dataAssembly = new BaseDataAssemblyFactory().create();
     });
     it('method: getInterfaceClass()', () => {
         expect(typeof dataAssembly.getInterfaceClass()).is.equal(typeof new ErrorResponse());
@@ -46,6 +46,6 @@ describe('class: BaseDataAssembly', () => {
 describe('class: BaseDataAssemblyFactory', () => {
     it('method: create()', () => {
         const factory = new BaseDataAssemblyFactory();
-        expect(typeof factory.create()).is.equal(typeof new BaseDataAssembly());
+        expect(factory.create().constructor.name).is.equal('BaseDataAssembly');
     });
 });

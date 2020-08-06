@@ -1,21 +1,18 @@
 import {
-    BaseNodeId,
     BaseNodeIdFactory,
-    GUIDNodeId,
     GUIDNodeIdFactory,
-    NumericNodeId,
     NumericNodeIdFactory,
-    QpaqueNodeId, QpaqueNodeIdFactory,
-    StringNodeId,
+    QpaqueNodeIdFactory,
     StringNodeIdFactory
-} from './NodeId';
+} from '../../src/ModuleAutomation';
 import {expect} from 'chai';
-import {ErrorResponse, Response, SuccessResponse} from '../Backbone/Response';
+import {ErrorResponse, Response, SuccessResponse} from '../../src/Backbone/Response';
+import {NodeId} from '../../build/ModuleAutomation';
 
 describe('class: BaseNodeId', () => {
-    let nodeId: BaseNodeId;
+    let nodeId: NodeId;
     beforeEach(() => {
-        nodeId = new BaseNodeId();
+        nodeId = new BaseNodeIdFactory().create();
     })
     it('method: getNamespaceIndex()', () => {
         let response: Response = nodeId.getNamespaceIndex()
@@ -44,9 +41,9 @@ describe('class: BaseNodeId', () => {
 })
 
 describe('class: NumericNodeId', () => {
-    let nodeId: NumericNodeId;
+    let nodeId: NodeId;
     beforeEach(() => {
-        nodeId = new NumericNodeId();
+        nodeId = new NumericNodeIdFactory().create();
     })
     it('method: getNamespaceIndex()', () => {
         let response: Response = nodeId.getNamespaceIndex()
@@ -82,9 +79,9 @@ describe('class: NumericNodeId', () => {
 })
 
 describe('class: QpaqueNodeId', () => {
-    let nodeId: QpaqueNodeId;
+    let nodeId: NodeId;
     beforeEach(() => {
-        nodeId = new QpaqueNodeId();
+        nodeId = new QpaqueNodeIdFactory().create();
     })
     it('method: getNamespaceIndex()', () => {
         let response: Response = nodeId.getNamespaceIndex()
@@ -120,9 +117,9 @@ describe('class: QpaqueNodeId', () => {
 })
 
 describe('class: StringNodeId', () => {
-    let nodeId: StringNodeId;
+    let nodeId: NodeId;
     beforeEach(() => {
-        nodeId = new StringNodeId();
+        nodeId = new StringNodeIdFactory().create();
     })
     it('method: getNamespaceIndex()', () => {
         let response: Response = nodeId.getNamespaceIndex()
@@ -158,9 +155,9 @@ describe('class: StringNodeId', () => {
 })
 
 describe('class: GUIDNodeId', () => {
-    let nodeId: GUIDNodeId;
+    let nodeId: NodeId;
     beforeEach(() => {
-        nodeId = new GUIDNodeId();
+        nodeId = new GUIDNodeIdFactory().create();
     })
     it('method: getNamespaceIndex()', () => {
         let response: Response = nodeId.getNamespaceIndex()
@@ -196,51 +193,36 @@ describe('class: GUIDNodeId', () => {
 })
 
 describe('class: BaseNodeIdFactory', () => {
-    let factory: BaseNodeIdFactory;
-    beforeEach(() => {
-        factory = new BaseNodeIdFactory();
-    })
+    const factory = new BaseNodeIdFactory();
     it('method: create(): NodeId', () => {
-        expect(typeof factory.create()).is.equal(typeof new BaseNodeId())
+        expect(factory.create().constructor.name).is.equal('BaseNodeId')
     });
 })
 
 describe('class: NumericNodeIdFactory', () => {
-    let factory: NumericNodeIdFactory;
-    beforeEach(() => {
-        factory = new NumericNodeIdFactory();
-    })
+    const factory = new NumericNodeIdFactory();
     it('method: create(): NodeId', () => {
-        expect(typeof factory.create()).is.equal(typeof new NumericNodeId())
+        expect(factory.create().constructor.name).is.equal('NumericNodeId')
     });
 })
 
 describe('class: QpaqueNodeIdFactory', () => {
-    let factory: QpaqueNodeIdFactory;
-    beforeEach(() => {
-        factory = new QpaqueNodeIdFactory();
-    })
+    const factory = new QpaqueNodeIdFactory();
     it('method: create(): NodeId', () => {
-        expect(typeof factory.create()).is.equal(typeof new QpaqueNodeId())
+        expect(factory.create().constructor.name).is.equal('QpaqueNodeId')
     });
 })
 
 describe('class: StringNodeIdFactory', () => {
-    let factory: StringNodeIdFactory;
-    beforeEach(() => {
-        factory = new StringNodeIdFactory();
-    })
+    const factory = new StringNodeIdFactory();
     it('method: create(): NodeId', () => {
-        expect(typeof factory.create()).is.equal(typeof new StringNodeId())
+        expect(factory.create().constructor.name).is.equal('StringNodeId')
     });
 })
 
 describe('class: GUIDNodeIdFactory', () => {
-    let factory: GUIDNodeIdFactory;
-    beforeEach(() => {
-        factory = new GUIDNodeIdFactory();
-    })
+    const factory = new GUIDNodeIdFactory();
     it('method: create(): NodeId', () => {
-        expect(typeof factory.create()).is.equal(typeof new GUIDNodeId())
+        expect(factory.create().constructor.name).is.equal('GUIDNodeId')
     });
 })

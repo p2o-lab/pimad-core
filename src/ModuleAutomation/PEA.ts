@@ -213,7 +213,7 @@ abstract class APEA implements PEA {
     };
 }
 
-export class BasePEA extends APEA {
+class BasePEA extends APEA {
 
 }
 

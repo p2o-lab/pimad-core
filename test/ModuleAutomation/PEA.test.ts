@@ -1,25 +1,26 @@
-import {BasePEAFactory, BasePEA, PEAInitializeDataType} from './PEA';
+import {BasePEAFactory, BaseProcedureFactory, BaseServiceFactory} from '../../src/ModuleAutomation';
 import {expect} from 'chai';
-import {ErrorResponse, SuccessResponse} from '../Backbone/Response';
-import {BaseDataAssembly, DataAssembly} from './DataAssembly';
-import {BaseParameter} from './Parameter';
-import {BaseProcedure} from './Procedure';
-import {BasicSemanticVersion, SemanticVersion} from '../Backbone/SemanticVersion';
-import {FEA} from './FEA';
-import {BaseService, Service} from './Service';
+import {ErrorResponse, SuccessResponse} from '../../src/Backbone/Response';
+import {DataAssembly} from '../../src/ModuleAutomation';
+import {BasicSemanticVersion, SemanticVersion} from '../../src/Backbone/SemanticVersion';
+import {FEA} from '../../src/ModuleAutomation';
+import {Service} from '../../src/ModuleAutomation';
 import {AML} from 'PiMAd-types';
 import Attribute = AML.Attribute;
-
+import {BaseDataAssemblyFactory, BaseParameterFactory} from '../../build/ModuleAutomation';
+import { PEAInitializeDataType, PEA } from '../../src/ModuleAutomation/PEA';
+import { Response } from '../../src/Backbone/Response'
 
 describe('class: BasePEA', () => {
-    let pea: BasePEA;
+    let pea: PEA;
+    const peaFactory = new BasePEAFactory();
     beforeEach(function () {
-        pea = new BasePEA();
+        pea = peaFactory.create();
     });
     describe('check getter', () => {
+        const basePEAFactory = new BaseDataAssemblyFactory();
         beforeEach(function () {
-
-            const dataAssembly1= new BaseDataAssembly();
+            const dataAssembly1= basePEAFactory.create();
             dataAssembly1.initialize({
                 tag: 'Test-DataAssembly1',
                 description: '',
@@ -27,7 +28,7 @@ describe('class: BasePEA', () => {
                 identifier: '',
                 dataItems: []
             });
-            const dataAssembly2= new BaseDataAssembly();
+            const dataAssembly2= basePEAFactory.create();
             dataAssembly2.initialize({
                 tag: 'Test-DataAssembly2',
                 description: '',
@@ -41,18 +42,20 @@ describe('class: BasePEA', () => {
                 {Name: 'Test-Attribute1', AttributeDataType: '', Value:'1'},
                 {Name: 'Test-Attribute2', AttributeDataType: '', Value:''}
             ];
-            const parameter = new BaseParameter();
+            const parameterFactory = new BaseParameterFactory();
+            const parameter = parameterFactory.create();
             parameter.initialize('Test-Parameter0', [], '');
-            const parameter2 = new BaseParameter();
+            const parameter2 = parameterFactory.create();
             parameter2.initialize('Test-Parameter1', [], '');
-            const procedure0 = new BaseProcedure();
+            const procedureFactory = new BaseProcedureFactory();
+            const procedure0 = procedureFactory.create();
             procedure0.initialize({} as DataAssembly, '','', 'Test-Procedure0', [],[]);
-            const procedure1 = new BaseProcedure();
+            const procedure1 = procedureFactory.create();
             procedure1.initialize({} as DataAssembly, '','', 'Test-Procedure1', [],[]);
-
-            const service1 = new BaseService();
+            const serviceFactory = new BaseServiceFactory();
+            const service1 = serviceFactory.create();
             service1.initialize(attributes, dataAssembly1,'Test-Identifier1','Test-MetaModelRef1','Test-Service1', [parameter, parameter2], [procedure0, procedure1]);
-            const service2 = new BaseService();
+            const service2 = serviceFactory.create();
             service2.initialize(attributes, dataAssembly1,'Test-Identifier2','Test-MetaModelRef2','Test-Service2', [parameter], [procedure1]);
 
             pea.initialize({
@@ -67,7 +70,7 @@ describe('class: BasePEA', () => {
         });
         describe('method: getActuator()', () => {
             it('test case: standard usage', done => {
-                pea.getActuator('Test-Actuator1', response => {
+                pea.getActuator('Test-Actuator1', (response: Response) => {
                     expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
                     done();
                 })
@@ -75,7 +78,7 @@ describe('class: BasePEA', () => {
         });
         describe('method: getAllActuators()', () => {
             it('test case: standard usage', done => {
-                pea.getAllActuators( response => {
+                pea.getAllActuators( (response: Response) => {
                     expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
                     done();
                 })
@@ -91,7 +94,7 @@ describe('class: BasePEA', () => {
         });
         describe('method: getAllSensors()', () => {
             it('test case: standard usage', done => {
-                pea.getAllSensors( response => {
+                pea.getAllSensors( (response: Response) => {
                     expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
                     done();
                 })
@@ -103,7 +106,7 @@ describe('class: BasePEA', () => {
         });
         describe('method: getDataAssembly()', () => {
             it('test case: standard usage', done => {
-                pea.getDataAssembly('Test-DataAssembly2', response => {
+                pea.getDataAssembly('Test-DataAssembly2', (response: Response) => {
                     expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
                     const responseContent = response.getContent() as DataAssembly;
                     expect(responseContent.getTagName()).is.equal('Test-DataAssembly2');
@@ -111,7 +114,7 @@ describe('class: BasePEA', () => {
                 })
             });
             it('test case: requested DataAssembly not in array', (done) => {
-                pea.getDataAssembly('DataAssembly', response => {
+                pea.getDataAssembly('DataAssembly', (response: Response) => {
                     expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
                     done();
                 })
@@ -125,7 +128,7 @@ describe('class: BasePEA', () => {
         });
         describe('method: getFEA()', () => {
             it('test case: standard usage', done => {
-                pea.getFEA('Test-FEA1', response => {
+                pea.getFEA('Test-FEA1', (response: Response) => {
                     expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
                     done();
                 })
@@ -139,7 +142,7 @@ describe('class: BasePEA', () => {
         });
         describe('method: getSensor()', () => {
             it('test case: standard usage', done => {
-                pea.getSensor('Test-Sensor1', response => {
+                pea.getSensor('Test-Sensor1', (response: Response) => {
                     expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
                     done();
                 })
@@ -147,7 +150,7 @@ describe('class: BasePEA', () => {
         });
         describe('method: getService()', () => {
             it('test case: standard usage', done => {
-                pea.getService('Test-Service1', response => {
+                pea.getService('Test-Service1', (response: Response) => {
                     expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
                     const responseContent = response.getContent() as Service;
                     expect(responseContent.getName()).is.equal('Test-Service1');
@@ -155,7 +158,7 @@ describe('class: BasePEA', () => {
                 })
             });
             it('test case: requested Service not in array', (done) => {
-                pea.getService('Service', response => {
+                pea.getService('Service', (response: Response) => {
                     expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
                     done();
                 })
@@ -182,6 +185,6 @@ describe('class: BasePEA', () => {
 describe('class: BasePEAFactory', () => {
     it('method: create()', () => {
         const factory = new BasePEAFactory();
-        expect(typeof factory.create()).is.equal(typeof new BasePEA())
+        expect(factory.create().constructor.name).is.equal('BasePEA');
     });
 });

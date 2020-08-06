@@ -1,11 +1,11 @@
 import {expect} from 'chai';
-import {LastChainElementImporterFactory, LastChainLinkImporter, MTPFreeze202001Importer} from './Importer';
-import {ErrorResponse, Response, SuccessResponse} from '../../Backbone/Response';
-import {BasicSemanticVersion, SemanticVersion} from '../../Backbone/SemanticVersion';
-import {PEA} from '../../ModuleAutomation/PEA';
-import {DataAssembly} from '../../ModuleAutomation/DataAssembly';
-import {Service} from '../../ModuleAutomation/Service';
-import {FEA} from '../../ModuleAutomation/FEA';
+import {LastChainElementImporterFactory, LastChainLinkImporter, MTPFreeze202001Importer} from '../../../src/Converter/Importer/Importer';
+import {ErrorResponse, Response, SuccessResponse} from '../../../src/Backbone/Response';
+import {BasicSemanticVersion, SemanticVersion} from '../../../src/Backbone/SemanticVersion';
+import {PEA} from '../../../src/ModuleAutomation';
+import {DataAssembly} from '../../../src/ModuleAutomation';
+import {Service} from '../../../src/ModuleAutomation';
+import {FEA} from '../../../src/ModuleAutomation';
 
 describe('class: LastChainElementImporter', () => {
     let importer: LastChainLinkImporter;

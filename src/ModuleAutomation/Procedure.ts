@@ -141,7 +141,7 @@ abstract class AProcedure implements Procedure {
     }
 }
 
-export class BaseProcedure extends AProcedure {
+class BaseProcedure extends AProcedure {
 }
 
 export interface ProcedureFactory {
@@ -151,7 +151,7 @@ abstract class AProcedureFactory implements ProcedureFactory {
     abstract create(): Procedure;
 }
 export class BaseProcedureFactory extends AProcedureFactory {
-    create(): Procedure{
+    create(): Procedure {
         const procedure = new BaseProcedure();
         logger.debug(this.constructor.name + ' creates a ' + procedure.constructor.name);
         return procedure;

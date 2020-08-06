@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import {AMLGateFactory, MockGateFactory, MTPGateFactory, XMLGateFactory, ZIPGateFactory} from './GateFactory';
-import {ErrorResponse, Response, SuccessResponse} from '../../Backbone/Response';
+import {AMLGateFactory, MockGateFactory, MTPGateFactory, XMLGateFactory, ZIPGateFactory} from '../../../src/Converter/Gate/GateFactory';
+import {ErrorResponse, Response, SuccessResponse} from '../../../src/Backbone/Response';
 
 describe('class: MockGate', () => {
     const factory = new MockGateFactory()
