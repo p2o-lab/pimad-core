@@ -1,10 +1,9 @@
-import {BaseServiceFactory, BaseService, BaseParameterFactory} from '../../src/ModuleAutomation';
+import {BaseServiceFactory, BaseService, BaseParameterFactory, BaseProcedureFactory} from '../../src/ModuleAutomation';
 import {expect} from 'chai';
 import {Parameter} from '../../src/ModuleAutomation';
 import {DataAssembly} from '../../src/ModuleAutomation';
 import {AML} from 'PiMAd-types';
 import Attribute = AML.Attribute;
-import {BaseProcedure} from '../../src/ModuleAutomation';
 import {ErrorResponse, SuccessResponse} from '../../src/Backbone/Response';
 import {BaseDataAssemblyFactory} from '../../build/ModuleAutomation';
 
@@ -33,9 +32,10 @@ describe('class: BaseService', () => {
             parameter.initialize('Test-Parameter0', [], '');
             const parameter2 = parameterFactory.create();
             parameter2.initialize('Test-Parameter1', [], '');
-            const procedure0 = new BaseProcedure();
+            const procedureFactory = new BaseProcedureFactory();
+            const procedure0 = procedureFactory.create();
             procedure0.initialize({} as DataAssembly, '','', 'Test-Procedure0', [],[]);
-            const procedure1 = new BaseProcedure();
+            const procedure1 = procedureFactory.create();
             procedure1.initialize({} as DataAssembly, '','', 'Test-Procedure1', [],[]);
             service.initialize(attributes, dataAssembly,'Test-Identifier','Test-MetaModelRef','Test-Name', [parameter, parameter2], [procedure0, procedure1]);
         });

@@ -1,8 +1,7 @@
-import {BasePEAFactory} from '../../src/ModuleAutomation';
+import {BasePEAFactory, BaseProcedureFactory} from '../../src/ModuleAutomation';
 import {expect} from 'chai';
 import {ErrorResponse, SuccessResponse} from '../../src/Backbone/Response';
 import {DataAssembly} from '../../src/ModuleAutomation';
-import {BaseProcedure} from '../../src/ModuleAutomation';
 import {BasicSemanticVersion, SemanticVersion} from '../../src/Backbone/SemanticVersion';
 import {FEA} from '../../src/ModuleAutomation';
 import {BaseService, Service} from '../../src/ModuleAutomation';
@@ -48,9 +47,10 @@ describe('class: BasePEA', () => {
             parameter.initialize('Test-Parameter0', [], '');
             const parameter2 = parameterFactory.create();
             parameter2.initialize('Test-Parameter1', [], '');
-            const procedure0 = new BaseProcedure();
+            const procedureFactory = new BaseProcedureFactory();
+            const procedure0 = procedureFactory.create();
             procedure0.initialize({} as DataAssembly, '','', 'Test-Procedure0', [],[]);
-            const procedure1 = new BaseProcedure();
+            const procedure1 = procedureFactory.create();
             procedure1.initialize({} as DataAssembly, '','', 'Test-Procedure1', [],[]);
 
             const service1 = new BaseService();

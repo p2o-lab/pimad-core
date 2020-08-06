@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {BaseProcedureFactory, BaseProcedure, BaseParameterFactory} from '../../src/ModuleAutomation';
+import {BaseProcedureFactory, BaseParameterFactory, Procedure} from '../../src/ModuleAutomation';
 import {DataAssembly} from '../../src/ModuleAutomation';
 import {AML} from 'PiMAd-types';
 import Attribute = AML.Attribute;
@@ -8,9 +8,10 @@ import {ErrorResponse, SuccessResponse} from '../../src/Backbone/Response';
 import {BaseDataAssemblyFactory} from '../../build/ModuleAutomation';
 
 describe('class: BaseProcedure', () => {
-    let procedure: BaseProcedure;
+    let procedure: Procedure;
+    const procedureFactory = new BaseProcedureFactory();
     beforeEach(function () {
-        procedure = new BaseProcedure();
+        procedure = procedureFactory.create();
     });
     describe('check getter', () => {
         beforeEach(function () {
@@ -96,6 +97,6 @@ describe('class: BaseProcedure', () => {
 describe('class: BaseProcedureFactory', () => {
     it('method: create()', () => {
         const factory = new BaseProcedureFactory();
-        expect(typeof factory.create()).is.equal(typeof new BaseProcedure());
+        expect(factory.create().constructor.name).is.equal('BaseProcedure');
     });
 });
