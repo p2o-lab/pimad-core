@@ -1,6 +1,6 @@
 import {OPCUANodeCommunication, OPCUAServerCommunication, OPCUANodeCommunicationFactory,OPCUAServerCommunicationFactory} from '../../src/ModuleAutomation/CommunicationInterfaceData';
 import {expect} from 'chai';
-import {NumericNodeId} from '../../src/ModuleAutomation/NodeId';
+import {NodeId} from '../../src/ModuleAutomation/NodeId';
 
 describe('class: OPCUAServerCommunication', () => {
     let opcServerCommunication: OPCUAServerCommunication;
@@ -30,8 +30,8 @@ describe('class: OPCUANodeCommunication', () => {
         expect(typeof opcNodeCommunication.getDescription()).is.equal(typeof {name:'',serverURL:''});
     });
     it('method: initialize()', () => {
-        expect(opcNodeCommunication.initialize({name:'', namespaceIndex:'',nodeId: new NumericNodeId(), dataType: ''})).is.true;
-        expect(opcNodeCommunication.initialize({name:'', namespaceIndex:'',nodeId: new NumericNodeId(), dataType: ''})).is.false;
+        expect(opcNodeCommunication.initialize({name:'', namespaceIndex:'',nodeId: {} as NodeId, dataType: ''})).is.true;
+        expect(opcNodeCommunication.initialize({name:'', namespaceIndex:'',nodeId: {} as NodeId, dataType: ''})).is.false;
     });
 });
 describe('class: OPCUANodeCommunicationFactory', () => {

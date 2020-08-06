@@ -1,4 +1,4 @@
-import {BaseNodeId, NodeId} from './NodeId';
+import {NodeId} from './NodeId';
 import {logger} from '../Utils/Logger';
 
 export interface CommunicationInterfaceData {
@@ -68,7 +68,7 @@ export class OPCUANodeCommunication extends ACommunicationInterfaceData {
     constructor() {
         super();
         this.namespaceIndex = -1;
-        this.nodeId = new BaseNodeId();
+        this.nodeId = {} as NodeId;
         this.dataType = '';
     }
 }

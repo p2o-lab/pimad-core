@@ -47,7 +47,8 @@ abstract class ANodeId implements NodeId {
         return response
     };
 }
-export class BaseNodeId extends ANodeId {
+
+class BaseNodeId extends ANodeId {
     protected identifier: number;
     getNodeId(): Response {
         return this.responseVendor.buyErrorResponse();
@@ -60,7 +61,8 @@ export class BaseNodeId extends ANodeId {
         this.identifier = -1;
     }
 }
-export class NumericNodeId extends ANodeId {
+
+class NumericNodeId extends ANodeId {
     protected identifier: number;
     getNodeId(): Response {
         let response: Response
@@ -87,7 +89,7 @@ export class NumericNodeId extends ANodeId {
     }
 }
 
-export class StringNodeId extends ANodeId {
+class StringNodeId extends ANodeId {
     protected identifier: string;
     getNodeId(): Response {
         let response: Response
@@ -113,7 +115,7 @@ export class StringNodeId extends ANodeId {
     };
 }
 
-export class QpaqueNodeId extends StringNodeId {
+class QpaqueNodeId extends StringNodeId {
     protected identifier: string;
     getNodeId(): Response {
         let response: Response
@@ -129,7 +131,7 @@ export class QpaqueNodeId extends StringNodeId {
     };
 }
 
-export class GUIDNodeId extends StringNodeId {
+class GUIDNodeId extends StringNodeId {
     protected identifier: string;
     getNodeId(): Response {
         let response: Response
