@@ -6,6 +6,12 @@ export interface Attribute {
     initialize(data: InitializeAttribute): boolean;
 }
 
+enum AttributeGetterVariables {
+    DATATYPE,
+    NAME,
+    VALUE
+}
+
 abstract class AAttribute implements Attribute {
     private dataType: string;
     private name: string;
@@ -13,16 +19,24 @@ abstract class AAttribute implements Attribute {
     private responseVendor: ResponseVendor;
     private value: string;
 
-    getDataType(): Response {
+    private getter(variable: AttributeGetterVariables): Response {
         let response: Response;
         if(this.initialized) {
             response = this.responseVendor.buySuccessResponse();
-            response.initialize('Success!', {data: this.dataType});
+            switch (variable) {
+                case AttributeGetterVariables.DATATYPE:
+                    response.initialize('Success!', {data: this.dataType});
+                    break;
+            }
         } else {
             response = this.responseVendor.buyErrorResponse();
             response.initialize('Attribute is not initialized!', {});
         }
         return response;
+    };
+
+    getDataType(): Response {
+        return this.getter(AttributeGetterVariables.DATATYPE);
     }
 
     initialize(data: InitializeAttribute): boolean {
