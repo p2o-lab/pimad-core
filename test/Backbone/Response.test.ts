@@ -1,4 +1,4 @@
-import {SuccessResponse, ErrorResponse, SuccessResponseFactory, ErrorResponseFactory, ResponseVendor} from './Response';
+import {SuccessResponse, ErrorResponse, SuccessResponseFactory, ErrorResponseFactory, ResponseVendor} from '../../src/Backbone/Response';
 import { expect } from 'chai';
 import 'mocha';
 

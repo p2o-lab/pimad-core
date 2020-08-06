@@ -1,7 +1,7 @@
-import {BaseDataItemFactory, BaseDataItem} from './DataItem';
+import {BaseDataItemFactory, BaseDataItem} from '../../src/ModuleAutomation/DataItem';
 import {expect} from 'chai';
-import {ErrorResponse} from '../Backbone/Response';
-import {OPCUANodeCommunication} from './CommunicationInterfaceData';
+import {ErrorResponse} from '../../src/Backbone/Response';
+import {OPCUANodeCommunication} from '../../src/ModuleAutomation/CommunicationInterfaceData';
 
 describe('class: BaseDataItem', () => {
     let dataItem: BaseDataItem;

@@ -1,11 +1,11 @@
-import {BaseServiceFactory, BaseService} from './Service';
+import {BaseServiceFactory, BaseService} from '../../src/ModuleAutomation/Service';
 import {expect} from 'chai';
-import {BaseParameter, Parameter} from './Parameter';
-import {BaseDataAssembly, DataAssembly} from './DataAssembly';
+import {BaseParameter, Parameter} from '../../src/ModuleAutomation/Parameter';
+import {BaseDataAssembly, DataAssembly} from '../../src/ModuleAutomation/DataAssembly';
 import {AML} from 'PiMAd-types';
 import Attribute = AML.Attribute;
-import {BaseProcedure} from './Procedure';
-import {ErrorResponse, SuccessResponse} from '../Backbone/Response';
+import {BaseProcedure} from '../../src/ModuleAutomation/Procedure';
+import {ErrorResponse, SuccessResponse} from '../../src/Backbone/Response';
 
 describe('class: BaseService', () => {
     let service: BaseService;

@@ -1,7 +1,7 @@
-import {BaseParameterFactory, BaseParameter} from './Parameter';
+import {BaseParameterFactory, BaseParameter} from '../../src/ModuleAutomation/Parameter';
 import {expect} from 'chai';
-import {ErrorResponse} from '../Backbone/Response';
-import {OPCUANodeCommunication} from './CommunicationInterfaceData';
+import {ErrorResponse} from '../../src/Backbone/Response';
+import {OPCUANodeCommunication} from '../../src/ModuleAutomation/CommunicationInterfaceData';
 
 describe('class: BaseParameter', () => {
     let parameter: BaseParameter;

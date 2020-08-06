@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import 'mocha';
-import {BasicSemanticVersion, BasicSemanticVersionFactory, SemanticVersionVendor} from './SemanticVersion';
+import {BasicSemanticVersion, BasicSemanticVersionFactory, SemanticVersionVendor} from '../../src/Backbone/SemanticVersion';
 
 describe('class: BasicSemanticVersion', () => {
     it('method: initialize(major: number, minor: number, patch: number)', () => {

@@ -1,6 +1,6 @@
-import {OPCUANodeCommunication, OPCUAServerCommunication, OPCUANodeCommunicationFactory,OPCUAServerCommunicationFactory} from './CommunicationInterfaceData';
+import {OPCUANodeCommunication, OPCUAServerCommunication, OPCUANodeCommunicationFactory,OPCUAServerCommunicationFactory} from '../../src/ModuleAutomation/CommunicationInterfaceData';
 import {expect} from 'chai';
-import {NumericNodeId} from './NodeId';
+import {NumericNodeId} from '../../src/ModuleAutomation/NodeId';
 
 describe('class: OPCUAServerCommunication', () => {
     let opcServerCommunication: OPCUAServerCommunication;

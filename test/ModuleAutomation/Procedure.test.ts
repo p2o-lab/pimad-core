@@ -1,10 +1,10 @@
 import {expect} from 'chai';
-import {BaseProcedureFactory, BaseProcedure} from './Procedure';
-import {BaseDataAssembly, DataAssembly} from './DataAssembly';
+import {BaseProcedureFactory, BaseProcedure} from '../../src/ModuleAutomation/Procedure';
+import {BaseDataAssembly, DataAssembly} from '../../src/ModuleAutomation/DataAssembly';
 import {AML} from 'PiMAd-types';
 import Attribute = AML.Attribute;
-import {BaseParameter, Parameter} from './Parameter';
-import {ErrorResponse, SuccessResponse} from '../Backbone/Response';
+import {BaseParameter, Parameter} from '../../src/ModuleAutomation/Parameter';
+import {ErrorResponse, SuccessResponse} from '../../src/Backbone/Response';
 
 describe('class: BaseProcedure', () => {
     let procedure: BaseProcedure;

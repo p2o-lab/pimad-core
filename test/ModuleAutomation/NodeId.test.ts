@@ -8,9 +8,9 @@ import {
     QpaqueNodeId, QpaqueNodeIdFactory,
     StringNodeId,
     StringNodeIdFactory
-} from './NodeId';
+} from '../../src/ModuleAutomation/NodeId';
 import {expect} from 'chai';
-import {ErrorResponse, Response, SuccessResponse} from '../Backbone/Response';
+import {ErrorResponse, Response, SuccessResponse} from '../../src/Backbone/Response';
 
 describe('class: BaseNodeId', () => {
     let nodeId: BaseNodeId;

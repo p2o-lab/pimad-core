@@ -5,17 +5,20 @@
   "main": "src/index.ts",
   "scripts": {
     "prebuild": "npm run lint",
-    "build": "tsc",
+    "build": "rm -rf build && tsc",
     "build-gdocs": "typedoc --out docs src",
     "lint": "eslint -f pretty --ext \".ts\" src",
     "prestart": "npm run build",
     "start": "node .",
-    "test": "nyc mocha -r ts-node/register 'src/**/*.ts'"
+    "test": "nyc mocha -r ts-node/register 'test/**/*.ts'"
   },
   "repository": {
     "type": "git",
     "url": "svn@dev.plt.et.tu-dresden.de:modulare-automation/PiMAd-core.git"
   },
+  "files": [
+    "build"
+  ],
   "keywords": [
     "PiMAd",
     "Modulare Automation",

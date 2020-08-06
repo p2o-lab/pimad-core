@@ -2,12 +2,12 @@ import {
     BasePEAPool,
     BasePEAPoolFactory,
     PEAPoolVendor
-} from './PEAPool';
-import {LastChainElementImporterFactory, MTPFreeze202001ImporterFactory} from '../Converter/Importer/Importer'
+} from '../../src/PEAPool/PEAPool';
+import {LastChainElementImporterFactory, MTPFreeze202001ImporterFactory} from '../../src/Converter/Importer/Importer'
 
 import {expect} from 'chai';
-import {ErrorResponse, SuccessResponse} from '../Backbone/Response';
-import {BasePEA} from '../ModuleAutomation/PEA';
+import {ErrorResponse, SuccessResponse} from '../../src/Backbone/Response';
+import {BasePEA} from '../../src/ModuleAutomation/PEA';
 
 describe('class: BasePEAStore', () => {
     const fImporter = new LastChainElementImporterFactory()
