@@ -25,7 +25,6 @@ abstract class APEAPool implements PEAPool {
             if(response.constructor.name === this.responseVendor.buyErrorResponse().constructor.name) {
                 callback(identifier);
             } else {
-                // olala recursive!! :D
                 this.generateUniqueIdentifier(callback)
             }
         })
@@ -43,15 +42,12 @@ abstract class APEAPool implements PEAPool {
 
     public addPEA(instructions: {source: string}, callback: (response: Response) => void): void {
         if(this.initialized) {
-            let localIdentifier = '';
             this.generateUniqueIdentifier(identifier => {
-                localIdentifier = identifier;
+                this.importerChainFirstElement.convertFrom({
+                    source: instructions.source,
+                    identifier: identifier
+                }, callback);
             })
-            this.importerChainFirstElement.convertFrom({
-                source: instructions.source,
-                identifier: localIdentifier
-            }, callback);
-            //this.responseHandler.handleCallbackWithResponse('error', '', {}, callback);
         } else {
             this.responseHandler.handleCallbackWithResponse('error', 'PEAPool is not initialized!', {}, callback);
         }
