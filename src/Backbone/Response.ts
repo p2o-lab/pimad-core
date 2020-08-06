@@ -122,6 +122,13 @@ export class ResponseVendor {
     }
 }
 
+export enum ResponseTypes {
+    DUMMY,
+    ERROR,
+    SUCCESS,
+    WARNING
+}
+
 export class ResponseHandler {
     private responseVendor: ResponseVendor;
 
@@ -129,19 +136,19 @@ export class ResponseHandler {
         this.responseVendor = new ResponseVendor();
     }
 
-    public handleCallbackWithResponse(type: string, message: string, content: {}, callback: (response: Response) => void): void {
+    public handleCallbackWithResponse(type: ResponseTypes, message: string, content: {}, callback: (response: Response) => void): void {
         let response: Response = this.responseVendor.buyDummyResponse();
         switch (type) {
-            case 'dummy':
+            case ResponseTypes.DUMMY:
                 response = this.responseVendor.buyDummyResponse();
                 break;
-            case 'error':
+            case ResponseTypes.ERROR:
                 response = this.responseVendor.buyErrorResponse();
                 break;
-            case 'success':
+            case ResponseTypes.SUCCESS:
                 response = this.responseVendor.buySuccessResponse();
                 break;
-            case 'warning':
+            case ResponseTypes.WARNING:
                 response = this.responseVendor.buyWarningResponse();
                 break;
         }
