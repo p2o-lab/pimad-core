@@ -1,7 +1,7 @@
 import {DataAssembly} from './DataAssembly';
 import {FEA} from './FEA';
 import {Service} from './Service';
-import {Response, ResponseVendor} from '../Backbone/Response';
+import {Response, ResponseHandler, ResponseVendor} from '../Backbone/Response';
 import {BasicSemanticVersion, SemanticVersion} from '../Backbone/SemanticVersion';
 
 export interface PEA {
@@ -100,6 +100,7 @@ abstract class APEA implements PEA {
     protected feas: FEA[];
     protected pimadIdentifier: string;
     protected name: string;
+    protected responseHandler: ResponseHandler;
     protected responseVendor: ResponseVendor;
     protected services: Service[];
 
@@ -112,6 +113,7 @@ abstract class APEA implements PEA {
         this.feas = [];
         this.name = 'name: undefined';
         this.pimadIdentifier = 'identifier: undefined';
+        this.responseHandler = new ResponseHandler();
         this.responseVendor = new ResponseVendor();
         this.services = [];
         this.initialized = false;
