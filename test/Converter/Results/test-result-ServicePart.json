@@ -1,0 +1,120 @@
+[
+  {
+    "Attributes": [
+      {
+        "Name": "Test-Attribute",
+        "AttributeDataType": "xs:boolean",
+        "Value": "true"
+      }
+    ],
+    "Identifier": "id-1",
+    "MetaModelRef": "MTPServiceSUCLib/Service",
+    "Name": "RageAgainstTheMachine",
+    "Parameters": [],
+    "Procedures": [
+      {
+        "Attributes": [
+          {
+            "Name": "IsSelfCompleting",
+            "AttributeDataType": "xs:boolean",
+            "Value": "True"
+          },
+          {
+            "Name": "ProcedureID",
+            "AttributeDataType": "xs:unsignedInt",
+            "Value": "3"
+          },
+          {
+            "Name": "IsDefault",
+            "AttributeDataType": "xs:boolean",
+            "Value": "False"
+          }
+        ],
+        "Identifier": "id-2",
+        "MetaModelRef": "MTPServiceSUCLib/ServiceProcedure",
+        "Name": "Testefy",
+        "Parameters": [],
+        "DataAssembly": {
+          "Name": "RefID",
+          "AttributeDataType": "xs:ID",
+          "Value": "refid-1"
+        }
+      },
+      {
+        "Attributes": [
+          {
+            "Name": "IsSelfCompleting",
+            "AttributeDataType": "xs:boolean",
+            "Value": "False"
+          },
+          {
+            "Name": "ProcedureID",
+            "AttributeDataType": "xs:unsignedInt",
+            "Value": "2"
+          },
+          {
+            "Name": "IsDefault",
+            "AttributeDataType": "xs:boolean",
+            "Value": "False"
+          }
+        ],
+        "Identifier": "id-3",
+        "MetaModelRef": "MTPServiceSUCLib/ServiceProcedure",
+        "Name": "KillingInTheName",
+        "Parameters": [],
+        "DataAssembly": {
+          "Name": "RefID",
+          "AttributeDataType": "xs:ID",
+          "Value": "refid-2"
+        }
+      }
+    ],
+    "DataAssembly": {
+      "Name": "RefID",
+      "AttributeDataType": "xs:ID",
+      "Value": "refid-0"
+    }
+  },
+  {
+    "Attributes": [],
+    "Identifier": "id-4",
+    "MetaModelRef": "MTPServiceSUCLib/Service",
+    "Name": "SystenOfADown",
+    "Parameters": [],
+    "Procedures": [
+      {
+        "Attributes": [
+          {
+            "Name": "IsSelfCompleting",
+            "AttributeDataType": "xs:boolean",
+            "Value": "True"
+          },
+          {
+            "Name": "ProcedureID",
+            "AttributeDataType": "xs:unsignedInt",
+            "Value": "3"
+          },
+          {
+            "Name": "IsDefault",
+            "AttributeDataType": "xs:boolean",
+            "Value": "False"
+          }
+        ],
+        "Identifier": "id-5",
+        "MetaModelRef": "MTPServiceSUCLib/ServiceProcedure",
+        "Name": "Chop Suey!",
+        "Parameters": [],
+        "DataAssembly": {
+          "Name": "RefID",
+          "AttributeDataType": "xs:ID",
+          "Value": "refid-4"
+        }
+      }
+    ],
+    "DataAssembly": {
+      "Name": "RefID",
+      "AttributeDataType": "xs:ID",
+      "Value": "refid-3"
+    }
+  }
+]

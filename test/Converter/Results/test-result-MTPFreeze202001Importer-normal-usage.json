@@ -1,0 +1,2588 @@
+{
+  "dataAssemblies": [
+    {
+      "dataItems": [],
+      "tagDescription": "inline TODO above",
+      "tagName": "AllegroHealthState",
+      "initialized": true,
+      "identifier": "refid6",
+      "metaModelRef": "MTPDataObjectSUCLib/DataAssembly/DiagnosticElement/HealthStateView",
+      "responseVendor": {
+        "fErrorResponse": {},
+        "fSuccessResponse": {}
+      }
+    },
+    {
+      "dataItems": [],
+      "tagDescription": "inline TODO above",
+      "tagName": "ForteHealthState",
+      "initialized": true,
+      "identifier": "refid5",
+      "metaModelRef": "MTPDataObjectSUCLib/DataAssembly/DiagnosticElement/HealthStateView",
+      "responseVendor": {
+        "fErrorResponse": {},
+        "fSuccessResponse": {}
+      }
+    },
+    {
+      "dataItems": [],
+      "tagDescription": "inline TODO above",
+      "tagName": "PianoHealthState",
+      "initialized": true,
+      "identifier": "refid4",
+      "metaModelRef": "MTPDataObjectSUCLib/DataAssembly/DiagnosticElement/HealthStateView",
+      "responseVendor": {
+        "fErrorResponse": {},
+        "fSuccessResponse": {}
+      }
+    },
+    {
+      "dataItems": [
+        {
+          "cIData": {
+            "name": "WQC",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.WQC",
+            "dataType": "???"
+          },
+          "name": "WQC",
+          "identifier": "id37",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "OSLevel",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.OSLevel",
+            "dataType": "???"
+          },
+          "name": "OSLevel",
+          "identifier": "id36",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "CommandOp",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.CommandOp",
+            "dataType": "???"
+          },
+          "name": "CommandOp",
+          "identifier": "id35",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "CommandInt",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.CommandInt",
+            "dataType": "???"
+          },
+          "name": "CommandInt",
+          "identifier": "id34",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "CommandExt",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.CommandExt",
+            "dataType": "???"
+          },
+          "name": "CommandExt",
+          "identifier": "id33",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "ProcedureOp",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.ProcedureOp",
+            "dataType": "???"
+          },
+          "name": "ProcedureOp",
+          "identifier": "id32",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "ProcedureInt",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.ProcedureInt",
+            "dataType": "???"
+          },
+          "name": "ProcedureInt",
+          "identifier": "id31",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "ProcedureExt",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.ProcedureExt",
+            "dataType": "???"
+          },
+          "name": "ProcedureExt",
+          "identifier": "id30",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "StateCur",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateCur",
+            "dataType": "???"
+          },
+          "name": "StateCur",
+          "identifier": "id29",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "CommandEn",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.CommandEn",
+            "dataType": "???"
+          },
+          "name": "CommandEn",
+          "identifier": "id28",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "ProcedureCur",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.ProcedureCur",
+            "dataType": "???"
+          },
+          "name": "ProcedureCur",
+          "identifier": "id27",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "ProcedureReq",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.ProcedureReq",
+            "dataType": "???"
+          },
+          "name": "ProcedureReq",
+          "identifier": "id26",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "PosTextID",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.PosTextID",
+            "dataType": "???"
+          },
+          "name": "PosTextID",
+          "identifier": "id25",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "InteractQuestionID",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.InteractQuestionID",
+            "dataType": "???"
+          },
+          "name": "InteractQuestionID",
+          "identifier": "id24",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "InteractAnswerID",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.InteractAnswerID",
+            "dataType": "???"
+          },
+          "name": "InteractAnswerID",
+          "identifier": "id23",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "StateChannel",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateChannel",
+            "dataType": "???"
+          },
+          "name": "StateChannel",
+          "identifier": "id22",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "StateOffAut",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateOffAut",
+            "dataType": "???"
+          },
+          "name": "StateOffAut",
+          "identifier": "id21",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "StateOpAut",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateOpAut",
+            "dataType": "???"
+          },
+          "name": "StateOpAut",
+          "identifier": "id20",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "StateAutAut",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateAutAut",
+            "dataType": "???"
+          },
+          "name": "StateAutAut",
+          "identifier": "id19",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "StateOffOp",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateOffOp",
+            "dataType": "???"
+          },
+          "name": "StateOffOp",
+          "identifier": "id18",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "StateOpOp",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateOpOp",
+            "dataType": "???"
+          },
+          "name": "StateOpOp",
+          "identifier": "id17",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "StateAutOp",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateAutOp",
+            "dataType": "???"
+          },
+          "name": "StateAutOp",
+          "identifier": "id16",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "StateOpAct",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateOpAct",
+            "dataType": "???"
+          },
+          "name": "StateOpAct",
+          "identifier": "id15",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "StateAutAct",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateAutAct",
+            "dataType": "???"
+          },
+          "name": "StateAutAct",
+          "identifier": "id14",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "StateOffAct",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateOffAct",
+            "dataType": "???"
+          },
+          "name": "StateOffAct",
+          "identifier": "id13",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "SrcChannel",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.SrcChannel",
+            "dataType": "???"
+          },
+          "name": "SrcChannel",
+          "identifier": "id12",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "SrcExtAut",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.SrcExtAut",
+            "dataType": "???"
+          },
+          "name": "SrcExtAut",
+          "identifier": "id11",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "SrcIntAut",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.SrcIntAut",
+            "dataType": "???"
+          },
+          "name": "SrcIntAut",
+          "identifier": "id10",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "SrcIntOp",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.SrcIntOp",
+            "dataType": "???"
+          },
+          "name": "SrcIntOp",
+          "identifier": "id9",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "SrcExtOp",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.SrcExtOp",
+            "dataType": "???"
+          },
+          "name": "SrcExtOp",
+          "identifier": "id8",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "SrcIntAct",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.SrcIntAct",
+            "dataType": "???"
+          },
+          "name": "SrcIntAct",
+          "identifier": "id7",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "SrcExtAct",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.SrcExtAct",
+            "dataType": "???"
+          },
+          "name": "SrcExtAct",
+          "identifier": "id6",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        }
+      ],
+      "tagDescription": "inline TODO above",
+      "tagName": "HandInHand",
+      "initialized": true,
+      "identifier": "refid7",
+      "metaModelRef": "MTPDataObjectSUCLib/DataAssembly/ServiceControl",
+      "responseVendor": {
+        "fErrorResponse": {},
+        "fSuccessResponse": {}
+      }
+    },
+    {
+      "dataItems": [],
+      "tagDescription": "inline TODO above",
+      "tagName": "AllegroHealthState",
+      "initialized": true,
+      "identifier": "refid2",
+      "metaModelRef": "MTPDataObjectSUCLib/DataAssembly/DiagnosticElement/HealthStateView",
+      "responseVendor": {
+        "fErrorResponse": {},
+        "fSuccessResponse": {}
+      }
+    },
+    {
+      "dataItems": [],
+      "tagDescription": "inline TODO above",
+      "tagName": "ForteHealthState",
+      "initialized": true,
+      "identifier": "refid1",
+      "metaModelRef": "MTPDataObjectSUCLib/DataAssembly/DiagnosticElement/HealthStateView",
+      "responseVendor": {
+        "fErrorResponse": {},
+        "fSuccessResponse": {}
+      }
+    },
+    {
+      "dataItems": [],
+      "tagDescription": "inline TODO above",
+      "tagName": "PianoHealthState",
+      "initialized": true,
+      "identifier": "refid0",
+      "metaModelRef": "MTPDataObjectSUCLib/DataAssembly/DiagnosticElement/HealthStateView",
+      "responseVendor": {
+        "fErrorResponse": {},
+        "fSuccessResponse": {}
+      }
+    },
+    {
+      "dataItems": [
+        {
+          "cIData": {
+            "name": "WQC",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.WQC",
+            "dataType": "???"
+          },
+          "name": "WQC",
+          "identifier": "id69",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "OSLevel",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.OSLevel",
+            "dataType": "???"
+          },
+          "name": "OSLevel",
+          "identifier": "id68",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "CommandOp",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.CommandOp",
+            "dataType": "???"
+          },
+          "name": "CommandOp",
+          "identifier": "id67",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "CommandInt",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.CommandInt",
+            "dataType": "???"
+          },
+          "name": "CommandInt",
+          "identifier": "id66",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "CommandExt",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.CommandExt",
+            "dataType": "???"
+          },
+          "name": "CommandExt",
+          "identifier": "id65",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "ProcedureOp",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.ProcedureOp",
+            "dataType": "???"
+          },
+          "name": "ProcedureOp",
+          "identifier": "id64",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "ProcedureInt",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.ProcedureInt",
+            "dataType": "???"
+          },
+          "name": "ProcedureInt",
+          "identifier": "id63",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "ProcedureExt",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.ProcedureExt",
+            "dataType": "???"
+          },
+          "name": "ProcedureExt",
+          "identifier": "id62",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "StateCur",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateCur",
+            "dataType": "???"
+          },
+          "name": "StateCur",
+          "identifier": "id61",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "CommandEn",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.CommandEn",
+            "dataType": "???"
+          },
+          "name": "CommandEn",
+          "identifier": "id60",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "ProcedureCur",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.ProcedureCur",
+            "dataType": "???"
+          },
+          "name": "ProcedureCur",
+          "identifier": "id59",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "ProcedureReq",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.ProcedureReq",
+            "dataType": "???"
+          },
+          "name": "ProcedureReq",
+          "identifier": "id58",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "PosTextID",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.PosTextID",
+            "dataType": "???"
+          },
+          "name": "PosTextID",
+          "identifier": "id57",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "InteractQuestionID",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.InteractQuestionID",
+            "dataType": "???"
+          },
+          "name": "InteractQuestionID",
+          "identifier": "id56",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "InteractAnswerID",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.InteractAnswerID",
+            "dataType": "???"
+          },
+          "name": "InteractAnswerID",
+          "identifier": "id55",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "StateChannel",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateChannel",
+            "dataType": "???"
+          },
+          "name": "StateChannel",
+          "identifier": "id54",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "StateOffAut",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateOffAut",
+            "dataType": "???"
+          },
+          "name": "StateOffAut",
+          "identifier": "id53",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "StateOpAut",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateOpAut",
+            "dataType": "???"
+          },
+          "name": "StateOpAut",
+          "identifier": "id52",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "StateAutAut",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateAutAut",
+            "dataType": "???"
+          },
+          "name": "StateAutAut",
+          "identifier": "id51",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "StateOffOp",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateOffOp",
+            "dataType": "???"
+          },
+          "name": "StateOffOp",
+          "identifier": "id50",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "StateOpOp",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateOpOp",
+            "dataType": "???"
+          },
+          "name": "StateOpOp",
+          "identifier": "id49",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "StateAutOp",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateAutOp",
+            "dataType": "???"
+          },
+          "name": "StateAutOp",
+          "identifier": "id48",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "StateOpAct",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateOpAct",
+            "dataType": "???"
+          },
+          "name": "StateOpAct",
+          "identifier": "id47",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "StateAutAct",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateAutAct",
+            "dataType": "???"
+          },
+          "name": "StateAutAct",
+          "identifier": "id46",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "StateOffAct",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateOffAct",
+            "dataType": "???"
+          },
+          "name": "StateOffAct",
+          "identifier": "id45",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "SrcChannel",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.SrcChannel",
+            "dataType": "???"
+          },
+          "name": "SrcChannel",
+          "identifier": "id44",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "SrcExtAut",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.SrcExtAut",
+            "dataType": "???"
+          },
+          "name": "SrcExtAut",
+          "identifier": "id43",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "SrcIntAut",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.SrcIntAut",
+            "dataType": "???"
+          },
+          "name": "SrcIntAut",
+          "identifier": "id42",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "SrcIntOp",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.SrcIntOp",
+            "dataType": "???"
+          },
+          "name": "SrcIntOp",
+          "identifier": "id41",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "SrcExtOp",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.SrcExtOp",
+            "dataType": "???"
+          },
+          "name": "SrcExtOp",
+          "identifier": "id40",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "SrcIntAct",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.SrcIntAct",
+            "dataType": "???"
+          },
+          "name": "SrcIntAct",
+          "identifier": "id39",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "cIData": {
+            "name": "SrcExtAct",
+            "initialized": true,
+            "namespaceIndex": "http://www.PiMAd-core.com/instances",
+            "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.SrcExtAct",
+            "dataType": "???"
+          },
+          "name": "SrcExtAct",
+          "identifier": "id38",
+          "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        }
+      ],
+      "tagDescription": "inline TODO above",
+      "tagName": "AtomicLove",
+      "initialized": true,
+      "identifier": "refid3",
+      "metaModelRef": "MTPDataObjectSUCLib/DataAssembly/ServiceControl",
+      "responseVendor": {
+        "fErrorResponse": {},
+        "fSuccessResponse": {}
+      }
+    }
+  ],
+  "dataModel": "",
+  "dataModelVersion": {
+    "major": -1,
+    "minor": -1,
+    "patch": -1,
+    "initialized": false
+  },
+  "feas": [],
+  "name": "",
+  "responseVendor": {
+    "fErrorResponse": {},
+    "fSuccessResponse": {}
+  },
+  "services": [
+    {
+      "attributes": [],
+      "dataAssembly": {
+        "dataItems": [
+          {
+            "cIData": {
+              "name": "WQC",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.WQC",
+              "dataType": "???"
+            },
+            "name": "WQC",
+            "identifier": "id37",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "OSLevel",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.OSLevel",
+              "dataType": "???"
+            },
+            "name": "OSLevel",
+            "identifier": "id36",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "CommandOp",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.CommandOp",
+              "dataType": "???"
+            },
+            "name": "CommandOp",
+            "identifier": "id35",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "CommandInt",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.CommandInt",
+              "dataType": "???"
+            },
+            "name": "CommandInt",
+            "identifier": "id34",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "CommandExt",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.CommandExt",
+              "dataType": "???"
+            },
+            "name": "CommandExt",
+            "identifier": "id33",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "ProcedureOp",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.ProcedureOp",
+              "dataType": "???"
+            },
+            "name": "ProcedureOp",
+            "identifier": "id32",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "ProcedureInt",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.ProcedureInt",
+              "dataType": "???"
+            },
+            "name": "ProcedureInt",
+            "identifier": "id31",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "ProcedureExt",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.ProcedureExt",
+              "dataType": "???"
+            },
+            "name": "ProcedureExt",
+            "identifier": "id30",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "StateCur",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateCur",
+              "dataType": "???"
+            },
+            "name": "StateCur",
+            "identifier": "id29",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "CommandEn",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.CommandEn",
+              "dataType": "???"
+            },
+            "name": "CommandEn",
+            "identifier": "id28",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "ProcedureCur",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.ProcedureCur",
+              "dataType": "???"
+            },
+            "name": "ProcedureCur",
+            "identifier": "id27",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "ProcedureReq",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.ProcedureReq",
+              "dataType": "???"
+            },
+            "name": "ProcedureReq",
+            "identifier": "id26",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "PosTextID",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.PosTextID",
+              "dataType": "???"
+            },
+            "name": "PosTextID",
+            "identifier": "id25",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "InteractQuestionID",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.InteractQuestionID",
+              "dataType": "???"
+            },
+            "name": "InteractQuestionID",
+            "identifier": "id24",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "InteractAnswerID",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.InteractAnswerID",
+              "dataType": "???"
+            },
+            "name": "InteractAnswerID",
+            "identifier": "id23",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "StateChannel",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateChannel",
+              "dataType": "???"
+            },
+            "name": "StateChannel",
+            "identifier": "id22",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "StateOffAut",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateOffAut",
+              "dataType": "???"
+            },
+            "name": "StateOffAut",
+            "identifier": "id21",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "StateOpAut",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateOpAut",
+              "dataType": "???"
+            },
+            "name": "StateOpAut",
+            "identifier": "id20",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "StateAutAut",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateAutAut",
+              "dataType": "???"
+            },
+            "name": "StateAutAut",
+            "identifier": "id19",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "StateOffOp",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateOffOp",
+              "dataType": "???"
+            },
+            "name": "StateOffOp",
+            "identifier": "id18",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "StateOpOp",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateOpOp",
+              "dataType": "???"
+            },
+            "name": "StateOpOp",
+            "identifier": "id17",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "StateAutOp",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateAutOp",
+              "dataType": "???"
+            },
+            "name": "StateAutOp",
+            "identifier": "id16",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "StateOpAct",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateOpAct",
+              "dataType": "???"
+            },
+            "name": "StateOpAct",
+            "identifier": "id15",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "StateAutAct",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateAutAct",
+              "dataType": "???"
+            },
+            "name": "StateAutAct",
+            "identifier": "id14",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "StateOffAct",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateOffAct",
+              "dataType": "???"
+            },
+            "name": "StateOffAct",
+            "identifier": "id13",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "SrcChannel",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.SrcChannel",
+              "dataType": "???"
+            },
+            "name": "SrcChannel",
+            "identifier": "id12",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "SrcExtAut",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.SrcExtAut",
+              "dataType": "???"
+            },
+            "name": "SrcExtAut",
+            "identifier": "id11",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "SrcIntAut",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.SrcIntAut",
+              "dataType": "???"
+            },
+            "name": "SrcIntAut",
+            "identifier": "id10",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "SrcIntOp",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.SrcIntOp",
+              "dataType": "???"
+            },
+            "name": "SrcIntOp",
+            "identifier": "id9",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "SrcExtOp",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.SrcExtOp",
+              "dataType": "???"
+            },
+            "name": "SrcExtOp",
+            "identifier": "id8",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "SrcIntAct",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.SrcIntAct",
+              "dataType": "???"
+            },
+            "name": "SrcIntAct",
+            "identifier": "id7",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "SrcExtAct",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.SrcExtAct",
+              "dataType": "???"
+            },
+            "name": "SrcExtAct",
+            "identifier": "id6",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          }
+        ],
+        "tagDescription": "inline TODO above",
+        "tagName": "HandInHand",
+        "initialized": true,
+        "identifier": "refid7",
+        "metaModelRef": "MTPDataObjectSUCLib/DataAssembly/ServiceControl",
+        "responseVendor": {
+          "fErrorResponse": {},
+          "fSuccessResponse": {}
+        }
+      },
+      "identifier": "id80",
+      "metaModelRef": "MTPServiceSUCLib/Service",
+      "name": "HandInHand",
+      "procedures": [
+        {
+          "attributes": [
+            {
+              "Name": "IsSelfCompleting",
+              "AttributeDataType": "xs:boolean",
+              "Value": "True"
+            },
+            {
+              "Name": "ProcedureID",
+              "AttributeDataType": "xs:unsignedInt",
+              "Value": "3"
+            },
+            {
+              "Name": "IsDefault",
+              "AttributeDataType": "xs:boolean",
+              "Value": "False"
+            }
+          ],
+          "dataAssembly": {
+            "dataItems": [],
+            "tagDescription": "inline TODO above",
+            "tagName": "AllegroHealthState",
+            "initialized": true,
+            "identifier": "refid6",
+            "metaModelRef": "MTPDataObjectSUCLib/DataAssembly/DiagnosticElement/HealthStateView",
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          "identifier": "id81",
+          "metaModelRef": "MTPServiceSUCLib/ServiceProcedure",
+          "name": "Allegro",
+          "parameters": [],
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "attributes": [
+            {
+              "Name": "IsSelfCompleting",
+              "AttributeDataType": "xs:boolean",
+              "Value": "False"
+            },
+            {
+              "Name": "ProcedureID",
+              "AttributeDataType": "xs:unsignedInt",
+              "Value": "2"
+            },
+            {
+              "Name": "IsDefault",
+              "AttributeDataType": "xs:boolean",
+              "Value": "False"
+            }
+          ],
+          "dataAssembly": {
+            "dataItems": [],
+            "tagDescription": "inline TODO above",
+            "tagName": "ForteHealthState",
+            "initialized": true,
+            "identifier": "refid5",
+            "metaModelRef": "MTPDataObjectSUCLib/DataAssembly/DiagnosticElement/HealthStateView",
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          "identifier": "id82",
+          "metaModelRef": "MTPServiceSUCLib/ServiceProcedure",
+          "name": "Forte",
+          "parameters": [],
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "attributes": [
+            {
+              "Name": "IsSelfCompleting",
+              "AttributeDataType": "xs:boolean",
+              "Value": "False"
+            },
+            {
+              "Name": "ProcedureID",
+              "AttributeDataType": "xs:unsignedInt",
+              "Value": "1"
+            },
+            {
+              "Name": "IsDefault",
+              "AttributeDataType": "xs:boolean",
+              "Value": "True"
+            }
+          ],
+          "dataAssembly": {
+            "dataItems": [],
+            "tagDescription": "inline TODO above",
+            "tagName": "PianoHealthState",
+            "initialized": true,
+            "identifier": "refid4",
+            "metaModelRef": "MTPDataObjectSUCLib/DataAssembly/DiagnosticElement/HealthStateView",
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          "identifier": "id83",
+          "metaModelRef": "MTPServiceSUCLib/ServiceProcedure",
+          "name": "Piano",
+          "parameters": [],
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        }
+      ],
+      "parameters": [],
+      "initialized": true,
+      "responseVendor": {
+        "fErrorResponse": {},
+        "fSuccessResponse": {}
+      }
+    },
+    {
+      "attributes": [],
+      "dataAssembly": {
+        "dataItems": [
+          {
+            "cIData": {
+              "name": "WQC",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.WQC",
+              "dataType": "???"
+            },
+            "name": "WQC",
+            "identifier": "id69",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "OSLevel",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.OSLevel",
+              "dataType": "???"
+            },
+            "name": "OSLevel",
+            "identifier": "id68",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "CommandOp",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.CommandOp",
+              "dataType": "???"
+            },
+            "name": "CommandOp",
+            "identifier": "id67",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "CommandInt",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.CommandInt",
+              "dataType": "???"
+            },
+            "name": "CommandInt",
+            "identifier": "id66",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "CommandExt",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.CommandExt",
+              "dataType": "???"
+            },
+            "name": "CommandExt",
+            "identifier": "id65",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "ProcedureOp",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.ProcedureOp",
+              "dataType": "???"
+            },
+            "name": "ProcedureOp",
+            "identifier": "id64",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "ProcedureInt",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.ProcedureInt",
+              "dataType": "???"
+            },
+            "name": "ProcedureInt",
+            "identifier": "id63",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "ProcedureExt",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.ProcedureExt",
+              "dataType": "???"
+            },
+            "name": "ProcedureExt",
+            "identifier": "id62",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "StateCur",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateCur",
+              "dataType": "???"
+            },
+            "name": "StateCur",
+            "identifier": "id61",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "CommandEn",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.CommandEn",
+              "dataType": "???"
+            },
+            "name": "CommandEn",
+            "identifier": "id60",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "ProcedureCur",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.ProcedureCur",
+              "dataType": "???"
+            },
+            "name": "ProcedureCur",
+            "identifier": "id59",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "ProcedureReq",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.ProcedureReq",
+              "dataType": "???"
+            },
+            "name": "ProcedureReq",
+            "identifier": "id58",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "PosTextID",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.PosTextID",
+              "dataType": "???"
+            },
+            "name": "PosTextID",
+            "identifier": "id57",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "InteractQuestionID",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.InteractQuestionID",
+              "dataType": "???"
+            },
+            "name": "InteractQuestionID",
+            "identifier": "id56",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "InteractAnswerID",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.InteractAnswerID",
+              "dataType": "???"
+            },
+            "name": "InteractAnswerID",
+            "identifier": "id55",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "StateChannel",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateChannel",
+              "dataType": "???"
+            },
+            "name": "StateChannel",
+            "identifier": "id54",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "StateOffAut",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateOffAut",
+              "dataType": "???"
+            },
+            "name": "StateOffAut",
+            "identifier": "id53",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "StateOpAut",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateOpAut",
+              "dataType": "???"
+            },
+            "name": "StateOpAut",
+            "identifier": "id52",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "StateAutAut",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateAutAut",
+              "dataType": "???"
+            },
+            "name": "StateAutAut",
+            "identifier": "id51",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "StateOffOp",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateOffOp",
+              "dataType": "???"
+            },
+            "name": "StateOffOp",
+            "identifier": "id50",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "StateOpOp",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateOpOp",
+              "dataType": "???"
+            },
+            "name": "StateOpOp",
+            "identifier": "id49",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "StateAutOp",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateAutOp",
+              "dataType": "???"
+            },
+            "name": "StateAutOp",
+            "identifier": "id48",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "StateOpAct",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateOpAct",
+              "dataType": "???"
+            },
+            "name": "StateOpAct",
+            "identifier": "id47",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "StateAutAct",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateAutAct",
+              "dataType": "???"
+            },
+            "name": "StateAutAct",
+            "identifier": "id46",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "StateOffAct",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateOffAct",
+              "dataType": "???"
+            },
+            "name": "StateOffAct",
+            "identifier": "id45",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "SrcChannel",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.SrcChannel",
+              "dataType": "???"
+            },
+            "name": "SrcChannel",
+            "identifier": "id44",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "SrcExtAut",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.SrcExtAut",
+              "dataType": "???"
+            },
+            "name": "SrcExtAut",
+            "identifier": "id43",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "SrcIntAut",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.SrcIntAut",
+              "dataType": "???"
+            },
+            "name": "SrcIntAut",
+            "identifier": "id42",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "SrcIntOp",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.SrcIntOp",
+              "dataType": "???"
+            },
+            "name": "SrcIntOp",
+            "identifier": "id41",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "SrcExtOp",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.SrcExtOp",
+              "dataType": "???"
+            },
+            "name": "SrcExtOp",
+            "identifier": "id40",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "SrcIntAct",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.SrcIntAct",
+              "dataType": "???"
+            },
+            "name": "SrcIntAct",
+            "identifier": "id39",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          {
+            "cIData": {
+              "name": "SrcExtAct",
+              "initialized": true,
+              "namespaceIndex": "http://www.PiMAd-core.com/instances",
+              "nodeId": "PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.SrcExtAct",
+              "dataType": "???"
+            },
+            "name": "SrcExtAct",
+            "identifier": "id38",
+            "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "initialized": true,
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          }
+        ],
+        "tagDescription": "inline TODO above",
+        "tagName": "AtomicLove",
+        "initialized": true,
+        "identifier": "refid3",
+        "metaModelRef": "MTPDataObjectSUCLib/DataAssembly/ServiceControl",
+        "responseVendor": {
+          "fErrorResponse": {},
+          "fSuccessResponse": {}
+        }
+      },
+      "identifier": "id84",
+      "metaModelRef": "MTPServiceSUCLib/Service",
+      "name": "AtomicLove",
+      "procedures": [
+        {
+          "attributes": [
+            {
+              "Name": "IsSelfCompleting",
+              "AttributeDataType": "xs:boolean",
+              "Value": "True"
+            },
+            {
+              "Name": "ProcedureID",
+              "AttributeDataType": "xs:unsignedInt",
+              "Value": "3"
+            },
+            {
+              "Name": "IsDefault",
+              "AttributeDataType": "xs:boolean",
+              "Value": "False"
+            }
+          ],
+          "dataAssembly": {
+            "dataItems": [],
+            "tagDescription": "inline TODO above",
+            "tagName": "AllegroHealthState",
+            "initialized": true,
+            "identifier": "refid2",
+            "metaModelRef": "MTPDataObjectSUCLib/DataAssembly/DiagnosticElement/HealthStateView",
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          "identifier": "id87",
+          "metaModelRef": "MTPServiceSUCLib/ServiceProcedure",
+          "name": "Allegro",
+          "parameters": [],
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "attributes": [
+            {
+              "Name": "IsSelfCompleting",
+              "AttributeDataType": "xs:boolean",
+              "Value": "False"
+            },
+            {
+              "Name": "ProcedureID",
+              "AttributeDataType": "xs:unsignedInt",
+              "Value": "2"
+            },
+            {
+              "Name": "IsDefault",
+              "AttributeDataType": "xs:boolean",
+              "Value": "False"
+            }
+          ],
+          "dataAssembly": {
+            "dataItems": [],
+            "tagDescription": "inline TODO above",
+            "tagName": "ForteHealthState",
+            "initialized": true,
+            "identifier": "refid1",
+            "metaModelRef": "MTPDataObjectSUCLib/DataAssembly/DiagnosticElement/HealthStateView",
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          "identifier": "id85",
+          "metaModelRef": "MTPServiceSUCLib/ServiceProcedure",
+          "name": "Forte",
+          "parameters": [],
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        },
+        {
+          "attributes": [
+            {
+              "Name": "IsSelfCompleting",
+              "AttributeDataType": "xs:boolean",
+              "Value": "False"
+            },
+            {
+              "Name": "ProcedureID",
+              "AttributeDataType": "xs:unsignedInt",
+              "Value": "1"
+            },
+            {
+              "Name": "IsDefault",
+              "AttributeDataType": "xs:boolean",
+              "Value": "True"
+            }
+          ],
+          "dataAssembly": {
+            "dataItems": [],
+            "tagDescription": "inline TODO above",
+            "tagName": "PianoHealthState",
+            "initialized": true,
+            "identifier": "refid0",
+            "metaModelRef": "MTPDataObjectSUCLib/DataAssembly/DiagnosticElement/HealthStateView",
+            "responseVendor": {
+              "fErrorResponse": {},
+              "fSuccessResponse": {}
+            }
+          },
+          "identifier": "id86",
+          "metaModelRef": "MTPServiceSUCLib/ServiceProcedure",
+          "name": "Piano",
+          "parameters": [],
+          "initialized": true,
+          "responseVendor": {
+            "fErrorResponse": {},
+            "fSuccessResponse": {}
+          }
+        }
+      ],
+      "parameters": [],
+      "initialized": true,
+      "responseVendor": {
+        "fErrorResponse": {},
+        "fSuccessResponse": {}
+      }
+    }
+  ],
+  "initialized": true
+}

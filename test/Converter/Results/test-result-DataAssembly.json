@@ -1,0 +1,112 @@
+[
+  {
+    "dataItems": [
+      {
+        "cIData": {
+          "name": "WQC",
+          "initialized": true,
+          "namespaceIndex": "http://www.refugess-welcome.dd.com/noafd",
+          "nodeId": "Test.SnickersPooper.JustAVirtualSnickersPooper.PooperService.CrystalCrasher.WQC",
+          "dataType": "???"
+        },
+        "name": "WQC",
+        "identifier": "link1",
+        "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+        "initialized": true,
+        "responseVendor": {
+          "fErrorResponse": {},
+          "fDummyResponse": {},
+          "fSuccessResponse": {},
+          "fWarningResponse": {}
+        }
+      },
+      {
+        "cIData": {
+          "name": "OSLevel",
+          "initialized": true,
+          "namespaceIndex": "http://www.refugess-welcome.dd.com/noafd",
+          "nodeId": "Test.SnickersPooper.JustAVirtualSnickersPooper.PooperService.CrystalCrasher.OSLevel",
+          "dataType": "???"
+        },
+        "name": "OSLevel",
+        "identifier": "link2",
+        "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+        "initialized": true,
+        "responseVendor": {
+          "fErrorResponse": {},
+          "fDummyResponse": {},
+          "fSuccessResponse": {},
+          "fWarningResponse": {}
+        }
+      },
+      {
+        "cIData": {
+          "name": "CommandOp",
+          "initialized": true,
+          "namespaceIndex": "http://www.refugess-welcome.dd.com/noafd",
+          "nodeId": "Test.SnickersPooper.JustAVirtualSnickersPooper.PooperService.CrystalCrasher.CommandOp",
+          "dataType": "???"
+        },
+        "name": "CommandOp",
+        "identifier": "link3",
+        "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+        "initialized": true,
+        "responseVendor": {
+          "fErrorResponse": {},
+          "fDummyResponse": {},
+          "fSuccessResponse": {},
+          "fWarningResponse": {}
+        }
+      },
+      {
+        "cIData": {
+          "name": "CommandInt",
+          "initialized": true,
+          "namespaceIndex": "http://www.refugess-welcome.dd.com/noafd",
+          "nodeId": "Test.SnickersPooper.JustAVirtualSnickersPooper.PooperService.CrystalCrasher.CommandInt",
+          "dataType": "???"
+        },
+        "name": "CommandInt",
+        "identifier": "link4",
+        "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+        "initialized": true,
+        "responseVendor": {
+          "fErrorResponse": {},
+          "fDummyResponse": {},
+          "fSuccessResponse": {},
+          "fWarningResponse": {}
+        }
+      },
+      {
+        "cIData": {
+          "name": "CommandExt",
+          "initialized": true,
+          "namespaceIndex": "http://www.refugess-welcome.dd.com/noafd",
+          "nodeId": "Test.SnickersPooper.JustAVirtualSnickersPooper.PooperService.CrystalCrasher.CommandExt",
+          "dataType": "???"
+        },
+        "name": "CommandExt",
+        "identifier": "link5",
+        "metaModelRef": "MTPCommunicationICLib/DataItem/OPCUAItem",
+        "initialized": true,
+        "responseVendor": {
+          "fErrorResponse": {},
+          "fDummyResponse": {},
+          "fSuccessResponse": {},
+          "fWarningResponse": {}
+        }
+      }
+    ],
+    "tagDescription": "inline TODO above",
+    "tagName": "CrystalCrasher",
+    "initialized": true,
+    "identifier": "link6",
+    "metaModelRef": "MTPDataObjectSUCLib/DataAssembly/ServiceControl",
+    "responseVendor": {
+      "fErrorResponse": {},
+      "fDummyResponse": {},
+      "fSuccessResponse": {},
+      "fWarningResponse": {}
+    }
+  }
+]

@@ -1,0 +1,125 @@
+{
+  "Name": "Services",
+  "ID": "id-0",
+  "Version": "0",
+  "InternalElement": [
+    {
+      "Name": "RageAgainstTheMachine",
+      "ID": "id-1",
+      "RefBaseSystemUnitPath": "MTPServiceSUCLib/Service",
+      "Attribute": [
+        {
+          "Name": "Test-Attribute",
+          "AttributeDataType": "xs:boolean",
+          "Value": "true"
+        },
+        {
+          "Name": "RefID",
+          "AttributeDataType": "xs:ID",
+          "Value": "refid-0"
+      }],
+      "InternalElement": [
+        {
+          "Name": "Testefy",
+          "ID": "id-2",
+          "RefBaseSystemUnitPath": "MTPServiceSUCLib/ServiceProcedure",
+          "Attribute": [
+            {
+              "Name": "IsSelfCompleting",
+              "AttributeDataType": "xs:boolean",
+              "Value": "True"
+            },
+            {
+              "Name": "ProcedureID",
+              "AttributeDataType": "xs:unsignedInt",
+              "Value": "3"
+            },
+            {
+              "Name": "IsDefault",
+              "AttributeDataType": "xs:boolean",
+              "Value": "False"
+            },
+            {
+              "Name": "RefID",
+              "AttributeDataType": "xs:ID",
+              "Value": "refid-1"
+            }
+          ]
+        },
+        {
+          "Name": "KillingInTheName",
+          "ID": "id-3",
+          "RefBaseSystemUnitPath": "MTPServiceSUCLib/ServiceProcedure",
+          "Attribute": [
+            {
+              "Name": "IsSelfCompleting",
+              "AttributeDataType": "xs:boolean",
+              "Value": "False"
+            },
+            {
+              "Name": "ProcedureID",
+              "AttributeDataType": "xs:unsignedInt",
+              "Value": "2"
+            },
+            {
+              "Name": "IsDefault",
+              "AttributeDataType": "xs:boolean",
+              "Value": "False"
+            },
+            {
+              "Name": "RefID",
+              "AttributeDataType": "xs:ID",
+              "Value": "refid-2"
+            }
+          ]
+        },
+        {
+          "Name": "Ignoring0"
+        },
+        {
+          "Name": "Ignoring0",
+          "RefBaseSystemUnitPath": "Molotov cocktail of punk, hip-hop, and trash"
+        }
+      ]
+    },
+    {
+      "Name": "SystenOfADown",
+      "ID": "id-4",
+      "RefBaseSystemUnitPath": "MTPServiceSUCLib/Service",
+      "Attribute": {
+        "Name": "RefID",
+        "AttributeDataType": "xs:ID",
+        "Value": "refid-3"
+      },
+      "InternalElement": [
+        {
+          "Name": "Chop Suey!",
+          "ID": "id-5",
+          "RefBaseSystemUnitPath": "MTPServiceSUCLib/ServiceProcedure",
+          "Attribute": [
+            {
+              "Name": "IsSelfCompleting",
+              "AttributeDataType": "xs:boolean",
+              "Value": "True"
+            },
+            {
+              "Name": "ProcedureID",
+              "AttributeDataType": "xs:unsignedInt",
+              "Value": "3"
+            },
+            {
+              "Name": "IsDefault",
+              "AttributeDataType": "xs:boolean",
+              "Value": "False"
+            },
+            {
+              "Name": "RefID",
+              "AttributeDataType": "xs:ID",
+              "Value": "refid-4"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "exclude": ["**/*.test.ts"],
+  "name": "PiMAd-core",
+  "out": "docs",
+  "readme": "./README.md",
+  "umlFormat": "svg"
+}

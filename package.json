@@ -1,0 +1,60 @@
+{
+  "name": "PiMAd-core",
+  "version": "0.0.1",
+  "description": "PiMAd (Process-industry-Modular-Automation-description) High level access to automation of modular plants.",
+  "main": "src/index.ts",
+  "scripts": {
+    "prebuild": "npm run lint",
+    "build": "tsc",
+    "build-gdocs": "typedoc --out docs src",
+    "lint": "eslint -f pretty --ext \".ts\" src",
+    "prestart": "npm run build",
+    "start": "node .",
+    "test": "nyc mocha -r ts-node/register 'src/**/*.ts'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "svn@dev.plt.et.tu-dresden.de:modulare-automation/PiMAd-core.git"
+  },
+  "keywords": [
+    "PiMAd",
+    "Modulare Automation",
+    "PLT/SVT",
+    "Polaris"
+  ],
+  "author": "Christoph Jesaja Heidelbach <christoph_jesaja.heidelbach@tu-dresden.de>",
+  "contributors": [],
+  "license": "ISC",
+  "devDependencies": {
+    "@types/adm-zip": "^0.4.33",
+    "@types/chai": "^4.2.11",
+    "@types/express": "^4.17.6",
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^13.13.4",
+    "@types/pino": "^6.0.0",
+    "@types/rimraf": "^3.0.0",
+    "@types/xml2json": "^0.11.0",
+    "@typescript-eslint/eslint-plugin": "^2.29.0",
+    "@typescript-eslint/parser": "^2.29.0",
+    "PiMAd-types": "latest",
+    "adm-zip": "^0.4.14",
+    "chai": "^4.2.0",
+    "eslint": "^6.8.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-formatter-pretty": "^3.0.1",
+    "eslint-plugin-tsdoc": "^0.2.4",
+    "mocha": "^7.1.1",
+    "nyc": "^15.0.1",
+    "pino-pretty": "^4.0.0",
+    "rimraf": "^3.0.2",
+    "ts-node": "^8.9.0",
+    "typedoc": "^0.17.8",
+    "typedoc-plantuml": "^1.4.1",
+    "typescript": "^3.9.7"
+  },
+  "dependencies": {
+    "pino": "^6.2.1",
+    "rxjs": "^6.5.5",
+    "xml2json": "^0.12.0"
+  }
+}

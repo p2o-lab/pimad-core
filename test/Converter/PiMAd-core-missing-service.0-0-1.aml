@@ -1,0 +1,1074 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CAEXFile FileName="PiMAd-core.0-0-1.aml" SchemaVersion="2.15" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="CAEX_ClassModel_V2.15.xsd">
+  <AdditionalInformation AutomationMLVersion="2.0" />
+  <AdditionalInformation DocumentVersions="Recommendations">
+    <Document DocumentIdentifier="VDI/VDE/NAMUR 2658-1" Version="1.0.0" />
+  </AdditionalInformation>
+  <AdditionalInformation DocumentVersions="Recommendations">
+    <Document DocumentIdentifier="VDI/VDE/NAMUR 2658-2" Version="1.0.0" />
+  </AdditionalInformation>
+  <AdditionalInformation DocumentVersions="Recommendations">
+    <Document DocumentIdentifier="VDI/VDE/NAMUR 2658-3" Version="1.0.0" />
+  </AdditionalInformation>
+  <AdditionalInformation DocumentVersions="Recommendations">
+    <Document DocumentIdentifier="VDI/VDE/NAMUR 2658-4" Version="0.1.0" />
+  </AdditionalInformation>
+  <AdditionalInformation>
+    <WriterHeader>
+      <WriterName>Christoph Jesaja Heidelbach</WriterName>
+      <WriterID>CHe</WriterID>
+      <WriterVendor>PLT/SVT</WriterVendor>
+      <WriterVendorURL>https://test-vendor.com</WriterVendorURL>
+      <WriterVersion>1.0.0</WriterVersion>
+      <WriterRelease>1</WriterRelease>
+      <LastWritingDateTime>2020-07-28T15:04:20.000Z</LastWritingDateTime>
+      <WriterProjectTitle>Test PiMAd-core:0.0.1</WriterProjectTitle>
+      <WriterProjectID>Make-P2O-Lab-great-again!</WriterProjectID>
+    </WriterHeader>
+  </AdditionalInformation>
+  <InstanceHierarchy Name="ModuleTypePackage" ID="id0">
+    <Version>0</Version>
+    <InternalElement Name="PiMAd-core:0.0.1" ID="id1" RefBaseSystemUnitPath="MTPSUCLib/ModuleTypePackage">
+      <Attribute Name="Version" AttributeDataType="xs:string" />
+      <InternalElement Name="Service" ID="id2" RefBaseSystemUnitPath="MTPServiceSUCLib/ServiceSet">
+        <ExternalInterface Name="Service" ID="id3" RefBaseClassPath="AutomationMLInterfaceClassLib/AutomationMLBaseInterface/ExternalDataConnector">
+          <Attribute Name="refURI" AttributeDataType="xs:IDREF">
+            <Value>id79</Value>
+          </Attribute>
+        </ExternalInterface>
+      </InternalElement>
+      <InternalElement Name="Communication" ID="id4" RefBaseSystemUnitPath="MTPSUCLib/CommunicationSet">
+        <InternalElement Name="SourceList" ID="id5" RefBaseSystemUnitPath="MTPSUCLib/CommunicationSet/SourceList">
+          <InternalElement Name="PiMAd-core Test MTP" ID="id88" RefBaseSystemUnitPath="MTPCommunicationSUCLib/ServerAssembly/OPCUAServer">
+            <Attribute Name="Endpoint" AttributeDataType="xs:string">
+              <Value>opc.tcp://127.0.0.1:4840</Value>
+            </Attribute>
+            <ExternalInterface Name="HandInHand_SrcExtAct" ID="id6" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.SrcExtAct</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_SrcIntAct" ID="id7" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.SrcIntAct</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_SrcExtOp" ID="id8" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.SrcExtOp</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>3</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_SrcIntOp" ID="id9" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.SrcIntOp</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>3</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_SrcIntAut" ID="id10" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.SrcIntAut</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_SrcExtAut" ID="id11" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.SrcExtAut</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_SrcChannel" ID="id12" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.SrcChannel</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_StateOffAct" ID="id13" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateOffAct</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_StateAutAct" ID="id14" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateAutAct</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_StateOpAct" ID="id15" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateOpAct</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_StateAutOp" ID="id16" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateAutOp</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>3</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_StateOpOp" ID="id17" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateOpOp</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>3</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_StateOffOp" ID="id18" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateOffOp</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>3</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_StateAutAut" ID="id19" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateAutAut</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_StateOpAut" ID="id20" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateOpAut</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_StateOffAut" ID="id21" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateOffAut</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_StateChannel" ID="id22" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateChannel</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_InteractAnswerID" ID="id23" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.InteractAnswerID</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>3</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_InteractQuestionID" ID="id24" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.InteractQuestionID</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_PosTextID" ID="id25" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.PosTextID</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_ProcedureReq" ID="id26" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.ProcedureReq</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_ProcedureCur" ID="id27" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.ProcedureCur</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_CommandEn" ID="id28" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.CommandEn</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_StateCur" ID="id29" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.StateCur</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_ProcedureExt" ID="id30" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.ProcedureExt</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>3</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_ProcedureInt" ID="id31" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.ProcedureInt</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_ProcedureOp" ID="id32" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.ProcedureOp</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>3</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_CommandExt" ID="id33" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.CommandExt</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>3</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_CommandInt" ID="id34" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.CommandInt</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_CommandOp" ID="id35" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.CommandOp</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>3</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_OSLevel" ID="id36" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.OSLevel</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>3</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="HandInHand_WQC" ID="id37" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.HandInHand.WQC</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_SrcExtAct" ID="id38" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.SrcExtAct</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_SrcIntAct" ID="id39" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.SrcIntAct</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_SrcExtOp" ID="id40" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.SrcExtOp</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>3</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_SrcIntOp" ID="id41" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.SrcIntOp</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>3</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_SrcIntAut" ID="id42" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.SrcIntAut</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_SrcExtAut" ID="id43" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.SrcExtAut</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_SrcChannel" ID="id44" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.SrcChannel</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_StateOffAct" ID="id45" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateOffAct</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_StateAutAct" ID="id46" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateAutAct</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_StateOpAct" ID="id47" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateOpAct</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_StateAutOp" ID="id48" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateAutOp</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>3</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_StateOpOp" ID="id49" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateOpOp</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>3</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_StateOffOp" ID="id50" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateOffOp</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>3</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_StateAutAut" ID="id51" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateAutAut</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_StateOpAut" ID="id52" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateOpAut</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_StateOffAut" ID="id53" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateOffAut</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_StateChannel" ID="id54" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateChannel</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_InteractAnswerID" ID="id55" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.InteractAnswerID</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>3</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_InteractQuestionID" ID="id56" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.InteractQuestionID</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_PosTextID" ID="id57" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.PosTextID</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_ProcedureReq" ID="id58" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.ProcedureReq</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_ProcedureCur" ID="id59" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.ProcedureCur</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_CommandEn" ID="id60" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.CommandEn</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_StateCur" ID="id61" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.StateCur</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_ProcedureExt" ID="id62" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.ProcedureExt</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>3</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_ProcedureInt" ID="id63" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.ProcedureInt</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_ProcedureOp" ID="id64" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.ProcedureOp</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>3</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_CommandExt" ID="id65" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.CommandExt</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>3</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_CommandInt" ID="id66" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.CommandInt</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_CommandOp" ID="id67" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.CommandOp</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>3</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_OSLevel" ID="id68" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.OSLevel</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>3</Value>
+              </Attribute>
+            </ExternalInterface>
+            <ExternalInterface Name="AtomicLove_WQC" ID="id69" RefBaseClassPath="MTPCommunicationICLib/DataItem/OPCUAItem">
+              <Attribute Name="Identifier" AttributeDataType="xs:string">
+                <Value>PiMAd-core.TestControlEngine.MyFirstTestControlEngine.Beatsteaks.AtomicLove.WQC</Value>
+              </Attribute>
+              <Attribute Name="Namespace" AttributeDataType="xs:string">
+                <Value>http://www.PiMAd-core.com/instances</Value>
+              </Attribute>
+              <Attribute Name="Access" AttributeDataType="xs:unsignedByte">
+                <Value>1</Value>
+              </Attribute>
+            </ExternalInterface>
+          </InternalElement>
+        </InternalElement>
+        <InternalElement Name="InstanceList" ID="id70" RefBaseSystemUnitPath="MTPSUCLib/CommunicationSet/InstanceList">
+          <InternalElement Name="AllegroHealthState" ID="id71" RefBaseSystemUnitPath="MTPDataObjectSUCLib/DataAssembly/DiagnosticElement/HealthStateView">
+            <Attribute Name="TagName" AttributeDataType="xs:string">
+              <DefaultValue>AllegroHealthState</DefaultValue>
+              <Value>AllegroHealthState</Value>
+            </Attribute>
+            <Attribute Name="TagDescription" AttributeDataType="xs:string">
+              <DefaultValue>Health state of service Allegro</DefaultValue>
+              <Value>Health state of service Allegro</Value>
+            </Attribute>
+            <Attribute Name="WQC" AttributeDataType="xs:byte">
+              <DefaultValue>255</DefaultValue>
+              <Value>255</Value>
+            </Attribute>
+            <Attribute Name="RefID" AttributeDataType="xs:ID">
+              <Value>refid6</Value>
+            </Attribute>
+          </InternalElement>
+          <InternalElement Name="ForteHealthState" ID="id72" RefBaseSystemUnitPath="MTPDataObjectSUCLib/DataAssembly/DiagnosticElement/HealthStateView">
+            <Attribute Name="TagName" AttributeDataType="xs:string">
+              <DefaultValue>ForteHealthState</DefaultValue>
+              <Value>ForteHealthState</Value>
+            </Attribute>
+            <Attribute Name="TagDescription" AttributeDataType="xs:string">
+              <DefaultValue>Health state of service Forte</DefaultValue>
+              <Value>Health state of service Forte</Value>
+            </Attribute>
+            <Attribute Name="WQC" AttributeDataType="xs:byte">
+              <DefaultValue>255</DefaultValue>
+              <Value>255</Value>
+            </Attribute>
+            <Attribute Name="RefID" AttributeDataType="xs:ID">
+              <Value>refid5</Value>
+            </Attribute>
+          </InternalElement>
+          <InternalElement Name="PianoHealthState" ID="id73" RefBaseSystemUnitPath="MTPDataObjectSUCLib/DataAssembly/DiagnosticElement/HealthStateView">
+            <Attribute Name="TagName" AttributeDataType="xs:string">
+              <DefaultValue>PianoHealthState</DefaultValue>
+              <Value>PianoHealthState</Value>
+            </Attribute>
+            <Attribute Name="TagDescription" AttributeDataType="xs:string">
+              <DefaultValue>Health state of service Piano</DefaultValue>
+              <Value>Health state of service Piano</Value>
+            </Attribute>
+            <Attribute Name="WQC" AttributeDataType="xs:byte">
+              <DefaultValue>255</DefaultValue>
+              <Value>255</Value>
+            </Attribute>
+            <Attribute Name="RefID" AttributeDataType="xs:ID">
+              <Value>refid4</Value>
+            </Attribute>
+          </InternalElement>
+          <InternalElement Name="HandInHand" ID="id74" RefBaseSystemUnitPath="MTPDataObjectSUCLib/DataAssembly/ServiceControl">
+            <Attribute Name="TagName" AttributeDataType="xs:string">
+              <DefaultValue>HandInHand</DefaultValue>
+              <Value>HandInHand</Value>
+            </Attribute>
+            <Attribute Name="TagDescription" AttributeDataType="xs:string" />
+            <Attribute Name="WQC" AttributeDataType="xs:IDREF">
+              <Value>id37</Value>
+            </Attribute>
+            <Attribute Name="OSLevel" AttributeDataType="xs:IDREF">
+              <Value>id36</Value>
+            </Attribute>
+            <Attribute Name="CommandOp" AttributeDataType="xs:IDREF">
+              <Value>id35</Value>
+            </Attribute>
+            <Attribute Name="CommandInt" AttributeDataType="xs:IDREF">
+              <Value>id34</Value>
+            </Attribute>
+            <Attribute Name="CommandExt" AttributeDataType="xs:IDREF">
+              <Value>id33</Value>
+            </Attribute>
+            <Attribute Name="ProcedureOp" AttributeDataType="xs:IDREF">
+              <Value>id32</Value>
+            </Attribute>
+            <Attribute Name="ProcedureInt" AttributeDataType="xs:IDREF">
+              <Value>id31</Value>
+            </Attribute>
+            <Attribute Name="ProcedureExt" AttributeDataType="xs:IDREF">
+              <Value>id30</Value>
+            </Attribute>
+            <Attribute Name="StateCur" AttributeDataType="xs:IDREF">
+              <Value>id29</Value>
+            </Attribute>
+            <Attribute Name="CommandEn" AttributeDataType="xs:IDREF">
+              <Value>id28</Value>
+            </Attribute>
+            <Attribute Name="ProcedureCur" AttributeDataType="xs:IDREF">
+              <Value>id27</Value>
+            </Attribute>
+            <Attribute Name="ProcedureReq" AttributeDataType="xs:IDREF">
+              <Value>id26</Value>
+            </Attribute>
+            <Attribute Name="PosTextID" AttributeDataType="xs:IDREF">
+              <Value>id25</Value>
+            </Attribute>
+            <Attribute Name="InteractQuestionID" AttributeDataType="xs:IDREF">
+              <Value>id24</Value>
+            </Attribute>
+            <Attribute Name="InteractAnswerID" AttributeDataType="xs:IDREF">
+              <Value>id23</Value>
+            </Attribute>
+            <Attribute Name="StateChannel" AttributeDataType="xs:IDREF">
+              <Value>id22</Value>
+            </Attribute>
+            <Attribute Name="StateOffAut" AttributeDataType="xs:IDREF">
+              <Value>id21</Value>
+            </Attribute>
+            <Attribute Name="StateOpAut" AttributeDataType="xs:IDREF">
+              <Value>id20</Value>
+            </Attribute>
+            <Attribute Name="StateAutAut" AttributeDataType="xs:IDREF">
+              <Value>id19</Value>
+            </Attribute>
+            <Attribute Name="StateOffOp" AttributeDataType="xs:IDREF">
+              <Value>id18</Value>
+            </Attribute>
+            <Attribute Name="StateOpOp" AttributeDataType="xs:IDREF">
+              <Value>id17</Value>
+            </Attribute>
+            <Attribute Name="StateAutOp" AttributeDataType="xs:IDREF">
+              <Value>id16</Value>
+            </Attribute>
+            <Attribute Name="StateOpAct" AttributeDataType="xs:IDREF">
+              <Value>id15</Value>
+            </Attribute>
+            <Attribute Name="StateAutAct" AttributeDataType="xs:IDREF">
+              <Value>id14</Value>
+            </Attribute>
+            <Attribute Name="StateOffAct" AttributeDataType="xs:IDREF">
+              <Value>id13</Value>
+            </Attribute>
+            <Attribute Name="SrcChannel" AttributeDataType="xs:IDREF">
+              <Value>id12</Value>
+            </Attribute>
+            <Attribute Name="SrcExtAut" AttributeDataType="xs:IDREF">
+              <Value>id11</Value>
+            </Attribute>
+            <Attribute Name="SrcIntAut" AttributeDataType="xs:IDREF">
+              <Value>id10</Value>
+            </Attribute>
+            <Attribute Name="SrcIntOp" AttributeDataType="xs:IDREF">
+              <Value>id9</Value>
+            </Attribute>
+            <Attribute Name="SrcExtOp" AttributeDataType="xs:IDREF">
+              <Value>id8</Value>
+            </Attribute>
+            <Attribute Name="SrcIntAct" AttributeDataType="xs:IDREF">
+              <Value>id7</Value>
+            </Attribute>
+            <Attribute Name="SrcExtAct" AttributeDataType="xs:IDREF">
+              <Value>id6</Value>
+            </Attribute>
+            <Attribute Name="RefID" AttributeDataType="xs:ID">
+              <Value>refid7</Value>
+            </Attribute>
+          </InternalElement>
+          <InternalElement Name="AllegroHealthState" ID="id75" RefBaseSystemUnitPath="MTPDataObjectSUCLib/DataAssembly/DiagnosticElement/HealthStateView">
+            <Attribute Name="TagName" AttributeDataType="xs:string">
+              <DefaultValue>AllegroHealthState</DefaultValue>
+              <Value>AllegroHealthState</Value>
+            </Attribute>
+            <Attribute Name="TagDescription" AttributeDataType="xs:string">
+              <DefaultValue>Health state of service Allegro</DefaultValue>
+              <Value>Health state of service Allegro</Value>
+            </Attribute>
+            <Attribute Name="WQC" AttributeDataType="xs:byte">
+              <DefaultValue>255</DefaultValue>
+              <Value>255</Value>
+            </Attribute>
+            <Attribute Name="RefID" AttributeDataType="xs:ID">
+              <Value>refid2</Value>
+            </Attribute>
+          </InternalElement>
+          <InternalElement Name="ForteHealthState" ID="id76" RefBaseSystemUnitPath="MTPDataObjectSUCLib/DataAssembly/DiagnosticElement/HealthStateView">
+            <Attribute Name="TagName" AttributeDataType="xs:string">
+              <DefaultValue>ForteHealthState</DefaultValue>
+              <Value>ForteHealthState</Value>
+            </Attribute>
+            <Attribute Name="TagDescription" AttributeDataType="xs:string">
+              <DefaultValue>Health state of service Forte</DefaultValue>
+              <Value>Health state of service Forte</Value>
+            </Attribute>
+            <Attribute Name="WQC" AttributeDataType="xs:byte">
+              <DefaultValue>255</DefaultValue>
+              <Value>255</Value>
+            </Attribute>
+            <Attribute Name="RefID" AttributeDataType="xs:ID">
+              <Value>refid1</Value>
+            </Attribute>
+          </InternalElement>
+          <InternalElement Name="PianoHealthState" ID="id77" RefBaseSystemUnitPath="MTPDataObjectSUCLib/DataAssembly/DiagnosticElement/HealthStateView">
+            <Attribute Name="TagName" AttributeDataType="xs:string">
+              <DefaultValue>PianoHealthState</DefaultValue>
+              <Value>PianoHealthState</Value>
+            </Attribute>
+            <Attribute Name="TagDescription" AttributeDataType="xs:string">
+              <DefaultValue>Health state of service Piano</DefaultValue>
+              <Value>Health state of service Piano</Value>
+            </Attribute>
+            <Attribute Name="WQC" AttributeDataType="xs:byte">
+              <DefaultValue>255</DefaultValue>
+              <Value>255</Value>
+            </Attribute>
+            <Attribute Name="RefID" AttributeDataType="xs:ID">
+              <Value>refid0</Value>
+            </Attribute>
+          </InternalElement>
+          <InternalElement Name="AtomicLove" ID="id78" RefBaseSystemUnitPath="MTPDataObjectSUCLib/DataAssembly/ServiceControl">
+            <Attribute Name="TagName" AttributeDataType="xs:string">
+              <DefaultValue>AtomicLove</DefaultValue>
+              <Value>AtomicLove</Value>
+            </Attribute>
+            <Attribute Name="TagDescription" AttributeDataType="xs:string" />
+            <Attribute Name="WQC" AttributeDataType="xs:IDREF">
+              <Value>id69</Value>
+            </Attribute>
+            <Attribute Name="OSLevel" AttributeDataType="xs:IDREF">
+              <Value>id68</Value>
+            </Attribute>
+            <Attribute Name="CommandOp" AttributeDataType="xs:IDREF">
+              <Value>id67</Value>
+            </Attribute>
+            <Attribute Name="CommandInt" AttributeDataType="xs:IDREF">
+              <Value>id66</Value>
+            </Attribute>
+            <Attribute Name="CommandExt" AttributeDataType="xs:IDREF">
+              <Value>id65</Value>
+            </Attribute>
+            <Attribute Name="ProcedureOp" AttributeDataType="xs:IDREF">
+              <Value>id64</Value>
+            </Attribute>
+            <Attribute Name="ProcedureInt" AttributeDataType="xs:IDREF">
+              <Value>id63</Value>
+            </Attribute>
+            <Attribute Name="ProcedureExt" AttributeDataType="xs:IDREF">
+              <Value>id62</Value>
+            </Attribute>
+            <Attribute Name="StateCur" AttributeDataType="xs:IDREF">
+              <Value>id61</Value>
+            </Attribute>
+            <Attribute Name="CommandEn" AttributeDataType="xs:IDREF">
+              <Value>id60</Value>
+            </Attribute>
+            <Attribute Name="ProcedureCur" AttributeDataType="xs:IDREF">
+              <Value>id59</Value>
+            </Attribute>
+            <Attribute Name="ProcedureReq" AttributeDataType="xs:IDREF">
+              <Value>id58</Value>
+            </Attribute>
+            <Attribute Name="PosTextID" AttributeDataType="xs:IDREF">
+              <Value>id57</Value>
+            </Attribute>
+            <Attribute Name="InteractQuestionID" AttributeDataType="xs:IDREF">
+              <Value>id56</Value>
+            </Attribute>
+            <Attribute Name="InteractAnswerID" AttributeDataType="xs:IDREF">
+              <Value>id55</Value>
+            </Attribute>
+            <Attribute Name="StateChannel" AttributeDataType="xs:IDREF">
+              <Value>id54</Value>
+            </Attribute>
+            <Attribute Name="StateOffAut" AttributeDataType="xs:IDREF">
+              <Value>id53</Value>
+            </Attribute>
+            <Attribute Name="StateOpAut" AttributeDataType="xs:IDREF">
+              <Value>id52</Value>
+            </Attribute>
+            <Attribute Name="StateAutAut" AttributeDataType="xs:IDREF">
+              <Value>id51</Value>
+            </Attribute>
+            <Attribute Name="StateOffOp" AttributeDataType="xs:IDREF">
+              <Value>id50</Value>
+            </Attribute>
+            <Attribute Name="StateOpOp" AttributeDataType="xs:IDREF">
+              <Value>id49</Value>
+            </Attribute>
+            <Attribute Name="StateAutOp" AttributeDataType="xs:IDREF">
+              <Value>id48</Value>
+            </Attribute>
+            <Attribute Name="StateOpAct" AttributeDataType="xs:IDREF">
+              <Value>id47</Value>
+            </Attribute>
+            <Attribute Name="StateAutAct" AttributeDataType="xs:IDREF">
+              <Value>id46</Value>
+            </Attribute>
+            <Attribute Name="StateOffAct" AttributeDataType="xs:IDREF">
+              <Value>id45</Value>
+            </Attribute>
+            <Attribute Name="SrcChannel" AttributeDataType="xs:IDREF">
+              <Value>id44</Value>
+            </Attribute>
+            <Attribute Name="SrcExtAut" AttributeDataType="xs:IDREF">
+              <Value>id43</Value>
+            </Attribute>
+            <Attribute Name="SrcIntAut" AttributeDataType="xs:IDREF">
+              <Value>id42</Value>
+            </Attribute>
+            <Attribute Name="SrcIntOp" AttributeDataType="xs:IDREF">
+              <Value>id41</Value>
+            </Attribute>
+            <Attribute Name="SrcExtOp" AttributeDataType="xs:IDREF">
+              <Value>id40</Value>
+            </Attribute>
+            <Attribute Name="SrcIntAct" AttributeDataType="xs:IDREF">
+              <Value>id39</Value>
+            </Attribute>
+            <Attribute Name="SrcExtAct" AttributeDataType="xs:IDREF">
+              <Value>id38</Value>
+            </Attribute>
+            <Attribute Name="RefID" AttributeDataType="xs:ID">
+              <Value>refid3</Value>
+            </Attribute>
+          </InternalElement>
+        </InternalElement>
+      </InternalElement>
+    </InternalElement>
+  </InstanceHierarchy>
+  <InstanceHierarchy Name="PiMAd-core-InstanceHierarchy" ID="id-1">
+    <Version>0</Version>
+  </InstanceHierarchy>  
+</CAEXFile>
