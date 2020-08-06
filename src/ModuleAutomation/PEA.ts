@@ -183,9 +183,13 @@ abstract class APEA implements PEA {
         callback(response);
     };
     getService(name: string, callback: (response: Response) => void): void {
+        /*const localService: Service | undefined = this.services.find(service =>
+            service.getName() === dataAssembly.getIdentifier()
+        );*/
+
         this.services.forEach((service: Service) => {
-            const receive = service.getName().getContent() as {data: string};
-            if(receive.data === name) {
+            const receive = service.getName();
+            if(receive === name) {
                 const response = this.responseVendor.buySuccessResponse();
                 response.initialize('Success!', service);
                 callback(response);
