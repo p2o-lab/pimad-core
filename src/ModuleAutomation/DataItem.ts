@@ -1,6 +1,6 @@
 import {logger} from '../Utils/Logger';
 import {Response, ResponseVendor} from '../Backbone/Response';
-import {CommunicationInterfaceData, OPCUANodeCommunication} from './CommunicationInterfaceData';
+import {CommunicationInterfaceData, OPCUANodeCommunicationFactory} from './CommunicationInterfaceData';
 
 export interface DataItem {
     /**
@@ -38,7 +38,7 @@ abstract class ADataItem implements DataItem {
     protected responseVendor: ResponseVendor;
 
     constructor() {
-        this.cIData= new OPCUANodeCommunication(); //TODO: Add BaseCommunicationInterfaceData
+        this.cIData= new OPCUANodeCommunicationFactory().create(); //TODO: Add BaseCommunicationInterfaceData
         this.name = '';
         this.identifier = '';
         this.metaModelRef = '';

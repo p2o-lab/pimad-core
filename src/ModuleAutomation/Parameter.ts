@@ -1,4 +1,4 @@
-import {CommunicationInterfaceData, OPCUANodeCommunication} from './CommunicationInterfaceData';
+import {CommunicationInterfaceData, OPCUANodeCommunicationFactory} from './CommunicationInterfaceData';
 import {logger} from '../Utils/Logger';
 import {Response, ResponseVendor} from '../Backbone/Response';
 
@@ -33,12 +33,10 @@ abstract class AParameter implements Parameter {
     getInterfaceClass(): Response{
         return this.interfaceClass;
     }
-    getCommunicationInterfaceData(tag: string): CommunicationInterfaceData{
-            //TODO: returns CommunicationInterfaceData
-            // add Operations for InterfaceData by tag : CommunicationInterfaceData
-            //select specific CommunicationInterfaceData out of CommunicationInterfaceData[] where CommunicationInterfaceData.name equals tag?
-            //getDescription() --> object contains name
-        return new OPCUANodeCommunication();
+    getCommunicationInterfaceData(tag: string): CommunicationInterfaceData {
+        // TODO > Big refactor! Response type, callback, etc.
+        // add Operations for InterfaceData by tag : CommunicationInterfaceData
+        return (new OPCUANodeCommunicationFactory()).create()
     }
     initialize(name: string, communication: CommunicationInterfaceData[], interfaceClass: any): boolean {
         if (!this.initialized) {

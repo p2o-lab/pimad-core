@@ -7,9 +7,8 @@ import * as dataAssemblyTestResultData from '../Results/test-result-DataAssembly
 import * as servicePartTestResult from '../Results/test-result-ServicePart.json';
 import * as communicationInterfaceDataTestResultData from '../Results/tes-result-CommunicationInterfaceData.json';
 import * as servicePartData from '../testdata-ServicePart.json';
-import {OPCUAServerCommunication} from '../../../src/ModuleAutomation/CommunicationInterfaceData';
-import {DataAssembly} from '../../../src/ModuleAutomation/DataAssembly';
-
+import {DataAssembly} from '../../../src/ModuleAutomation';
+import { OPCUAServerCommunication } from '../../../src/ModuleAutomation/CommunicationInterfaceData';
 
 describe('class: MTPPart', () => {
     let part = new MTPPart();
