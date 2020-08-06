@@ -115,8 +115,7 @@ export class MTPFreeze202001Importer extends AImporter {
     private zipGateFactory: GateFactory;
 
     /** @inheritDoc */
-    convertFrom(instructions: {source: string},
-                callback: (response: Response) => void): void {
+    convertFrom(instructions: InstructionsConvertFrom, callback: (response: Response) => void): void {
         if(this.initialized) {
             //
             this.followInstructions(instructions, response => {
@@ -140,7 +139,7 @@ export class MTPFreeze202001Importer extends AImporter {
      * @param callback - Returns a successful {@link SuccessResponse} with PEA or an {@link ErrorResponse} with
      * a message why this step has finally failed.
      */
-    private followInstructions(instructions: {source: string}, callback: (response: Response) => void): void {
+    private followInstructions(instructions: InstructionsConvertFrom, callback: (response: Response) => void): void {
         // Instructions
         if(instructions.source != '') {
             // access data source
@@ -165,7 +164,7 @@ export class MTPFreeze202001Importer extends AImporter {
      * a message why this step has finally failed.
      * @private
      */
-    private accessDataSource(instructions: {source: string}, callback: (response: Response) => void): void {
+    private accessDataSource(instructions: InstructionsConvertFrom, callback: (response: Response) => void): void {
         let gate: Gate = new MockGateFactory().create();
         switch (instructions.source.slice(-4)) {
             case '.aml':
@@ -201,7 +200,7 @@ export class MTPFreeze202001Importer extends AImporter {
                     localCAEXFile.data = caexFile.data ;
                 }
                 if(localCAEXFile.data?.CAEXFile != undefined) {
-                    this.checkInformationModel(localCAEXFile.data.CAEXFile, checkIMResponse => {
+                    this.checkInformationModel(localCAEXFile.data.CAEXFile, instructions.identifier,checkIMResponse => {
                         callback(checkIMResponse);
                     })
                 } else {
@@ -220,11 +219,12 @@ export class MTPFreeze202001Importer extends AImporter {
      * Answers the third question of the activity {@link Importer.convertFrom} for this importer.
      *
      * @param data - The content of a CAEXFile as a JSON-object.
+     * @param pimadIdentifier - ???
      * @param callback - TODO after rework!
      * @private
      */
-    private checkInformationModel(data: CAEXFile, callback: (response: Response) => void): void {
-        this.convert(data, response => {
+    private checkInformationModel(data: CAEXFile, pimadIdentifier: string, callback: (response: Response) => void): void {
+        this.convert(data, pimadIdentifier,response => {
             callback(response)
         })
     }
@@ -300,10 +300,11 @@ export class MTPFreeze202001Importer extends AImporter {
      * </uml>
      *
      * @param data - The data as CAEXFile.
+     * @param pimadIdentifier - ???
      * @param callback - ???
      * @private
      */
-    private convert(data: CAEXFile, callback: (response: Response) => void): void {
+    private convert(data: CAEXFile, pimadIdentifier: string, callback: (response: Response) => void): void {
         // These variables will be continuously filled
         let communicationInterfaceData: CommunicationInterfaceData[] = []; // TODO > link to communication interface
         let dataAssemblies: DataAssembly[] = []
@@ -386,7 +387,7 @@ export class MTPFreeze202001Importer extends AImporter {
             })
             const localPEA = this.peaFactory.create();
             // Initializing the local pea
-            if(localPEA.initialize({DataAssemblies: dataAssemblies, DataModel: peaMetaModelRef, DataModelVersion: new BasicSemanticVersion(), FEAs: [], Name: peaName, Services: localServices,})) {
+            if(localPEA.initialize({DataAssemblies: dataAssemblies, DataModel: peaMetaModelRef, DataModelVersion: new BasicSemanticVersion(), FEAs: [], Name: peaName, Identifier: pimadIdentifier, Services: localServices})) {
                 // successful -> callback with successful response
                 const localSuccessResponse = this.responseVendor.buySuccessResponse();
                 localSuccessResponse.initialize('Success!', localPEA)
@@ -485,5 +486,10 @@ export class LastChainElementImporterFactory extends AImporterFactory {
 
 export interface ImporterFactory {
     create(): Importer;
+}
+
+type InstructionsConvertFrom = {
+    source: string;
+    identifier: string;
 }
 
