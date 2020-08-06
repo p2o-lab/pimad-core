@@ -1,4 +1,4 @@
-import {Response, ResponseHandler, ResponseVendor} from '../Backbone/Response';
+import {Response, ResponseHandler, ResponseVendor, ResponseTypes} from '../Backbone/Response';
 import {PEA} from '../ModuleAutomation/PEA';
 import {Importer} from '../Converter/Importer/Importer';
 import {logger} from '../Utils/Logger';
@@ -49,15 +49,15 @@ abstract class APEAPool implements PEAPool {
                 }, callback);
             })
         } else {
-            this.responseHandler.handleCallbackWithResponse('error', 'PEAPool is not initialized!', {}, callback);
+            this.responseHandler.handleCallbackWithResponse(ResponseTypes.ERROR, 'PEAPool is not initialized!', {}, callback);
         }
     };
 
     public deletePEA(identifier: string, callback: (response: Response) => void): void {
         if(this.initialized) {
-            this.responseHandler.handleCallbackWithResponse('error', '', {}, callback);
+            this.responseHandler.handleCallbackWithResponse(ResponseTypes.ERROR, '', {}, callback);
         } else {
-            this.responseHandler.handleCallbackWithResponse('error', 'PEAPool is not initialized!', {}, callback);
+            this.responseHandler.handleCallbackWithResponse(ResponseTypes.ERROR, 'PEAPool is not initialized!', {}, callback);
         }
     };
 
@@ -65,12 +65,12 @@ abstract class APEAPool implements PEAPool {
         if(this.initialized) {
             const localPEA: PEA | undefined = this.peas.find(pea => identifier === pea.getPiMAdIdentifier());
             if (localPEA === undefined)  {
-                this.responseHandler.handleCallbackWithResponse('error', 'PEA <' + identifier + '> is not part of the pool party!', {}, callback);
+                this.responseHandler.handleCallbackWithResponse(ResponseTypes.ERROR, 'PEA <' + identifier + '> is not part of the pool party!', {}, callback);
             } else {
-                this.responseHandler.handleCallbackWithResponse('success', 'Success!', localPEA, callback);
+                this.responseHandler.handleCallbackWithResponse(ResponseTypes.SUCCESS, 'Success!', localPEA, callback);
             }
         } else {
-            this.responseHandler.handleCallbackWithResponse('error', 'PEAPool is not initialized!', {}, callback);
+            this.responseHandler.handleCallbackWithResponse(ResponseTypes.ERROR, 'PEAPool is not initialized!', {}, callback);
         }
     };
 }
