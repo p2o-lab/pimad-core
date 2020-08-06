@@ -149,14 +149,10 @@ abstract class APEA implements PEA {
     getDataAssembly(tag: string, callback: (response: Response) => void): void {
         this.dataAssemblies.forEach((dataAssembly: DataAssembly) => {
             if(dataAssembly.getTagName() === tag) {
-                const response = this.responseVendor.buySuccessResponse();
-                response.initialize('Success!', dataAssembly);
-                callback(response);
+                this.responseHandler.handleCallbackWithResponse('success', 'Success!', dataAssembly, callback)
             }
             if(dataAssembly === this.dataAssemblies[this.dataAssemblies.length -1]) {
-                const response = this.responseVendor.buyErrorResponse();
-                response.initialize('Could not find dataAssembly <' + tag + '> in PEA <' + this.name + '>', {});
-                callback(response);
+                this.responseHandler.handleCallbackWithResponse('error', 'Could not find dataAssembly <' + tag + '> in PEA <' + this.name + '>', {}, callback)
             }
         })
     };
@@ -171,8 +167,7 @@ abstract class APEA implements PEA {
         return response;
     };
     getFEA(tag: string, callback: (response: Response) => void): void {
-        const response = this.responseVendor.buyErrorResponse();
-        callback(response);
+        this.responseHandler.handleCallbackWithResponse('error', '', {}, callback);
     };
     getPiMAdIdentifier(): string {
         return this.pimadIdentifier;
@@ -181,22 +176,16 @@ abstract class APEA implements PEA {
         return this.name;
     };
     getSensor(tag: string, callback: (response: Response) => void): void {
-        const response = this.responseVendor.buyErrorResponse();
-        callback(response);
+        this.responseHandler.handleCallbackWithResponse('error', '', {}, callback);
     };
     getService(name: string, callback: (response: Response) => void): void {
         const localService: Service | undefined = this.services.find(service =>
             service.getName() === name
         );
-
         if(localService == undefined) {
-            const response = this.responseVendor.buyErrorResponse();
-            response.initialize('Could not find service <' + name + '> in PEA <' + this.name + '>', {});
-            callback(response);
+            this.responseHandler.handleCallbackWithResponse('error', 'Could not find service <' + name + '> in PEA <' + this.name + '>', {}, callback)
         } else {
-            const response = this.responseVendor.buySuccessResponse();
-            response.initialize('Success!', localService);
-            callback(response);
+            this.responseHandler.handleCallbackWithResponse('success', 'Success!', localService, callback)
         }
     };
 
