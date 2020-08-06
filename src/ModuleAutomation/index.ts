@@ -1,9 +1,10 @@
-export {CommunicationInterfaceDataFactory, CommunicationInterfaceData, OPCUANodeCommunicationFactory, OPCUAServerCommunicationFactory} from './CommunicationInterfaceData'
-export * from './DataAssembly'
-export * from './DataItem'
-export * from './FEA'
-export * from './NodeId'
-export * from './Parameter'
-export {PEA, PEAFactory, BasePEAFactory} from './PEA'
-export * from './Procedure'
-export * from './Service'
+export {Attribute, AttributeFactory, AttributeFactoryVendor} from './Attribute';
+export {CommunicationInterfaceDataFactory, CommunicationInterfaceData, OPCUANodeCommunicationFactory, OPCUAServerCommunicationFactory} from './CommunicationInterfaceData';
+export * from './DataAssembly';
+export * from './DataItem';
+export * from './FEA';
+export * from './NodeId';
+export * from './Parameter';
+export {PEA, PEAFactory, BasePEAFactory} from './PEA';
+export * from './Procedure';
+export * from './Service';
