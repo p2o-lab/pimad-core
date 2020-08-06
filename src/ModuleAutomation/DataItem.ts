@@ -75,7 +75,7 @@ abstract class ADataItem implements DataItem {
     }
 }
 
-export class BaseDataItem extends ADataItem {
+class BaseDataItem extends ADataItem {
 }
 
 /**

@@ -1,20 +1,20 @@
-import {BaseDataItemFactory, BaseDataItem} from '../../src/ModuleAutomation/DataItem';
 import {expect} from 'chai';
 import {ErrorResponse} from '../../src/Backbone/Response';
+import {BaseDataItemFactory, DataItem} from '../../build/ModuleAutomation';
 import {OPCUANodeCommunication} from '../../src/ModuleAutomation/CommunicationInterfaceData';
 
+// TODO > Test-cases are crap
 describe('class: BaseDataItem', () => {
-    let dataItem: BaseDataItem;
+    let dataItem: DataItem;
     beforeEach(function () {
-        dataItem = new BaseDataItem();
+        dataItem = new BaseDataItemFactory().create();
     });
     it('method: getDataType()', () => {
         expect(typeof dataItem.getDataType()).is.equal(typeof new ErrorResponse());
     });
-
     it('method: getCommunicationInterfaceData()', () => {
         //TODO: OPCServerCommunication as option
-        expect(dataItem.getCommunicationInterfaceData()).to.be.instanceOf(OPCUANodeCommunication)
+        expect(dataItem.getCommunicationInterfaceData().constructor.name).is.equal('OPCUANodeCommunication')
     });
     describe('method: getIdentifier()', () => {
         it('test case: standard usage', () => {
@@ -37,9 +37,10 @@ describe('class: BaseDataItem', () => {
         });
     })
 });
+
 describe('class: BaseDataItemFactory', () => {
     it('method: create()', () => {
         const factory = new BaseDataItemFactory();
-        expect(typeof factory.create()).is.equal(typeof new BaseDataItem());
+        expect(factory.create().constructor.name).is.equal('BaseDataItem');
     });
 });
