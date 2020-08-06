@@ -30,20 +30,36 @@ describe('class: ProcedureAttribute', () => {
     let localAttribute: Attribute;
     beforeEach(function () {
         localAttribute = attributeFactory.create();
-    })
+    });
     describe('with initialisation', () => {
         beforeEach(function () {
-            localAttribute.initialize({DataType: 'Test-DataType',Name: 'Test-Name', Value: 'Test-Value'});
+            localAttribute.initialize({DataType: 'Test-DataType', Name: 'Test-Name', Value: 'Test-Value'});
         });
         it('method: getDataType()', () => {
             const response = localAttribute.getDataType();
             expect(response.constructor.name).is.equal('SuccessResponse');
             expect((response.getContent() as {data: string}).data).is.equal('Test-DataType');
         });
+        it('method: getName()', () => {
+            const response = localAttribute.getName();
+            expect(response.constructor.name).is.equal('SuccessResponse');
+            expect((response.getContent() as {data: string}).data).is.equal('Test-Name');
+        });
+        it('method: getValue()', () => {
+            const response = localAttribute.getValue();
+            expect(response.constructor.name).is.equal('SuccessResponse');
+            expect((response.getContent() as {data: string}).data).is.equal('Test-Value');
+        });
     });
     describe('without initialisation', () => {
         it('method: getDataType()', () => {
             expect(localAttribute.getDataType().constructor.name).is.equal('ErrorResponse');
+        });
+        it('method: getName()', () => {
+            expect(localAttribute.getName().constructor.name).is.equal('ErrorResponse');
+        });
+        it('method: getValue()', () => {
+            expect(localAttribute.getValue().constructor.name).is.equal('ErrorResponse');
         });
     });
     describe('method: initialize()', () => {
@@ -72,10 +88,26 @@ describe('class: ServiceAttribute', () => {
             expect(response.constructor.name).is.equal('SuccessResponse');
             expect((response.getContent() as {data: string}).data).is.equal('Test-DataType');
         });
+        it('method: getName()', () => {
+            const response = localAttribute.getName();
+            expect(response.constructor.name).is.equal('SuccessResponse');
+            expect((response.getContent() as {data: string}).data).is.equal('Test-Name');
+        });
+        it('method: getValue()', () => {
+            const response = localAttribute.getValue();
+            expect(response.constructor.name).is.equal('SuccessResponse');
+            expect((response.getContent() as {data: string}).data).is.equal('Test-Value');
+        });
     });
     describe('without initialisation', () => {
         it('method: getDataType()', () => {
             expect(localAttribute.getDataType().constructor.name).is.equal('ErrorResponse');
+        });
+        it('method: getName()', () => {
+            expect(localAttribute.getName().constructor.name).is.equal('ErrorResponse');
+        });
+        it('method: getValue()', () => {
+            expect(localAttribute.getValue().constructor.name).is.equal('ErrorResponse');
         });
     });
     describe('method: initialize()', () => {

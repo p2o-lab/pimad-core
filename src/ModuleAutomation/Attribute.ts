@@ -3,6 +3,8 @@ import {ResponseVendor, Response} from '../Backbone/Response';
 
 export interface Attribute {
     getDataType(): Response;
+    getName(): Response;
+    getValue(): Response;
     initialize(data: InitializeAttribute): boolean;
 }
 
@@ -27,6 +29,12 @@ abstract class AAttribute implements Attribute {
                 case AttributeGetterVariables.DATATYPE:
                     response.initialize('Success!', {data: this.dataType});
                     break;
+                case AttributeGetterVariables.NAME:
+                    response.initialize('Success!', {data: this.name});
+                    break;
+                case AttributeGetterVariables.VALUE:
+                    response.initialize('Success!', {data: this.value});
+                    break;
             }
         } else {
             response = this.responseVendor.buyErrorResponse();
@@ -38,6 +46,14 @@ abstract class AAttribute implements Attribute {
     getDataType(): Response {
         return this.getter(AttributeGetterVariables.DATATYPE);
     }
+
+    getName(): Response {
+        return this.getter(AttributeGetterVariables.NAME);
+    };
+
+    getValue(): Response {
+        return this.getter(AttributeGetterVariables.VALUE);
+    };
 
     initialize(data: InitializeAttribute): boolean {
         if(!this.initialized) {
