@@ -56,7 +56,7 @@ abstract class ADataAssembly implements DataAssembly{
         return true;
     }*/
 }
-export class BaseDataAssembly extends ADataAssembly {
+class BaseDataAssembly extends ADataAssembly {
     initialize(instructions: {tag: string; description: string; dataItems: DataItem[]; identifier: string; metaModelRef: string}): boolean {
         if (!this.initialized) {
             this.tagName = instructions.tag;

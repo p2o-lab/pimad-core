@@ -1,11 +1,12 @@
-import {BaseServiceFactory, BaseService} from '../../src/ModuleAutomation/Service';
+import {BaseServiceFactory, BaseService} from '../../src/ModuleAutomation';
 import {expect} from 'chai';
-import {BaseParameter, Parameter} from '../../src/ModuleAutomation/Parameter';
-import {BaseDataAssembly, DataAssembly} from '../../src/ModuleAutomation/DataAssembly';
+import {BaseParameter, Parameter} from '../../src/ModuleAutomation';
+import {DataAssembly} from '../../src/ModuleAutomation';
 import {AML} from 'PiMAd-types';
 import Attribute = AML.Attribute;
-import {BaseProcedure} from '../../src/ModuleAutomation/Procedure';
+import {BaseProcedure} from '../../src/ModuleAutomation';
 import {ErrorResponse, SuccessResponse} from '../../src/Backbone/Response';
+import {BaseDataAssemblyFactory} from '../../build/ModuleAutomation';
 
 describe('class: BaseService', () => {
     let service: BaseService;
@@ -14,7 +15,7 @@ describe('class: BaseService', () => {
     });
     describe('check getter', () => {
         beforeEach(function () {
-            const dataAssembly = new BaseDataAssembly();
+            const dataAssembly = new BaseDataAssemblyFactory().create();
             dataAssembly.initialize({
                 tag: 'Test-DataAssembly',
                 description: '',

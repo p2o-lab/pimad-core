@@ -1,7 +1,7 @@
 import {BasePEAFactory, BasePEA, PEAInitializeDataType} from '../../src/ModuleAutomation/PEA';
 import {expect} from 'chai';
 import {ErrorResponse, SuccessResponse} from '../../src/Backbone/Response';
-import {BaseDataAssembly, DataAssembly} from '../../src/ModuleAutomation/DataAssembly';
+import {DataAssembly} from '../../src/ModuleAutomation/DataAssembly';
 import {BaseParameter} from '../../src/ModuleAutomation/Parameter';
 import {BaseProcedure} from '../../src/ModuleAutomation/Procedure';
 import {BasicSemanticVersion, SemanticVersion} from '../../src/Backbone/SemanticVersion';
@@ -9,6 +9,7 @@ import {FEA} from '../../src/ModuleAutomation/FEA';
 import {BaseService, Service} from '../../src/ModuleAutomation/Service';
 import {AML} from 'PiMAd-types';
 import Attribute = AML.Attribute;
+import {BaseDataAssemblyFactory} from '../../build/ModuleAutomation';
 
 
 describe('class: BasePEA', () => {
@@ -17,9 +18,9 @@ describe('class: BasePEA', () => {
         pea = new BasePEA();
     });
     describe('check getter', () => {
+        const basePEAFactory = new BaseDataAssemblyFactory();
         beforeEach(function () {
-
-            const dataAssembly1= new BaseDataAssembly();
+            const dataAssembly1= basePEAFactory.create();
             dataAssembly1.initialize({
                 tag: 'Test-DataAssembly1',
                 description: '',
@@ -27,7 +28,7 @@ describe('class: BasePEA', () => {
                 identifier: '',
                 dataItems: []
             });
-            const dataAssembly2= new BaseDataAssembly();
+            const dataAssembly2= basePEAFactory.create();
             dataAssembly2.initialize({
                 tag: 'Test-DataAssembly2',
                 description: '',
