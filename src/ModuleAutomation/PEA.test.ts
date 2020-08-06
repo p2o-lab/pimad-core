@@ -150,7 +150,7 @@ describe('class: BasePEA', () => {
                 pea.getService('Test-Service1', response => {
                     expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
                     const responseContent = response.getContent() as Service;
-                    expect(JSON.stringify(responseContent.getName().getContent())).is.equal(JSON.stringify({data: 'Test-Service1'}));
+                    expect(responseContent.getName()).is.equal('Test-Service1');
                     done();
                 })
             });

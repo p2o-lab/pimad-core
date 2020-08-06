@@ -183,19 +183,19 @@ abstract class APEA implements PEA {
         callback(response);
     };
     getService(name: string, callback: (response: Response) => void): void {
-        this.services.forEach((service: Service) => {
-            const receive = service.getName().getContent() as {data: string};
-            if(receive.data === name) {
-                const response = this.responseVendor.buySuccessResponse();
-                response.initialize('Success!', service);
-                callback(response);
-            }
-            if(service === this.services[this.services.length -1]) {
-                const response = this.responseVendor.buyErrorResponse();
-                response.initialize('Could not find service <' + name + '> in PEA <' + this.name + '>', {});
-                callback(response);
-            }
-        })
+        const localService: Service | undefined = this.services.find(service =>
+            service.getName() === name
+        );
+
+        if(localService == undefined) {
+            const response = this.responseVendor.buyErrorResponse();
+            response.initialize('Could not find service <' + name + '> in PEA <' + this.name + '>', {});
+            callback(response);
+        } else {
+            const response = this.responseVendor.buySuccessResponse();
+            response.initialize('Success!', localService);
+            callback(response);
+        }
     };
 
     initialize(data: PEAInitializeDataType): boolean {

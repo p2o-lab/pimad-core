@@ -72,7 +72,7 @@ describe('class: BaseService', () => {
             expect(JSON.stringify(service.getMetaModelReference().getContent())).is.equal(JSON.stringify({data: 'Test-MetaModelRef'}));
         });
         it('method: getName()', () => {
-            expect(JSON.stringify(service.getName().getContent())).is.equal(JSON.stringify({data: 'Test-Name'}));
+            expect(service.getName()).is.equal('Test-Name');
         });
         describe('method: getParameter()', () => {
             it('test case: standard usage', done => {

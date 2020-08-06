@@ -35,9 +35,9 @@ export interface Service {
     getDataAssembly(): Response;
     /**
      * Getter for this.name of the service object.
-     * @returns A response object.
+     * @returns The service name as string.
      */
-    getName(): Response;
+    getName(): string;
     /**
      * Getter for this.metaModelRef of the service object.
      * @returns A response object.
@@ -137,13 +137,11 @@ abstract class AService implements Service{
         return response;
     };
 
-    getName(): Response {
-        const response = this.responseVendor.buySuccessResponse();
-        response.initialize('Success!', {data: this.name});
-        return response;
+    getName(): string {
+        return this.name;
     };
 
-    getParameter(name: string, callback: (response: Response) => void) {
+    getParameter(name: string, callback: (response: Response) => void): void {
         this.parameters.forEach((parameter: Parameter) => {
             if(parameter.getName() === name) {
                 const response = this.responseVendor.buySuccessResponse();
@@ -155,7 +153,7 @@ abstract class AService implements Service{
                 response.initialize('Could not find attribute <' + parameter.getName() + '> in service <' + this.name + '>', {})
                 callback(response)
             }
-        })
+        });
     };
 
     getProcedure(name: string, callback: (response: Response) => void) {
