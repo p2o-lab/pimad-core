@@ -1,6 +1,6 @@
-import {BaseServiceFactory, BaseService} from '../../src/ModuleAutomation';
+import {BaseServiceFactory, BaseService, BaseParameterFactory} from '../../src/ModuleAutomation';
 import {expect} from 'chai';
-import {BaseParameter, Parameter} from '../../src/ModuleAutomation';
+import {Parameter} from '../../src/ModuleAutomation';
 import {DataAssembly} from '../../src/ModuleAutomation';
 import {AML} from 'PiMAd-types';
 import Attribute = AML.Attribute;
@@ -28,9 +28,10 @@ describe('class: BaseService', () => {
                 {Name: 'Test-Attribute1', AttributeDataType: '', Value:'1'},
                 {Name: 'Test-Attribute2', AttributeDataType: '', Value:''}
             ];
-            const parameter = new BaseParameter();
+            const parameterFactory = new BaseParameterFactory();
+            const parameter = parameterFactory.create();
             parameter.initialize('Test-Parameter0', [], '');
-            const parameter2 = new BaseParameter();
+            const parameter2 = parameterFactory.create();
             parameter2.initialize('Test-Parameter1', [], '');
             const procedure0 = new BaseProcedure();
             procedure0.initialize({} as DataAssembly, '','', 'Test-Procedure0', [],[]);

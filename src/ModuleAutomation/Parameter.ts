@@ -52,7 +52,7 @@ abstract class AParameter implements Parameter {
     }
 }
 
-export class BaseParameter extends AParameter {
+class BaseParameter extends AParameter {
 }
 
 export interface ParameterFactory {

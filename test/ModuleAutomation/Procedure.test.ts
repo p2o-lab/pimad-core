@@ -1,9 +1,9 @@
 import {expect} from 'chai';
-import {BaseProcedureFactory, BaseProcedure} from '../../src/ModuleAutomation';
+import {BaseProcedureFactory, BaseProcedure, BaseParameterFactory} from '../../src/ModuleAutomation';
 import {DataAssembly} from '../../src/ModuleAutomation';
 import {AML} from 'PiMAd-types';
 import Attribute = AML.Attribute;
-import {BaseParameter, Parameter} from '../../src/ModuleAutomation';
+import {Parameter} from '../../src/ModuleAutomation';
 import {ErrorResponse, SuccessResponse} from '../../src/Backbone/Response';
 import {BaseDataAssemblyFactory} from '../../build/ModuleAutomation';
 
@@ -27,9 +27,10 @@ describe('class: BaseProcedure', () => {
                 {Name: 'Test-Attribute1', AttributeDataType: '', Value:'1'},
                 {Name: 'Test-Attribute2', AttributeDataType: '', Value:''}
                 ];
-            const parameter = new BaseParameter();
+            const parameterFactory = new BaseParameterFactory();
+            const parameter = parameterFactory.create();
             parameter.initialize('Test-Parameter', [], '')
-            const parameter2 = new BaseParameter();
+            const parameter2 = parameterFactory.create();
             parameter2.initialize('Test-Parameter2', [], '')
             procedure.initialize(dataAssembly,'Test-Identifier','Test-MetaModelRef','Test-Procedure',attributes, [parameter, parameter2]);
 
@@ -41,7 +42,7 @@ describe('class: BaseProcedure', () => {
         it('method: getAllParameters()', () => {
             const response = procedure.getAllParameters()
             expect(response.length).is.equal(2);
-            expect(response[0].constructor.name).is.equal(new BaseParameter().constructor.name);
+            expect(response[0].constructor.name).is.equal(new BaseParameterFactory().create().constructor.name);
         });
         describe('method: getAttribute()', () => {
             it('test case: standard usage', done => {

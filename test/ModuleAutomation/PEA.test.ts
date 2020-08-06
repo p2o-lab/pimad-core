@@ -1,16 +1,14 @@
-import {BasePEAFactory, BasePEA, PEAInitializeDataType} from '../../src/ModuleAutomation/PEA';
+import {BasePEAFactory, BasePEA, PEAInitializeDataType} from '../../src/ModuleAutomation';
 import {expect} from 'chai';
 import {ErrorResponse, SuccessResponse} from '../../src/Backbone/Response';
-import {DataAssembly} from '../../src/ModuleAutomation/DataAssembly';
-import {BaseParameter} from '../../src/ModuleAutomation/Parameter';
-import {BaseProcedure} from '../../src/ModuleAutomation/Procedure';
+import {DataAssembly} from '../../src/ModuleAutomation';
+import {BaseProcedure} from '../../src/ModuleAutomation';
 import {BasicSemanticVersion, SemanticVersion} from '../../src/Backbone/SemanticVersion';
-import {FEA} from '../../src/ModuleAutomation/FEA';
-import {BaseService, Service} from '../../src/ModuleAutomation/Service';
+import {FEA} from '../../src/ModuleAutomation';
+import {BaseService, Service} from '../../src/ModuleAutomation';
 import {AML} from 'PiMAd-types';
 import Attribute = AML.Attribute;
-import {BaseDataAssemblyFactory} from '../../build/ModuleAutomation';
-
+import {BaseDataAssemblyFactory, BaseParameterFactory} from '../../build/ModuleAutomation';
 
 describe('class: BasePEA', () => {
     let pea: BasePEA;
@@ -42,9 +40,10 @@ describe('class: BasePEA', () => {
                 {Name: 'Test-Attribute1', AttributeDataType: '', Value:'1'},
                 {Name: 'Test-Attribute2', AttributeDataType: '', Value:''}
             ];
-            const parameter = new BaseParameter();
+            const parameterFactory = new BaseParameterFactory();
+            const parameter = parameterFactory.create();
             parameter.initialize('Test-Parameter0', [], '');
-            const parameter2 = new BaseParameter();
+            const parameter2 = parameterFactory.create();
             parameter2.initialize('Test-Parameter1', [], '');
             const procedure0 = new BaseProcedure();
             procedure0.initialize({} as DataAssembly, '','', 'Test-Procedure0', [],[]);
