@@ -1,9 +1,13 @@
-import {BaseServiceFactory, BaseParameterFactory, BaseProcedureFactory, Service} from '../../src/ModuleAutomation';
+import {
+    BaseServiceFactory,
+    BaseParameterFactory,
+    BaseProcedureFactory,
+    Service,
+    AttributeFactoryVendor, Attribute
+} from '../../src/ModuleAutomation';
 import {expect} from 'chai';
 import {Parameter} from '../../src/ModuleAutomation';
 import {DataAssembly} from '../../src/ModuleAutomation';
-import {AML} from 'PiMAd-types';
-import Attribute = AML.Attribute;
 import {ErrorResponse, SuccessResponse} from '../../src/Backbone/Response';
 import {BaseDataAssemblyFactory} from '../../build/ModuleAutomation';
 
@@ -23,11 +27,16 @@ describe('class: BaseService', () => {
                 identifier: '',
                 dataItems: []
             });
-            const attributes: Attribute[] = [
-                {Name: 'Test-Attribute0', AttributeDataType: '', Value:''},
-                {Name: 'Test-Attribute1', AttributeDataType: '', Value:'1'},
-                {Name: 'Test-Attribute2', AttributeDataType: '', Value:''}
-            ];
+
+            const serviceAttributeFactory = new AttributeFactoryVendor().buyServiceAttributeFactory();
+            const attribute0 = serviceAttributeFactory.create();
+            attribute0.initialize({Name: 'Test-Attribute0', DataType: '', Value:''});
+            const attribute1 = serviceAttributeFactory.create();
+            attribute1.initialize({Name: 'Test-Attribute1', DataType: '', Value:'1'});
+            const attribute2 = serviceAttributeFactory.create();
+            attribute2.initialize({Name: 'Test-Attribute2', DataType: '', Value:'0'});
+            const attributes: Attribute[] = [attribute0, attribute1, attribute2];
+
             const parameterFactory = new BaseParameterFactory();
             const parameter = parameterFactory.create();
             parameter.initialize('Test-Parameter0', [], '');
@@ -45,7 +54,7 @@ describe('class: BaseService', () => {
                 service.getAttribute('Test-Attribute1', response => {
                     expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
                     const responseContent = response.getContent() as Attribute;
-                    expect(responseContent.Value).is.equal('1');
+                    expect((responseContent.getValue().getContent() as {data: string}).data).is.equal('1');
                     done();
                 })
             });

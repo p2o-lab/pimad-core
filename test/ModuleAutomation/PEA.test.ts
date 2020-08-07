@@ -1,12 +1,16 @@
-import {BasePEAFactory, BaseProcedureFactory, BaseServiceFactory} from '../../src/ModuleAutomation';
+import {
+    Attribute,
+    AttributeFactoryVendor,
+    BasePEAFactory,
+    BaseProcedureFactory,
+    BaseServiceFactory
+} from '../../src/ModuleAutomation';
 import {expect} from 'chai';
 import {ErrorResponse, SuccessResponse} from '../../src/Backbone/Response';
 import {DataAssembly} from '../../src/ModuleAutomation';
 import {BasicSemanticVersion, SemanticVersion} from '../../src/Backbone/SemanticVersion';
 import {FEA} from '../../src/ModuleAutomation';
 import {Service} from '../../src/ModuleAutomation';
-import {AML} from 'PiMAd-types';
-import Attribute = AML.Attribute;
 import {BaseDataAssemblyFactory, BaseParameterFactory} from '../../build/ModuleAutomation';
 import { PEAInitializeDataType, PEA } from '../../src/ModuleAutomation/PEA';
 import { Response } from '../../src/Backbone/Response'
@@ -37,11 +41,15 @@ describe('class: BasePEA', () => {
                 dataItems: []
             });
 
-            const attributes: Attribute[] = [
-                {Name: 'Test-Attribute0', AttributeDataType: '', Value:''},
-                {Name: 'Test-Attribute1', AttributeDataType: '', Value:'1'},
-                {Name: 'Test-Attribute2', AttributeDataType: '', Value:''}
-            ];
+            const serviceAttributeFactory = new AttributeFactoryVendor().buyServiceAttributeFactory();
+            const attribute0 = serviceAttributeFactory.create();
+            attribute0.initialize({Name: 'Test-Attribute0', DataType: '', Value:''});
+            const attribute1 = serviceAttributeFactory.create();
+            attribute0.initialize({Name: 'Test-Attribute1', DataType: '', Value:'1'});
+            const attribute2 = serviceAttributeFactory.create();
+            attribute2.initialize({Name: 'Test-Attribute2', DataType: '', Value:'0'});
+            const attributes: Attribute[] = [attribute0, attribute1, attribute2];
+
             const parameterFactory = new BaseParameterFactory();
             const parameter = parameterFactory.create();
             parameter.initialize('Test-Parameter0', [], '');

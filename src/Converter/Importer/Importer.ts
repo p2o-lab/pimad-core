@@ -23,6 +23,7 @@ import {AML} from 'PiMAd-types';
 import InstanceHierarchy = AML.InstanceHierarchy
 import { CAEXFile } from 'PiMAd-types';
 import {
+    Attribute, AttributeFactoryVendor,
     BaseDataAssemblyFactory,
     DataAssembly,
     DataAssemblyFactory
@@ -372,14 +373,30 @@ export class MTPFreeze202001Importer extends AImporter {
                         if(localProcedureDataAssembly === undefined) {
                             logger.warn('Could not find referenced DataAssembly for procedure <' + service.Name + '> Skipping this procedure ...');
                         } else {
+                            const procedureAttributes: Attribute[] = [];
+                            const procedureAttributeFactory = new AttributeFactoryVendor().buyProcedureAttributeFactory();
+                            procedure.Attributes.forEach(attribute => {
+                                const newProcedureAttribute = procedureAttributeFactory.create();
+                                if(newProcedureAttribute.initialize({DataType: attribute.AttributeDataType, Name: attribute.Name, Value: attribute.Value})) {
+                                    procedureAttributes.push(newProcedureAttribute);
+                                }
+                            });
                             const localProcedure = this.procedureFactory.create();
-                            if(localProcedure.initialize(localProcedureDataAssembly, procedure.Identifier, procedure.MetaModelRef, procedure.Name, procedure.Attributes, procedure.Parameters)) {
+                            if(localProcedure.initialize(localProcedureDataAssembly, procedure.Identifier, procedure.MetaModelRef, procedure.Name, procedureAttributes, procedure.Parameters)) {
                                 localServiceProcedures.push(localProcedure);
                             }
                         }
                     });
+                    const serviceAttributes: Attribute[] = [];
+                    const serviceAttributeFactory = new AttributeFactoryVendor().buyServiceAttributeFactory();
+                    service.Attributes.forEach(attribute => {
+                        const newProcedureAttribute = serviceAttributeFactory.create();
+                        if(newProcedureAttribute.initialize({DataType: attribute.AttributeDataType, Name: attribute.Name, Value: attribute.Value})) {
+                            serviceAttributes.push(newProcedureAttribute);
+                        }
+                    });
                     // initialize the new service object ...
-                    if(localService.initialize(service.Attributes, localServiceDataAssembly, service.Identifier, service.MetaModelRef, service.Name, service.Parameters, localServiceProcedures)) {
+                    if(localService.initialize(serviceAttributes, localServiceDataAssembly, service.Identifier, service.MetaModelRef, service.Name, service.Parameters, localServiceProcedures)) {
                         // ... and push it to the array.
                         localServices.push(localService);
                     }
