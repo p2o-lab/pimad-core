@@ -155,7 +155,7 @@ abstract class AService implements Service{
         });
     };
 
-    getProcedure(name: string, callback: (response: Response) => void) {
+    getProcedure(name: string, callback: (response: Response) => void): void {
         this.procedures.forEach((procedure: Procedure) => {
             if(procedure.getName() === name) {
                 const response = this.responseVendor.buySuccessResponse();

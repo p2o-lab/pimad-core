@@ -2,9 +2,7 @@ import {logger} from '../Utils/Logger';
 import {Parameter} from './Parameter';
 import {DataAssembly} from './DataAssembly';
 import {Response, ResponseVendor} from '../Backbone/Response';
-import {AML} from 'PiMAd-types';
 import {Attribute} from './Attribute';
-//import Attribute = AML.Attribute;
 
 export interface Procedure {
     /**
