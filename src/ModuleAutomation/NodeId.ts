@@ -16,35 +16,35 @@ abstract class ANodeId implements NodeId {
     protected constructor () {
         this.namespaceIndex = -1;
         this.initialized = false;
-        this.responseVendor = new ResponseVendor()
+        this.responseVendor = new ResponseVendor();
     };
     getIdentifier(): Response {
-        let response: Response
+        let response: Response;
         return this.checkInitialized(() => {
             response = this.responseVendor.buySuccessResponse();
             response.initialize('The identifier index of the node id.', {identifier: this.identifier});
             return response;
-        })
+        });
     };
     getNamespaceIndex(): Response {
-        let response: Response
+        let response: Response;
         return this.checkInitialized(() => {
             response = this.responseVendor.buySuccessResponse();
             response.initialize('The namespace index of the node id.', {namespaceIndex: this.namespaceIndex});
             return response;
-        })
+        });
     };
     abstract getNodeId(): Response;
     abstract initialize(namespaceIndex: number, identifier: string | number): boolean;
     protected checkInitialized(callbackTrue: () => Response): Response {
-        let response: Response
+        let response: Response;
         if(this.initialized) {
-            response = callbackTrue()
+            response = callbackTrue();
         } else {
             response = this.responseVendor.buyErrorResponse();
             response.initialize('NodeId-Object not initialized yet!', {});
         }
-        return response
+        return response;
     };
 }
 
@@ -65,12 +65,12 @@ class BaseNodeId extends ANodeId {
 class NumericNodeId extends ANodeId {
     protected identifier: number;
     getNodeId(): Response {
-        let response: Response
+        let response: Response;
         return this.checkInitialized(() => {
             response = this.responseVendor.buySuccessResponse();
             response.initialize('The node id.', {nodeId: 'ns=' + this.namespaceIndex + ';i=' + this.identifier});
             return response;
-        })
+        });
     };
     initialize(namespaceIndex: number, identifier: number): boolean {
         if (!this.initialized) {
@@ -92,12 +92,12 @@ class NumericNodeId extends ANodeId {
 class StringNodeId extends ANodeId {
     protected identifier: string;
     getNodeId(): Response {
-        let response: Response
+        let response: Response;
         return this.checkInitialized(() => {
             response = this.responseVendor.buySuccessResponse();
             response.initialize('The node id.', {nodeId: 'ns=' + this.namespaceIndex + ';s=' + this.identifier});
             return response;
-        })
+        });
     };
     initialize(namespaceIndex: number, identifier: string): boolean {
         if (!this.initialized) {
@@ -118,12 +118,12 @@ class StringNodeId extends ANodeId {
 class QpaqueNodeId extends StringNodeId {
     protected identifier: string;
     getNodeId(): Response {
-        let response: Response
+        let response: Response;
         return this.checkInitialized(() => {
             response = this.responseVendor.buySuccessResponse();
             response.initialize('The node id.', {nodeId: 'ns=' + this.namespaceIndex + ';b=' + this.identifier});
             return response;
-        })
+        });
     };
     constructor() {
         super();
@@ -134,12 +134,12 @@ class QpaqueNodeId extends StringNodeId {
 class GUIDNodeId extends StringNodeId {
     protected identifier: string;
     getNodeId(): Response {
-        let response: Response
+        let response: Response;
         return this.checkInitialized(() => {
             response = this.responseVendor.buySuccessResponse();
             response.initialize('The node id.', {nodeId: 'ns=' + this.namespaceIndex + ';g=' + this.identifier});
             return response;
-        })
+        });
     };
     constructor() {
         super();

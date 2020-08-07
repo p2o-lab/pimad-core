@@ -1,2 +1,2 @@
-export * from './PEAPool/index'
-export * from './ModuleAutomation/index'
+export * from './PEAPool/index';
+export * from './ModuleAutomation/index';

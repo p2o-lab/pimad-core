@@ -149,12 +149,12 @@ abstract class APEA implements PEA {
     getDataAssembly(tag: string, callback: (response: Response) => void): void {
         this.dataAssemblies.forEach((dataAssembly: DataAssembly) => {
             if(dataAssembly.getTagName() === tag) {
-                this.responseHandler.handleCallbackWithResponse(ResponseTypes.SUCCESS, 'Success!', dataAssembly, callback)
+                this.responseHandler.handleCallbackWithResponse(ResponseTypes.SUCCESS, 'Success!', dataAssembly, callback);
             }
             if(dataAssembly === this.dataAssemblies[this.dataAssemblies.length -1]) {
-                this.responseHandler.handleCallbackWithResponse(ResponseTypes.ERROR, 'Could not find dataAssembly <' + tag + '> in PEA <' + this.name + '>', {}, callback)
+                this.responseHandler.handleCallbackWithResponse(ResponseTypes.ERROR, 'Could not find dataAssembly <' + tag + '> in PEA <' + this.name + '>', {}, callback);
             }
-        })
+        });
     };
     getDataModel(): Response{
         const response = this.responseVendor.buySuccessResponse();
@@ -183,9 +183,9 @@ abstract class APEA implements PEA {
             service.getName() === name
         );
         if(localService == undefined) {
-            this.responseHandler.handleCallbackWithResponse(ResponseTypes.ERROR, 'Could not find service <' + name + '> in PEA <' + this.name + '>', {}, callback)
+            this.responseHandler.handleCallbackWithResponse(ResponseTypes.ERROR, 'Could not find service <' + name + '> in PEA <' + this.name + '>', {}, callback);
         } else {
-            this.responseHandler.handleCallbackWithResponse(ResponseTypes.SUCCESS, 'Success!', localService, callback)
+            this.responseHandler.handleCallbackWithResponse(ResponseTypes.SUCCESS, 'Success!', localService, callback);
         }
     };
 

@@ -26,11 +26,11 @@ import {
     BaseDataAssemblyFactory,
     DataAssembly,
     DataAssemblyFactory
-} from '../../ModuleAutomation/DataAssembly';
-import {CommunicationInterfaceData} from '../../ModuleAutomation/CommunicationInterfaceData';
-import {BasePEAFactory} from '../../ModuleAutomation/PEA';
-import {BaseServiceFactory, Service} from '../../ModuleAutomation/Service';
-import {BaseProcedureFactory, Procedure, ProcedureFactory} from '../../ModuleAutomation/Procedure';
+} from '../../ModuleAutomation';
+import {CommunicationInterfaceData} from '../../ModuleAutomation';
+import {BasePEAFactory} from '../../ModuleAutomation';
+import {BaseServiceFactory, Service} from '../../ModuleAutomation';
+import {BaseProcedureFactory, Procedure, ProcedureFactory} from '../../ModuleAutomation';
 import {Gate} from '../Gate/Gate';
 
 abstract class AImporter implements  Importer {
@@ -76,7 +76,7 @@ export class LastChainLinkImporter extends AImporter {
      * @param callback - Passing the result back via a callback function.
      */
     convertFrom(instructions: object, callback: (response: Response) => void): void {
-        callback(this.responseVendor.buyErrorResponse())
+        callback(this.responseVendor.buyErrorResponse());
     };
     /**
      * Initializing the LastChainLink.
@@ -89,7 +89,7 @@ export class LastChainLinkImporter extends AImporter {
                 logger.warn('You pass an Importer to a LastChainLinkImporter. That is not necessary. Use undefined instead.');
             }
             this.initialized = true;
-            return true
+            return true;
         } else {
             return false;
         }
@@ -124,8 +124,8 @@ export class MTPFreeze202001Importer extends AImporter {
         } else {
             const notInitialized = this.responseVendor.buyErrorResponse();
             logger.error('Use of a non-initialized MTPFreeze202001Importer. This one rejects the Request!');
-            notInitialized.initialize('The Importer is not initialized yet! Aborting ... ', {})
-            callback(notInitialized)
+            notInitialized.initialize('The Importer is not initialized yet! Aborting ... ', {});
+            callback(notInitialized);
         }
     }
 
@@ -144,12 +144,12 @@ export class MTPFreeze202001Importer extends AImporter {
         if(instructions.source != '') {
             // access data source
             this.accessDataSource(instructions, response => {
-                callback(response)
-            })
+                callback(response);
+            });
         } else {
             this.nextImporter?.convertFrom(instructions, response => {
                 callback(response);
-            })
+            });
         }
     }
 
@@ -202,13 +202,13 @@ export class MTPFreeze202001Importer extends AImporter {
                 if(localCAEXFile.data?.CAEXFile != undefined) {
                     this.checkInformationModel(localCAEXFile.data.CAEXFile, instructions.identifier,checkIMResponse => {
                         callback(checkIMResponse);
-                    })
+                    });
                 } else {
-                    const followInstructionResponse = this.responseVendor.buyErrorResponse()
-                    followInstructionResponse.initialize('The File at ' + instructions.source + ' is not valid CAEX!', {})
-                    callback(followInstructionResponse)
+                    const followInstructionResponse = this.responseVendor.buyErrorResponse();
+                    followInstructionResponse.initialize('The File at ' + instructions.source + ' is not valid CAEX!', {});
+                    callback(followInstructionResponse);
                 }
-            })
+            });
         }
     }
 
@@ -225,8 +225,8 @@ export class MTPFreeze202001Importer extends AImporter {
      */
     private checkInformationModel(data: CAEXFile, pimadIdentifier: string, callback: (response: Response) => void): void {
         this.convert(data, pimadIdentifier,response => {
-            callback(response)
-        })
+            callback(response);
+        });
     }
 
     /**
@@ -241,7 +241,7 @@ export class MTPFreeze202001Importer extends AImporter {
             if(refBaseSystemUnitPath === content.RefBaseSystemUnitPath) {
                 callback(content);
             }
-        })
+        });
     }
 
     /**
@@ -307,9 +307,9 @@ export class MTPFreeze202001Importer extends AImporter {
     private convert(data: CAEXFile, pimadIdentifier: string, callback: (response: Response) => void): void {
         // These variables will be continuously filled
         let communicationInterfaceData: CommunicationInterfaceData[] = []; // TODO > link to communication interface
-        let dataAssemblies: DataAssembly[] = []
+        let dataAssemblies: DataAssembly[] = [];
         let communicationSet: {InternalElement: object[]} = {} as {InternalElement: object[]};
-        let mtpPartResponseContent: ExtractDataFromCommunicationSetResponseType = {} as ExtractDataFromCommunicationSetResponseType
+        let mtpPartResponseContent: ExtractDataFromCommunicationSetResponseType = {} as ExtractDataFromCommunicationSetResponseType;
         let servicePartResponseContent: InternalServiceType[] = [];
         let peaName = 'name: undefined';
         let peaMetaModelRef = 'metaModelRef: undefined';
@@ -325,7 +325,7 @@ export class MTPFreeze202001Importer extends AImporter {
                     // get the CommunicationSet
                     this.getSet('MTPSUCLib/CommunicationSet', localInternalElement.InternalElement, set => {
                         communicationSet = set as {InternalElement: object[]};
-                    })
+                    });
                     const mtpImporterPart: MTPPart = new MTPPart();
                     mtpImporterPart.extract({CommunicationSet: communicationSet.InternalElement, HMISet: {}, ServiceSet: {}, TextSet: {}}, mtpPartResponse => {
                         if(mtpPartResponse.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
@@ -335,28 +335,28 @@ export class MTPFreeze202001Importer extends AImporter {
                         } else {
                           logger.warn('Could not extract CommunicationSet');
                         }
-                    })
+                    });
                     break;
                 case 'Services':
                     const serviceImporterPart = new ServicePart();
                     serviceImporterPart.extract(instance as ServicePartExtractInputDataType, servicePartResponse => {
-                        servicePartResponseContent = servicePartResponse.getContent() as InternalServiceType[]
-                    })
+                        servicePartResponseContent = servicePartResponse.getContent() as InternalServiceType[];
+                    });
                     break;
                 default:
                     break;
             }
-        })
+        });
         // Checking the data for completeness
         if(JSON.stringify(mtpPartResponseContent) === JSON.stringify({}) || servicePartResponseContent.length === 0) {
             const localResponse = this.responseVendor.buyErrorResponse();
-            localResponse.initialize('Could not extract MTPSUCLib/CommunicationSet and/or MTPServiceSUCLib/ServiceSet. Aborting...', {})
+            localResponse.initialize('Could not extract MTPSUCLib/CommunicationSet and/or MTPServiceSUCLib/ServiceSet. Aborting...', {});
             callback(localResponse);
         } else {
             // data is fine -> Now merging Services and Procedures with DataAssemblies.
             const localServices: Service[] = [];
             servicePartResponseContent.forEach((service: InternalServiceType) => {
-                const localService = this.serviceFactory.create()
+                const localService = this.serviceFactory.create();
                 const localServiceDataAssembly: DataAssembly | undefined = dataAssemblies.find(dataAssembly =>
                     service.DataAssembly.Value === dataAssembly.getIdentifier()
                 );
@@ -377,25 +377,25 @@ export class MTPFreeze202001Importer extends AImporter {
                                 localServiceProcedures.push(localProcedure);
                             }
                         }
-                    })
+                    });
                     // initialize the new service object ...
                     if(localService.initialize(service.Attributes, localServiceDataAssembly, service.Identifier, service.MetaModelRef, service.Name, service.Parameters, localServiceProcedures)) {
                         // ... and push it to the array.
                         localServices.push(localService);
                     }
                 }
-            })
+            });
             const localPEA = this.peaFactory.create();
             // Initializing the local pea
             if(localPEA.initialize({DataAssemblies: dataAssemblies, DataModel: peaMetaModelRef, DataModelVersion: new BasicSemanticVersion(), FEAs: [], Name: peaName, PiMAdIdentifier: pimadIdentifier, Services: localServices})) {
                 // successful -> callback with successful response
                 const localSuccessResponse = this.responseVendor.buySuccessResponse();
-                localSuccessResponse.initialize('Success!', localPEA)
+                localSuccessResponse.initialize('Success!', localPEA);
                 callback(localSuccessResponse);
             } else {
                 // error -> callback with error response
                 const localErrorResponse = this.responseVendor.buyErrorResponse();
-                localErrorResponse.initialize('Could not extract PEA from ???. Aborting', {})
+                localErrorResponse.initialize('Could not extract PEA from ???. Aborting', {});
                 callback(localErrorResponse);
             }
         }

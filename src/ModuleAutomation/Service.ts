@@ -101,10 +101,10 @@ abstract class AService implements Service{
             }
             if(attribute === this.attributes[this.attributes.length -1]) {
                 const response = this.responseVendor.buyErrorResponse();
-                response.initialize('Could not find attribute <' + name + '> in service <' + this.name + '>', {})
-                callback(response)
+                response.initialize('Could not find attribute <' + name + '> in service <' + this.name + '>', {});
+                callback(response);
             }
-        })
+        });
     }
 
     getAllAttributes(): Response {
@@ -150,8 +150,8 @@ abstract class AService implements Service{
             }
             if(parameter === this.parameters[this.parameters.length -1]) {
                 const response = this.responseVendor.buyErrorResponse();
-                response.initialize('Could not find attribute <' + parameter.getName() + '> in service <' + this.name + '>', {})
-                callback(response)
+                response.initialize('Could not find attribute <' + parameter.getName() + '> in service <' + this.name + '>', {});
+                callback(response);
             }
         });
     };
@@ -165,17 +165,17 @@ abstract class AService implements Service{
             }
             if(procedure === this.procedures[this.procedures.length -1]) {
                 const response = this.responseVendor.buyErrorResponse();
-                response.initialize('Could not find procedure <' + procedure.getName() + '> in service <' + this.name + '>', {})
-                callback(response)
+                response.initialize('Could not find procedure <' + procedure.getName() + '> in service <' + this.name + '>', {});
+                callback(response);
             }
-        })
+        });
     }
 
     initialize(attributes: Attribute[], dataAssembly: DataAssembly, identifier: string, metaModelRef: string, name: string, parameter: Parameter[], procedure: Procedure[]): boolean {
         if(!this.initialized) {
             this.attributes = attributes;
             this.dataAssembly = dataAssembly;
-            this.identifier = identifier
+            this.identifier = identifier;
             this.metaModelRef = metaModelRef;
             this.name = name;
             this.parameters = parameter;

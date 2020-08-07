@@ -22,9 +22,9 @@ abstract class AGate implements Gate {
     }
 
     public send(instructions: object, callback: (response: Response) => void): void {
-        const localResponse = this.responseVendor.buyErrorResponse()
-        localResponse.initialize('Not implemented yet!', {})
-        callback(localResponse)
+        const localResponse = this.responseVendor.buyErrorResponse();
+        localResponse.initialize('Not implemented yet!', {});
+        callback(localResponse);
     };
 
     abstract receive(instructions: object, callback: (response: Response) => void): void;
@@ -84,14 +84,14 @@ export class AMLGate extends AFileSystemGate {
                     callback(localResponse);
                 } else {
                     logger.error('Could not parse the AML-File at ' + this.gateAddress);
-                    callback(this.responseVendor.buyErrorResponse())
+                    callback(this.responseVendor.buyErrorResponse());
                 }
             });
         } else {
             const notInitialized = this.responseVendor.buyErrorResponse();
             logger.error('Use of a non-initialized AML-Gate. This one rejects the Request!');
-            notInitialized.initialize('The Gate is not initialized yet! Aborting ... ', {})
-            callback(notInitialized)
+            notInitialized.initialize('The Gate is not initialized yet! Aborting ... ', {});
+            callback(notInitialized);
         }
     };
     constructor() {
@@ -108,19 +108,19 @@ export class MockGate extends AGate {
     send(instructions: object, callback: (response: Response) => void): void {
         logger.debug('Send ' + instructions + ' to ' + this.getGateAddress());
         const response = this.responseVendor.buySuccessResponse();
-        response.initialize('This is a send-response of a mock gate.', instructions)
+        response.initialize('This is a send-response of a mock gate.', instructions);
         callback(response);
     };
     receive(instructions: object, callback: (response: Response) => void): void {
         if (this.initialized) {
             const response = this.responseVendor.buySuccessResponse();
-            response.initialize('This is a receive-response of a mock gate.', instructions)
+            response.initialize('This is a receive-response of a mock gate.', instructions);
             callback(response);
         } else {
             const notInitialized = this.responseVendor.buyErrorResponse();
             logger.error('Use of a non-initialized Mock-Gate. This one rejects the Request!');
-            notInitialized.initialize('The Gate is not initialized yet! Aborting ... ', {})
-            callback(notInitialized)
+            notInitialized.initialize('The Gate is not initialized yet! Aborting ... ', {});
+            callback(notInitialized);
         }
     };
     constructor() {
@@ -143,16 +143,16 @@ export class MTPGate extends AFileSystemGate {
                     const zipGateResponse: {data?: []} = response.getContent();
                     const mtpGateResponse = this.responseVendor.buySuccessResponse();
                     mtpGateResponse.initialize('Success!', {data: zipGateResponse.data});
-                    callback(mtpGateResponse)
+                    callback(mtpGateResponse);
                 } else {
-                    callback(this.responseVendor.buyErrorResponse())
+                    callback(this.responseVendor.buyErrorResponse());
                 }
-            })
+            });
         } else {
             const notInitialized = this.responseVendor.buyErrorResponse();
             logger.error('Use of a non initialized MTP-Gate. This one rejects the Request!');
-            notInitialized.initialize('The Gate is not initialized yet! Aborting ... ', {})
-            callback(notInitialized)
+            notInitialized.initialize('The Gate is not initialized yet! Aborting ... ', {});
+            callback(notInitialized);
         }
     }
 
@@ -178,14 +178,14 @@ export class XMLGate extends AFileSystemGate {
                     callback(xmlGateResponse);
                 } else {
                     logger.error('Could not parse the XML-File at ' + this.gateAddress);
-                    callback(this.responseVendor.buyErrorResponse())
+                    callback(this.responseVendor.buyErrorResponse());
                 }
-            })
+            });
         } else {
             const notInitialized = this.responseVendor.buyErrorResponse();
             logger.error('Use of a non initialized XML-Gate. This one rejects the Request!');
-            notInitialized.initialize('The Gate is not initialized yet! Aborting ... ', {})
-            callback(notInitialized)
+            notInitialized.initialize('The Gate is not initialized yet! Aborting ... ', {});
+            callback(notInitialized);
         }
     };
 }
@@ -227,10 +227,10 @@ export class ZIPGate extends AFileSystemGate {
                                         // delete the extracted data
                                         rimraf(unzippedFolderPath, function () {
                                             callback(zipGateResponse);
-                                        })
+                                        });
                                     }
                                 }
-                            })
+                            });
                             break;
                         case '.xml':
                             const xmlGate = this.xmlGateFactory.create();
@@ -245,24 +245,24 @@ export class ZIPGate extends AFileSystemGate {
                                         // delete the extracted data
                                         rimraf(unzippedFolderPath, function () {
                                             callback(zipGateResponse);
-                                        })
+                                        });
                                     }
                                 }
-                            })
+                            });
                             break;
                         default:
                             logger.warn('There is an unsupported file type. Ignoring...');
                             break;
                     }
-                })
+                });
             } else {
-                callback(this.responseVendor.buyErrorResponse())
+                callback(this.responseVendor.buyErrorResponse());
             }
         } else {
             const notInitialized = this.responseVendor.buyErrorResponse();
             logger.error('Use of a non initialized ZIP-Gate. This one rejects the Request!');
-            notInitialized.initialize('The Gate is not initialized yet! Aborting ... ', {})
-            callback(notInitialized)
+            notInitialized.initialize('The Gate is not initialized yet! Aborting ... ', {});
+            callback(notInitialized);
         }
 
     }

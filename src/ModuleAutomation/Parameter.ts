@@ -36,7 +36,7 @@ abstract class AParameter implements Parameter {
     getCommunicationInterfaceData(tag: string): CommunicationInterfaceData {
         // TODO > Big refactor! Response type, callback, etc.
         // add Operations for InterfaceData by tag : CommunicationInterfaceData
-        return (new OPCUANodeCommunicationFactory()).create()
+        return (new OPCUANodeCommunicationFactory()).create();
     }
     initialize(name: string, communication: CommunicationInterfaceData[], interfaceClass: any): boolean {
         if (!this.initialized) {
