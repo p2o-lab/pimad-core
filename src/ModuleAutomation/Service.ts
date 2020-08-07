@@ -3,8 +3,7 @@ import {Response, ResponseVendor} from '../Backbone/Response';
 import {logger} from '../Utils/Logger';
 import {DataAssembly} from './DataAssembly';
 import {Procedure} from './Procedure';
-import {AML} from 'PiMAd-types';
-import Attribute = AML.Attribute;
+import { Attribute } from './Attribute';
 
 export interface Service {
     /**
@@ -94,7 +93,7 @@ abstract class AService implements Service{
 
     getAttribute(name: string, callback: (response: Response) => void): void {
         this.attributes.forEach((attribute: Attribute) => {
-            if(attribute.Name === name) {
+            if((attribute.getName().getContent() as {data: string}).data === name) {
                 const response = this.responseVendor.buySuccessResponse();
                 response.initialize('Success!', attribute);
                 callback(response);

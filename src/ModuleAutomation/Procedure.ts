@@ -3,7 +3,8 @@ import {Parameter} from './Parameter';
 import {DataAssembly} from './DataAssembly';
 import {Response, ResponseVendor} from '../Backbone/Response';
 import {AML} from 'PiMAd-types';
-import Attribute = AML.Attribute;
+import {Attribute} from './Attribute';
+//import Attribute = AML.Attribute;
 
 export interface Procedure {
     /**
@@ -80,7 +81,7 @@ abstract class AProcedure implements Procedure {
     }
     getAttribute(name: string, callback: (response: Response) => void): void {
         this.attributes.forEach((attribute: Attribute) => {
-            if(attribute.Name === name) {
+            if((attribute.getName().getContent() as {data: string}).data === name) {
                 const response = this.responseVendor.buySuccessResponse();
                 response.initialize('Success!', attribute);
                 callback(response);

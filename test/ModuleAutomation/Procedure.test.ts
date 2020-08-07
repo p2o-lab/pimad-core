@@ -1,8 +1,11 @@
 import {expect} from 'chai';
-import {BaseProcedureFactory, BaseParameterFactory, Procedure} from '../../src/ModuleAutomation';
+import {
+    BaseProcedureFactory,
+    BaseParameterFactory,
+    Procedure,
+    AttributeFactoryVendor, Attribute
+} from '../../src/ModuleAutomation';
 import {DataAssembly} from '../../src/ModuleAutomation';
-import {AML} from 'PiMAd-types';
-import Attribute = AML.Attribute;
 import {Parameter} from '../../src/ModuleAutomation';
 import {ErrorResponse, SuccessResponse} from '../../src/Backbone/Response';
 import {BaseDataAssemblyFactory} from '../../build/ModuleAutomation';
@@ -23,17 +26,22 @@ describe('class: BaseProcedure', () => {
                 identifier: '',
                 dataItems: []
             });
-            const attributes: Attribute[] = [
-                {Name: 'Test-Attribute0', AttributeDataType: '', Value:''},
-                {Name: 'Test-Attribute1', AttributeDataType: '', Value:'1'},
-                {Name: 'Test-Attribute2', AttributeDataType: '', Value:''}
-                ];
+
+            const procedureAttributeFactory = new AttributeFactoryVendor().buyProcedureAttributeFactory();
+            const attribute0 = procedureAttributeFactory.create();
+            attribute0.initialize({Name: 'Test-Attribute0', DataType: '', Value:''});
+            const attribute1 = procedureAttributeFactory.create();
+            attribute1.initialize({Name: 'Test-Attribute1', DataType: '', Value:'1'});
+            const attribute2 = procedureAttributeFactory.create();
+            attribute2.initialize({Name: 'Test-Attribute2', DataType: '', Value:'0'});
+            const attributes: Attribute[] = [attribute0, attribute1, attribute2];
+
             const parameterFactory = new BaseParameterFactory();
             const parameter = parameterFactory.create();
             parameter.initialize('Test-Parameter', [], '')
             const parameter2 = parameterFactory.create();
             parameter2.initialize('Test-Parameter2', [], '')
-            procedure.initialize(dataAssembly,'Test-Identifier','Test-MetaModelRef','Test-Procedure',attributes, [parameter, parameter2]);
+            procedure.initialize(dataAssembly,'Test-Identifier','Test-MetaModelRef','Test-Procedure', attributes, [parameter, parameter2]);
 
         });
         it('method: getAllAttributes()', () => {
@@ -50,7 +58,7 @@ describe('class: BaseProcedure', () => {
                 procedure.getAttribute('Test-Attribute1', response => {
                     expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
                     const responseContent = response.getContent() as Attribute;
-                    expect(responseContent.Value).is.equal('1');
+                    expect((responseContent.getValue().getContent() as {data: string}).data).is.equal('1');
                     done();
                 })
             });

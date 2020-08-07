@@ -44,7 +44,7 @@ describe('class: BasePEAStore', () => {
         it('method: addPEA()', (done) => {
             pool.addPEA({source: 'test/Converter/PiMAd-core.0-0-1.aml'}, (response: Response) => {
                 expect(response.constructor.name).is.equal((new SuccessResponse().constructor.name));
-                expect(response.getContent().constructor.name).is.equal('BasePEA')
+                expect(response.getContent().constructor.name).is.equal('BasePEA');
                 done();
             });
         });
