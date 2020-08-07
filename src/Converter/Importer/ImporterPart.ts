@@ -2,9 +2,9 @@ import {Response, ResponseVendor} from '../../Backbone/Response';
 import {
     CommunicationInterfaceData, CommunicationInterfaceDataFactory, OPCUANodeCommunicationFactory,
     OPCUAServerCommunicationFactory
-} from '../../ModuleAutomation/CommunicationInterfaceData';
-import { DataAssembly,BaseDataAssemblyFactory} from '../../ModuleAutomation/DataAssembly';
-import {AML} from 'PiMAd-types'
+} from '../../ModuleAutomation';
+import { DataAssembly,BaseDataAssemblyFactory} from '../../ModuleAutomation';
+import {AML} from 'PiMAd-types';
 import DataItemInstanceList = AML.DataItemInstanceList;
 import DataItemSourceList = AML.DataItemSourceList;
 import DataItemSourceListExternalInterface = AML.DataItemSourceListExternalInterface;
@@ -12,17 +12,17 @@ import Attribute = AML.Attribute;
 import ServiceInternalElement = AML.ServiceInternalElement;
 import { InstanceList, SourceList } from 'PiMAd-types';
 import {logger} from '../../Utils/Logger';
-import {BaseDataItemFactory, DataItem} from '../../ModuleAutomation/DataItem';
-import {BaseProcedureFactory} from '../../ModuleAutomation/Procedure';
-import {Parameter} from '../../ModuleAutomation/Parameter';
+import {BaseDataItemFactory, DataItem} from '../../ModuleAutomation';
+import {BaseProcedureFactory} from '../../ModuleAutomation';
+import {Parameter} from '../../ModuleAutomation';
 
 abstract class AImporterPart implements ImporterPart {
     protected responseVendor: ResponseVendor
 
     extract(data: object, callback: (response: Response) => void): void {
-        const localResponse = this.responseVendor.buyErrorResponse()
-        localResponse.initialize('Not implemented yet!', {})
-        callback(localResponse)
+        const localResponse = this.responseVendor.buyErrorResponse();
+        localResponse.initialize('Not implemented yet!', {});
+        callback(localResponse);
     }
 
     /**
@@ -36,9 +36,9 @@ abstract class AImporterPart implements ImporterPart {
             if(attribute.Name === attributeName) {
                 const localResponse = this.responseVendor.buySuccessResponse();
                 localResponse.initialize('Success!', attribute);
-                callback(localResponse)
+                callback(localResponse);
             }
-        })
+        });
     }
 
     constructor() {
@@ -99,7 +99,7 @@ export class MTPPart extends AImporterPart {
             // First of all: typing
             const elementWithListType = setElement as InstanceList| SourceList;
             if (elementWithListType.RefBaseSystemUnitPath === refBaseSystemUnitPath) {
-                callback(elementWithListType)
+                callback(elementWithListType);
             }
         });
     };
@@ -184,11 +184,11 @@ export class MTPPart extends AImporterPart {
         });
         // Check instanceList/sourceList isn't empty.
         if(JSON.stringify(instanceList) == JSON.stringify({}) || JSON.stringify(sourceList) == JSON.stringify({})) {
-            logger.error('Could not extract InstanceList and SourceList of the CommunicationSet. Aborting!')
+            logger.error('Could not extract InstanceList and SourceList of the CommunicationSet. Aborting!');
             return {
                 CommunicationInterfaceData: [],
                 DataAssemblies: []
-            }
+            };
         }
         /* Easier handling of 'single' and 'multiple' sources in one code section. Therefore a single source is
         transferred to an array with one entry. */
@@ -211,13 +211,13 @@ export class MTPPart extends AImporterPart {
                     step. */
                     sourceListItem.ExternalInterface.forEach((sourceListElementExternalInterfaceItem: DataItemSourceListExternalInterface) => {
                         localExternalInterfaces.push(sourceListElementExternalInterfaceItem);
-                    })
+                    });
                     break;
                 default:
                     logger.warn('Unknown RefBaseSystemUnitPath of source' + sourceListItem.Name + '! Skipping ...');
                     break;
             }
-        })
+        });
         // Handle the InstanceList. Merging data with SourceList and generating mainly PiMAd-core-DataAssemblies.
         instanceList.InternalElement.forEach((instanceListElement: DataItemInstanceList) => {
             // like above these variables will be continuously filled with data in the following lines.
@@ -255,7 +255,7 @@ export class MTPPart extends AImporterPart {
                                             access = localeInterfaceAttribute.Value;
                                             break;
                                         default:
-                                            logger.warn('The opcua-node-communication object contains the unknown attribute <' + instanceListElementAttribute.Name + '>! Ignoring ...')
+                                            logger.warn('The opcua-node-communication object contains the unknown attribute <' + instanceListElementAttribute.Name + '>! Ignoring ...');
                                             break;
                                     }
                                     // in the last loop circle initialize the communication interface.
@@ -271,7 +271,7 @@ export class MTPPart extends AImporterPart {
                                             logger.warn('Could not add opcua-communication <' + instanceListElementAttribute.Name + '> to DataAssembly <' + instanceListElement.Name + '>');
                                         }
                                     }
-                                })
+                                });
                                 // Create and initialize the data item.
                                 const localDataItem = this.baseDataItemFactory.create();
                                 if (localDataItem.initialize(instanceListElementAttribute.Name, opcuaNodeCommunication, localeExternalInterface.ID, localeExternalInterface.RefBaseClassPath)) {
@@ -287,7 +287,7 @@ export class MTPPart extends AImporterPart {
                                 //Array.prototype.some() stuff...
                                 return false;
                             }
-                        })
+                        });
                         break;
                     /* Now the attributes are id's and doesn't referencing to an DataAssembly/DataItem. In this case the
                     id connect different data items in the MTP. (Real talk) me (CHe) as an software engineer, i don't
@@ -307,7 +307,7 @@ export class MTPPart extends AImporterPart {
                     default:
                         break;
                 }
-            })
+            });
             // All data for creating a DataAssembly has now been collected. Now creating ...
             const localeDataAssembly = this.baseDataAssemblyFactory.create();
             // ... and initializing.
@@ -324,12 +324,12 @@ export class MTPPart extends AImporterPart {
             } else {
                 logger.warn('Cannot extract all data from DataAssembly <' + instanceListElement.Name + '> need MTPFreeze-2020-01! Skipping ...');
             }
-        })
+        });
         // We are done. Return the extracted Data.
         return {
             CommunicationInterfaceData: communicationInterfaceData,
             DataAssemblies: dataAssemblies
-        }
+        };
     }
 
     constructor() {
@@ -383,7 +383,7 @@ export class ServicePart extends AImporterPart {
         PiMAd-core Service. */
         const extractedServiceData: InternalServiceType[] = []; // will be the content of the response.
         // typing
-        const services = data.InternalElement as ServiceInternalElement[]
+        const services = data.InternalElement as ServiceInternalElement[];
         // looping through all elements of the array.
         services.forEach((amlService: ServiceInternalElement) => {
             // TODO > Better solution possible?
@@ -412,7 +412,7 @@ export class ServicePart extends AImporterPart {
             // extract and store all other attributes
             this.extractAttributes(localAMLServiceAttributes, (response => {
                 localService.Attributes = response.getContent() as Attribute[];
-            }))
+            }));
             // extract all Procedures, etc
             amlService.InternalElement.forEach((amlServiceInternalElementItem: DataItemInstanceList) => {
                 switch (amlServiceInternalElementItem.RefBaseSystemUnitPath) {
@@ -420,7 +420,7 @@ export class ServicePart extends AImporterPart {
                         /* like the services above the data of the procedures in the MTP-ServiceSet is insufficient.
                         Therefore use again a quasi procedure. The importer will later merge the quasi procedure and the
                         referenced DataAssembly. */
-                        const localProcedure = {} as InternalProcedureType
+                        const localProcedure = {} as InternalProcedureType;
                         localProcedure.Attributes = [];
                         localProcedure.Identifier = amlServiceInternalElementItem.ID;
                         localProcedure.MetaModelRef = amlServiceInternalElementItem.RefBaseSystemUnitPath;
@@ -434,7 +434,7 @@ export class ServicePart extends AImporterPart {
                         // extract all the other Attributes
                         this.extractAttributes(amlServiceInternalElementItem.Attribute, (response => {
                             localProcedure.Attributes = response.getContent() as Attribute[];
-                        }))
+                        }));
                         localService.Procedures.push(localProcedure);
                         // TODO: Missing Procedure-Parameters
                         break;
@@ -443,9 +443,9 @@ export class ServicePart extends AImporterPart {
                         logger.warn('Unknown >InternalElement< in service <' + amlService.Name + '> Ignoring!');
                         break;
                 }
-            })
+            });
             extractedServiceData.push(localService);
-        })
+        });
         const localResponse = this.responseVendor.buySuccessResponse();
         localResponse.initialize('Successfully extracting the ServicePart!', extractedServiceData);
         callback(localResponse);
@@ -458,7 +458,7 @@ export class ServicePart extends AImporterPart {
      * @param callback - A callback function with an instance of the Response-Interface.
      */
     private extractAttributes(attributes: Attribute[], callback: (response: Response) => void): void {
-        const responseAttributes: Attribute[] = []
+        const responseAttributes: Attribute[] = [];
         attributes.forEach((attribute: Attribute) => {
             switch (attribute.Name) {
                 case 'RefID':
@@ -469,9 +469,9 @@ export class ServicePart extends AImporterPart {
             if(JSON.stringify(attribute) === JSON.stringify(attributes[attributes.length -1])) {
                 const localeResponse = this.responseVendor.buySuccessResponse();
                 localeResponse.initialize('Success!', responseAttributes);
-                callback(localeResponse)
+                callback(localeResponse);
             }
-        })
+        });
     }
 
     constructor() {

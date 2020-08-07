@@ -18,7 +18,7 @@ abstract class AResponse implements Response {
             this.content = content;
             return (this.message == message && JSON.stringify(this.content) == JSON.stringify(content));
         } else {
-            return false
+            return false;
         }
     }
 
@@ -65,7 +65,7 @@ abstract class AResponseFactory implements ResponseFactory {
 
 export class ErrorResponseFactory extends AResponseFactory {
     create(): Response {
-        const response = new ErrorResponse()
+        const response = new ErrorResponse();
         logger.debug(this.constructor.name + ' creates a ' + response.constructor.name);
         return response;
     }
@@ -73,7 +73,7 @@ export class ErrorResponseFactory extends AResponseFactory {
 
 export class DummyResponseFactory extends AResponseFactory {
     create(): Response {
-        const response = new DummyResponse()
+        const response = new DummyResponse();
         logger.debug(this.constructor.name + ' creates a ' + response.constructor.name);
         return response;
     }
@@ -81,7 +81,7 @@ export class DummyResponseFactory extends AResponseFactory {
 
 export class SuccessResponseFactory extends AResponseFactory {
     create(): Response {
-        const response = new SuccessResponse()
+        const response = new SuccessResponse();
         logger.debug(this.constructor.name + ' creates a ' + response.constructor.name);
         return response;
     }
@@ -89,7 +89,7 @@ export class SuccessResponseFactory extends AResponseFactory {
 
 export class WarningResponseFactory extends AResponseFactory {
     create(): Response {
-        const response = new WarningResponse()
+        const response = new WarningResponse();
         logger.debug(this.constructor.name + ' creates a ' + response.constructor.name);
         return response;
     }
@@ -109,16 +109,16 @@ export class ResponseVendor {
         this.fWarningResponse = new WarningResponseFactory();
     }
     public buyErrorResponse(): Response {
-        return this.fErrorResponse.create()
+        return this.fErrorResponse.create();
     }
     public buyDummyResponse(): Response {
-        return this.fSuccessResponse.create()
+        return this.fSuccessResponse.create();
     }
     public buySuccessResponse(): Response {
-        return this.fSuccessResponse.create()
+        return this.fSuccessResponse.create();
     }
     public buyWarningResponse(): Response {
-        return this.fWarningResponse.create()
+        return this.fWarningResponse.create();
     }
 }
 

@@ -73,7 +73,7 @@ abstract class AProcedure implements Procedure {
         this.responseVendor = new ResponseVendor();
     }
     getAllAttributes(): Attribute[] {
-        return this.attributes
+        return this.attributes;
     }
     getAllParameters(): Parameter[] {
         return this.parameters;
@@ -87,10 +87,10 @@ abstract class AProcedure implements Procedure {
             }
             if(attribute === this.attributes[this.attributes.length -1]) {
                 const response = this.responseVendor.buyErrorResponse();
-                response.initialize('Could not find attribute <' + name + '> in procedure <' + this.name + '>', {})
-                callback(response)
+                response.initialize('Could not find attribute <' + name + '> in procedure <' + this.name + '>', {});
+                callback(response);
             }
-        })
+        });
     }
     getDataAssembly(): DataAssembly {
         return this.dataAssembly;
@@ -113,10 +113,10 @@ abstract class AProcedure implements Procedure {
             }
             if(parameter === this.parameters[this.parameters.length -1]) {
                 const response = this.responseVendor.buyErrorResponse();
-                response.initialize('Could not find parameter <' + tag + '> in procedure <' + this.name + '>', {})
-                callback(response)
+                response.initialize('Could not find parameter <' + tag + '> in procedure <' + this.name + '>', {});
+                callback(response);
             }
-        })
+        });
     }
     initialize(dataAssembly: DataAssembly, identifier: string, metaModelRef: string, name: string, attributes: Attribute[], para: Parameter[]): boolean {
         if(!this.initialized)  {

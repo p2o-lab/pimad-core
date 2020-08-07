@@ -15,6 +15,7 @@ module.exports =  {
     },
     rules: {
         "tsdoc/syntax": "warn",
-        "quotes": [2, "single", "avoid-escape"]
+        quotes: [2, "single", "avoid-escape"],
+        semi: ["error", "always"]
     }
 };
