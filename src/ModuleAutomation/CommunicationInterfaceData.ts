@@ -1,5 +1,5 @@
 import {NodeId} from './NodeId';
-import {logger} from '../Utils/Logger';
+import {logger} from '../Utils';
 
 export interface CommunicationInterfaceData {
     getDescription(): object;

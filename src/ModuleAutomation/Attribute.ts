@@ -1,5 +1,5 @@
-import {logger} from '../Utils/Logger';
-import {ResponseVendor, Response} from '../Backbone/Response';
+import {logger} from '../Utils';
+import {ResponseVendor, Response} from '../Backbone';
 
 export interface Attribute {
     getDataType(): Response;

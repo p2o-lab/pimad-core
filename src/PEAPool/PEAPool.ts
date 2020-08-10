@@ -1,7 +1,7 @@
-import {Response, ResponseHandler, ResponseVendor, ResponseTypes} from '../Backbone/Response';
-import {PEA} from '../ModuleAutomation/PEA';
+import {Response, ResponseHandler, ResponseVendor, ResponseTypes} from '../Backbone';
+import {PEA} from '../ModuleAutomation';
 import {Importer} from '../Converter/Importer/Importer';
-import {logger} from '../Utils/Logger';
+import {logger} from '../Utils';
 import * as crypto from 'crypto';
 
 abstract class APEAPool implements PEAPool {

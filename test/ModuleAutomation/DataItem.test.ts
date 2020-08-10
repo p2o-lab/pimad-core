@@ -1,6 +1,6 @@
 import {expect} from 'chai';
-import {ErrorResponse} from '../../src/Backbone/Response';
-import {BaseDataItemFactory, DataItem} from '../../build/ModuleAutomation';
+import {ErrorResponse} from '../../src/Backbone';
+import {BaseDataItemFactory, DataItem} from '../../src/ModuleAutomation';
 import {OPCUANodeCommunication} from '../../src/ModuleAutomation/CommunicationInterfaceData';
 
 // TODO > Test-cases are crap

@@ -7,8 +7,8 @@ import {
 } from '../../src/ModuleAutomation';
 import {DataAssembly} from '../../src/ModuleAutomation';
 import {Parameter} from '../../src/ModuleAutomation';
-import {ErrorResponse, SuccessResponse} from '../../src/Backbone/Response';
-import {BaseDataAssemblyFactory} from '../../build/ModuleAutomation';
+import {ErrorResponse, SuccessResponse} from '../../src/Backbone';
+import {BaseDataAssemblyFactory} from '../../src/ModuleAutomation';
 
 describe('class: BaseProcedure', () => {
     let procedure: Procedure;

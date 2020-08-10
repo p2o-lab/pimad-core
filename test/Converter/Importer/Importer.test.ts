@@ -1,7 +1,7 @@
 import {expect} from 'chai';
 import {LastChainElementImporterFactory, LastChainLinkImporter, MTPFreeze202001Importer} from '../../../src/Converter/Importer/Importer';
-import {ErrorResponse, Response, SuccessResponse} from '../../../src/Backbone/Response';
-import {BasicSemanticVersion, SemanticVersion} from '../../../src/Backbone/SemanticVersion';
+import {ErrorResponse, Response, SuccessResponse} from '../../../src/Backbone';
+import {BasicSemanticVersion, SemanticVersion} from '../../../src/Backbone';
 import {PEA} from '../../../src/ModuleAutomation';
 import {DataAssembly} from '../../../src/ModuleAutomation';
 import {Service} from '../../../src/ModuleAutomation';

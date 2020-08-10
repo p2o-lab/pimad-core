@@ -1,6 +1,6 @@
 import {Parameter} from './Parameter';
-import {Response, ResponseVendor} from '../Backbone/Response';
-import {logger} from '../Utils/Logger';
+import {Response, ResponseVendor} from '../Backbone';
+import {logger} from '../Utils';
 import {DataAssembly} from './DataAssembly';
 import {Procedure} from './Procedure';
 import { Attribute } from './Attribute';

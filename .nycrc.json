@@ -12,7 +12,7 @@
     "coverage/**",
     "docs/**",
     "node_modules/**",
-    "build/**",
+    "dist/**",
     ".eslintrc.js",
     "**/*.d.ts",
     "**/*.test.ts"

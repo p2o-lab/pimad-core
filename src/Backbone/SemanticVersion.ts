@@ -1,4 +1,4 @@
-import {logger} from '../Utils/Logger';
+import {logger} from '../Utils';
 
 abstract class ASemanticVersion implements SemanticVersion {
     protected major: number;

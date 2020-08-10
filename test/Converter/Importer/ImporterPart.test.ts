@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 import {HMIPart, InternalServiceType, MTPPart, ServicePart, TextPart} from '../../../src/Converter/Importer/ImporterPart';
-import {ErrorResponse, SuccessResponse} from '../../../src/Backbone/Response';
+import {ErrorResponse, SuccessResponse} from '../../../src/Backbone';
 import * as communicationsSetData from '../testdata-CommunicationSet-parser-logic.json';
 import * as communicationsSetDataMixingDataStructure from '../testdata-CommunicationSet-mixing-data-structure.json';
 import * as dataAssemblyTestResultData from '../Results/test-result-DataAssembly.json';

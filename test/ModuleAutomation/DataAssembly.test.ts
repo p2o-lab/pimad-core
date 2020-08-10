@@ -1,7 +1,7 @@
-import {BaseDataAssemblyFactory} from '../../src/ModuleAutomation/DataAssembly';
+import {BaseDataAssemblyFactory} from '../../src/ModuleAutomation';
 import {expect} from 'chai';
-import {ErrorResponse} from '../../src/Backbone/Response';
-import {DataAssembly} from '../../build/ModuleAutomation';
+import {ErrorResponse} from '../../src/Backbone';
+import {DataAssembly} from '../../src/ModuleAutomation';
 
 describe('class: BaseDataAssembly', () => {
     let dataAssembly: DataAssembly;
