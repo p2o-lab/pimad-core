@@ -4,7 +4,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "declaration": true,
-    "outDir": "./build",
+    "outDir": "dist",
     "strict": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true
