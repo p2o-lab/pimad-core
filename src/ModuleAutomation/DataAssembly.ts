@@ -1,6 +1,6 @@
 import {DataItem} from './DataItem';
-import {Response, ResponseVendor} from '../Backbone/Response';
-import {logger} from '../Utils/Logger';
+import {Response, ResponseVendor} from '../Backbone';
+import {logger} from '../Utils';
 
 export interface DataAssembly {
     getInterfaceClass(): Response; //any; //not defined yet

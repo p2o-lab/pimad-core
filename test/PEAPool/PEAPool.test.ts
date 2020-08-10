@@ -2,10 +2,10 @@ import {
     PEAPool,
     PEAPoolVendor
 } from '../../src/PEAPool';
-import {Response} from '../../src/Backbone/Response'
+import {Response} from '../../src/Backbone'
 import {LastChainElementImporterFactory, MTPFreeze202001ImporterFactory} from '../../src/Converter/Importer/Importer'
 import {expect} from 'chai';
-import {ErrorResponse, SuccessResponse} from '../../src/Backbone/Response';
+import {ErrorResponse, SuccessResponse} from '../../src/Backbone';
 
 describe('class: BasePEAStore', () => {
     const fImporter = new LastChainElementImporterFactory()

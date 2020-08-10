@@ -1,6 +1,6 @@
-import {Response, ResponseVendor} from '../../Backbone/Response';
-import {logger} from '../../Utils/Logger';
-import {BasicSemanticVersion, SemanticVersion} from '../../Backbone/SemanticVersion';
+import {Response, ResponseVendor} from '../../Backbone';
+import {logger} from '../../Utils';
+import {BasicSemanticVersion, SemanticVersion} from '../../Backbone';
 import {
     ExtractDataFromCommunicationSetResponseType,
     HMIPart,

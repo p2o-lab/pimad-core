@@ -1,6 +1,6 @@
 import {CommunicationInterfaceData, OPCUANodeCommunicationFactory} from './CommunicationInterfaceData';
-import {logger} from '../Utils/Logger';
-import {Response, ResponseVendor} from '../Backbone/Response';
+import {logger} from '../Utils';
+import {Response, ResponseVendor} from '../Backbone';
 
 export interface Parameter {
     getAllCommunicationInterfaceData(): CommunicationInterfaceData[];

@@ -1,7 +1,7 @@
-import {logger} from '../Utils/Logger';
+import {logger} from '../Utils';
 import {Parameter} from './Parameter';
 import {DataAssembly} from './DataAssembly';
-import {Response, ResponseVendor} from '../Backbone/Response';
+import {Response, ResponseVendor} from '../Backbone';
 import {Attribute} from './Attribute';
 
 export interface Procedure {

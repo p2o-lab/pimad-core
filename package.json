@@ -1,11 +1,13 @@
 {
   "name": "PiMAd-core",
-  "version": "0.0.1",
+  "version": "0.0.1alpha0",
   "description": "PiMAd (Process-industry-Modular-Automation-description) High level access to automation of modular plants.",
-  "main": "src/index.ts",
+  "main": "dist/index.ts",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "prepublish": "rm -rf dist && tsc",
     "prebuild": "npm run lint",
-    "build": "rm -rf build && tsc",
+    "build": "rm -rf dist && tsc",
     "build-gdocs": "rm -rf docs && typedoc --out docs src",
     "lint": "eslint -f pretty --ext \".ts\" src",
     "prestart": "npm run build",
@@ -17,7 +19,7 @@
     "url": "svn@dev.plt.et.tu-dresden.de:modulare-automation/PiMAd-core.git"
   },
   "files": [
-    "build"
+    "dist", "index.js"
   ],
   "keywords": [
     "PiMAd",
@@ -25,9 +27,12 @@
     "PLT/SVT",
     "Polaris"
   ],
-  "author": "Christoph Jesaja Heidelbach <christoph_jesaja.heidelbach@tu-dresden.de>",
-  "contributors": [],
-  "license": "ISC",
+  "author": "Christoph Jesaja Heidelbach <christoph_jesaja.heidelbach@tu-dresden.de, christoph.jesaja.heidelbach@gmail.com>",
+  "contributors": [
+    "Julius Lorenz <julius.lorenz@tu-dresden.de>",
+    "Anselm Klose <anselm.klose@tu-dresden.de>"
+  ],
+  "license": "MIT",
   "devDependencies": {
     "@types/adm-zip": "^0.4.33",
     "@types/chai": "^4.2.11",
@@ -39,7 +44,7 @@
     "@types/xml2json": "^0.11.0",
     "@typescript-eslint/eslint-plugin": "^2.29.0",
     "@typescript-eslint/parser": "^2.29.0",
-    "PiMAd-types": "latest",
+    "PiMAd-types": "1.0.0",
     "adm-zip": "^0.4.14",
     "chai": "^4.2.0",
     "eslint": "^6.8.0",

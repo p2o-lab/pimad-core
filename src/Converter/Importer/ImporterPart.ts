@@ -1,4 +1,4 @@
-import {Response, ResponseVendor} from '../../Backbone/Response';
+import {Response, ResponseVendor} from '../../Backbone';
 import {
     CommunicationInterfaceData, CommunicationInterfaceDataFactory, OPCUANodeCommunicationFactory,
     OPCUAServerCommunicationFactory
@@ -11,7 +11,7 @@ import DataItemSourceListExternalInterface = AML.DataItemSourceListExternalInter
 import Attribute = AML.Attribute;
 import ServiceInternalElement = AML.ServiceInternalElement;
 import { InstanceList, SourceList } from 'PiMAd-types';
-import {logger} from '../../Utils/Logger';
+import {logger} from '../../Utils';
 import {BaseDataItemFactory, DataItem} from '../../ModuleAutomation';
 import {BaseProcedureFactory} from '../../ModuleAutomation';
 import {Parameter} from '../../ModuleAutomation';

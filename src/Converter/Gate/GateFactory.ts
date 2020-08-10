@@ -1,4 +1,4 @@
-import {logger} from '../../Utils/Logger';
+import {logger} from '../../Utils';
 import {AMLGate, Gate, MockGate, MTPGate, XMLGate, ZIPGate} from './Gate';
 
 abstract class AGateFactory implements GateFactory {

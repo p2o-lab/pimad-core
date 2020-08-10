@@ -6,8 +6,8 @@ import {
     StringNodeIdFactory
 } from '../../src/ModuleAutomation';
 import {expect} from 'chai';
-import {ErrorResponse, Response, SuccessResponse} from '../../src/Backbone/Response';
-import {NodeId} from '../../build/ModuleAutomation';
+import {ErrorResponse, Response, SuccessResponse} from '../../src/Backbone';
+import {NodeId} from '../../src/ModuleAutomation';
 
 describe('class: BaseNodeId', () => {
     let nodeId: NodeId;

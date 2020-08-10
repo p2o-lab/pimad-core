@@ -1,8 +1,8 @@
 import {DataAssembly} from './DataAssembly';
 import {FEA} from './FEA';
 import {Service} from './Service';
-import {Response, ResponseHandler, ResponseTypes, ResponseVendor} from '../Backbone/Response';
-import {BasicSemanticVersion, SemanticVersion} from '../Backbone/SemanticVersion';
+import {Response, ResponseHandler, ResponseTypes, ResponseVendor} from '../Backbone';
+import {BasicSemanticVersion, SemanticVersion} from '../Backbone';
 
 export interface PEA {
     /**

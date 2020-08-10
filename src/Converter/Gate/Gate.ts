@@ -1,10 +1,10 @@
-import {Response, ResponseVendor} from '../../Backbone/Response';
+import {Response, ResponseVendor} from '../../Backbone';
 import {AMLGateFactory, XMLGateFactory, ZIPGateFactory} from './GateFactory';
 import fileSystem = require('fs');
 import xml2jsonParser = require('xml2json');
 import AdmZip = require('adm-zip');
 import rimraf = require('rimraf');
-import {logger} from '../../Utils/Logger';
+import {logger} from '../../Utils';
 import {IZipEntry} from 'adm-zip';
 
 /**

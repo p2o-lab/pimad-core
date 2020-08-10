@@ -6,14 +6,12 @@ import {
     BaseServiceFactory
 } from '../../src/ModuleAutomation';
 import {expect} from 'chai';
-import {ErrorResponse, SuccessResponse} from '../../src/Backbone/Response';
+import {ErrorResponse, SuccessResponse} from '../../src/Backbone';
 import {DataAssembly} from '../../src/ModuleAutomation';
-import {BasicSemanticVersion, SemanticVersion} from '../../src/Backbone/SemanticVersion';
-import {FEA} from '../../src/ModuleAutomation';
-import {Service} from '../../src/ModuleAutomation';
-import {BaseDataAssemblyFactory, BaseParameterFactory} from '../../build/ModuleAutomation';
+import {BasicSemanticVersion, SemanticVersion, Response} from '../../src/Backbone';
+import {BaseDataAssemblyFactory, BaseParameterFactory ,Service, FEA} from '../../src/ModuleAutomation';
 import { PEAInitializeDataType, PEA } from '../../src/ModuleAutomation/PEA';
-import { Response } from '../../src/Backbone/Response'
+
 
 describe('class: BasePEA', () => {
     let pea: PEA;

@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {Attribute, AttributeFactoryVendor} from '../../src/ModuleAutomation/Attribute';
+import {Attribute, AttributeFactoryVendor} from '../../src/ModuleAutomation';
 
 describe('class: AttributeFactoryVendor', () => {
     const factoryVendor = new AttributeFactoryVendor();

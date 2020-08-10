@@ -186,7 +186,8 @@ dist
 .yarn/build-state.yml
 .pnp.*
 
-dist/
+src/
+test/
 docs/
 
 # custom code style
