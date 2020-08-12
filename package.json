@@ -10,8 +10,6 @@
     "build": "rm -rf dist && tsc",
     "build-gdocs": "rm -rf docs && typedoc --out docs src",
     "lint": "eslint -f pretty --ext \".ts\" src",
-    "prestart": "npm run build",
-    "start": "node .",
     "test": "nyc mocha -r ts-node/register 'test/**/*.ts'"
   },
   "publishConfig": {
