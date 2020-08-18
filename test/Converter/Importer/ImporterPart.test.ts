@@ -2,9 +2,7 @@ import {expect} from 'chai';
 import {HMIPart, InternalServiceType, MTPPart, ServicePart, TextPart} from '../../../src/Converter/Importer/ImporterPart';
 import * as communicationsSetData from '../testdata-CommunicationSet-parser-logic.json';
 import * as communicationsSetDataMixingDataStructure from '../testdata-CommunicationSet-mixing-data-structure.json';
-import * as dataAssemblyTestResultData from '../Results/test-result-DataAssembly.json';
 import * as servicePartTestResult from '../Results/test-result-ServicePart.json';
-import * as communicationInterfaceDataTestResultData from '../Results/tes-result-CommunicationInterfaceData.json';
 import * as servicePartData from '../testdata-ServicePart.json';
 import {DataAssembly} from '../../../src/ModuleAutomation';
 import { OPCUAServerCommunication } from '../../../src/ModuleAutomation/CommunicationInterfaceData';
@@ -18,22 +16,29 @@ describe('class: MTPPart', () => {
     beforeEach(() => {
         part = new MTPPart();
     })
+    function evaluateMTPPart(communicationInterfaceData: OPCUAServerCommunication[], dataAssemblies: DataAssembly[]): void {
+        expect(communicationInterfaceData.length).is.equal(1);
+        // ... do server stuff
+        expect(dataAssemblies.length).is.equal(1);
+        expect(dataAssemblies[0].getTagName()).is.equal('CrystalCrasher');
+        expect(dataAssemblies[0].getIdentifier()).is.equal('link6');
+        expect(dataAssemblies[0].getMetaModelRef()).is.equal('MTPDataObjectSUCLib/DataAssembly/ServiceControl');
+    }
     describe('method: extract()', () => {
         it('test case: standard way', () => {
             part.extract({CommunicationSet: communicationsSetData, HMISet: {}, ServiceSet: {}, TextSet: {}},(response) => {
                 expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
                 const testData: {CommunicationInterfaceData?: OPCUAServerCommunication[]; DataAssemblies?: DataAssembly[]} = response.getContent();
 
-                expect(JSON.stringify(testData.CommunicationInterfaceData)).is.equal(JSON.stringify(communicationInterfaceDataTestResultData));
-                expect(JSON.stringify(testData.DataAssemblies)).is.equal(JSON.stringify(dataAssemblyTestResultData));
+                evaluateMTPPart(testData.CommunicationInterfaceData as OPCUAServerCommunication[], testData.DataAssemblies as DataAssembly[]);
             })
         })
         it('test case: mixing data structure', () => {
             part.extract({CommunicationSet: communicationsSetDataMixingDataStructure, HMISet: {}, ServiceSet: {}, TextSet: {}},(response) => {
                 expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
                 const testData: {CommunicationInterfaceData?: OPCUAServerCommunication[]; DataAssemblies?: DataAssembly[]} = response.getContent();
-                expect(JSON.stringify(testData.CommunicationInterfaceData)).is.equal(JSON.stringify(communicationInterfaceDataTestResultData));
-                expect(JSON.stringify(testData.DataAssemblies)).is.equal(JSON.stringify(dataAssemblyTestResultData));
+
+                evaluateMTPPart(testData.CommunicationInterfaceData as OPCUAServerCommunication[], testData.DataAssemblies as DataAssembly[]);
             })
         })
         describe('Messing with CommunicationSet-Data', () => {

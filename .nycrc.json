@@ -15,7 +15,9 @@
     "dist/**",
     ".eslintrc.js",
     "**/*.d.ts",
-    "**/*.test.ts"
+    "**/*.test.ts",
+    "**/index.ts",
+    "**/index.js"
   ],
   "sourceMap": true,
   "reporter": [
