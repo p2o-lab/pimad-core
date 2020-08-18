@@ -52,7 +52,7 @@ class WarningResponse extends AResponse {
 }
 
 /**
- * This factory spawns an {@linkcode ErrorResponse}-Objects.
+ * This factory spawns an {@link ErrorResponse}-Objects.
  */
 class ErrorResponseFactory extends AResponseFactory {
     create(): Backbone.PiMAdResponse {
@@ -62,7 +62,7 @@ class ErrorResponseFactory extends AResponseFactory {
     }
 }
 /**
- * This factory spawns an {@linkcode DummyResponse}-Objects.
+ * This factory spawns a {@link DummyResponse}-Objects.
  */
 class DummyResponseFactory extends AResponseFactory {
     create(): Backbone.PiMAdResponse {
@@ -72,7 +72,7 @@ class DummyResponseFactory extends AResponseFactory {
     }
 }
 /**
- * This factory spawns an {@linkcode SuccessResponse}-Objects.
+ * This factory spawns a {@link SuccessResponse}-Objects.
  */
 class SuccessResponseFactory extends AResponseFactory {
     create(): Backbone.PiMAdResponse {
@@ -82,7 +82,7 @@ class SuccessResponseFactory extends AResponseFactory {
     }
 }
 /**
- * This factory spawns {@linkcode WarningResponse}-Objects.
+ * This factory spawns {@link WarningResponse}-Objects.
  */
 class WarningResponseFactory extends AResponseFactory {
     create(): Backbone.PiMAdResponse {
@@ -93,6 +93,9 @@ class WarningResponseFactory extends AResponseFactory {
 }
 
 /**
+ * The namespace Backbone provides the classes in PiMAd-core with various elementary functionalities. The
+ * {@link PiMAdResponse} interface serves as an exchange format between individual classes or even between PiMAd and
+ * docking software.
  *
  <uml>
  abstract class AResponse {
@@ -113,7 +116,7 @@ class WarningResponseFactory extends AResponseFactory {
  }
  class PiMAdResponseHandler {
     -responseVendor: ResponseVendor
-    +handleCallbackWithResponse(type: ResponseTypes, message: string, content: object, callback: (response: Response) => void): void
+    +handleCallbackWithResponse(type: ResponseTypes, message: string, content: object, callback: (response: PiMAdResponse) => void): void
  }
  enum PiMAdResponseTypes {
      DUMMY
@@ -147,19 +150,43 @@ class WarningResponseFactory extends AResponseFactory {
  */
 export namespace Backbone {
     /**
-     *
+     * In PiMAd, PiMAdResponses serve the standardized exchange of responses between different classes. The executing
+     * class reports the status of the response directly to the calling class using different response types.
      */
     export interface PiMAdResponse {
+        /**
+         * Get the message of the response.
+         */
         getMessage(): string;
+
+        /**
+         * Get the content of the response.
+         */
         getContent(): object;
+
+        /**
+         * Initialize the new response object.
+         * @param message - The message serves as a further explanation of the response.
+         * @param content - Data or information to be exchanged using the response.
+         */
         initialize(message: string, content: object): boolean;
     }
 
+    /**
+     * This Factory creates Instances of {@link PiMAdResponse}.
+     */
     export interface PiMAdResponseFactory {
+        /**
+         * Create an Instances of {@link PiMAdResponse}.
+         */
         create(): PiMAdResponse;
     }
 
+    /**
+     * This vendor sells various {@link PiMAdResponseVendor}-Instances.
+     */
     export class PiMAdResponseVendor {
+
         private dummyResponseFactory: PiMAdResponseFactory;
         private errorResponseFactory: PiMAdResponseFactory;
         private successResponseFactory: PiMAdResponseFactory;
@@ -171,27 +198,62 @@ export namespace Backbone {
             this.successResponseFactory = new SuccessResponseFactory();
             this.warningResponseFactory = new WarningResponseFactory();
         }
+
+        /**
+         * Buy a {@link DummyResponse} as {@link PiMAdResponse}.
+         */
         public buyDummyResponse(): PiMAdResponse {
             return this.dummyResponseFactory.create();
         }
+
+        /**
+         * Buy an {@link ErrorResponse} as {@link PiMAdResponse}.
+         */
         public buyErrorResponse(): PiMAdResponse {
             return this.errorResponseFactory.create();
         }
+
+        /**
+         * Buy a {@link SuccessResponse} as {@link PiMAdResponse}.
+         */
         public buySuccessResponse(): PiMAdResponse {
             return this.successResponseFactory.create();
         }
+
+        /**
+         * Buy a {@link WarningResponse} as {@link PiMAdResponse}.
+         */
         public buyWarningResponse(): PiMAdResponse {
             return this.warningResponseFactory.create();
         }
     }
 
+    /**
+     * This enum referencing to all implementations of {@link PiMAdResponse}.
+     */
     export enum PiMAdResponseTypes {
-        DUMMY,
-        ERROR,
-        SUCCESS,
-        WARNING
+        /**
+         * Referencing a {@link DummyResponse}.
+         */
+        DUMMY = 0,
+        /**
+         * Referencing an {@link ErrorResponse}.
+         */
+        ERROR = 1,
+        /**
+         * Referencing a {@link SuccessResponse}.
+         */
+        SUCCESS = 2,
+        /**
+         * Referencing a {@link WarningResponse}.
+         */
+        WARNING = 3
     }
 
+    /**
+     * This class generalizes the handling of objects of the response interface and thus reduces the repeated
+     * occurrence of certain code fragments.
+     */
     export class PiMAdResponseHandler {
         private responseVendor: PiMAdResponseVendor;
 
@@ -199,12 +261,17 @@ export namespace Backbone {
             this.responseVendor = new PiMAdResponseVendor();
         }
 
+        /**
+         * This method creates the desired {@link PiMAdResponse}-Instance, initializes it with the given data and finally calls the
+         * callback function.
+         * @param type - The type of the response.
+         * @param message - The message of the response.
+         * @param content - The content of the response.
+         * @param callback - The callback function that expects a {@link PiMAdResponse}-Instance as input.
+         */
         public handleCallbackWithResponse(type: PiMAdResponseTypes, message: string, content: object, callback: (response: PiMAdResponse) => void): void {
             let response: PiMAdResponse = this.responseVendor.buyDummyResponse();
             switch (type) {
-                case PiMAdResponseTypes.DUMMY:
-                    response = this.responseVendor.buyDummyResponse();
-                    break;
                 case PiMAdResponseTypes.ERROR:
                     response = this.responseVendor.buyErrorResponse();
                     break;
