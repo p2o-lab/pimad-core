@@ -33,7 +33,7 @@ abstract class AParameter implements Parameter {
         return this.name;
     }
     getInterfaceClass(): PiMAdResponse {
-        return this.interfaceClass;
+        return this.responseVendor.buyErrorResponse();
     }
     getCommunicationInterfaceData(tag: string): CommunicationInterfaceData {
         // TODO > Big refactor! Response type, callback, etc.

@@ -2,10 +2,12 @@ import {
     PEAPool,
     PEAPoolVendor
 } from '../../src/PEAPool';
-import {Response} from '../../src/Backbone'
 import {LastChainElementImporterFactory, MTPFreeze202001ImporterFactory} from '../../src/Converter/Importer/Importer'
 import {expect} from 'chai';
-import {ErrorResponse, SuccessResponse} from '../../src/Backbone';
+import {Backbone} from '../../src/Backbone';
+import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+
+const responseVendor = new PiMAdResponseVendor()
 
 describe('class: BasePEAStore', () => {
     const fImporter = new LastChainElementImporterFactory()
@@ -20,18 +22,18 @@ describe('class: BasePEAStore', () => {
     });
     describe('without initialization', () => {
         it('method: addPEA()', () => {
-            pool.addPEA({source: ''}, (response: Response) => {
-                expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name)
+            pool.addPEA({source: ''}, (response) => {
+                expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name)
             });
         });
         it('method: deletePEA()', () => {
-            pool.deletePEA('', (response: Response) => {
-                expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name)
+            pool.deletePEA('', (response) => {
+                expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name)
             });
         });
         it('method: getPEA()', () => {
-            pool.getPEA('', (response: Response) => {
-                expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name)
+            pool.getPEA('', (response) => {
+                expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name)
             });
         });
     });
@@ -42,20 +44,20 @@ describe('class: BasePEAStore', () => {
             pool.initialize(mtpFreeze202001Importer);
         });
         it('method: addPEA()', (done) => {
-            pool.addPEA({source: 'test/Converter/PiMAd-core.0-0-1.aml'}, (response: Response) => {
-                expect(response.constructor.name).is.equal((new SuccessResponse().constructor.name));
+            pool.addPEA({source: 'test/Converter/PiMAd-core.0-0-1.aml'}, (response) => {
+                expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
                 expect(response.getContent().constructor.name).is.equal('BasePEA');
                 done();
             });
         });
         it('method: deletePEA()', () => {
-            pool.deletePEA('', (response: Response) => {
-                expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name)
+            pool.deletePEA('', (response) => {
+                expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name)
             });
         });
         it('method: getPEA()', () => {
-            pool.getPEA('', (response: Response) => {
-                expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name)
+            pool.getPEA('', (response) => {
+                expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name)
             });
         });
     })

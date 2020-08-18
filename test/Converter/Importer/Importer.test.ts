@@ -1,11 +1,14 @@
 import {expect} from 'chai';
 import {LastChainElementImporterFactory, LastChainLinkImporter, MTPFreeze202001Importer} from '../../../src/Converter/Importer/Importer';
-import {ErrorResponse, Response, SuccessResponse} from '../../../src/Backbone';
-import {BasicSemanticVersion, SemanticVersion} from '../../../src/Backbone';
+import {Backbone, BasicSemanticVersion, SemanticVersion} from '../../../src/Backbone';
 import {PEA} from '../../../src/ModuleAutomation';
 import {DataAssembly} from '../../../src/ModuleAutomation';
 import {Service} from '../../../src/ModuleAutomation';
 import {FEA} from '../../../src/ModuleAutomation';
+import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+import PiMAdResponse = Backbone.PiMAdResponse;
+
+const responseVendor = new PiMAdResponseVendor();
 
 describe('class: LastChainElementImporter', () => {
     let importer: LastChainLinkImporter;
@@ -22,14 +25,14 @@ describe('class: LastChainElementImporter', () => {
         expect(typeof importer.getMetaModelVersion()).is.equal(typeof new BasicSemanticVersion())
     });
     it('method: convertFrom()', () => {
-        importer.convertFrom({}, (response: Response) => {
-            expect(typeof response).is.equal(typeof new ErrorResponse());
+        importer.convertFrom({}, (response: PiMAdResponse) => {
+            expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse());
         });
     });
 });
 
-function evaluateMTPFreeze202001Importer(response: Response, callback: () => void): void {
-    expect(response.constructor.name).is.equal((new SuccessResponse()).constructor.name);
+function evaluateMTPFreeze202001Importer(response: PiMAdResponse, callback: () => void): void {
+    expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
     const testResult = response.getContent() as PEA;
     expect((testResult.getAllDataAssemblies().getContent() as {data: DataAssembly[]}).data.length).is.equal(8);
     expect((testResult.getAllFEAs().getContent() as {data: FEA[]}).data.length).is.equal(0);
@@ -54,20 +57,20 @@ describe('class: MTPFreeze202001Importer', () => {
             });
             it('unknown source', (done) => {
                 importer.convertFrom({source: '', identifier: ''}, response => {
-                    expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name);
+                    expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                     done();
                 })
             });
             it('unknown source type', (done) => {
                 importer.convertFrom({source: '.wasd', identifier: ''}, response => {
-                    expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name);
+                    expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                     expect(response.getMessage()).is.equal('Unknown source type <.wasd>')
                     done();
                 })
             });
             it('missing service', (done) => {
                 importer.convertFrom({source: 'test/Converter/PiMAd-core-missing-service.0-0-1.aml', identifier: ''}, response => {
-                    expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name);
+                    expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                     expect(response.getMessage()).is.equal('Could not extract MTPSUCLib/CommunicationSet and/or MTPServiceSUCLib/ServiceSet. Aborting...')
                     done();
                 })
@@ -76,7 +79,7 @@ describe('class: MTPFreeze202001Importer', () => {
                 it('fake CAEX', (done) => {
                     const source = 'test/Converter/test.aml';
                     importer.convertFrom({source: source, identifier: ''}, response => {
-                        expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name);
+                        expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                         expect(response.getMessage()).is.equal('The File at ' + source + ' is not valid CAEX!');
                         done();
                     })
@@ -95,27 +98,27 @@ describe('class: MTPFreeze202001Importer', () => {
                 });
                 it('MTP-XML', (done) => {
                     importer.convertFrom({source: 'test/Converter/test-xml.mtp', identifier: ''}, response => {
-                        expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name);
+                        expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                         done();
                     })
                 });
             });
             it('XML', (done) => {
                 importer.convertFrom({source: 'test/Converter/test.xml', identifier: ''}, response => {
-                    expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name);
+                    expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                     done();
                 })
             });
             describe('ZIP', () => {
                 it('ZIP-AML', (done) => {
                     importer.convertFrom({source: 'test/Converter/test-aml.zip', identifier: ''}, response => {
-                        expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name);
+                        expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                         done();
                     })
                 });
                 it('ZIP-XML', (done) => {
                     importer.convertFrom({source: 'test/Converter/test-xml.zip', identifier: ''}, response => {
-                        expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name);
+                        expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                         done();
                     })
                 });
@@ -123,7 +126,7 @@ describe('class: MTPFreeze202001Importer', () => {
         });
         it('without initialization', (done) => {
             importer.convertFrom({source: '', identifier: ''}, response => {
-                expect(response.constructor.name).is.equal((new ErrorResponse()).constructor.name);
+                expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                 expect(response.getMessage()).is.equal('The Importer is not initialized yet! Aborting ... ');
                 done()
             })

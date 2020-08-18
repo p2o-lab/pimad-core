@@ -1,7 +1,10 @@
 import {expect} from 'chai';
-import {ErrorResponse} from '../../src/Backbone';
 import {BaseDataItemFactory, DataItem} from '../../src/ModuleAutomation';
 import {OPCUANodeCommunication} from '../../src/ModuleAutomation/CommunicationInterfaceData';
+import {Backbone} from '../../src/Backbone';
+import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+
+const responseVendor = new PiMAdResponseVendor()
 
 // TODO > Test-cases are crap
 describe('class: BaseDataItem', () => {
@@ -10,7 +13,7 @@ describe('class: BaseDataItem', () => {
         dataItem = new BaseDataItemFactory().create();
     });
     it('method: getDataType()', () => {
-        expect(typeof dataItem.getDataType()).is.equal(typeof new ErrorResponse());
+        expect(dataItem.getDataType().constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
     });
     it('method: getCommunicationInterfaceData()', () => {
         //TODO: OPCServerCommunication as option

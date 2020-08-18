@@ -6,12 +6,13 @@ import {
     BaseServiceFactory
 } from '../../src/ModuleAutomation';
 import {expect} from 'chai';
-import {ErrorResponse, SuccessResponse} from '../../src/Backbone';
 import {DataAssembly} from '../../src/ModuleAutomation';
-import {BasicSemanticVersion, SemanticVersion, Response} from '../../src/Backbone';
+import {Backbone, BasicSemanticVersion, SemanticVersion} from '../../src/Backbone';
 import {BaseDataAssemblyFactory, BaseParameterFactory ,Service, FEA} from '../../src/ModuleAutomation';
 import { PEAInitializeDataType, PEA } from '../../src/ModuleAutomation/PEA';
+import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 
+const responseVendor = new PiMAdResponseVendor();
 
 describe('class: BasePEA', () => {
     let pea: PEA;
@@ -76,16 +77,16 @@ describe('class: BasePEA', () => {
         });
         describe('method: getActuator()', () => {
             it('test case: standard usage', done => {
-                pea.getActuator('Test-Actuator1', (response: Response) => {
-                    expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+                pea.getActuator('Test-Actuator1', (response) => {
+                    expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                     done();
                 })
             });
         });
         describe('method: getAllActuators()', () => {
             it('test case: standard usage', done => {
-                pea.getAllActuators( (response: Response) => {
-                    expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+                pea.getAllActuators( (response) => {
+                    expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                     done();
                 })
             });
@@ -100,8 +101,8 @@ describe('class: BasePEA', () => {
         });
         describe('method: getAllSensors()', () => {
             it('test case: standard usage', done => {
-                pea.getAllSensors( (response: Response) => {
-                    expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+                pea.getAllSensors( (response) => {
+                    expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                     done();
                 })
             });
@@ -112,16 +113,16 @@ describe('class: BasePEA', () => {
         });
         describe('method: getDataAssembly()', () => {
             it('test case: standard usage', done => {
-                pea.getDataAssembly('Test-DataAssembly2', (response: Response) => {
-                    expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
+                pea.getDataAssembly('Test-DataAssembly2', (response) => {
+                    expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
                     const responseContent = response.getContent() as DataAssembly;
                     expect(responseContent.getTagName()).is.equal('Test-DataAssembly2');
                     done();
                 })
             });
             it('test case: requested DataAssembly not in array', (done) => {
-                pea.getDataAssembly('DataAssembly', (response: Response) => {
-                    expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+                pea.getDataAssembly('DataAssembly', (response) => {
+                    expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                     done();
                 })
             });
@@ -134,8 +135,8 @@ describe('class: BasePEA', () => {
         });
         describe('method: getFEA()', () => {
             it('test case: standard usage', done => {
-                pea.getFEA('Test-FEA1', (response: Response) => {
-                    expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+                pea.getFEA('Test-FEA1', (response) => {
+                    expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                     done();
                 })
             });
@@ -148,24 +149,24 @@ describe('class: BasePEA', () => {
         });
         describe('method: getSensor()', () => {
             it('test case: standard usage', done => {
-                pea.getSensor('Test-Sensor1', (response: Response) => {
-                    expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+                pea.getSensor('Test-Sensor1', (response) => {
+                    expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                     done();
                 })
             });
         });
         describe('method: getService()', () => {
             it('test case: standard usage', done => {
-                pea.getService('Test-Service1', (response: Response) => {
-                    expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
+                pea.getService('Test-Service1', (response) => {
+                    expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
                     const responseContent = response.getContent() as Service;
                     expect(responseContent.getName()).is.equal('Test-Service1');
                     done();
                 })
             });
             it('test case: requested Service not in array', (done) => {
-                pea.getService('Service', (response: Response) => {
-                    expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+                pea.getService('Service', (response) => {
+                    expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                     done();
                 })
             });

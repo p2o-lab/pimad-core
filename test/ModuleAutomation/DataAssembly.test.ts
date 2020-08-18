@@ -1,7 +1,10 @@
 import {BaseDataAssemblyFactory} from '../../src/ModuleAutomation';
 import {expect} from 'chai';
-import {ErrorResponse} from '../../src/Backbone';
 import {DataAssembly} from '../../src/ModuleAutomation';
+import {Backbone} from '../../src/Backbone';
+import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+
+const responseVendor = new PiMAdResponseVendor();
 
 describe('class: BaseDataAssembly', () => {
     let dataAssembly: DataAssembly;
@@ -9,7 +12,7 @@ describe('class: BaseDataAssembly', () => {
         dataAssembly = new BaseDataAssemblyFactory().create();
     });
     it('method: getInterfaceClass()', () => {
-        expect(typeof dataAssembly.getInterfaceClass()).is.equal(typeof new ErrorResponse());
+        expect(dataAssembly.getInterfaceClass().constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
     });
     it('method: getTagDescription()', () => {
         expect(typeof dataAssembly.getTagDescription()).is.equal(typeof '');
@@ -18,7 +21,7 @@ describe('class: BaseDataAssembly', () => {
         expect(typeof dataAssembly.getTagName()).is.equal(typeof '');
     });
     it('method: getCommunication()', () => {
-        expect(typeof dataAssembly.getCommunication()).is.equal(typeof new ErrorResponse());
+        expect(dataAssembly.getCommunication().constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
     });
     it('method: getIdentifier()', () => {
         expect(dataAssembly.getIdentifier()).is.equal('');

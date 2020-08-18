@@ -6,8 +6,11 @@ import {
     StringNodeIdFactory
 } from '../../src/ModuleAutomation';
 import {expect} from 'chai';
-import {ErrorResponse, Response, SuccessResponse} from '../../src/Backbone';
 import {NodeId} from '../../src/ModuleAutomation';
+import {Backbone} from '../../src/Backbone';
+import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+
+const responseVendor = new PiMAdResponseVendor();
 
 describe('class: BaseNodeId', () => {
     let nodeId: NodeId;
@@ -15,25 +18,25 @@ describe('class: BaseNodeId', () => {
         nodeId = new BaseNodeIdFactory().create();
     })
     it('method: getNamespaceIndex()', () => {
-        let response: Response = nodeId.getNamespaceIndex()
-        expect(typeof response).is.equal(typeof new ErrorResponse())
+        let response = nodeId.getNamespaceIndex()
+        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
         nodeId.initialize(3, 12)
         response = nodeId.getNamespaceIndex()
-        expect(typeof response).is.equal(typeof new SuccessResponse())
+        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
         const content: {namespaceIndex?: number} = response.getContent()
         expect(content.namespaceIndex).is.undefined
     });
     it('method: getIdentifier()', () => {
-        let response: Response = nodeId.getIdentifier()
-        expect(typeof response).is.equal(typeof new ErrorResponse())
+        let response = nodeId.getIdentifier()
+        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
         nodeId.initialize(1, 42)
         response = nodeId.getIdentifier()
-        expect(typeof response).is.equal(typeof new SuccessResponse())
+        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
         const content: {identifier?: number} = response.getContent()
         expect(content.identifier).is.undefined
     });
     it('method: getNodeId()', () => {
-        expect(typeof nodeId.getNodeId()).is.equal(typeof new ErrorResponse())
+        expect(typeof nodeId.getNodeId()).is.equal(typeof responseVendor.buyErrorResponse())
     });
     it('initialize()', () => {
         expect(nodeId.initialize(1, 2)).is.false
@@ -46,29 +49,29 @@ describe('class: NumericNodeId', () => {
         nodeId = new NumericNodeIdFactory().create();
     })
     it('method: getNamespaceIndex()', () => {
-        let response: Response = nodeId.getNamespaceIndex()
-        expect(typeof response).is.equal(typeof new ErrorResponse())
+        let response = nodeId.getNamespaceIndex()
+        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
         nodeId.initialize(3, 12)
         response = nodeId.getNamespaceIndex()
-        expect(typeof response).is.equal(typeof new SuccessResponse())
+        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
         const content: {namespaceIndex?: number} = response.getContent()
         expect(content.namespaceIndex).is.equal(3)
     });
     it('method: getIdentifier()', () => {
-        let response: Response = nodeId.getIdentifier()
-        expect(typeof response).is.equal(typeof new ErrorResponse())
+        let response = nodeId.getIdentifier()
+        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
         nodeId.initialize(1, 42)
         response = nodeId.getIdentifier()
-        expect(typeof response).is.equal(typeof new SuccessResponse())
+        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
         const content: {identifier?: number} = response.getContent()
         expect(content.identifier).is.equal(42)
     });
     it('method: getNodeId()', () => {
-        let response: Response = nodeId.getNodeId()
-        expect(typeof response).is.equal(typeof new ErrorResponse())
+        let response = nodeId.getNodeId()
+        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
         nodeId.initialize(1, 4321)
         response = nodeId.getNodeId()
-        expect(typeof response).is.equal(typeof new SuccessResponse())
+        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
         const content: {nodeId?: string} = response.getContent()
         expect(content.nodeId).is.equal('ns=1;i=4321')
     });
@@ -84,29 +87,29 @@ describe('class: QpaqueNodeId', () => {
         nodeId = new QpaqueNodeIdFactory().create();
     })
     it('method: getNamespaceIndex()', () => {
-        let response: Response = nodeId.getNamespaceIndex()
-        expect(typeof response).is.equal(typeof new ErrorResponse())
+        let response = nodeId.getNamespaceIndex()
+        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
         nodeId.initialize(1, 'M/RbKBsRVkePCePcx24oRA==')
         response = nodeId.getNamespaceIndex()
-        expect(typeof response).is.equal(typeof new SuccessResponse())
+        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
         const content: {namespaceIndex?: number} = response.getContent()
         expect(content.namespaceIndex).is.equal(1)
     });
     it('method: getIdentifier()', () => {
-        let response: Response = nodeId.getIdentifier()
-        expect(typeof response).is.equal(typeof new ErrorResponse())
+        let response = nodeId.getIdentifier()
+        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
         nodeId.initialize(1, 'M/RbKBsRVkePCePcx24oRA==')
         response = nodeId.getIdentifier()
-        expect(typeof response).is.equal(typeof new SuccessResponse())
+        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
         const content: {identifier?: string} = response.getContent()
         expect(content.identifier).is.equal('M/RbKBsRVkePCePcx24oRA==')
     });
     it('method: getNodeId()', () => {
-        let response: Response = nodeId.getNodeId()
-        expect(typeof response).is.equal(typeof new ErrorResponse())
+        let response = nodeId.getNodeId()
+        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
         nodeId.initialize(1, 'M/RbKBsRVkePCePcx24oRA==')
         response = nodeId.getNodeId()
-        expect(typeof response).is.equal(typeof new SuccessResponse())
+        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
         const content: {nodeId?: string} = response.getContent()
         expect(content.nodeId).is.equal('ns=1;b=M/RbKBsRVkePCePcx24oRA==')
     });
@@ -122,29 +125,29 @@ describe('class: StringNodeId', () => {
         nodeId = new StringNodeIdFactory().create();
     })
     it('method: getNamespaceIndex()', () => {
-        let response: Response = nodeId.getNamespaceIndex()
-        expect(typeof response).is.equal(typeof new ErrorResponse())
+        let response = nodeId.getNamespaceIndex()
+        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
         nodeId.initialize(1, 'MyTemperature')
         response = nodeId.getNamespaceIndex()
-        expect(typeof response).is.equal(typeof new SuccessResponse())
+        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
         const content: {namespaceIndex?: number} = response.getContent()
         expect(content.namespaceIndex).is.equal(1)
     });
     it('method: getIdentifier()', () => {
-        let response: Response = nodeId.getIdentifier()
-        expect(typeof response).is.equal(typeof new ErrorResponse())
+        let response = nodeId.getIdentifier()
+        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
         nodeId.initialize(1, 'MyTemperature')
         response = nodeId.getIdentifier()
-        expect(typeof response).is.equal(typeof new SuccessResponse())
+        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
         const content: {identifier?: string} = response.getContent()
         expect(content.identifier).is.equal('MyTemperature')
     });
     it('method: getNodeId()', () => {
-        let response: Response = nodeId.getNodeId()
-        expect(typeof response).is.equal(typeof new ErrorResponse())
+        let response = nodeId.getNodeId()
+        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
         nodeId.initialize(1, 'MyTemperature')
         response = nodeId.getNodeId()
-        expect(typeof response).is.equal(typeof new SuccessResponse())
+        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
         const content: {nodeId?: string} = response.getContent()
         expect(content.nodeId).is.equal('ns=1;s=MyTemperature')
     });
@@ -160,29 +163,29 @@ describe('class: GUIDNodeId', () => {
         nodeId = new GUIDNodeIdFactory().create();
     })
     it('method: getNamespaceIndex()', () => {
-        let response: Response = nodeId.getNamespaceIndex()
-        expect(typeof response).is.equal(typeof new ErrorResponse())
+        let response = nodeId.getNamespaceIndex()
+        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
         nodeId.initialize(1, '09087e75-8e5e-499b-954f-f2a9603db28a')
         response = nodeId.getNamespaceIndex()
-        expect(typeof response).is.equal(typeof new SuccessResponse())
+        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
         const content: {namespaceIndex?: number} = response.getContent()
         expect(content.namespaceIndex).is.equal(1)
     });
     it('method: getIdentifier()', () => {
-        let response: Response = nodeId.getIdentifier()
-        expect(typeof response).is.equal(typeof new ErrorResponse())
+        let response = nodeId.getIdentifier()
+        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
         nodeId.initialize(1, '09087e75-8e5e-499b-954f-f2a9603db28a')
         response = nodeId.getIdentifier()
-        expect(typeof response).is.equal(typeof new SuccessResponse())
+        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
         const content: {identifier?: string} = response.getContent()
         expect(content.identifier).is.equal('09087e75-8e5e-499b-954f-f2a9603db28a')
     });
     it('method: getNodeId()', () => {
-        let response: Response = nodeId.getNodeId()
-        expect(typeof response).is.equal(typeof new ErrorResponse())
+        let response = nodeId.getNodeId()
+        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
         nodeId.initialize(1, '09087e75-8e5e-499b-954f-f2a9603db28a')
         response = nodeId.getNodeId()
-        expect(typeof response).is.equal(typeof new SuccessResponse())
+        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
         const content: {nodeId?: string} = response.getContent()
         expect(content.nodeId).is.equal('ns=1;g=09087e75-8e5e-499b-954f-f2a9603db28a')
     });

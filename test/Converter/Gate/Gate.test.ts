@@ -1,6 +1,10 @@
 import { expect } from 'chai';
 import {AMLGateFactory, MockGateFactory, MTPGateFactory, XMLGateFactory, ZIPGateFactory} from '../../../src/Converter/Gate/GateFactory';
-import {ErrorResponse, Response, SuccessResponse} from '../../../src/Backbone';
+import {Backbone} from '../../../src/Backbone';
+import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+import PiMAdResponse = Backbone.PiMAdResponse;
+
+const responseVendor = new PiMAdResponseVendor();
 
 describe('class: MockGate', () => {
     const factory = new MockGateFactory()
@@ -11,7 +15,7 @@ describe('class: MockGate', () => {
     it('method: send()', () => {
         const instruction = {test: 'Test-Instruction for send()'}
         gate.send(instruction,(response) => {
-            expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
+            expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
             const content: {test?: string} = response.getContent();
             expect(JSON.stringify(content)).is.equal(JSON.stringify(instruction));
         })
@@ -20,7 +24,7 @@ describe('class: MockGate', () => {
         const instruction = {test: 'Test-Instruction for receive()'}
         gate.initialize('Test-Address');
         gate.receive(instruction,(response) => {
-            expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
+            expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
             const content: {test?: string} = response.getContent();
             expect(JSON.stringify(content)).is.equal(JSON.stringify(instruction));
         })
@@ -41,19 +45,19 @@ describe('class MTPGate', () => {
     })
     it('method: send()', () => {
         gate.send({},(response) => {
-            expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+            expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
             expect(response.getMessage()).is.equal('Not implemented yet!');
         })
     })
     it('method: receive()', done => {
         const xml2jsonTest = JSON.stringify({'data':{'test':{'title':{'value':'PiMAd-XML-Gate-Test'},'greeting':'Hello, World !'}}});
         gate.initialize('test/Converter/test-xml.mtp')
-        gate.receive({},(response: Response) => {
+        gate.receive({},(response: PiMAdResponse) => {
             const content: {data?: object[]} = response.getContent();
             if (content.data === undefined) {
                 content.data = []
             }
-            expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
+            expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
             expect(JSON.stringify(content.data[0])).is.equal(xml2jsonTest);
             done();
         });
@@ -78,7 +82,7 @@ describe('class AMLGate', () => {
     })
     it('method: send()', () => {
         gate.send({},(response) => {
-            expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+            expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
             expect(response.getMessage()).is.equal('Not implemented yet!');
         })
     })
@@ -86,16 +90,16 @@ describe('class AMLGate', () => {
         it('base functionality', () => {
             gate.initialize('test/Converter/test.aml');
             const xml2jsonTest = JSON.stringify({'test':{'title':{'value':'PiMAd-AML-Gate-Test'},'greeting':'Hello, World !'}});
-            gate.receive({source: 'test/Converter/test.aml'},(response: Response) => {
+            gate.receive({source: 'test/Converter/test.aml'},(response: PiMAdResponse) => {
                 const content: { data?: {}} = response.getContent();
-                expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
+                expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
                 expect(JSON.stringify(content.data)).is.equal(xml2jsonTest);
             });
         })
         it('wrong path', () => {
             gate.initialize('this/is/a/wrong/path');
-            gate.receive({source: 'this/is/a/wrong/path'},(response: Response) => {
-                expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+            gate.receive({source: 'this/is/a/wrong/path'},(response: PiMAdResponse) => {
+                expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
             });
         })
     })
@@ -119,7 +123,7 @@ describe('class XMLGate', () => {
     })
     it('method: send()', () => {
         gate.send({},(response) => {
-            expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+            expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
             expect(response.getMessage()).is.equal('Not implemented yet!');
         })
     })
@@ -127,17 +131,17 @@ describe('class XMLGate', () => {
         it('base functionality', () => {
             gate.initialize('test/Converter/test.xml');
             const xml2jsonTest = JSON.stringify({'test':{'title':{'value':'PiMAd-XML-Gate-Test'},'greeting':'Hello, World !'}});
-            gate.receive({},(response: Response) => {
+            gate.receive({},(response: PiMAdResponse) => {
                 // TODO: General way to go? Handle simple typing? Without modeling fucking a lot classes.
                 const content: { data?: {}} = response.getContent();
-                expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
+                expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
                 expect(JSON.stringify(content.data)).is.equal(xml2jsonTest);
             });
         })
         it('wrong path', () => {
             gate.initialize('this/is/a/wrong/path');
-            gate.receive({},(response: Response) => {
-                expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+            gate.receive({},(response: PiMAdResponse) => {
+                expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
             });
         })
     })
@@ -162,7 +166,7 @@ describe('class ZIPGate', () => {
     })
     it('method: send()', () => {
         gate.send({},(response) => {
-            expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+            expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
             expect(response.getMessage()).is.equal('Not implemented yet!');
         })
     })
@@ -170,12 +174,12 @@ describe('class ZIPGate', () => {
         it('zip-archive with single xml-file', done => {
             const xml2jsonTest = JSON.stringify({'data':{'test':{'title':{'value':'PiMAd-XML-Gate-Test'},'greeting':'Hello, World !'}}});
             gate.initialize('test/Converter/test-xml.zip')
-            gate.receive({},(response: Response) => {
+            gate.receive({},(response: PiMAdResponse) => {
                 const content: {data?: object[]} = response.getContent();
                 if (content.data === undefined) {
                     content.data = []
                 }
-                expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
+                expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
                 expect(JSON.stringify(content.data[0])).is.equal(xml2jsonTest);
                 done();
             });
@@ -183,12 +187,12 @@ describe('class ZIPGate', () => {
         it('zip-archive with single aml-file', done => {
             const xml2jsonTest = JSON.stringify({'data':{'test':{'title':{'value':'PiMAd-AML-Gate-Test'},'greeting':'Hello, World !'}}});
             gate.initialize('test/Converter/test-aml.zip')
-            gate.receive({},(response: Response) => {
+            gate.receive({},(response: PiMAdResponse) => {
                 const content: {data?: object[]} = response.getContent();
                 if (content.data === undefined) {
                     content.data = []
                 }
-                expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
+                expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
                 expect(JSON.stringify(content.data[0])).is.equal(xml2jsonTest);
                 done();
             });

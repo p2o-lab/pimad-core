@@ -7,8 +7,11 @@ import {
 } from '../../src/ModuleAutomation';
 import {DataAssembly} from '../../src/ModuleAutomation';
 import {Parameter} from '../../src/ModuleAutomation';
-import {ErrorResponse, SuccessResponse} from '../../src/Backbone';
 import {BaseDataAssemblyFactory} from '../../src/ModuleAutomation';
+import {Backbone} from '../../src/Backbone';
+import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+
+const responseVendor = new PiMAdResponseVendor()
 
 describe('class: BaseProcedure', () => {
     let procedure: Procedure;
@@ -56,7 +59,7 @@ describe('class: BaseProcedure', () => {
         describe('method: getAttribute()', () => {
             it('test case: standard usage', done => {
                 procedure.getAttribute('Test-Attribute1', response => {
-                    expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
+                    expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
                     const responseContent = response.getContent() as Attribute;
                     expect((responseContent.getValue().getContent() as {data: string}).data).is.equal('1');
                     done();
@@ -64,7 +67,7 @@ describe('class: BaseProcedure', () => {
             });
             it('test case: requested attribute not in array', () => {
                 procedure.getAttribute('Attribute', response => {
-                    expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+                    expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                 })
             });
         })
@@ -83,7 +86,7 @@ describe('class: BaseProcedure', () => {
         describe('method: getParameter()', () => {
             it('test case: standard usage', done => {
                 procedure.getParameter('Test-Parameter2', response => {
-                    expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
+                    expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
                     const responseContent = response.getContent() as Parameter;
                     expect(responseContent.getName()).is.equal('Test-Parameter2');
                     done();
@@ -91,7 +94,7 @@ describe('class: BaseProcedure', () => {
             });
             it('test case: requested attribute not in array', (done) => {
                 procedure.getParameter('Parameter', response => {
-                    expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+                    expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                     done();
                 })
             });

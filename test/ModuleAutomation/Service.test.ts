@@ -8,8 +8,11 @@ import {
 import {expect} from 'chai';
 import {Parameter} from '../../src/ModuleAutomation';
 import {DataAssembly} from '../../src/ModuleAutomation';
-import {ErrorResponse, SuccessResponse} from '../../src/Backbone';
 import {BaseDataAssemblyFactory} from '../../src/ModuleAutomation';
+import {Backbone} from '../../src/Backbone';
+import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+
+const responseVendor = new PiMAdResponseVendor();
 
 describe('class: BaseService', () => {
     let service: Service;
@@ -52,7 +55,7 @@ describe('class: BaseService', () => {
         describe('method: getAttribute()', () => {
             it('test case: standard usage', done => {
                 service.getAttribute('Test-Attribute1', response => {
-                    expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
+                    expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
                     const responseContent = response.getContent() as Attribute;
                     expect((responseContent.getValue().getContent() as {data: string}).data).is.equal('1');
                     done();
@@ -60,7 +63,7 @@ describe('class: BaseService', () => {
             });
             it('test case: requested attribute not in array', () => {
                 service.getAttribute('Attribute', response => {
-                    expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+                    expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                 })
             });
         })
@@ -89,7 +92,7 @@ describe('class: BaseService', () => {
         describe('method: getParameter()', () => {
             it('test case: standard usage', done => {
                 service.getParameter('Test-Parameter1', response => {
-                    expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
+                    expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
                     const responseContent = response.getContent() as Parameter;
                     expect(responseContent.getName()).is.equal('Test-Parameter1');
                     done();
@@ -97,7 +100,7 @@ describe('class: BaseService', () => {
             });
             it('test case: requested attribute not in array', (done) => {
                 service.getParameter('Parameter', response => {
-                    expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+                    expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                     done();
                 })
             });
@@ -105,7 +108,7 @@ describe('class: BaseService', () => {
         describe('method: getProcedure()', () => {
             it('test case: standard usage', done => {
                 service.getProcedure('Test-Procedure1', response => {
-                    expect(response.constructor.name).is.equal(new SuccessResponse().constructor.name);
+                    expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
                     const responseContent = response.getContent() as Parameter;
                     expect(responseContent.getName()).is.equal('Test-Procedure1');
                     done();
@@ -113,7 +116,7 @@ describe('class: BaseService', () => {
             });
             it('test case: requested attribute not in array', (done) => {
                 service.getParameter('Procedure', response => {
-                    expect(response.constructor.name).is.equal(new ErrorResponse().constructor.name);
+                    expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                     done();
                 })
             });

@@ -35,19 +35,19 @@ abstract class AResponseFactory implements Backbone.PiMAdResponseFactory {
     abstract create(): Backbone.PiMAdResponse;
 }
 
-export class ErrorResponse extends AResponse {
+class ErrorResponse extends AResponse {
 
 }
 
-export class DummyResponse extends AResponse {
+class DummyResponse extends AResponse {
 
 }
 
-export class SuccessResponse extends AResponse {
+class SuccessResponse extends AResponse {
 
 }
 
-export class WarningResponse extends AResponse {
+class WarningResponse extends AResponse {
 
 }
 

@@ -1,6 +1,5 @@
 import {Backbone} from '../../src/Backbone';
 import ResponseVendor = Backbone.PiMAdResponseVendor
-//import { ResponseVendor } from '../../src/Backbone';
 import { expect } from 'chai';
 import 'mocha';
 

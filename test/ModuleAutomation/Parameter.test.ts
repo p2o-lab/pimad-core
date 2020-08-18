@@ -1,8 +1,11 @@
 import {BaseParameterFactory} from '../../src/ModuleAutomation';
 import {expect} from 'chai';
-import {ErrorResponse} from '../../src/Backbone';
 import {OPCUANodeCommunication} from '../../src/ModuleAutomation/CommunicationInterfaceData';
 import {Parameter} from '../../src/ModuleAutomation';
+import {Backbone} from '../../src/Backbone';
+import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+
+const responseVendor = new PiMAdResponseVendor();
 
 describe('class: BaseParameter', () => {
     let parameter: Parameter;
@@ -16,7 +19,7 @@ describe('class: BaseParameter', () => {
         expect(typeof parameter.getName()).is.equal(typeof '');
     });
     it('method: getInterfaceClass()', () => {
-        expect(typeof parameter.getInterfaceClass()).is.equal(typeof new ErrorResponse());
+        expect(parameter.getInterfaceClass().constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
     });
     it('method: getCommunicationInterfaceData()', () => {
         expect(typeof parameter.getCommunicationInterfaceData('test')).is.equal(typeof []);
