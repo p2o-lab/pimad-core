@@ -101,7 +101,7 @@ class WarningResponseFactory extends AResponseFactory {
          -initialized: boolean = false
      }
  abstract class AResponseFactory
- class ResponseVendor {
+ class PiMAdResponseVendor {
      -dummyResponseFactory: PiMAdResponseFactory
      -errorResponseFactory: PiMAdResponseFactory
      -successResponseFactory: PiMAdResponseFactory
@@ -111,7 +111,7 @@ class WarningResponseFactory extends AResponseFactory {
      +buySuccessResponse(): PiMAdResponse
      +buyWarningResponse(): PiMAdResponse
  }
- class ResponseHandler {
+ class PiMAdResponseHandler {
     -responseVendor: ResponseVendor
     +handleCallbackWithResponse(type: ResponseTypes, message: string, content: object, callback: (response: Response) => void): void
  }
