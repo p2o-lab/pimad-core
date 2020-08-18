@@ -1,8 +1,10 @@
 import {logger} from '../Utils';
 import {Parameter} from './Parameter';
 import {DataAssembly} from './DataAssembly';
-import {Response, ResponseVendor} from '../Backbone';
 import {Attribute} from './Attribute';
+import {Backbone} from '../Backbone';
+import PiMAdResponse = Backbone.PiMAdResponse;
+import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 
 export interface Procedure {
     /**
@@ -20,7 +22,7 @@ export interface Procedure {
      * @param name - The name of the attribute.
      * @param callback - A callback function. Use an instance of the interface Response as input.
      */
-    getAttribute(name: string, callback: (response: Response) => void): void;
+    getAttribute(name: string, callback: (response: PiMAdResponse) => void): void;
 
     /**
      * Get the DataAssembly-object of this procedure.
@@ -47,7 +49,7 @@ export interface Procedure {
      * @param name - The name of the parameter.
      * @param callback - A callback function. Use an instance of the interface PiMAd-core/src/Backbone/Response as input.
      */
-    getParameter(name: string, callback: (response: Response) => void): void;
+    getParameter(name: string, callback: (response: PiMAdResponse) => void): void;
     initialize(dataAssembly: DataAssembly, identifier: string, metaModelRef: string, name: string, attributes: Attribute[], para: Parameter[]): boolean;
 }
 
@@ -59,7 +61,7 @@ abstract class AProcedure implements Procedure {
     protected name: string;
     protected parameters: Parameter[];
     protected initialized: boolean;
-    protected responseVendor: ResponseVendor
+    protected responseVendor: PiMAdResponseVendor
 
     constructor() {
         this.attributes = [];
@@ -69,7 +71,7 @@ abstract class AProcedure implements Procedure {
         this.name = 'name: not-initialized';
         this.parameters = [];
         this.initialized = false;
-        this.responseVendor = new ResponseVendor();
+        this.responseVendor = new PiMAdResponseVendor();
     }
     getAllAttributes(): Attribute[] {
         return this.attributes;
@@ -77,7 +79,7 @@ abstract class AProcedure implements Procedure {
     getAllParameters(): Parameter[] {
         return this.parameters;
     }
-    getAttribute(name: string, callback: (response: Response) => void): void {
+    getAttribute(name: string, callback: (response: PiMAdResponse) => void): void {
         this.attributes.forEach((attribute: Attribute) => {
             if((attribute.getName().getContent() as {data: string}).data === name) {
                 const response = this.responseVendor.buySuccessResponse();
@@ -103,7 +105,7 @@ abstract class AProcedure implements Procedure {
     getName(): string {
         return this.name;
     }
-    getParameter(tag: string, callback: (response: Response) => void): void {
+    getParameter(tag: string, callback: (response: PiMAdResponse) => void): void {
         this.parameters.forEach((parameter: Parameter) => {
             if(parameter.getName() === tag) {
                 const response = this.responseVendor.buySuccessResponse();

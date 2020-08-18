@@ -1,22 +1,26 @@
-import {Response, ResponseHandler, ResponseVendor, ResponseTypes} from '../Backbone';
 import {PEA} from '../ModuleAutomation';
 import {Importer} from '../Converter/Importer/Importer';
 import {logger} from '../Utils';
 import * as crypto from 'crypto';
+import {Backbone} from '../Backbone';
+import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+import PiMAdResponseHandler = Backbone.PiMAdResponseHandler;
+import PiMAdResponse = Backbone.PiMAdResponse;
+import PiMAdResponseTypes = Backbone.PiMAdResponseTypes;
 
 abstract class APEAPool implements PEAPool {
     private initialized: boolean;
     protected importerChainFirstElement: Importer;
     protected peas: PEA[];
-    protected responseVendor: ResponseVendor;
-    protected responseHandler: ResponseHandler;
+    protected responseVendor: PiMAdResponseVendor;
+    protected responseHandler: PiMAdResponseHandler;
 
     constructor() {
         this.initialized = false;
         this.peas = [];
         this.importerChainFirstElement = {} as Importer;
-        this.responseVendor = new ResponseVendor();
-        this.responseHandler = new ResponseHandler();
+        this.responseVendor = new PiMAdResponseVendor();
+        this.responseHandler = new PiMAdResponseHandler();
     }
 
     private generateUniqueIdentifier(callback: (identifier: string) => void): void {
@@ -40,7 +44,7 @@ abstract class APEAPool implements PEAPool {
         }
     }
 
-    public addPEA(instructions: {source: string}, callback: (response: Response) => void): void {
+    public addPEA(instructions: {source: string}, callback: (response: PiMAdResponse) => void): void {
         if(this.initialized) {
             this.generateUniqueIdentifier(identifier => {
                 this.importerChainFirstElement.convertFrom({
@@ -49,28 +53,28 @@ abstract class APEAPool implements PEAPool {
                 }, callback);
             });
         } else {
-            this.responseHandler.handleCallbackWithResponse(ResponseTypes.ERROR, 'PEAPool is not initialized!', {}, callback);
+            this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'PEAPool is not initialized!', {}, callback);
         }
     };
 
-    public deletePEA(identifier: string, callback: (response: Response) => void): void {
+    public deletePEA(identifier: string, callback: (response: PiMAdResponse) => void): void {
         if(this.initialized) {
-            this.responseHandler.handleCallbackWithResponse(ResponseTypes.ERROR, '', {}, callback);
+            this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, '', {}, callback);
         } else {
-            this.responseHandler.handleCallbackWithResponse(ResponseTypes.ERROR, 'PEAPool is not initialized!', {}, callback);
+            this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'PEAPool is not initialized!', {}, callback);
         }
     };
 
-    public getPEA(identifier: string, callback: (response: Response) => void): void {
+    public getPEA(identifier: string, callback: (response: PiMAdResponse) => void): void {
         if(this.initialized) {
             const localPEA: PEA | undefined = this.peas.find(pea => identifier === pea.getPiMAdIdentifier());
             if (localPEA === undefined)  {
-                this.responseHandler.handleCallbackWithResponse(ResponseTypes.ERROR, 'PEA <' + identifier + '> is not part of the pool party!', {}, callback);
+                this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'PEA <' + identifier + '> is not part of the pool party!', {}, callback);
             } else {
-                this.responseHandler.handleCallbackWithResponse(ResponseTypes.SUCCESS, 'Success!', localPEA, callback);
+                this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.SUCCESS, 'Success!', localPEA, callback);
             }
         } else {
-            this.responseHandler.handleCallbackWithResponse(ResponseTypes.ERROR, 'PEAPool is not initialized!', {}, callback);
+            this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'PEAPool is not initialized!', {}, callback);
         }
     };
 }
@@ -80,9 +84,9 @@ class BasePEAPool extends APEAPool {
 }
 
 export interface PEAPool {
-    addPEA(instructions: object, callback: (response: Response) => void): void;
-    deletePEA(identifier: string, callback: (response: Response) => void): void;
-    getPEA(identifier: string, callback: (response: Response) => void): void;
+    addPEA(instructions: object, callback: (response: PiMAdResponse) => void): void;
+    deletePEA(identifier: string, callback: (response: PiMAdResponse) => void): void;
+    getPEA(identifier: string, callback: (response: PiMAdResponse) => void): void;
     initialize(firstChainElement: Importer): boolean;
 }
 

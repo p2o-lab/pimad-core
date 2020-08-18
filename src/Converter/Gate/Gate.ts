@@ -1,5 +1,3 @@
-
-import {Response, ResponseVendor} from '../../Backbone';
 import {AMLGateFactory, XMLGateFactory, ZIPGateFactory} from './GateFactory';
 import fileSystem = require('fs');
 import xml2jsonParser = require('xml2json');
@@ -7,6 +5,9 @@ import AdmZip = require('adm-zip');
 import rimraf = require('rimraf');
 import {logger} from '../../Utils';
 import {IZipEntry} from 'adm-zip';
+import {Backbone} from '../../Backbone';
+import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+import PiMAdResponse = Backbone.PiMAdResponse;
 
 /**
  * AGate is an abstract implementation of the Gate-Interface. Mainly this one reduces the code.
@@ -14,21 +15,21 @@ import {IZipEntry} from 'adm-zip';
 abstract class AGate implements Gate {
     protected initialized: boolean;
     protected gateAddress: string | undefined;
-    protected responseVendor: ResponseVendor;
+    protected responseVendor: PiMAdResponseVendor;
 
     protected constructor() {
         this.initialized = false;
         this.gateAddress = undefined;
-        this.responseVendor = new ResponseVendor();
+        this.responseVendor = new PiMAdResponseVendor();
     }
 
-    public send(instructions: object, callback: (response: Response) => void): void {
+    public send(instructions: object, callback: (response: PiMAdResponse) => void): void {
         const localResponse = this.responseVendor.buyErrorResponse();
         localResponse.initialize('Not implemented yet!', {});
         callback(localResponse);
     };
 
-    abstract receive(instructions: object, callback: (response: Response) => void): void;
+    abstract receive(instructions: object, callback: (response: PiMAdResponse) => void): void;
     /*abstract open(): Response;
     abstract close(): Response;*/
 
@@ -72,7 +73,7 @@ abstract class AFileSystemGate extends AGate {
 export class AMLGate extends AFileSystemGate {
     private xmlGateFactory: XMLGateFactory;
 
-    receive(instructions: object, callback: (response: Response) => void): void {
+    receive(instructions: object, callback: (response: PiMAdResponse) => void): void {
         if(this.initialized) {
             const xmlGate = this.xmlGateFactory.create();
             xmlGate.initialize('' + this.gateAddress);
@@ -106,13 +107,13 @@ export class AMLGate extends AFileSystemGate {
  */
 export class MockGate extends AGate {
 
-    send(instructions: object, callback: (response: Response) => void): void {
+    send(instructions: object, callback: (response: PiMAdResponse) => void): void {
         logger.debug('Send ' + instructions + ' to ' + this.getGateAddress());
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('This is a send-response of a mock gate.', instructions);
         callback(response);
     };
-    receive(instructions: object, callback: (response: Response) => void): void {
+    receive(instructions: object, callback: (response: PiMAdResponse) => void): void {
         if (this.initialized) {
             const response = this.responseVendor.buySuccessResponse();
             response.initialize('This is a receive-response of a mock gate.', instructions);
@@ -135,7 +136,7 @@ export class MockGate extends AGate {
  */
 export class MTPGate extends AFileSystemGate {
     private zipGateFactory: ZIPGateFactory;
-    receive(instructions: object, callback: (response: Response) => void): void {
+    receive(instructions: object, callback: (response: PiMAdResponse) => void): void {
         if(this.initialized) {
             const zipGate = this.zipGateFactory.create();
             zipGate.initialize('' + this.gateAddress);
@@ -168,7 +169,7 @@ export class MTPGate extends AFileSystemGate {
  */
 export class XMLGate extends AFileSystemGate {
 
-    receive(instructions: object, callback: (response: Response) => void): void {
+    receive(instructions: object, callback: (response: PiMAdResponse) => void): void {
         if(this.initialized) {
             this.fileSystem.readFile('' + this.gateAddress, (error: NodeJS.ErrnoException | null, data: Buffer) => {
                 if (!error) {
@@ -198,7 +199,7 @@ export class ZIPGate extends AFileSystemGate {
     private xmlGateFactory: XMLGateFactory;
     private amlGateFactory: AMLGateFactory;
 
-    receive(instructions: object, callback: (response: Response) => void): void {
+    receive(instructions: object, callback: (response: PiMAdResponse) => void): void {
         if(this.initialized) {
             const zipHandler = new AdmZip(this.gateAddress);
             const zipEntries = zipHandler.getEntries(); // an array of ZipEntry records
@@ -218,7 +219,7 @@ export class ZIPGate extends AFileSystemGate {
                         case '.aml':
                             const amlGate = this.amlGateFactory.create();
                             amlGate.initialize(folderPath + '/' + entry.entryName);
-                            amlGate.receive({}, (response: Response) => {
+                            amlGate.receive({}, (response: PiMAdResponse) => {
                                 if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
                                     responseData.push(response.getContent());
                                     // Calling the callback in the last loop cycle
@@ -236,7 +237,7 @@ export class ZIPGate extends AFileSystemGate {
                         case '.xml':
                             const xmlGate = this.xmlGateFactory.create();
                             xmlGate.initialize(folderPath + '/' + entry.entryName);
-                            xmlGate.receive({}, (response: Response) => {
+                            xmlGate.receive({}, (response: PiMAdResponse) => {
                                 if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
                                     responseData.push(response.getContent());
                                     // Calling the callback in the last loop cycle
@@ -285,13 +286,13 @@ export interface Gate {
      * @param instructions - A set of instructions, configuring the gate while sending.
      * @param callback - Concerning asynchronous behaviour, return data via a callback function.
      */
-    send(instructions: object, callback: (response: Response) => void): void;
+    send(instructions: object, callback: (response: PiMAdResponse) => void): void;
     /**
      * Asynchronous: Send a request to the source and receive theirs answer.
      * @param instructions - A set of instructions, configuring the gate while receiving.
      * @param callback - Concerning asynchronous behaviour, return data via a callback function.
      */
-    receive(instructions: object, callback: (response: Response) => void): void;
+    receive(instructions: object, callback: (response: PiMAdResponse) => void): void;
     // TODO: What to do with open()/close() ???
     //open(): Response;
     //close(): Response;

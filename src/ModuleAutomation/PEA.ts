@@ -1,8 +1,11 @@
 import {DataAssembly} from './DataAssembly';
 import {FEA} from './FEA';
 import {Service} from './Service';
-import {Response, ResponseHandler, ResponseTypes, ResponseVendor} from '../Backbone';
-import {BasicSemanticVersion, SemanticVersion} from '../Backbone';
+import {Backbone, BasicSemanticVersion, SemanticVersion} from '../Backbone';
+import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+import PiMAdResponseHandler = Backbone.PiMAdResponseHandler;
+import PiMAdResponse = Backbone.PiMAdResponse;
+import PiMAdResponseTypes = Backbone.PiMAdResponseTypes;
 
 export interface PEA {
     /**
@@ -11,57 +14,57 @@ export interface PEA {
      * @param tag - The tag of the actuator.
      * @param callback - A callback function. Use an instance of the interface Response as input.
      */
-    getActuator(tag: string, callback: (response: Response) => void): void;
+    getActuator(tag: string, callback: (response: PiMAdResponse) => void): void;
     /**
      * NOT YET IMPLEMENTED
      * Getter for all actuators  within this.dataAssemblies of the PEA object.
      * @returns A response object.
      */
-    getAllActuators(callback: (response: Response) => void): void;
+    getAllActuators(callback: (response: PiMAdResponse) => void): void;
     /**
      * Getter for this.dataAssemblies of the PEA object.
      * @returns A response object.
      */
-    getAllDataAssemblies(): Response;
+    getAllDataAssemblies(): PiMAdResponse;
     /**
      * Getter for this.feas of the PEA object.
      * @returns A response object.
      */
-    getAllFEAs(): Response;
+    getAllFEAs(): PiMAdResponse;
     /**
      * NOT YET IMPLEMENTED
      * Getter for all sensors within this.dataAssemblies of the PEA object.
      * @returns A response object.
      */
-    getAllSensors(callback: (response: Response) => void): void;
+    getAllSensors(callback: (response: PiMAdResponse) => void): void;
     /**
      * Getter for this.services of the PEA object.
      * @returns A response object.
      */
-    getAllServices(): Response;
+    getAllServices(): PiMAdResponse;
     /**
      * Getter for this.dataModel of the PEA object.
      * @returns A response object.
      */
-    getDataModel(): Response;
+    getDataModel(): PiMAdResponse;
     /**
      * Getter for this.dataModelVersion of the PEA object.
      * @returns A response object.
      */
-    getDataModelVersion(): Response;
+    getDataModelVersion(): PiMAdResponse;
     /**
      * Get a specific dataAssembly of the PEA object.
      * @param tag - The tag of the dataAssembly.
      * @param callback - A callback function. Use an instance of the interface Response as input.
      */
-    getDataAssembly(tag: string, callback: (response: Response) => void): void;
+    getDataAssembly(tag: string, callback: (response: PiMAdResponse) => void): void;
     /**
      * NOT YET IMPLEMENTED
      * Get a specific FEA of the PEA object.
      * @param tag - The tag of the FEA.
      * @param callback - A callback function. Use an instance of the interface Response as input.
      */
-    getFEA(tag: string, callback: (response: Response) => void): void;
+    getFEA(tag: string, callback: (response: PiMAdResponse) => void): void;
     /**
      * Getter for this.identifier of the PEA object.
      * @returns The identifier of the PEA.
@@ -78,13 +81,13 @@ export interface PEA {
      * @param tag - The tag of the sensor.
      * @param callback - A callback function. Use an instance of the interface Response as input.
      */
-    getSensor(tag: string, callback: (response: Response) => void): void;
+    getSensor(tag: string, callback: (response: PiMAdResponse) => void): void;
     /**
      * Get a specific service of the PEA object.
      * @param name - The name of the service.
      * @param callback - A callback function. Use an instance of the interface Response as input.
      */
-    getService(name: string, callback: (response: Response) => void): void;
+    getService(name: string, callback: (response: PiMAdResponse) => void): void;
     /**
      * Initialize the PEA object with data. This one works like a constructor.
      * @param data - Various data for initialization of the PEA.
@@ -100,8 +103,8 @@ abstract class APEA implements PEA {
     protected feas: FEA[];
     protected pimadIdentifier: string;
     protected name: string;
-    protected responseHandler: ResponseHandler;
-    protected responseVendor: ResponseVendor;
+    protected responseHandler: PiMAdResponseHandler;
+    protected responseVendor: PiMAdResponseVendor;
     protected services: Service[];
 
     protected initialized: boolean;
@@ -113,61 +116,61 @@ abstract class APEA implements PEA {
         this.feas = [];
         this.name = 'name: undefined';
         this.pimadIdentifier = 'identifier: undefined';
-        this.responseHandler = new ResponseHandler();
-        this.responseVendor = new ResponseVendor();
+        this.responseHandler = new PiMAdResponseHandler();
+        this.responseVendor = new PiMAdResponseVendor();
         this.services = [];
         this.initialized = false;
     };
 
-    getActuator(tag: string, callback: (response: Response) => void): void {
+    getActuator(tag: string, callback: (response: PiMAdResponse) => void): void {
         const response = this.responseVendor.buyErrorResponse();
         callback(response);
     };
-    getAllActuators(callback: (response: Response) => void): void {
+    getAllActuators(callback: (response: PiMAdResponse) => void): void {
         const response = this.responseVendor.buyErrorResponse();
         callback(response);
     };
-    getAllDataAssemblies(): Response {
+    getAllDataAssemblies(): PiMAdResponse {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('Success!', {data: this.dataAssemblies});
         return response;
     };
-    getAllFEAs(): Response {
+    getAllFEAs(): PiMAdResponse {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('Success!', {data: this.feas});
         return response;
     };
-    getAllSensors(callback: (response: Response) => void): void {
+    getAllSensors(callback: (response: PiMAdResponse) => void): void {
         const response = this.responseVendor.buyErrorResponse();
         callback(response);
     };
-    getAllServices(): Response {
+    getAllServices(): PiMAdResponse {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('Success!', {data: this.services});
         return response;
     };
-    getDataAssembly(tag: string, callback: (response: Response) => void): void {
+    getDataAssembly(tag: string, callback: (response: PiMAdResponse) => void): void {
         this.dataAssemblies.forEach((dataAssembly: DataAssembly) => {
             if(dataAssembly.getTagName() === tag) {
-                this.responseHandler.handleCallbackWithResponse(ResponseTypes.SUCCESS, 'Success!', dataAssembly, callback);
+                this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.SUCCESS, 'Success!', dataAssembly, callback);
             }
             if(dataAssembly === this.dataAssemblies[this.dataAssemblies.length -1]) {
-                this.responseHandler.handleCallbackWithResponse(ResponseTypes.ERROR, 'Could not find dataAssembly <' + tag + '> in PEA <' + this.name + '>', {}, callback);
+                this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'Could not find dataAssembly <' + tag + '> in PEA <' + this.name + '>', {}, callback);
             }
         });
     };
-    getDataModel(): Response{
+    getDataModel(): PiMAdResponse {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('Success!', {data: this.dataModel});
         return response;
     };
-    getDataModelVersion(): Response{
+    getDataModelVersion(): PiMAdResponse {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('Success!', {data: this.dataModelVersion});
         return response;
     };
-    getFEA(tag: string, callback: (response: Response) => void): void {
-        this.responseHandler.handleCallbackWithResponse(ResponseTypes.ERROR, '', {}, callback);
+    getFEA(tag: string, callback: (response: PiMAdResponse) => void): void {
+        this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, '', {}, callback);
     };
     getPiMAdIdentifier(): string {
         return this.pimadIdentifier;
@@ -175,17 +178,17 @@ abstract class APEA implements PEA {
     getName(): string {
         return this.name;
     };
-    getSensor(tag: string, callback: (response: Response) => void): void {
-        this.responseHandler.handleCallbackWithResponse(ResponseTypes.ERROR, '', {}, callback);
+    getSensor(tag: string, callback: (response: PiMAdResponse) => void): void {
+        this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, '', {}, callback);
     };
-    getService(name: string, callback: (response: Response) => void): void {
+    getService(name: string, callback: (response: PiMAdResponse) => void): void {
         const localService: Service | undefined = this.services.find(service =>
             service.getName() === name
         );
         if(localService == undefined) {
-            this.responseHandler.handleCallbackWithResponse(ResponseTypes.ERROR, 'Could not find service <' + name + '> in PEA <' + this.name + '>', {}, callback);
+            this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'Could not find service <' + name + '> in PEA <' + this.name + '>', {}, callback);
         } else {
-            this.responseHandler.handleCallbackWithResponse(ResponseTypes.SUCCESS, 'Success!', localService, callback);
+            this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.SUCCESS, 'Success!', localService, callback);
         }
     };
 

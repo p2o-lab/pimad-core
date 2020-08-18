@@ -1,14 +1,16 @@
 import {DataItem} from './DataItem';
-import {Response, ResponseVendor} from '../Backbone';
 import {logger} from '../Utils';
+import {Backbone} from '../Backbone';
+import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+import PiMAdResponse = Backbone.PiMAdResponse;
 
 export interface DataAssembly {
-    getInterfaceClass(): Response; //any; //not defined yet
+    getInterfaceClass(): PiMAdResponse; //any; //not defined yet
     getTagDescription(): string;
     getTagName(): string;
     getIdentifier(): string;
     getMetaModelRef(): string;
-    getCommunication(): Response; //any[] //not defined yet
+    getCommunication(): PiMAdResponse; //any[] //not defined yet
     initialize(instructions: object): boolean;
 }
 
@@ -20,7 +22,7 @@ abstract class ADataAssembly implements DataAssembly{
     protected initialized: boolean;
     protected identifier: string;
     protected metaModelRef: string;
-    protected responseVendor: ResponseVendor;
+    protected responseVendor: PiMAdResponseVendor;
 
     constructor() {
         this.dataItems= [];
@@ -29,9 +31,9 @@ abstract class ADataAssembly implements DataAssembly{
         this.initialized = false;
         this.identifier = '';
         this.metaModelRef = '';
-        this.responseVendor = new ResponseVendor();
+        this.responseVendor = new PiMAdResponseVendor();
     }
-    getInterfaceClass(): Response {
+    getInterfaceClass(): PiMAdResponse {
         return this.responseVendor.buyErrorResponse();
     }
     getTagDescription(): string {
@@ -46,7 +48,7 @@ abstract class ADataAssembly implements DataAssembly{
     getMetaModelRef(): string {
         return this.metaModelRef;
     };
-    getCommunication(): Response {
+    getCommunication(): PiMAdResponse {
         return this.responseVendor.buyErrorResponse();
     }
     abstract initialize(instructions: object): boolean ;
@@ -88,7 +90,8 @@ export class BaseDataAssemblyFactory extends ADataAssemblyFactory {
     create(): DataAssembly{
         const dataAssembly = new BaseDataAssembly();
         logger.debug(this.constructor.name + ' creates a ' + dataAssembly.constructor.name);
-        return dataAssembly;}
+        return dataAssembly;
+    }
 }
 
 

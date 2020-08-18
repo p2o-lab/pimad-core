@@ -1,11 +1,13 @@
 import {CommunicationInterfaceData, OPCUANodeCommunicationFactory} from './CommunicationInterfaceData';
 import {logger} from '../Utils';
-import {Response, ResponseVendor} from '../Backbone';
+import {Backbone} from '../Backbone';
+import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+import PiMAdResponse = Backbone.PiMAdResponse;
 
 export interface Parameter {
     getAllCommunicationInterfaceData(): CommunicationInterfaceData[];
     getName(): string;
-    getInterfaceClass(): Response; //TODO: clarify type
+    getInterfaceClass(): PiMAdResponse; //TODO: clarify type
     getCommunicationInterfaceData(tag: string): CommunicationInterfaceData;
     initialize(name: string, communication: CommunicationInterfaceData[], interfaceClass: any): boolean;
 }
@@ -15,14 +17,14 @@ abstract class AParameter implements Parameter {
     protected interfaceClass: any; //TODO: clarify type
     protected name: string;
     protected initialized: boolean;
-    protected responseVendor: ResponseVendor;
+    protected responseVendor: PiMAdResponseVendor;
 
     constructor() {
         this.communication=[];
         this.interfaceClass= null;
         this.name='';
         this.initialized = false;
-        this.responseVendor = new ResponseVendor();
+        this.responseVendor = new PiMAdResponseVendor();
     }
     getAllCommunicationInterfaceData(): CommunicationInterfaceData[] {
         return this.communication;
@@ -30,7 +32,7 @@ abstract class AParameter implements Parameter {
     getName(): string {
         return this.name;
     }
-    getInterfaceClass(): Response{
+    getInterfaceClass(): PiMAdResponse {
         return this.interfaceClass;
     }
     getCommunicationInterfaceData(tag: string): CommunicationInterfaceData {

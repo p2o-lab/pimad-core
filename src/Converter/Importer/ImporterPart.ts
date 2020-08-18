@@ -1,4 +1,3 @@
-import {Response, ResponseVendor} from '../../Backbone';
 import {
     CommunicationInterfaceData, CommunicationInterfaceDataFactory, OPCUANodeCommunicationFactory,
     OPCUAServerCommunicationFactory
@@ -15,11 +14,14 @@ import {logger} from '../../Utils';
 import {BaseDataItemFactory, DataItem} from '../../ModuleAutomation';
 import {BaseProcedureFactory} from '../../ModuleAutomation';
 import {Parameter} from '../../ModuleAutomation';
+import {Backbone} from '../../Backbone';
+import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+import PiMAdResponse = Backbone.PiMAdResponse;
 
 abstract class AImporterPart implements ImporterPart {
-    protected responseVendor: ResponseVendor
+    protected responseVendor: PiMAdResponseVendor
 
-    extract(data: object, callback: (response: Response) => void): void {
+    extract(data: object, callback: (response: PiMAdResponse) => void): void {
         const localResponse = this.responseVendor.buyErrorResponse();
         localResponse.initialize('Not implemented yet!', {});
         callback(localResponse);
@@ -31,7 +33,7 @@ abstract class AImporterPart implements ImporterPart {
      * @param attributes - The attributes array.
      * @param callback - A callback function with an instance of the Response-Interface.
      */
-    protected getAttribute(attributeName: string, attributes: Attribute[], callback: (response: Response) => void): void {
+    protected getAttribute(attributeName: string, attributes: Attribute[], callback: (response: PiMAdResponse) => void): void {
         attributes.forEach((attribute: Attribute) => {
             if(attribute.Name === attributeName) {
                 const localResponse = this.responseVendor.buySuccessResponse();
@@ -42,7 +44,7 @@ abstract class AImporterPart implements ImporterPart {
     }
 
     constructor() {
-        this.responseVendor = new ResponseVendor();
+        this.responseVendor = new PiMAdResponseVendor();
     }
 }
 
@@ -81,7 +83,7 @@ export class MTPPart extends AImporterPart {
      * @param data - The bare ModuleTypePackage-object of the MTP. Containing a CommunicationSet, HMISet, ServiceSet and TextSet.
      * @param callback - A callback function with an instance of the Response-Interface. The type of the response-content-object-attribute data is {@link ExtractDataFromCommunicationSetResponseType}
      */
-    extract(data: {CommunicationSet: object[]; HMISet: object; ServiceSet: object; TextSet: object}, callback: (response: Response) => void): void {
+    extract(data: {CommunicationSet: object[]; HMISet: object; ServiceSet: object; TextSet: object}, callback: (response: PiMAdResponse) => void): void {
         const communicationSet = this.extractDataFromCommunicationSet(data.CommunicationSet);
         if(communicationSet.CommunicationInterfaceData.length === 0 && communicationSet.DataAssemblies.length === 0) {
             const localeResponse = this.responseVendor.buyErrorResponse();
@@ -376,7 +378,7 @@ export class ServicePart extends AImporterPart {
      * @param data - All service data as object.
      * @param callback - A callback function with an instance of the Response-Interface.
      */
-    extract(data: ServicePartExtractInputDataType, callback: (response: Response) => void): void {
+    extract(data: ServicePartExtractInputDataType, callback: (response: PiMAdResponse) => void): void {
         /* One big issue: In the ServicePart of the MTP are not all data to build a PiMAd-core Service. There are
         references to DataAssemblies extracted via the MTPPart. Therefore this one extracts the data like a quasi
         service. Later one the Importer merges the data of quasi service and the referenced DataAssembly to one
@@ -404,7 +406,7 @@ export class ServicePart extends AImporterPart {
             localService.Procedures = [];
             /* extract the 'RefID'-Attribute. It's important! and referencing to the DataAssembly of the service which
             stores all the interface data to the hardware. */
-            this.getAttribute('RefID', localAMLServiceAttributes, (response: Response) => {
+            this.getAttribute('RefID', localAMLServiceAttributes, (response: PiMAdResponse) => {
                 if(response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
                     localService.DataAssembly = response.getContent() as Attribute;
                 }
@@ -426,7 +428,7 @@ export class ServicePart extends AImporterPart {
                         localProcedure.MetaModelRef = amlServiceInternalElementItem.RefBaseSystemUnitPath;
                         localProcedure.Name = amlServiceInternalElementItem.Name;
                         localProcedure.Parameters = [];
-                        this.getAttribute('RefID', amlServiceInternalElementItem.Attribute, (response: Response) => {
+                        this.getAttribute('RefID', amlServiceInternalElementItem.Attribute, (response: PiMAdResponse) => {
                             if(response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
                                 localProcedure.DataAssembly = response.getContent() as Attribute;
                             }
@@ -457,7 +459,7 @@ export class ServicePart extends AImporterPart {
      * @param attributes - The attributes array.
      * @param callback - A callback function with an instance of the Response-Interface.
      */
-    private extractAttributes(attributes: Attribute[], callback: (response: Response) => void): void {
+    private extractAttributes(attributes: Attribute[], callback: (response: PiMAdResponse) => void): void {
         const responseAttributes: Attribute[] = [];
         attributes.forEach((attribute: Attribute) => {
             switch (attribute.Name) {
@@ -492,7 +494,7 @@ export interface ImporterPart {
      * @param data - The data source.
      * @param callback - Return the results via callback-function.
      */
-    extract(data: object, callback: (response: Response) => void): void;
+    extract(data: object, callback: (response: PiMAdResponse) => void): void;
 }
 
 /**

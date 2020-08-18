@@ -1,13 +1,15 @@
 import {logger} from '../Utils';
-import {Response, ResponseVendor} from '../Backbone';
 import {CommunicationInterfaceData, OPCUANodeCommunicationFactory} from './CommunicationInterfaceData';
+import {Backbone} from '../Backbone';
+import PiMAdResponse = Backbone.PiMAdResponse;
+import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 
 export interface DataItem {
     /**
      * Getter for this.cIData.
      */
     getCommunicationInterfaceData(): CommunicationInterfaceData;
-    getDataType(): Response; //string;
+    getDataType(): PiMAdResponse; //string;
     /**
      * Getter for this.identifier.
      */
@@ -35,7 +37,7 @@ abstract class ADataItem implements DataItem {
     protected identifier: string;
     protected metaModelRef: string;
     protected initialized: boolean;
-    protected responseVendor: ResponseVendor;
+    protected responseVendor: PiMAdResponseVendor;
 
     constructor() {
         this.cIData= new OPCUANodeCommunicationFactory().create(); //TODO: Add BaseCommunicationInterfaceData
@@ -43,13 +45,13 @@ abstract class ADataItem implements DataItem {
         this.identifier = '';
         this.metaModelRef = '';
         this.initialized = false;
-        this.responseVendor = new ResponseVendor();
+        this.responseVendor = new PiMAdResponseVendor();
     }
 
     getCommunicationInterfaceData(): CommunicationInterfaceData{
         return this.cIData;
     }
-    getDataType(): Response{
+    getDataType(): PiMAdResponse {
         //TODO: Datatype of OPCUAServerCommunication definition
         return this.responseVendor.buyErrorResponse();
     }

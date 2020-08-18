@@ -1,10 +1,12 @@
 import {logger} from '../Utils';
-import {ResponseVendor, Response} from '../Backbone';
+import {Backbone} from '../Backbone';
+import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+import PiMAdResponse = Backbone.PiMAdResponse;
 
 export interface Attribute {
-    getDataType(): Response;
-    getName(): Response;
-    getValue(): Response;
+    getDataType(): PiMAdResponse;
+    getName(): PiMAdResponse;
+    getValue(): PiMAdResponse;
     initialize(data: InitializeAttribute): boolean;
 }
 
@@ -18,11 +20,11 @@ abstract class AAttribute implements Attribute {
     private dataType: string;
     private name: string;
     private initialized: boolean;
-    private responseVendor: ResponseVendor;
+    private responseVendor: PiMAdResponseVendor;
     private value: string;
 
-    private getter(variable: AttributeGetterVariables): Response {
-        let response: Response;
+    private getter(variable: AttributeGetterVariables): PiMAdResponse {
+        let response: PiMAdResponse;
         if(this.initialized) {
             response = this.responseVendor.buySuccessResponse();
             switch (variable) {
@@ -43,15 +45,15 @@ abstract class AAttribute implements Attribute {
         return response;
     };
 
-    getDataType(): Response {
+    getDataType(): PiMAdResponse {
         return this.getter(AttributeGetterVariables.DATATYPE);
     }
 
-    getName(): Response {
+    getName(): PiMAdResponse {
         return this.getter(AttributeGetterVariables.NAME);
     };
 
-    getValue(): Response {
+    getValue(): PiMAdResponse {
         return this.getter(AttributeGetterVariables.VALUE);
     };
 
@@ -71,7 +73,7 @@ abstract class AAttribute implements Attribute {
         this.dataType = 'dataType: undefined';
         this.name = 'name: undefined';
         this.initialized = false;
-        this.responseVendor = new ResponseVendor();
+        this.responseVendor = new PiMAdResponseVendor();
         this.value = 'value: undefined';
     }
 }

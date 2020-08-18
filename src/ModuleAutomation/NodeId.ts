@@ -1,10 +1,12 @@
 import {logger} from '../Utils';
-import {Response, ResponseVendor} from '../Backbone';
+import {Backbone} from '../Backbone';
+import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+import PiMAdResponse = Backbone.PiMAdResponse;
 
 export interface NodeId {
-    getNamespaceIndex(): Response;
-    getIdentifier(): Response;
-    getNodeId(): Response;
+    getNamespaceIndex(): PiMAdResponse;
+    getIdentifier(): PiMAdResponse;
+    getNodeId(): PiMAdResponse;
     initialize(namespaceIndex: number, identifier: string | number): boolean;
 }
 
@@ -12,32 +14,30 @@ abstract class ANodeId implements NodeId {
     protected namespaceIndex: number;
     protected identifier: string | number = '';
     protected initialized: boolean;
-    protected responseVendor: ResponseVendor;
+    protected responseVendor: PiMAdResponseVendor;
     protected constructor () {
         this.namespaceIndex = -1;
         this.initialized = false;
-        this.responseVendor = new ResponseVendor();
+        this.responseVendor = new PiMAdResponseVendor();
     };
-    getIdentifier(): Response {
-        let response: Response;
+    getIdentifier(): PiMAdResponse {
         return this.checkInitialized(() => {
-            response = this.responseVendor.buySuccessResponse();
+            const response = this.responseVendor.buySuccessResponse();
             response.initialize('The identifier index of the node id.', {identifier: this.identifier});
             return response;
         });
     };
-    getNamespaceIndex(): Response {
-        let response: Response;
+    getNamespaceIndex(): PiMAdResponse {
         return this.checkInitialized(() => {
-            response = this.responseVendor.buySuccessResponse();
+            const response = this.responseVendor.buySuccessResponse();
             response.initialize('The namespace index of the node id.', {namespaceIndex: this.namespaceIndex});
             return response;
         });
     };
-    abstract getNodeId(): Response;
+    abstract getNodeId(): PiMAdResponse;
     abstract initialize(namespaceIndex: number, identifier: string | number): boolean;
-    protected checkInitialized(callbackTrue: () => Response): Response {
-        let response: Response;
+    protected checkInitialized(callbackTrue: () => PiMAdResponse): PiMAdResponse {
+        let response: PiMAdResponse;
         if(this.initialized) {
             response = callbackTrue();
         } else {
@@ -50,7 +50,7 @@ abstract class ANodeId implements NodeId {
 
 class BaseNodeId extends ANodeId {
     protected identifier: number;
-    getNodeId(): Response {
+    getNodeId(): PiMAdResponse {
         return this.responseVendor.buyErrorResponse();
     };
     initialize(namespaceIndex: number, identifier: number): boolean {
@@ -64,10 +64,9 @@ class BaseNodeId extends ANodeId {
 
 class NumericNodeId extends ANodeId {
     protected identifier: number;
-    getNodeId(): Response {
-        let response: Response;
+    getNodeId(): PiMAdResponse {
         return this.checkInitialized(() => {
-            response = this.responseVendor.buySuccessResponse();
+            const response = this.responseVendor.buySuccessResponse();
             response.initialize('The node id.', {nodeId: 'ns=' + this.namespaceIndex + ';i=' + this.identifier});
             return response;
         });
@@ -91,10 +90,9 @@ class NumericNodeId extends ANodeId {
 
 class StringNodeId extends ANodeId {
     protected identifier: string;
-    getNodeId(): Response {
-        let response: Response;
+    getNodeId(): PiMAdResponse {
         return this.checkInitialized(() => {
-            response = this.responseVendor.buySuccessResponse();
+            const response = this.responseVendor.buySuccessResponse();
             response.initialize('The node id.', {nodeId: 'ns=' + this.namespaceIndex + ';s=' + this.identifier});
             return response;
         });
@@ -117,10 +115,9 @@ class StringNodeId extends ANodeId {
 
 class QpaqueNodeId extends StringNodeId {
     protected identifier: string;
-    getNodeId(): Response {
-        let response: Response;
+    getNodeId(): PiMAdResponse {
         return this.checkInitialized(() => {
-            response = this.responseVendor.buySuccessResponse();
+            const response = this.responseVendor.buySuccessResponse();
             response.initialize('The node id.', {nodeId: 'ns=' + this.namespaceIndex + ';b=' + this.identifier});
             return response;
         });
@@ -133,10 +130,9 @@ class QpaqueNodeId extends StringNodeId {
 
 class GUIDNodeId extends StringNodeId {
     protected identifier: string;
-    getNodeId(): Response {
-        let response: Response;
+    getNodeId(): PiMAdResponse {
         return this.checkInitialized(() => {
-            response = this.responseVendor.buySuccessResponse();
+            const response = this.responseVendor.buySuccessResponse();
             response.initialize('The node id.', {nodeId: 'ns=' + this.namespaceIndex + ';g=' + this.identifier});
             return response;
         });

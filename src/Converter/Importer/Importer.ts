@@ -1,6 +1,5 @@
-import {Response, ResponseVendor} from '../../Backbone';
 import {logger} from '../../Utils';
-import {BasicSemanticVersion, SemanticVersion} from '../../Backbone';
+import {Backbone, BasicSemanticVersion, SemanticVersion} from '../../Backbone';
 import {
     ExtractDataFromCommunicationSetResponseType,
     HMIPart,
@@ -33,24 +32,26 @@ import {BasePEAFactory} from '../../ModuleAutomation';
 import {BaseServiceFactory, Service} from '../../ModuleAutomation';
 import {BaseProcedureFactory, Procedure, ProcedureFactory} from '../../ModuleAutomation';
 import {Gate} from '../Gate/Gate';
+import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+import PiMAdResponse = Backbone.PiMAdResponse;
 
 abstract class AImporter implements  Importer {
 
     protected initialized: boolean;
     protected metaModelVersion: SemanticVersion;
     protected nextImporter: Importer | undefined;
-    protected responseVendor: ResponseVendor;
+    protected responseVendor: PiMAdResponseVendor;
 
     constructor() {
         this.initialized = false;
         this.metaModelVersion = new BasicSemanticVersion();
         this.nextImporter = undefined;
-        this.responseVendor = new ResponseVendor();
+        this.responseVendor = new PiMAdResponseVendor();
 
         this.metaModelVersion.initialize(0,0,1);
     }
     /** @inheritDoc */
-    abstract convertFrom(instructions: object, callback: (response: Response) => void): void;
+    abstract convertFrom(instructions: object, callback: (response: PiMAdResponse) => void): void;
     getMetaModelVersion(): SemanticVersion {
         return this.metaModelVersion;
     };
@@ -76,7 +77,7 @@ export class LastChainLinkImporter extends AImporter {
      * @param instructions - A set of instructions, configuring the importer.
      * @param callback - Passing the result back via a callback function.
      */
-    convertFrom(instructions: object, callback: (response: Response) => void): void {
+    convertFrom(instructions: object, callback: (response: PiMAdResponse) => void): void {
         callback(this.responseVendor.buyErrorResponse());
     };
     /**
@@ -116,7 +117,7 @@ export class MTPFreeze202001Importer extends AImporter {
     private zipGateFactory: GateFactory;
 
     /** @inheritDoc */
-    convertFrom(instructions: InstructionsConvertFrom, callback: (response: Response) => void): void {
+    convertFrom(instructions: InstructionsConvertFrom, callback: (response: PiMAdResponse) => void): void {
         if(this.initialized) {
             //
             this.followInstructions(instructions, response => {
@@ -140,7 +141,7 @@ export class MTPFreeze202001Importer extends AImporter {
      * @param callback - Returns a successful {@link SuccessResponse} with PEA or an {@link ErrorResponse} with
      * a message why this step has finally failed.
      */
-    private followInstructions(instructions: InstructionsConvertFrom, callback: (response: Response) => void): void {
+    private followInstructions(instructions: InstructionsConvertFrom, callback: (response: PiMAdResponse) => void): void {
         // Instructions
         if(instructions.source != '') {
             // access data source
@@ -165,7 +166,7 @@ export class MTPFreeze202001Importer extends AImporter {
      * a message why this step has finally failed.
      * @private
      */
-    private accessDataSource(instructions: InstructionsConvertFrom, callback: (response: Response) => void): void {
+    private accessDataSource(instructions: InstructionsConvertFrom, callback: (response: PiMAdResponse) => void): void {
         let gate: Gate = new MockGateFactory().create();
         switch (instructions.source.slice(-4)) {
             case '.aml':
@@ -224,7 +225,7 @@ export class MTPFreeze202001Importer extends AImporter {
      * @param callback - TODO after rework!
      * @private
      */
-    private checkInformationModel(data: CAEXFile, pimadIdentifier: string, callback: (response: Response) => void): void {
+    private checkInformationModel(data: CAEXFile, pimadIdentifier: string, callback: (response: PiMAdResponse) => void): void {
         this.convert(data, pimadIdentifier,response => {
             callback(response);
         });
@@ -305,7 +306,7 @@ export class MTPFreeze202001Importer extends AImporter {
      * @param callback - ???
      * @private
      */
-    private convert(data: CAEXFile, pimadIdentifier: string, callback: (response: Response) => void): void {
+    private convert(data: CAEXFile, pimadIdentifier: string, callback: (response: PiMAdResponse) => void): void {
         // These variables will be continuously filled
         let communicationInterfaceData: CommunicationInterfaceData[] = []; // TODO > link to communication interface
         let dataAssemblies: DataAssembly[] = [];
@@ -470,7 +471,7 @@ export interface Importer {
      * @param callback - Returns a successful {@link SuccessResponse} with PEA or an {@link ErrorResponse} with
      * a message why the converting has finally failed.
      */
-    convertFrom(instructions: object, callback: (response: Response) => void): void;
+    convertFrom(instructions: object, callback: (response: PiMAdResponse) => void): void;
 
     /**
      * Initialize this importer object.

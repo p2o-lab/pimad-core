@@ -1,9 +1,11 @@
 import {Parameter} from './Parameter';
-import {Response, ResponseVendor} from '../Backbone';
 import {logger} from '../Utils';
 import {DataAssembly} from './DataAssembly';
 import {Procedure} from './Procedure';
 import { Attribute } from './Attribute';
+import {Backbone} from '../Backbone';
+import PiMAdResponse = Backbone.PiMAdResponse;
+import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 
 export interface Service {
     /**
@@ -11,27 +13,27 @@ export interface Service {
      * @param name - The name of the attribute.
      * @param callback - A callback function. Use an instance of the interface Response as input.
      */
-    getAttribute(name: string, callback: (response: Response) => void): void;
+    getAttribute(name: string, callback: (response: PiMAdResponse) => void): void;
     /**
      * Getter for this.attributes of the service object.
      * @returns A response object.
      */
-    getAllAttributes(): Response;
+    getAllAttributes(): PiMAdResponse;
     /**
      * Getter for this.procedures of the service object.
      * @returns A response object.
      */
-    getAllProcedures(): Response;
+    getAllProcedures(): PiMAdResponse;
     /**
      * Getter for this.parameters of the service object.
      * @returns A response object.
      */
-    getAllParameters(): Response;
+    getAllParameters(): PiMAdResponse;
     /**
      * Getter for this.dataAssembly of the service object.
      * @returns A response object.
      */
-    getDataAssembly(): Response;
+    getDataAssembly(): PiMAdResponse;
     /**
      * Getter for this.name of the service object.
      * @returns The service name as string.
@@ -41,19 +43,19 @@ export interface Service {
      * Getter for this.metaModelRef of the service object.
      * @returns A response object.
      */
-    getMetaModelReference(): Response;
+    getMetaModelReference(): PiMAdResponse;
     /**
      * Get a specific parameter of the service object.
      * @param name - The name of the attribute.
      * @param callback - A callback function. Use an instance of the interface Response as input.
      */
-    getParameter(name: string, callback: (response: Response) => void): void;
+    getParameter(name: string, callback: (response: PiMAdResponse) => void): void;
     /**
      * Get a specific procedure of the service object.
      * @param name - The name of the procedure.
      * @param callback - A callback function. Use an instance of the interface Response as input.
      */
-    getProcedure(name: string, callback: (response: Response) => void): void;
+    getProcedure(name: string, callback: (response: PiMAdResponse) => void): void;
     /**
      * Initialize the service object with data. This one works like a constructor.
      * @param attributes - An Array with attributes of the service object..
@@ -77,7 +79,7 @@ abstract class AService implements Service{
     protected procedures: Procedure[];
     protected parameters: Parameter[];
     protected initialized: boolean;
-    protected responseVendor: ResponseVendor;
+    protected responseVendor: PiMAdResponseVendor;
 
     constructor() {
         this.attributes = [];
@@ -88,10 +90,10 @@ abstract class AService implements Service{
         this.procedures = [];
         this.parameters = [];
         this.initialized = false;
-        this.responseVendor = new ResponseVendor();
+        this.responseVendor = new PiMAdResponseVendor();
     };
 
-    getAttribute(name: string, callback: (response: Response) => void): void {
+    getAttribute(name: string, callback: (response: PiMAdResponse) => void): void {
         this.attributes.forEach((attribute: Attribute) => {
             if((attribute.getName().getContent() as {data: string}).data === name) {
                 const response = this.responseVendor.buySuccessResponse();
@@ -106,31 +108,31 @@ abstract class AService implements Service{
         });
     }
 
-    getAllAttributes(): Response {
+    getAllAttributes(): PiMAdResponse {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('Success!', {data: this.attributes});
         return response;
     };
 
-    getAllProcedures(): Response {
+    getAllProcedures(): PiMAdResponse {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('Success!', {data: this.procedures});
         return response;
     }
 
-    getAllParameters(): Response {
+    getAllParameters(): PiMAdResponse {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('Success!', {data: this.parameters});
         return response;
     }
 
-    getDataAssembly(): Response {
+    getDataAssembly(): PiMAdResponse {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('Success!', {data: this.dataAssembly});
         return response;
     };
 
-    getMetaModelReference(): Response {
+    getMetaModelReference(): PiMAdResponse {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('Success!', {data: this.metaModelRef});
         return response;
@@ -140,7 +142,7 @@ abstract class AService implements Service{
         return this.name;
     };
 
-    getParameter(name: string, callback: (response: Response) => void): void {
+    getParameter(name: string, callback: (response: PiMAdResponse) => void): void {
         this.parameters.forEach((parameter: Parameter) => {
             if(parameter.getName() === name) {
                 const response = this.responseVendor.buySuccessResponse();
@@ -155,7 +157,7 @@ abstract class AService implements Service{
         });
     };
 
-    getProcedure(name: string, callback: (response: Response) => void): void {
+    getProcedure(name: string, callback: (response: PiMAdResponse) => void): void {
         this.procedures.forEach((procedure: Procedure) => {
             if(procedure.getName() === name) {
                 const response = this.responseVendor.buySuccessResponse();
