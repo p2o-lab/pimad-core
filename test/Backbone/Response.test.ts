@@ -1,10 +1,12 @@
-import {SuccessResponse, ErrorResponse, SuccessResponseFactory, ErrorResponseFactory, ResponseVendor} from '../../src/Backbone';
+import {Backbone} from '../../src/Backbone';
+import ResponseVendor = Backbone.PiMAdResponseVendor
+//import { ResponseVendor } from '../../src/Backbone';
 import { expect } from 'chai';
 import 'mocha';
 
 describe('class: SuccessResponse', () => {
     it('method: initialize()', () => {
-        const response = new SuccessResponse();
+        const response = new ResponseVendor().buySuccessResponse();
         expect(response.getMessage()).to.equal('');
         expect(JSON.stringify(response.getContent())).to.equal(JSON.stringify({}));
         const msg = 'This is a test message!';
@@ -16,7 +18,7 @@ describe('class: SuccessResponse', () => {
 
 describe('class: ErrorResponse', () => {
     it('method: initialize()', () => {
-        const response = new ErrorResponse();
+        const response = new ResponseVendor().buyErrorResponse();
         expect(response.getMessage()).to.equal('');
         expect(JSON.stringify(response.getContent())).to.equal(JSON.stringify({}));
         let msg = 'This is a test message!';
@@ -28,27 +30,21 @@ describe('class: ErrorResponse', () => {
     });
 });
 
-describe('class: FSuccessResponse', () => {
-    it('method: create()', () => {
-        const factory = new SuccessResponseFactory();
-        expect(typeof factory.create()).is.equal(typeof new SuccessResponse())
-    });
-});
-
-describe('class: FErrorResponse', () => {
-    it('method: create()', () => {
-        const factory = new ErrorResponseFactory();
-        expect(typeof factory.create()).is.equal(typeof new ErrorResponse())
-    });
-});
-
 describe('class: ResponseVendor', () => {
-    it('method: buySuccessResponse()', () => {
+    it('method: buyDummyResponse()', () => {
         const vendor = new ResponseVendor();
-        expect(typeof vendor.buySuccessResponse()).is.equal(typeof new SuccessResponse())
-    });
+        expect(vendor.buyDummyResponse().constructor.name).is.equal('DummyResponse');
+    })
     it('method: buyErrorResponse()', () => {
         const vendor = new ResponseVendor();
-        expect(typeof vendor.buyErrorResponse()).is.equal(typeof new ErrorResponse())
+        expect(vendor.buyErrorResponse().constructor.name).is.equal('ErrorResponse');
     })
+    it('method: buySuccessResponse()', () => {
+        const vendor = new ResponseVendor();
+        expect(vendor.buySuccessResponse().constructor.name).is.equal('SuccessResponse');
+    });
+    it('method: buyWarningResponse()', () => {
+        const vendor = new ResponseVendor();
+        expect(vendor.buyWarningResponse().constructor.name).is.equal('WarningResponse');
+    });
 })

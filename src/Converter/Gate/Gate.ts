@@ -1,3 +1,4 @@
+
 import {Response, ResponseVendor} from '../../Backbone';
 import {AMLGateFactory, XMLGateFactory, ZIPGateFactory} from './GateFactory';
 import fileSystem = require('fs');
