@@ -270,6 +270,17 @@ export namespace Backbone {
          * @param callback - The callback function that expects a {@link PiMAdResponse}-Instance as input.
          */
         public handleCallbackWithResponse(type: PiMAdResponseTypes, message: string, content: object, callback: (response: PiMAdResponse) => void): void {
+            callback(this.handleResponse(type, message, content));
+        }
+
+        /**
+         * This method creates the desired {@link PiMAdResponse}-Instance, initializes it with the given data and
+         * returns the instance.
+         * @param type - The type of the response.
+         * @param message - The message of the response.
+         * @param content - The content of the response.
+         */
+        public handleResponse(type: PiMAdResponseTypes, message: string, content: object): PiMAdResponse {
             let response: PiMAdResponse = this.responseVendor.buyDummyResponse();
             switch (type) {
                 case PiMAdResponseTypes.ERROR:
@@ -283,7 +294,7 @@ export namespace Backbone {
                     break;
             }
             response.initialize(message, content);
-            callback(response);
+            return response;
         }
     }
 }

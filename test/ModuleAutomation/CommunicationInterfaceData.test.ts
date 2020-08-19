@@ -8,7 +8,7 @@ describe('class: OPCUAServerCommunication', () => {
         opcServerCommunication = new OPCUAServerCommunication();
     });
     it('method: getDescription()', () => {
-        expect(typeof opcServerCommunication.getDescription()).is.equal(typeof {name:'',serverURL:''});
+        expect(typeof opcServerCommunication.getInterfaceData()).is.equal(typeof {name:'',serverURL:''});
     });
     it('method: initialize()', () => {
         expect(opcServerCommunication.initialize({name: '', serverURL: ''})).is.true;
@@ -27,7 +27,7 @@ describe('class: OPCUANodeCommunication', () => {
         opcNodeCommunication = new OPCUANodeCommunication();
     });
     it('method: getDescription()', () => {
-        expect(typeof opcNodeCommunication.getDescription()).is.equal(typeof {name:'',serverURL:''});
+        expect(typeof opcNodeCommunication.getInterfaceData()).is.equal(typeof {name:'',serverURL:''});
     });
     it('method: initialize()', () => {
         expect(opcNodeCommunication.initialize({name:'', namespaceIndex:'',nodeId: {} as NodeId, dataType: ''})).is.true;
