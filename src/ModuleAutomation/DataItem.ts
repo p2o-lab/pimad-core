@@ -1,5 +1,5 @@
 import {logger} from '../Utils';
-import {CommunicationInterfaceData, OPCUANodeCommunicationFactory} from './CommunicationInterfaceData';
+import {CommunicationInterfaceData} from './CommunicationInterfaceData';
 import {Backbone} from '../Backbone';
 import PiMAdResponse = Backbone.PiMAdResponse;
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
@@ -40,7 +40,7 @@ abstract class ADataItem implements DataItem {
     protected responseVendor: PiMAdResponseVendor;
 
     constructor() {
-        this.cIData= new OPCUANodeCommunicationFactory().create(); //TODO: Add BaseCommunicationInterfaceData
+        this.cIData= {} as CommunicationInterfaceData;
         this.name = '';
         this.identifier = '';
         this.metaModelRef = '';

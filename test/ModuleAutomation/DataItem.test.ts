@@ -1,6 +1,9 @@
 import {expect} from 'chai';
-import {BaseDataItemFactory, DataItem} from '../../src/ModuleAutomation';
-import {OPCUANodeCommunication} from '../../src/ModuleAutomation/CommunicationInterfaceData';
+import {BaseDataItemFactory, CommunicationInterfaceDataVendor, DataItem} from '../../src/ModuleAutomation';
+import {
+    CommunicationInterfaceDataEnum,
+    OPCUANodeCommunication
+} from '../../src/ModuleAutomation/CommunicationInterfaceData';
 import {Backbone} from '../../src/Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 
@@ -12,12 +15,17 @@ describe('class: BaseDataItem', () => {
     beforeEach(function () {
         dataItem = new BaseDataItemFactory().create();
     });
+    describe('with initialization', () => {
+        beforeEach(() => {
+            dataItem.initialize('Test-DataItem', new CommunicationInterfaceDataVendor().buy(CommunicationInterfaceDataEnum.OPCUANode), 'Test-ID', 'Test-MetaModelReference');
+        });
+        it('method: getCommunicationInterfaceData()', () => {
+            //TODO: OPCServerCommunication as option
+            expect(dataItem.getCommunicationInterfaceData().constructor.name).is.equal('OPCUANodeCommunication')
+        });
+    })
     it('method: getDataType()', () => {
         expect(dataItem.getDataType().constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
-    });
-    it('method: getCommunicationInterfaceData()', () => {
-        //TODO: OPCServerCommunication as option
-        expect(dataItem.getCommunicationInterfaceData().constructor.name).is.equal('OPCUANodeCommunication')
     });
     describe('method: getIdentifier()', () => {
         it('test case: standard usage', () => {

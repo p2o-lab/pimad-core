@@ -1,5 +1,5 @@
 export {Attribute, AttributeFactory, AttributeFactoryVendor} from './Attribute';
-export {CommunicationInterfaceDataFactory, CommunicationInterfaceData, OPCUANodeCommunicationFactory, OPCUAServerCommunicationFactory} from './CommunicationInterfaceData';
+export {CommunicationInterfaceDataFactory, CommunicationInterfaceData, CommunicationInterfaceDataVendor} from './CommunicationInterfaceData';
 export * from './DataAssembly';
 export * from './DataItem';
 export * from './FEA';

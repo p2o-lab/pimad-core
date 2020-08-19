@@ -1,4 +1,4 @@
-import {CommunicationInterfaceData, OPCUANodeCommunicationFactory} from './CommunicationInterfaceData';
+import {CommunicationInterfaceData} from './CommunicationInterfaceData';
 import {logger} from '../Utils';
 import {Backbone} from '../Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
@@ -38,7 +38,7 @@ abstract class AParameter implements Parameter {
     getCommunicationInterfaceData(tag: string): CommunicationInterfaceData {
         // TODO > Big refactor! Response type, callback, etc.
         // add Operations for InterfaceData by tag : CommunicationInterfaceData
-        return (new OPCUANodeCommunicationFactory()).create();
+        return {} as CommunicationInterfaceData;
     }
     initialize(name: string, communication: CommunicationInterfaceData[], interfaceClass: any): boolean {
         if (!this.initialized) {

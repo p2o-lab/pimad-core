@@ -6,7 +6,7 @@ import PiMAdResponseHandler = Backbone.PiMAdResponseHandler;
 import PiMAdResponseTypes = Backbone.PiMAdResponseTypes;
 
 export interface CommunicationInterfaceData {
-    getInterfaceData(): object;
+    getInterfaceData(): PiMAdResponse;
     getName(): PiMAdResponse;
     initialize(interfaceDescription: object): boolean;
 }
@@ -30,7 +30,7 @@ abstract class ACommunicationInterfaceData implements CommunicationInterfaceData
         }
     }
 
-    abstract getInterfaceData(): object;
+    abstract getInterfaceData(): PiMAdResponse;
     abstract initialize(interfaceDescription: object): boolean;
 }
 
@@ -42,8 +42,12 @@ export class OPCUAServerCommunication extends ACommunicationInterfaceData {
         this.serverURL = '';
     }
 
-    getInterfaceData(): {name: string; serverURL: string} {
-        return { name: this.name, serverURL: this.serverURL};
+    getInterfaceData(): PiMAdResponse {
+        if(this.initialized) {
+            return this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success!', { name: this.name, serverURL: this.serverURL});
+        } else {
+            return this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'This instance is not initialized!', {});
+        }
     }
 
     initialize(interfaceDescription: {name: string; serverURL: string}): boolean {
@@ -58,13 +62,18 @@ export class OPCUAServerCommunication extends ACommunicationInterfaceData {
     };
 
 }
+
 export class OPCUANodeCommunication extends ACommunicationInterfaceData {
     protected namespaceIndex: number | string;
     protected nodeId: NodeId;
     protected dataType: string;
 
-    getInterfaceData(): object {
-        return {name:this.name, namespaceIndex:this.namespaceIndex, nodeId:this.nodeId, dataType: this.dataType};
+    getInterfaceData(): PiMAdResponse {
+        if (this.initialized) {
+            return this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success!', {name:this.name, namespaceIndex:this.namespaceIndex, nodeId:this.nodeId, dataType: this.dataType});
+        } else {
+            return this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'This instance is not initialized!', {});
+        }
     };
 
     initialize(interfaceDescription: {name: string; namespaceIndex: number|string; nodeId: NodeId; dataType: string}): boolean {
@@ -93,11 +102,16 @@ export interface CommunicationInterfaceDataFactory {
     create(): CommunicationInterfaceData;
 }
 
+export enum CommunicationInterfaceDataEnum {
+    OPCUAServer = 0,
+    OPCUANode= 1
+}
+
 abstract class ACommunicationInterfaceDataFactory implements CommunicationInterfaceDataFactory {
     abstract create(): CommunicationInterfaceData;
 }
 
-export class OPCUANodeCommunicationFactory extends ACommunicationInterfaceDataFactory {
+class OPCUANodeCommunicationFactory extends ACommunicationInterfaceDataFactory {
     create(): CommunicationInterfaceData {
         const communicationInterfaceData = new OPCUANodeCommunication();
         logger.debug(this.constructor.name + ' creates a ' + communicationInterfaceData.constructor.name);
@@ -105,10 +119,29 @@ export class OPCUANodeCommunicationFactory extends ACommunicationInterfaceDataFa
     }
 }
 
-export class OPCUAServerCommunicationFactory extends ACommunicationInterfaceDataFactory {
+class OPCUAServerCommunicationFactory extends ACommunicationInterfaceDataFactory {
     create(): CommunicationInterfaceData {
         const communicationInterfaceData = new OPCUAServerCommunication();
         logger.debug(this.constructor.name + ' creates a ' + communicationInterfaceData.constructor.name);
         return new OPCUAServerCommunication();
+    }
+}
+
+export class CommunicationInterfaceDataVendor {
+    private opcuaNodeCommunicationFactory: OPCUANodeCommunicationFactory;
+    private opcuaServerCommunicationFactory: OPCUAServerCommunicationFactory;
+
+    constructor() {
+        this.opcuaNodeCommunicationFactory = new OPCUANodeCommunicationFactory();
+        this.opcuaServerCommunicationFactory = new OPCUAServerCommunicationFactory();
+    }
+
+    public buy(interfaceDataClass: CommunicationInterfaceDataEnum): CommunicationInterfaceData {
+        switch (interfaceDataClass) {
+            case CommunicationInterfaceDataEnum.OPCUANode:
+                return this.opcuaNodeCommunicationFactory.create();
+            case CommunicationInterfaceDataEnum.OPCUAServer:
+                return this.opcuaServerCommunicationFactory.create();
+        }
     }
 }

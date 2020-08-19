@@ -1,20 +1,22 @@
 import {
-    CommunicationInterfaceData, CommunicationInterfaceDataFactory, OPCUANodeCommunicationFactory,
-    OPCUAServerCommunicationFactory
+    BaseDataAssemblyFactory,
+    BaseDataItemFactory,
+    BaseProcedureFactory,
+    CommunicationInterfaceData,
+    CommunicationInterfaceDataVendor,
+    DataAssembly,
+    DataItem,
+    Parameter
 } from '../../ModuleAutomation';
-import { DataAssembly,BaseDataAssemblyFactory} from '../../ModuleAutomation';
-import {AML} from 'PiMAd-types';
+import {AML, InstanceList, SourceList} from 'PiMAd-types';
+import {logger} from '../../Utils';
+import {Backbone} from '../../Backbone';
+import {CommunicationInterfaceDataEnum} from '../../ModuleAutomation/CommunicationInterfaceData';
 import DataItemInstanceList = AML.DataItemInstanceList;
 import DataItemSourceList = AML.DataItemSourceList;
 import DataItemSourceListExternalInterface = AML.DataItemSourceListExternalInterface;
 import Attribute = AML.Attribute;
 import ServiceInternalElement = AML.ServiceInternalElement;
-import { InstanceList, SourceList } from 'PiMAd-types';
-import {logger} from '../../Utils';
-import {BaseDataItemFactory, DataItem} from '../../ModuleAutomation';
-import {BaseProcedureFactory} from '../../ModuleAutomation';
-import {Parameter} from '../../ModuleAutomation';
-import {Backbone} from '../../Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import PiMAdResponse = Backbone.PiMAdResponse;
 
@@ -56,8 +58,9 @@ export class HMIPart extends AImporterPart {
  * Handles the 'MTPPart' of a ModuleTypePackage file. This means CommunicationSet, HMISet, ServiceSet, ...
  */
 export class MTPPart extends AImporterPart {
-    private opcuaServerCommunicationFactory: CommunicationInterfaceDataFactory;
-    private opcuaNodeCommunicationFactory: OPCUANodeCommunicationFactory;
+    private communicationInterfaceDataVendor: CommunicationInterfaceDataVendor;
+    //private opcuaServerCommunicationFactory: CommunicationInterfaceDataFactory;
+    //private opcuaNodeCommunicationFactory: CommunicationInterfaceDataFactory;
     private baseDataAssemblyFactory: BaseDataAssemblyFactory;
     private baseDataItemFactory: BaseDataItemFactory;
 
@@ -203,7 +206,7 @@ export class MTPPart extends AImporterPart {
             switch (sourceListItem.RefBaseSystemUnitPath) {
                 case 'MTPCommunicationSUCLib/ServerAssembly/OPCUAServer':
                     // Extract the server communication interface.
-                    const localeComIntData = this.opcuaServerCommunicationFactory.create();
+                    const localeComIntData = this.communicationInterfaceDataVendor.buy(CommunicationInterfaceDataEnum.OPCUAServer);
                     if(localeComIntData.initialize({name: sourceListItem.Name, serverURL: sourceListItem.Attribute.Value})) {
                         communicationInterfaceData.push(localeComIntData);
                     } else {
@@ -239,7 +242,7 @@ export class MTPPart extends AImporterPart {
                             if (localeExternalInterface.ID === instanceListElementAttribute.Value) {
                                 /* Merging attribute and external interface data to one communication interface. */
                                 // TODO: Aktuell gehen wir immer von opcua nodes aus. Kann sich in Zukunft ändern!
-                                const opcuaNodeCommunication = this.opcuaNodeCommunicationFactory.create();
+                                const opcuaNodeCommunication = this.communicationInterfaceDataVendor.buy(CommunicationInterfaceDataEnum.OPCUANode);
                                 // ... continuously filled ...
                                 let identifier: number | string = -1;
                                 let namespace = '';
@@ -336,8 +339,7 @@ export class MTPPart extends AImporterPart {
 
     constructor() {
         super();
-        this.opcuaServerCommunicationFactory = new OPCUAServerCommunicationFactory();
-        this.opcuaNodeCommunicationFactory = new OPCUANodeCommunicationFactory();
+        this.communicationInterfaceDataVendor = new CommunicationInterfaceDataVendor();
         this.baseDataAssemblyFactory = new BaseDataAssemblyFactory();
         this.baseDataItemFactory = new BaseDataItemFactory();
     }
