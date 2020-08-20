@@ -1,11 +1,10 @@
 import {
-    BaseDataAssemblyFactory,
     BaseDataItemFactory,
     BaseProcedureFactory,
     CommunicationInterfaceData,
     CommunicationInterfaceDataVendor,
-    DataAssembly,
     DataItem,
+    ModuleAutomation,
     Parameter
 } from '../../ModuleAutomation';
 import {AML, InstanceList, SourceList} from 'PiMAd-types';
@@ -19,6 +18,9 @@ import Attribute = AML.Attribute;
 import ServiceInternalElement = AML.ServiceInternalElement;
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import PiMAdResponse = Backbone.PiMAdResponse;
+import DataAssemblyVendor = ModuleAutomation.DataAssemblyVendor;
+import DataAssembly = ModuleAutomation.DataAssembly;
+import DataAssemblyType = ModuleAutomation.DataAssemblyType;
 
 abstract class AImporterPart implements ImporterPart {
     protected responseVendor: PiMAdResponseVendor
@@ -59,9 +61,7 @@ export class HMIPart extends AImporterPart {
  */
 export class MTPPart extends AImporterPart {
     private communicationInterfaceDataVendor: CommunicationInterfaceDataVendor;
-    //private opcuaServerCommunicationFactory: CommunicationInterfaceDataFactory;
-    //private opcuaNodeCommunicationFactory: CommunicationInterfaceDataFactory;
-    private baseDataAssemblyFactory: BaseDataAssemblyFactory;
+    private dataAssemblyVendor: DataAssemblyVendor;
     private baseDataItemFactory: BaseDataItemFactory;
 
     /**
@@ -314,7 +314,7 @@ export class MTPPart extends AImporterPart {
                 }
             });
             // All data for creating a DataAssembly has now been collected. Now creating ...
-            const localeDataAssembly = this.baseDataAssemblyFactory.create();
+            const localeDataAssembly = this.dataAssemblyVendor.buy(DataAssemblyType.BASIC);
             // ... and initializing.
             if(localeDataAssembly.initialize({
                 tag: instanceListElement.Name,
@@ -340,7 +340,7 @@ export class MTPPart extends AImporterPart {
     constructor() {
         super();
         this.communicationInterfaceDataVendor = new CommunicationInterfaceDataVendor();
-        this.baseDataAssemblyFactory = new BaseDataAssemblyFactory();
+        this.dataAssemblyVendor = new DataAssemblyVendor();
         this.baseDataItemFactory = new BaseDataItemFactory();
     }
 }

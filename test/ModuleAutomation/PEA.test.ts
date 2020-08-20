@@ -1,18 +1,24 @@
 import {
     Attribute,
     AttributeFactoryVendor,
+    BaseParameterFactory,
     BasePEAFactory,
     BaseProcedureFactory,
-    BaseServiceFactory
+    BaseServiceFactory,
+    FEA,
+    ModuleAutomation,
+    Service
 } from '../../src/ModuleAutomation';
 import {expect} from 'chai';
-import {DataAssembly} from '../../src/ModuleAutomation';
 import {Backbone, BasicSemanticVersion, SemanticVersion} from '../../src/Backbone';
-import {BaseDataAssemblyFactory, BaseParameterFactory ,Service, FEA} from '../../src/ModuleAutomation';
-import { PEAInitializeDataType, PEA } from '../../src/ModuleAutomation/PEA';
+import {PEA, PEAInitializeDataType} from '../../src/ModuleAutomation/PEA';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+import DataAssemblyVendor = ModuleAutomation.DataAssemblyVendor;
+import DataAssemblyType = ModuleAutomation.DataAssemblyType;
+import DataAssembly = ModuleAutomation.DataAssembly;
 
 const responseVendor = new PiMAdResponseVendor();
+const dataAssemblyVendor = new DataAssemblyVendor()
 
 describe('class: BasePEA', () => {
     let pea: PEA;
@@ -21,9 +27,8 @@ describe('class: BasePEA', () => {
         pea = peaFactory.create();
     });
     describe('check getter', () => {
-        const basePEAFactory = new BaseDataAssemblyFactory();
         beforeEach(function () {
-            const dataAssembly1= basePEAFactory.create();
+            const dataAssembly1= dataAssemblyVendor.buy(DataAssemblyType.BASIC);
             dataAssembly1.initialize({
                 tag: 'Test-DataAssembly1',
                 description: '',
@@ -31,7 +36,7 @@ describe('class: BasePEA', () => {
                 identifier: '',
                 dataItems: []
             });
-            const dataAssembly2= basePEAFactory.create();
+            const dataAssembly2= dataAssemblyVendor.buy(DataAssemblyType.BASIC);
             dataAssembly2.initialize({
                 tag: 'Test-DataAssembly2',
                 description: '',

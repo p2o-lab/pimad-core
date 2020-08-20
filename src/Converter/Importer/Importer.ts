@@ -22,10 +22,7 @@ import {AML} from 'PiMAd-types';
 import InstanceHierarchy = AML.InstanceHierarchy
 import { CAEXFile } from 'PiMAd-types';
 import {
-    Attribute, AttributeFactoryVendor,
-    BaseDataAssemblyFactory,
-    DataAssembly,
-    DataAssemblyFactory
+    Attribute, AttributeFactoryVendor, ModuleAutomation
 } from '../../ModuleAutomation';
 import {CommunicationInterfaceData} from '../../ModuleAutomation';
 import {BasePEAFactory} from '../../ModuleAutomation';
@@ -34,6 +31,8 @@ import {BaseProcedureFactory, Procedure, ProcedureFactory} from '../../ModuleAut
 import {Gate} from '../Gate/Gate';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import PiMAdResponse = Backbone.PiMAdResponse;
+import DataAssemblyVendor = ModuleAutomation.DataAssemblyVendor;
+import DataAssembly = ModuleAutomation.DataAssembly;
 
 abstract class AImporter implements  Importer {
 
@@ -108,7 +107,7 @@ export class MTPFreeze202001Importer extends AImporter {
     private textPart: ImporterPart;
     // Factories
     private amlGateFactory: GateFactory;
-    private dataAssemblyFactory: DataAssemblyFactory;
+    private dataAssemblyVendor: DataAssemblyVendor;
     private mtpGateFactory: GateFactory;
     private peaFactory: BasePEAFactory;
     private procedureFactory: ProcedureFactory;
@@ -427,7 +426,7 @@ export class MTPFreeze202001Importer extends AImporter {
         this.textPart = new TextPart();
         // Factories
         this.amlGateFactory = new AMLGateFactory();
-        this.dataAssemblyFactory = new BaseDataAssemblyFactory();
+        this.dataAssemblyVendor = new DataAssemblyVendor();
         this.mtpGateFactory = new MTPGateFactory();
         this.peaFactory = new BasePEAFactory();
         this.procedureFactory = new BaseProcedureFactory();

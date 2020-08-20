@@ -9,16 +9,27 @@ export interface DataItem {
      * Getter for this.cIData.
      */
     getCommunicationInterfaceData(): CommunicationInterfaceData;
+
+    /**
+     *
+     */
     getDataType(): PiMAdResponse; //string;
+
     /**
      * Getter for this.identifier.
      */
     getIdentifier(): string;
+
     /**
      * Getter for this.metaModelRef.
      * @returns The reference to the meta model.
      */
     getMetaModelRef(): string;
+
+    /**
+     * Getter for this.name.
+     */
+    getName(): string;
 
     /**
      * Initialize the object of the class DataItem.
@@ -62,6 +73,9 @@ abstract class ADataItem implements DataItem {
     getMetaModelRef(): string {
         return this.metaModelRef;
     };
+    getName(): string {
+        return this.name;
+    }
     initialize(name: string, ciData: CommunicationInterfaceData, identifier: string, metaModelRef: string): boolean {
         if (!this.initialized) {
             //TODO: much more checking

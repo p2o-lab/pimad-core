@@ -1,4 +1,4 @@
-import {DataAssembly} from './DataAssembly';
+
 import {FEA} from './FEA';
 import {Service} from './Service';
 import {Backbone, BasicSemanticVersion, SemanticVersion} from '../Backbone';
@@ -6,6 +6,8 @@ import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import PiMAdResponseHandler = Backbone.PiMAdResponseHandler;
 import PiMAdResponse = Backbone.PiMAdResponse;
 import PiMAdResponseTypes = Backbone.PiMAdResponseTypes;
+import {ModuleAutomation} from './DataAssembly';
+import DataAssembly = ModuleAutomation.DataAssembly;
 
 export interface PEA {
     /**

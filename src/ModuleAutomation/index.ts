@@ -1,6 +1,6 @@
 export {Attribute, AttributeFactory, AttributeFactoryVendor} from './Attribute';
 export {CommunicationInterfaceDataFactory, CommunicationInterfaceData, CommunicationInterfaceDataVendor} from './CommunicationInterfaceData';
-export * from './DataAssembly';
+export {ModuleAutomation} from './DataAssembly';
 export * from './DataItem';
 export * from './FEA';
 export * from './NodeId';

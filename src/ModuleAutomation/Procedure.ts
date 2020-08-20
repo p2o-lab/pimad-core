@@ -1,10 +1,11 @@
 import {logger} from '../Utils';
 import {Parameter} from './Parameter';
-import {DataAssembly} from './DataAssembly';
 import {Attribute} from './Attribute';
 import {Backbone} from '../Backbone';
 import PiMAdResponse = Backbone.PiMAdResponse;
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+import {ModuleAutomation} from './DataAssembly';
+import DataAssembly = ModuleAutomation.DataAssembly;
 
 export interface Procedure {
     /**

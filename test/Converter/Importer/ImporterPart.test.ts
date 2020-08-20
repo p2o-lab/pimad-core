@@ -4,10 +4,11 @@ import * as communicationsSetData from '../testdata-CommunicationSet-parser-logi
 import * as communicationsSetDataMixingDataStructure from '../testdata-CommunicationSet-mixing-data-structure.json';
 import * as servicePartTestResult from '../Results/test-result-ServicePart.json';
 import * as servicePartData from '../testdata-ServicePart.json';
-import {DataAssembly} from '../../../src/ModuleAutomation';
 import { OPCUAServerCommunication } from '../../../src/ModuleAutomation/CommunicationInterfaceData';
 import {Backbone} from '../../../src/Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+import {ModuleAutomation} from '../../../src/ModuleAutomation';
+import DataAssembly = ModuleAutomation.DataAssembly;
 
 const responseVendor = new PiMAdResponseVendor()
 

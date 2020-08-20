@@ -1,15 +1,19 @@
-import {BaseDataAssemblyFactory} from '../../src/ModuleAutomation';
 import {expect} from 'chai';
-import {DataAssembly} from '../../src/ModuleAutomation';
 import {Backbone} from '../../src/Backbone';
+import {ModuleAutomation} from '../../src/ModuleAutomation';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+import DataAssembly = ModuleAutomation.DataAssembly;
+import DataAssemblyVendor = ModuleAutomation.DataAssemblyVendor;
+import DataAssemblyType = ModuleAutomation.DataAssemblyType;
+import {BasicDataAssembly} from '../../src/ModuleAutomation/DataAssembly';
 
 const responseVendor = new PiMAdResponseVendor();
+const dataAssemblyVendor = new DataAssemblyVendor();
 
 describe('class: BaseDataAssembly', () => {
     let dataAssembly: DataAssembly;
     beforeEach(function () {
-        dataAssembly = new BaseDataAssemblyFactory().create();
+        dataAssembly = dataAssemblyVendor.buy(DataAssemblyType.BASIC);
     });
     it('method: getInterfaceClass()', () => {
         expect(dataAssembly.getInterfaceClass().constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
@@ -46,9 +50,10 @@ describe('class: BaseDataAssembly', () => {
         })).is.false;
     });
 });
-describe('class: BaseDataAssemblyFactory', () => {
-    it('method: create()', () => {
-        const factory = new BaseDataAssemblyFactory();
-        expect(factory.create().constructor.name).is.equal('BaseDataAssembly');
+
+describe('class: DataAssemblyVendor', () => {
+    it('method: buy() > BASIC', () => {
+        const vendor = new DataAssemblyVendor();
+        expect(vendor.buy(DataAssemblyType.BASIC).constructor.name).is.equal(new BasicDataAssembly().constructor.name);
     });
 });

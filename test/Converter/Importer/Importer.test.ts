@@ -1,12 +1,12 @@
 import {expect} from 'chai';
 import {LastChainElementImporterFactory, LastChainLinkImporter, MTPFreeze202001Importer} from '../../../src/Converter/Importer/Importer';
 import {Backbone, BasicSemanticVersion, SemanticVersion} from '../../../src/Backbone';
-import {PEA} from '../../../src/ModuleAutomation';
-import {DataAssembly} from '../../../src/ModuleAutomation';
+import {ModuleAutomation, PEA} from '../../../src/ModuleAutomation';
 import {Service} from '../../../src/ModuleAutomation';
 import {FEA} from '../../../src/ModuleAutomation';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import PiMAdResponse = Backbone.PiMAdResponse;
+import DataAssembly = ModuleAutomation.DataAssembly;
 
 const responseVendor = new PiMAdResponseVendor();
 

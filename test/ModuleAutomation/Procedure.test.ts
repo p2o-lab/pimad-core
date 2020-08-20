@@ -1,17 +1,21 @@
 import {expect} from 'chai';
 import {
-    BaseProcedureFactory,
+    Attribute,
+    AttributeFactoryVendor,
     BaseParameterFactory,
-    Procedure,
-    AttributeFactoryVendor, Attribute
+    BaseProcedureFactory,
+    ModuleAutomation,
+    Parameter,
+    Procedure
 } from '../../src/ModuleAutomation';
-import {DataAssembly} from '../../src/ModuleAutomation';
-import {Parameter} from '../../src/ModuleAutomation';
-import {BaseDataAssemblyFactory} from '../../src/ModuleAutomation';
 import {Backbone} from '../../src/Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+import DataAssemblyVendor = ModuleAutomation.DataAssemblyVendor;
+import DataAssemblyType = ModuleAutomation.DataAssemblyType;
+import DataAssembly = ModuleAutomation.DataAssembly;
 
-const responseVendor = new PiMAdResponseVendor()
+const responseVendor = new PiMAdResponseVendor();
+const dataAssemblyVendor = new DataAssemblyVendor();
 
 describe('class: BaseProcedure', () => {
     let procedure: Procedure;
@@ -21,7 +25,7 @@ describe('class: BaseProcedure', () => {
     });
     describe('check getter', () => {
         beforeEach(function () {
-            const dataAssembly = new BaseDataAssemblyFactory().create();
+            const dataAssembly = dataAssemblyVendor.buy(DataAssemblyType.BASIC);
             dataAssembly.initialize({
                 tag: 'Test-DataAssembly',
                 description: '',
