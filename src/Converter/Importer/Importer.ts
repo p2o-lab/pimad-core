@@ -358,18 +358,26 @@ export class MTPFreeze202001Importer extends AImporter {
             const localServices: Service[] = [];
             servicePartResponseContent.forEach((service: InternalServiceType) => {
                 const localService = this.serviceFactory.create();
-                const localServiceDataAssembly: DataAssembly | undefined = dataAssemblies.find(dataAssembly =>
-                    service.DataAssembly.Value === dataAssembly.getIdentifier()
-                );
+                const localServiceDataAssembly: DataAssembly | undefined = dataAssemblies.find(dataAssembly => {
+                    let testCondition = false;
+                    dataAssembly.getIdentifier((response, identifier) => {
+                        testCondition = (service.DataAssembly.Value === identifier);
+                    });
+                    return testCondition;
+                });
                 if(localServiceDataAssembly === undefined) {
                     logger.warn('Could not find referenced DataAssembly for service <' + service.Name + '> Skipping this service ...');
                 } else {
                     const localServiceProcedures: Procedure[] = [];
                     // merging Procedures with DataAssemblies
                     service.Procedures.forEach(procedure => {
-                        const localProcedureDataAssembly: DataAssembly | undefined = dataAssemblies.find(dataAssembly =>
-                            procedure.DataAssembly.Value === dataAssembly.getIdentifier()
-                        );
+                        const localProcedureDataAssembly: DataAssembly | undefined = dataAssemblies.find(dataAssembly => {
+                            let testCondition = false;
+                            dataAssembly.getIdentifier((response, identifier) => {
+                                testCondition = (procedure.DataAssembly.Value === identifier);
+                            });
+                            return testCondition;
+                        });
                         if(localProcedureDataAssembly === undefined) {
                             logger.warn('Could not find referenced DataAssembly for procedure <' + service.Name + '> Skipping this procedure ...');
                         } else {

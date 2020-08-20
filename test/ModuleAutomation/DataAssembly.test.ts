@@ -72,6 +72,18 @@ describe('class: BaseDataAssembly', () => {
                 expect(name).is.equal('Test-DataAssembly');
             });
         });
+        it('method: getIdentifier()', () => {
+            dataAssembly.getIdentifier((response, identifier) => {
+                expect(response.constructor.name).is.equal(successResponseAsString);
+                expect(identifier).is.equal('Test-Identifier');
+            });
+        });
+        it('method: getMetaModelRef()', () => {
+            dataAssembly.getMetaModelRef((response, metaModelRef) => {
+                expect(response.constructor.name).is.equal(successResponseAsString);
+                expect(metaModelRef).is.equal('Test-MetaModelRef');
+            });
+        });
     });
     describe('without initialization', () => {
         it('method: getAllDataItems', () => {
@@ -101,16 +113,22 @@ describe('class: BaseDataAssembly', () => {
                 expect(name).is.equal('name: undefined');
             });
         });
+        it('method: getIdentifier()', () => {
+            dataAssembly.getIdentifier((response, identifier) => {
+                expect(response.constructor.name).equals(errorResponseAsString);
+                expect(identifier).equals('identifier: undefined');
+            });
+        });
+        it('method: getMetaModelRef()', () => {
+            dataAssembly.getMetaModelRef((response, metaModelRef) => {
+                expect(response.constructor.name).equals(errorResponseAsString);
+                expect(metaModelRef).equals('metaModelRef: undefined');
+            });
+        });
     });
 
     it('method: getCommunication()', () => {
         expect(dataAssembly.getCommunication().constructor.name).is.equal(errorResponseAsString);
-    });
-    it('method: getIdentifier()', () => {
-        expect(dataAssembly.getIdentifier()).is.equal('identifier: undefined');
-    });
-    it('method: getMetaModelRef()', () => {
-        expect(dataAssembly.getMetaModelRef()).is.equal('metaModelRef: undefined');
     });
     it('method: initialize()', () => {
         expect(dataAssembly.initialize({

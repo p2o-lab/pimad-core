@@ -34,7 +34,7 @@ abstract class ADataAssembly implements ModuleAutomation.DataAssembly{
         } else {
             callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'The instance is not initialized', {}), this.dataItems);
         }
-    };
+    }
     getDataItem(name: string,callback: (response: PiMAdResponse, dataItems: DataItem) => void): void {
         if(this.initialized) {
             const localDataItem: DataItem | undefined = this.dataItems.find(dataItem => name === dataItem.getName());
@@ -46,14 +46,14 @@ abstract class ADataAssembly implements ModuleAutomation.DataAssembly{
         } else {
             callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'This instance is not initialized', {}), {} as DataItem);
         }
-    };
+    }
     getInterfaceClass(callback: (response: PiMAdResponse, interfaceClass: string) => void): void {
         if(this.initialized) {
             callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'Not implemented yet!', {}), '');
         } else {
             callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'The instance is not initialized', {}), '');
         }
-    };
+    }
     getHumanReadableDescription(callback: (response: PiMAdResponse, tagDescription: string) => void): void {
         if(this.initialized) {
             callback(this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success', {}), this.description);
@@ -61,7 +61,6 @@ abstract class ADataAssembly implements ModuleAutomation.DataAssembly{
             callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'The instance is not initialized', {}), this.description);
         }
     }
-
     getName(callback: (response: PiMAdResponse, name: string) => void): void {
         if(this.initialized) {
             callback(this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success', {}), this.name);
@@ -69,21 +68,24 @@ abstract class ADataAssembly implements ModuleAutomation.DataAssembly{
             callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'The instance is not initialized', {}), this.name);
         }
     }
-    getIdentifier(): string {
-        return this.identifier;
-    };
-    getMetaModelRef(): string {
-        return this.metaModelRef;
-    };
+    getIdentifier(callback: (response: PiMAdResponse, identifier: string) => void): void {
+        if(this.initialized) {
+            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success', {}), this.identifier);
+        } else {
+            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'The instance is not initialized', {}), this.identifier);
+        }
+    }
+    getMetaModelRef(callback: (response: PiMAdResponse, metaModelRef: string) => void): void {
+        if(this.initialized) {
+            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success', {}), this.metaModelRef);
+        } else {
+            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'The instance is not initialized', {}), this.metaModelRef);
+        }
+    }
     getCommunication(): PiMAdResponse {
         return this.responseVendor.buyErrorResponse();
     }
-    abstract initialize(instructions: object): boolean ;
-    /*{
-        //add INIT-Operations here
-        this.initialized=true;
-        return true;
-    }*/
+    abstract initialize(instructions: object): boolean;
 }
 
 export class BasicDataAssembly extends ADataAssembly {
@@ -131,8 +133,8 @@ export namespace ModuleAutomation {
         getInterfaceClass(callback: (response: PiMAdResponse, interfaceClass: string) => void): void;
         getHumanReadableDescription(callback: (response: PiMAdResponse, tagDescription: string) => void): void;
         getName(callback: (response: PiMAdResponse, name: string) => void): void;
-        getIdentifier(): string;
-        getMetaModelRef(): string;
+        getIdentifier(callback: (response: PiMAdResponse, name: string) => void): void;
+        getMetaModelRef(callback: (response: PiMAdResponse, name: string) => void): void;
         getCommunication(): PiMAdResponse; //any[] //not defined yet
         initialize(instructions: object): boolean;
     }

@@ -24,15 +24,18 @@ describe('class: MTPPart', () => {
         dataAssemblies[0].getName((response, name) =>  {
            expect(name).is.equal('CrystalCrasher')
         });
-        expect(dataAssemblies[0].getIdentifier()).is.equal('link6');
-        expect(dataAssemblies[0].getMetaModelRef()).is.equal('MTPDataObjectSUCLib/DataAssembly/ServiceControl');
+        dataAssemblies[0].getIdentifier((response, identifier) => {
+            expect(identifier).equals('link6');
+        });
+        dataAssemblies[0].getMetaModelRef((response, metaModelRef) => {
+            expect(metaModelRef).equals('MTPDataObjectSUCLib/DataAssembly/ServiceControl');
+        });
     }
     describe('method: extract()', () => {
         it('test case: standard way', () => {
             part.extract({CommunicationSet: communicationsSetData, HMISet: {}, ServiceSet: {}, TextSet: {}},(response) => {
                 expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
                 const testData: {CommunicationInterfaceData?: OPCUAServerCommunication[]; DataAssemblies?: DataAssembly[]} = response.getContent();
-
                 evaluateMTPPart(testData.CommunicationInterfaceData as OPCUAServerCommunication[], testData.DataAssemblies as DataAssembly[]);
             })
         })
