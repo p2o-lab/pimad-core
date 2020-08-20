@@ -76,7 +76,9 @@ describe('class: BaseProcedure', () => {
             });
         })
         it('method: getDataAssembly()', () => {
-            expect(procedure.getDataAssembly().getTagName()).is.equal('Test-DataAssembly');
+            procedure.getDataAssembly().getName((response, name) => {
+                expect(name).is.equal('Test-DataAssembly')
+            })
         });
         it('method: getIdentifier()', () => {
             expect(procedure.getIdentifier()).is.equal('Test-Identifier');

@@ -9,8 +9,8 @@ import PiMAdResponseTypes = Backbone.PiMAdResponseTypes;
 abstract class ADataAssembly implements ModuleAutomation.DataAssembly{
 
     protected dataItems: DataItem[];
-    protected tagDescription: string;
-    protected tagName: string;
+    protected description: string;
+    protected name: string;
     protected initialized: boolean;
     protected identifier: string;
     protected metaModelRef: string;
@@ -19,11 +19,11 @@ abstract class ADataAssembly implements ModuleAutomation.DataAssembly{
 
     constructor() {
         this.dataItems= [];
-        this.tagDescription='';
-        this.tagName='';
+        this.description='description: undefined';
+        this.name='name: undefined';
         this.initialized = false;
-        this.identifier = '';
-        this.metaModelRef = '';
+        this.identifier = 'identifier: undefined';
+        this.metaModelRef = 'metaModelRef: undefined';
         this.responseVendor = new PiMAdResponseVendor();
         this.responseHandler = new PiMAdResponseHandler();
     }
@@ -35,7 +35,6 @@ abstract class ADataAssembly implements ModuleAutomation.DataAssembly{
             callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'The instance is not initialized', {}), this.dataItems);
         }
     };
-
     getDataItem(name: string,callback: (response: PiMAdResponse, dataItems: DataItem) => void): void {
         if(this.initialized) {
             const localDataItem: DataItem | undefined = this.dataItems.find(dataItem => name === dataItem.getName());
@@ -48,15 +47,27 @@ abstract class ADataAssembly implements ModuleAutomation.DataAssembly{
             callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'This instance is not initialized', {}), {} as DataItem);
         }
     };
+    getInterfaceClass(callback: (response: PiMAdResponse, interfaceClass: string) => void): void {
+        if(this.initialized) {
+            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'Not implemented yet!', {}), '');
+        } else {
+            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'The instance is not initialized', {}), '');
+        }
+    };
+    getHumanReadableDescription(callback: (response: PiMAdResponse, tagDescription: string) => void): void {
+        if(this.initialized) {
+            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success', {}), this.description);
+        } else {
+            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'The instance is not initialized', {}), this.description);
+        }
+    }
 
-    getInterfaceClass(): PiMAdResponse {
-        return this.responseVendor.buyErrorResponse();
-    }
-    getTagDescription(): string {
-        return this.tagDescription;
-    }
-    getTagName(): string {
-        return this.tagName;
+    getName(callback: (response: PiMAdResponse, name: string) => void): void {
+        if(this.initialized) {
+            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success', {}), this.name);
+        } else {
+            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'The instance is not initialized', {}), this.name);
+        }
     }
     getIdentifier(): string {
         return this.identifier;
@@ -78,14 +89,14 @@ abstract class ADataAssembly implements ModuleAutomation.DataAssembly{
 export class BasicDataAssembly extends ADataAssembly {
     initialize(instructions: {tag: string; description: string; dataItems: DataItem[]; identifier: string; metaModelRef: string}): boolean {
         if (!this.initialized) {
-            this.tagName = instructions.tag;
-            this.tagDescription = instructions.description;
+            this.name = instructions.tag;
+            this.description = instructions.description;
             this.dataItems = instructions.dataItems;
             this.identifier = instructions.identifier;
             this.metaModelRef = instructions.metaModelRef;
             this.initialized = (
-                this.tagName === instructions.tag &&
-                this.tagDescription == instructions.description &&
+                this.name === instructions.tag &&
+                this.description == instructions.description &&
                 JSON.stringify(this.dataItems) === JSON.stringify(instructions.dataItems) &&
                 this.identifier === instructions.identifier &&
                 this.metaModelRef === instructions.metaModelRef
@@ -117,9 +128,9 @@ export namespace ModuleAutomation {
     export interface DataAssembly {
         getAllDataItems(callback: (response: PiMAdResponse, dataItems: DataItem[]) => void): void;
         getDataItem(name: string,callback: (response: PiMAdResponse, dataItems: DataItem) => void): void;
-        getInterfaceClass(): PiMAdResponse; //any; //not defined yet
-        getTagDescription(): string;
-        getTagName(): string;
+        getInterfaceClass(callback: (response: PiMAdResponse, interfaceClass: string) => void): void;
+        getHumanReadableDescription(callback: (response: PiMAdResponse, tagDescription: string) => void): void;
+        getName(callback: (response: PiMAdResponse, name: string) => void): void;
         getIdentifier(): string;
         getMetaModelRef(): string;
         getCommunication(): PiMAdResponse; //any[] //not defined yet

@@ -153,12 +153,14 @@ abstract class APEA implements PEA {
     };
     getDataAssembly(tag: string, callback: (response: PiMAdResponse) => void): void {
         this.dataAssemblies.forEach((dataAssembly: DataAssembly) => {
-            if(dataAssembly.getTagName() === tag) {
-                this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.SUCCESS, 'Success!', dataAssembly, callback);
-            }
-            if(dataAssembly === this.dataAssemblies[this.dataAssemblies.length -1]) {
-                this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'Could not find dataAssembly <' + tag + '> in PEA <' + this.name + '>', {}, callback);
-            }
+            dataAssembly.getName((response, name) => {
+                if(name === tag) {
+                    this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.SUCCESS, 'Success!', dataAssembly, callback);
+                }
+                if(dataAssembly === this.dataAssemblies[this.dataAssemblies.length -1]) {
+                    this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'Could not find dataAssembly <' + tag + '> in PEA <' + this.name + '>', {}, callback);
+                }
+            });
         });
     };
     getDataModel(): PiMAdResponse {

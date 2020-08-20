@@ -85,7 +85,9 @@ describe('class: BaseService', () => {
             expect(response.data.length).is.equal(2);
         })
         it('method: getDataAssembly()', () => {
-            expect((service.getDataAssembly().getContent() as {data: DataAssembly}).data.getTagName()).is.equal('Test-DataAssembly');
+            (service.getDataAssembly().getContent() as {data: DataAssembly}).data.getName((response, name) => {
+                expect(name).equals('Test-DataAssembly')
+            });
         });
         it('method: getMetaModelRef()', () => {
             expect(JSON.stringify(service.getMetaModelReference().getContent())).is.equal(JSON.stringify({data: 'Test-MetaModelRef'}));

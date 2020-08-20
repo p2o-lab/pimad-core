@@ -21,7 +21,9 @@ describe('class: MTPPart', () => {
         expect(communicationInterfaceData.length).is.equal(1);
         // ... do server stuff
         expect(dataAssemblies.length).is.equal(1);
-        expect(dataAssemblies[0].getTagName()).is.equal('CrystalCrasher');
+        dataAssemblies[0].getName((response, name) =>  {
+           expect(name).is.equal('CrystalCrasher')
+        });
         expect(dataAssemblies[0].getIdentifier()).is.equal('link6');
         expect(dataAssemblies[0].getMetaModelRef()).is.equal('MTPDataObjectSUCLib/DataAssembly/ServiceControl');
     }

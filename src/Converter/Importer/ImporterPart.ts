@@ -314,9 +314,9 @@ export class MTPPart extends AImporterPart {
                 }
             });
             // All data for creating a DataAssembly has now been collected. Now creating ...
-            const localeDataAssembly = this.dataAssemblyVendor.buy(DataAssemblyType.BASIC);
+            const localDataAssembly = this.dataAssemblyVendor.buy(DataAssemblyType.BASIC);
             // ... and initializing.
-            if(localeDataAssembly.initialize({
+            if(localDataAssembly.initialize({
                 tag: instanceListElement.Name,
                 description: 'inline TODO above',
                 dataItems: localDataItems,
@@ -324,8 +324,10 @@ export class MTPPart extends AImporterPart {
                 metaModelRef: instanceListElement.RefBaseSystemUnitPath
             })) {
                 // initializing successful -> push the new data assembly to the return variable.
-                dataAssemblies.push(localeDataAssembly);
-                logger.info('Add DataAssembly <' + localeDataAssembly.getTagName() + '>');
+                dataAssemblies.push(localDataAssembly);
+                localDataAssembly.getName((response, name) => {
+                    logger.info('Add DataAssembly <' + name + '>');
+                });
             } else {
                 logger.warn('Cannot extract all data from DataAssembly <' + instanceListElement.Name + '> need MTPFreeze-2020-01! Skipping ...');
             }

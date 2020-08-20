@@ -121,7 +121,9 @@ describe('class: BasePEA', () => {
                 pea.getDataAssembly('Test-DataAssembly2', (response) => {
                     expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
                     const responseContent = response.getContent() as DataAssembly;
-                    expect(responseContent.getTagName()).is.equal('Test-DataAssembly2');
+                    responseContent.getName((response, name) =>  {
+                        expect(name).is.equal('Test-DataAssembly2');
+                    })
                     done();
                 })
             });
