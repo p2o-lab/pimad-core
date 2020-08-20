@@ -58,6 +58,7 @@ abstract class ADataAssembly implements DataAssembly{
         return true;
     }*/
 }
+
 class BaseDataAssembly extends ADataAssembly {
     initialize(instructions: {tag: string; description: string; dataItems: DataItem[]; identifier: string; metaModelRef: string}): boolean {
         if (!this.initialized) {
@@ -83,9 +84,11 @@ class BaseDataAssembly extends ADataAssembly {
 export interface DataAssemblyFactory {
     create(): DataAssembly;
 }
+
 abstract class ADataAssemblyFactory implements DataAssemblyFactory {
     abstract create(): DataAssembly;
 }
+
 export class BaseDataAssemblyFactory extends ADataAssemblyFactory {
     create(): DataAssembly{
         const dataAssembly = new BaseDataAssembly();
@@ -97,10 +100,13 @@ export class BaseDataAssemblyFactory extends ADataAssemblyFactory {
 
 abstract class ADiagnostic extends ADataAssembly {
 }
+
 abstract class AInput extends ADataAssembly {
 }
+
 abstract class AServiceControl extends ADataAssembly {
 }
+
 abstract class AOperation extends ADataAssembly {
 }
 
@@ -114,5 +120,6 @@ export interface Sensor extends DataAssembly {
 
 abstract class AActive extends ADataAssembly implements Actuator{
 }
+
 abstract class AIndicator extends ADataAssembly implements Sensor{
 }

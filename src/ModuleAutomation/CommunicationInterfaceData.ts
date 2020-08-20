@@ -5,6 +5,7 @@ import PiMAdResponse = Backbone.PiMAdResponse;
 import PiMAdResponseHandler = Backbone.PiMAdResponseHandler;
 import PiMAdResponseTypes = Backbone.PiMAdResponseTypes;
 
+/** TODO: Refactoring - This stuff doesn't work as expected! */
 export interface CommunicationInterfaceData {
     getInterfaceData(): PiMAdResponse;
     getName(): PiMAdResponse;
