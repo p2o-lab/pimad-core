@@ -281,8 +281,11 @@ export namespace Backbone {
          * @param content - The content of the response.
          */
         public handleResponse(type: PiMAdResponseTypes, message: string, content: object): PiMAdResponse {
-            let response: PiMAdResponse = this.responseVendor.buyDummyResponse();
+            let response: PiMAdResponse;
             switch (type) {
+                case Backbone.PiMAdResponseTypes.DUMMY:
+                    response = this.responseVendor.buyDummyResponse();
+                    break;
                 case PiMAdResponseTypes.ERROR:
                     response = this.responseVendor.buyErrorResponse();
                     break;
