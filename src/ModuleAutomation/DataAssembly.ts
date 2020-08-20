@@ -82,9 +82,9 @@ abstract class ADataAssembly implements ModuleAutomation.DataAssembly{
             callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'The instance is not initialized', {}), this.metaModelRef);
         }
     }
-    getCommunication(): PiMAdResponse {
+    /*getCommunication(): PiMAdResponse {
         return this.responseVendor.buyErrorResponse();
-    }
+    } */
     abstract initialize(instructions: object): boolean;
 }
 
@@ -135,7 +135,7 @@ export namespace ModuleAutomation {
         getName(callback: (response: PiMAdResponse, name: string) => void): void;
         getIdentifier(callback: (response: PiMAdResponse, name: string) => void): void;
         getMetaModelRef(callback: (response: PiMAdResponse, name: string) => void): void;
-        getCommunication(): PiMAdResponse; //any[] //not defined yet
+        //getCommunication(): PiMAdResponse; //any[] //not defined yet
         initialize(instructions: object): boolean;
     }
 

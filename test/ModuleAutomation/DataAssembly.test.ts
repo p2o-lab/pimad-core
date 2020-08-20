@@ -126,10 +126,6 @@ describe('class: BaseDataAssembly', () => {
             });
         });
     });
-
-    it('method: getCommunication()', () => {
-        expect(dataAssembly.getCommunication().constructor.name).is.equal(errorResponseAsString);
-    });
     it('method: initialize()', () => {
         expect(dataAssembly.initialize({
             tag: 'Test-DataAssembly',
