@@ -9,7 +9,7 @@ import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 
 const responseVendor = new PiMAdResponseVendor()
 
-describe('class: BasePEAStore', () => {
+describe('class: BasePEAPool', () => {
     const fImporter = new LastChainElementImporterFactory()
     const poolVendor = new PEAPoolVendor();
     let pool: PEAPool;
@@ -44,10 +44,17 @@ describe('class: BasePEAStore', () => {
             pool.initialize(mtpFreeze202001Importer);
         });
         it('method: addPEA()', (done) => {
-            pool.addPEA({source: 'test/Converter/PiMAd-core.0-0-1.aml'}, (response) => {
-                expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
-                expect(response.getContent().constructor.name).is.equal('BasePEA');
-                done();
+            pool.getAllPEAs((response, peas) => {
+                expect(peas.length).equals(0);
+                pool.addPEA({source: 'test/Converter/PiMAd-core.0-0-1.aml'}, (response) => {
+                    expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
+                    expect(response.getContent().constructor.name).is.equal('BasePEA');
+                    //done();
+                    pool.getAllPEAs((response, peas) => {
+                        expect(peas.length).equals(1);
+                        done()
+                    });
+                });
             });
         });
         it('method: deletePEA()', () => {
@@ -55,22 +62,22 @@ describe('class: BasePEAStore', () => {
                 expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name)
             });
         });
-        it('method: getPEA()', () => {
-            pool.getPEA('', (response) => {
-                expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name)
+        describe('method: getPEA()', () => {
+            beforeEach(() => {
+                pool.addPEA({source: 'test/Converter/PiMAd-core.0-0-1.aml'}, (response) => {
+                    //done();
+                });
             });
-        });
+            it('method: getPEA()', () => {
+                pool.getPEA('', (response) => {
+                    expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name)
+                });
+            });
+        })
     })
 });
 
-/*describe('class: BasePEAPoolFactory', () => {
-    it('method: create()', () => {
-        const factory = new PEAPoolVendor().buyDependencyPEAPool();
-        expect(factory.create()).is.equal('BasePEAPool')
-    });
-})*/
-
-describe('class: PEAStoreVendor', () => {
+describe('class: PEAPoolVendor', () => {
     const vendor = new PEAPoolVendor();
     it('method: buyBasePEAPool()', () => {
         expect(vendor.buyDependencyPEAPool().constructor.name).is.equal('BasePEAPool')

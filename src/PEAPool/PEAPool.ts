@@ -47,10 +47,14 @@ abstract class APEAPool implements PEAPool {
     public addPEA(instructions: {source: string}, callback: (response: PiMAdResponse) => void): void {
         if(this.initialized) {
             this.generateUniqueIdentifier(identifier => {
-                this.importerChainFirstElement.convertFrom({
-                    source: instructions.source,
-                    identifier: identifier
-                }, callback);
+                this.importerChainFirstElement.convertFrom({source: instructions.source, identifier: identifier}, (response) => {
+                    if(response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
+                        this.peas.push(response.getContent() as PEA);
+                        callback(response);
+                    } else {
+                        callback(response);
+                    }
+                });
             });
         } else {
             this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'PEAPool is not initialized!', {}, callback);
@@ -77,6 +81,14 @@ abstract class APEAPool implements PEAPool {
             this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'PEAPool is not initialized!', {}, callback);
         }
     };
+
+    public getAllPEAs(callback: (response: PiMAdResponse, peas: PEA[]) => void): void {
+        if(this.initialized) {
+            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success!', {}), this.peas);
+        } else {
+            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'This PEAPool is not initialized', {}), []);
+        }
+    };
 }
 
 class BasePEAPool extends APEAPool {
@@ -87,6 +99,7 @@ export interface PEAPool {
     addPEA(instructions: object, callback: (response: PiMAdResponse) => void): void;
     deletePEA(identifier: string, callback: (response: PiMAdResponse) => void): void;
     getPEA(identifier: string, callback: (response: PiMAdResponse) => void): void;
+    getAllPEAs(callback: (response: PiMAdResponse, peas: PEA[]) => void): void;
     initialize(firstChainElement: Importer): boolean;
 }
 
@@ -117,6 +130,6 @@ export class PEAPoolVendor {
         this.dependencyPEAPoolFactory = new BasePEAPoolFactory();
     }
     buyDependencyPEAPool(): PEAPool {
-        return new  BasePEAPool();
+        return this.dependencyPEAPoolFactory.create();
     }
 }
