@@ -28,7 +28,7 @@ abstract class ADataAssembly implements ModuleAutomation.DataAssembly{
         this.responseHandler = new PiMAdResponseHandler();
     }
 
-    getAllDataItems(callback: (response: PiMAdResponse, dataItems: DataItem[]) => void): void {
+    getAllDataItems(callback: GetAllDataItems): void {
         if(this.initialized) {
             callback(this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success', {}), this.dataItems);
         } else {
@@ -88,7 +88,7 @@ abstract class ADataAssembly implements ModuleAutomation.DataAssembly{
     abstract initialize(instructions: object): boolean;
 }
 
-class BasicDataAssembly extends ADataAssembly {
+export class BasicDataAssembly extends ADataAssembly {
     initialize(instructions: {tag: string; description: string; dataItems: DataItem[]; identifier: string; metaModelRef: string}): boolean {
         if (!this.initialized) {
             this.name = instructions.tag;
@@ -129,7 +129,8 @@ class BasicDataAssemblyFactory extends ADataAssemblyFactory {
 export namespace ModuleAutomation {
 
     /**
-     * WASD
+     * Ein DataAssembly ist eine funktionale Einheit innerhalb von PEAs. Sie ermöglichen das Steuern, Regeln und
+     * Überwachen von Prozessen.
      *
      <uml>
      abstract class ADataAssemblyFactory
@@ -163,8 +164,8 @@ export namespace ModuleAutomation {
         +getInterfaceClass(callback: (response: PiMAdResponse, interfaceClass: string) => void): void
         +getHumanReadableDescription(callback: (response: PiMAdResponse, tagDescription: string) => void): void
         +getName(callback: (response: PiMAdResponse, name: string) => void): void
-        +getIdentifier(callback: (response: PiMAdResponse, name: string) => void): void
-        +getMetaModelRef(callback: (response: PiMAdResponse, name: string) => void): void
+        +getIdentifier(callback: (response: PiMAdResponse, identifier: string) => void): void
+        +getMetaModelRef(callback: (response: PiMAdResponse, metaModelRef: string) => void): void
         +initialize(instructions: object): boolean
 	 }
 
@@ -177,28 +178,83 @@ export namespace ModuleAutomation {
      </uml>
      */
     export interface DataAssembly {
-        getAllDataItems(callback: (response: PiMAdResponse, dataItems: DataItem[]) => void): void;
+        /**
+         * Getter for this.dataItems. Returns all {@link DataItem}s aggregated in this instance.
+         * @param callback - Accessing the {@link DataItem}s-Array via callback function.
+         */
+        getAllDataItems(callback: (response: PiMAdResponse, dataItems: DataItem[]) => void ): void;
+
+        /**
+         * Get a single {@link DataItem} via it's name.
+         * @param name - The name of the {@link DataItem}
+         * @param callback - Accessing the matching {@link DataItem} via callback function.
+         */
         getDataItem(name: string,callback: (response: PiMAdResponse, dataItems: DataItem) => void): void;
+
+        /**
+         * Not implemented yet!
+         * @param callback - Accessing the InterfaceClass via callback funktion.
+         */
         getInterfaceClass(callback: (response: PiMAdResponse, interfaceClass: string) => void): void;
-        getHumanReadableDescription(callback: (response: PiMAdResponse, tagDescription: string) => void): void;
+
+        /**
+         * Getter for this.description. Hopefully understandable for all human kind.
+         * @param callback - Accessing the description via callback function.
+         */
+        getHumanReadableDescription(callback: (response: PiMAdResponse, description: string) => void): void;
+
+        /**
+         * Getter for this.name. The name of this instance.
+         * @param callback - Accessing the name via callback function.
+         */
         getName(callback: (response: PiMAdResponse, name: string) => void): void;
-        getIdentifier(callback: (response: PiMAdResponse, name: string) => void): void;
-        getMetaModelRef(callback: (response: PiMAdResponse, name: string) => void): void;
+
+        /**
+         * Getter for this.identifier. A unique identifier in the PiMAd-core data model.
+         * @param callback - Accessing the identifier via callback function.
+         */
+        getIdentifier(callback: (response: PiMAdResponse, identifier: string) => void): void;
+
+        /**
+         * Getter for this.metaModelRef. It's a link to the meta model description of the instance.
+         * @param callback - Accessing the meta model reference via callback function.
+         */
+        getMetaModelRef(callback: (response: PiMAdResponse, metaModelRef: string) => void): void;
         //getCommunication(): PiMAdResponse; //any[] //not defined yet
+        /**
+         * Initialize the new DataAssembly object.
+         * @param instructions - A set with different kind of data.
+         */
         initialize(instructions: object): boolean;
     }
 
+    /**
+     * This enum referencing to all implementations of {@link DataAssembly}.
+     */
     export enum DataAssemblyType {
+        /**
+         * Referencing a {@link BasicDataAssembly}.
+         */
         BASIC = 0
     }
 
+    /**
+     * This vendor sells various {@link DataAssembly}-Instances.
+     */
     export class DataAssemblyVendor {
         private basicDataAssemblyFactory: DataAssemblyFactory;
 
+        /**
+         * This one initialize various {@link DataAssemblyFactory}.
+         */
         constructor() {
             this.basicDataAssemblyFactory = new BasicDataAssemblyFactory();
         }
 
+        /**
+         * Buy an uninitialized {@link DataAssembly}.
+         * @param type - The type of the {@link DataAssembly} as {@link DataAssemblyType}.
+         */
         public buy(type: DataAssemblyType): DataAssembly {
             switch (type) {
                 case DataAssemblyType.BASIC:
@@ -235,3 +291,13 @@ abstract class AActive extends ADataAssembly implements Actuator{
 abstract class AIndicator extends ADataAssembly implements Sensor{
 }
 */
+
+/**
+ * Callback for {@link ModuleAutomation.DataAssembly.getAllDataItems}.
+ * @param response - Indicates the status of the result. F.ex. a {@link SuccessResponse} for a successful ?.
+ * @param dataItems - An Array with {@link DataItem}s.
+ */
+type GetAllDataItems = (
+    response: PiMAdResponse,
+    dataItems: DataItem[]
+) => void

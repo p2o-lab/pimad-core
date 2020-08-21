@@ -183,7 +183,7 @@ export namespace Backbone {
     }
 
     /**
-     * This vendor sells various {@link PiMAdResponseVendor}-Instances.
+     * This vendor sells various {@link PiMAdResponse}-Instances.
      */
     export class PiMAdResponseVendor {
 
