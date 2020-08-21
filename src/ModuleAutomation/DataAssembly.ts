@@ -88,7 +88,7 @@ abstract class ADataAssembly implements ModuleAutomation.DataAssembly{
     abstract initialize(instructions: object): boolean;
 }
 
-export class BasicDataAssembly extends ADataAssembly {
+class BasicDataAssembly extends ADataAssembly {
     initialize(instructions: {tag: string; description: string; dataItems: DataItem[]; identifier: string; metaModelRef: string}): boolean {
         if (!this.initialized) {
             this.name = instructions.tag;
@@ -127,6 +127,55 @@ class BasicDataAssemblyFactory extends ADataAssemblyFactory {
 }
 
 export namespace ModuleAutomation {
+
+    /**
+     * WASD
+     *
+     <uml>
+     abstract class ADataAssemblyFactory
+     abstract class ADataAssembly {
+	    #dataItems: DataItem[]
+	    #description: string
+	    #name: string
+	    #initialized: boolean = false
+	    #identifier: string
+	    #metaModelRef: string
+	    #responseVendor: ResponseVendor
+	    #responseHandler: PiMAdResponseHandler
+	 }
+
+     class BasicDataAssemblyFactory
+     class BasicDataAssembly {
+        +initialize(instructions: {tag: string; description: string; dataItems: DataItem[]; identifier: string; metaModelRef: string}): boolean
+     }
+     class DataAssemblyVendor {
+        +buy(type: DataAssemblyType): DataAssembly
+     }
+
+     enum DataAssemblyType {
+         BASIC = 0
+     }
+
+     interface DataAssemblyFactory
+     interface DataAssembly {
+        +getAllDataItems(callback: (response: PiMAdResponse, dataItems: DataItem[]) => void): void
+        +getDataItem(name: string,callback: (response: PiMAdResponse, dataItems: DataItem) => void): void
+        +getInterfaceClass(callback: (response: PiMAdResponse, interfaceClass: string) => void): void
+        +getHumanReadableDescription(callback: (response: PiMAdResponse, tagDescription: string) => void): void
+        +getName(callback: (response: PiMAdResponse, name: string) => void): void
+        +getIdentifier(callback: (response: PiMAdResponse, name: string) => void): void
+        +getMetaModelRef(callback: (response: PiMAdResponse, name: string) => void): void
+        +initialize(instructions: object): boolean
+	 }
+
+     DataAssembly <|.. ADataAssembly
+     DataAssemblyFactory <|.. ADataAssemblyFactory
+     ADataAssembly <|-- BasicDataAssembly
+     ADataAssemblyFactory <|-- BasicDataAssemblyFactory
+     DataAssembly <-- DataAssemblyFactory
+     DataAssemblyVendor "1" o-- "1..*" DataAssemblyFactory
+     </uml>
+     */
     export interface DataAssembly {
         getAllDataItems(callback: (response: PiMAdResponse, dataItems: DataItem[]) => void): void;
         getDataItem(name: string,callback: (response: PiMAdResponse, dataItems: DataItem) => void): void;
