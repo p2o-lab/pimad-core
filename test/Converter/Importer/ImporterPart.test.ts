@@ -24,7 +24,7 @@ describe('class: MTPPart', () => {
         dataAssemblies[0].getName((response, name) =>  {
            expect(name).is.equal('CrystalCrasher')
         });
-        dataAssemblies[0].getIdentifier((response, identifier) => {
+        dataAssemblies[0].getPiMAdIdentifier((response, identifier) => {
             expect(identifier).equals('link6');
         });
         dataAssemblies[0].getMetaModelRef((response, metaModelRef) => {

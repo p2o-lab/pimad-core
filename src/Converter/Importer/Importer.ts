@@ -360,7 +360,7 @@ export class MTPFreeze202001Importer extends AImporter {
                 const localService = this.serviceFactory.create();
                 const localServiceDataAssembly: DataAssembly | undefined = dataAssemblies.find(dataAssembly => {
                     let testCondition = false;
-                    dataAssembly.getIdentifier((response, identifier) => {
+                    dataAssembly.getPiMAdIdentifier((response, identifier) => {
                         testCondition = (service.DataAssembly.Value === identifier);
                     });
                     return testCondition;
@@ -373,7 +373,7 @@ export class MTPFreeze202001Importer extends AImporter {
                     service.Procedures.forEach(procedure => {
                         const localProcedureDataAssembly: DataAssembly | undefined = dataAssemblies.find(dataAssembly => {
                             let testCondition = false;
-                            dataAssembly.getIdentifier((response, identifier) => {
+                            dataAssembly.getPiMAdIdentifier((response, identifier) => {
                                 testCondition = (procedure.DataAssembly.Value === identifier);
                             });
                             return testCondition;

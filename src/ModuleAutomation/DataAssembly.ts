@@ -10,20 +10,22 @@ abstract class ADataAssembly implements ModuleAutomation.DataAssembly{
 
     protected dataItems: DataItem[];
     protected description: string;
+    protected dataSourceIdentifier: string;
     protected name: string;
     protected initialized: boolean;
-    protected identifier: string;
     protected metaModelRef: string;
+    protected pimadIdentifier: string;
     protected responseVendor: PiMAdResponseVendor;
     protected responseHandler: PiMAdResponseHandler;
 
     constructor() {
         this.dataItems= [];
+        this.dataSourceIdentifier = 'dataSourceIdentifier: undefined';
         this.description='description: undefined';
         this.name='name: undefined';
         this.initialized = false;
-        this.identifier = 'identifier: undefined';
         this.metaModelRef = 'metaModelRef: undefined';
+        this.pimadIdentifier = 'pimadIdentifier: undefined';
         this.responseVendor = new PiMAdResponseVendor();
         this.responseHandler = new PiMAdResponseHandler();
     }
@@ -35,6 +37,7 @@ abstract class ADataAssembly implements ModuleAutomation.DataAssembly{
             callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'The instance is not initialized', {}), this.dataItems);
         }
     }
+    getDataSourceIdentifier(callback: (response: PiMAdResponse, identifier: string) => void): void {}
     getDataItem(name: string,callback: (response: PiMAdResponse, dataItems: DataItem) => void): void {
         if(this.initialized) {
             const localDataItem: DataItem | undefined = this.dataItems.find(dataItem => name === dataItem.getName());
@@ -68,13 +71,6 @@ abstract class ADataAssembly implements ModuleAutomation.DataAssembly{
             callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'The instance is not initialized', {}), this.name);
         }
     }
-    getIdentifier(callback: (response: PiMAdResponse, identifier: string) => void): void {
-        if(this.initialized) {
-            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success', {}), this.identifier);
-        } else {
-            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'The instance is not initialized', {}), this.identifier);
-        }
-    }
     getMetaModelRef(callback: (response: PiMAdResponse, metaModelRef: string) => void): void {
         if(this.initialized) {
             callback(this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success', {}), this.metaModelRef);
@@ -85,6 +81,13 @@ abstract class ADataAssembly implements ModuleAutomation.DataAssembly{
     /*getCommunication(): PiMAdResponse {
         return this.responseVendor.buyErrorResponse();
     } */
+    getPiMAdIdentifier(callback: (response: PiMAdResponse, identifier: string) => void): void {
+        if(this.initialized) {
+            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success', {}), this.pimadIdentifier);
+        } else {
+            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'The instance is not initialized', {}), this.pimadIdentifier);
+        }
+    }
     abstract initialize(instructions: object): boolean;
 }
 
@@ -94,13 +97,13 @@ export class BasicDataAssembly extends ADataAssembly {
             this.name = instructions.tag;
             this.description = instructions.description;
             this.dataItems = instructions.dataItems;
-            this.identifier = instructions.identifier;
+            this.pimadIdentifier = instructions.identifier;
             this.metaModelRef = instructions.metaModelRef;
             this.initialized = (
                 this.name === instructions.tag &&
                 this.description == instructions.description &&
                 JSON.stringify(this.dataItems) === JSON.stringify(instructions.dataItems) &&
-                this.identifier === instructions.identifier &&
+                this.pimadIdentifier === instructions.identifier &&
                 this.metaModelRef === instructions.metaModelRef
             );
             return this.initialized;
@@ -139,7 +142,7 @@ export namespace ModuleAutomation {
 	    #description: string
 	    #name: string
 	    #initialized: boolean = false
-	    #identifier: string
+	    #pimadIdentifier: string
 	    #metaModelRef: string
 	    #responseVendor: ResponseVendor
 	    #responseHandler: PiMAdResponseHandler
@@ -161,10 +164,11 @@ export namespace ModuleAutomation {
      interface DataAssembly {
         +getAllDataItems(callback: (response: PiMAdResponse, dataItems: DataItem[]) => void): void
         +getDataItem(name: string,callback: (response: PiMAdResponse, dataItems: DataItem) => void): void
+        +getDataSourceIdentifier(callback: (response: PiMAdResponse, identifier: string) => void): void
         +getInterfaceClass(callback: (response: PiMAdResponse, interfaceClass: string) => void): void
         +getHumanReadableDescription(callback: (response: PiMAdResponse, tagDescription: string) => void): void
         +getName(callback: (response: PiMAdResponse, name: string) => void): void
-        +getIdentifier(callback: (response: PiMAdResponse, identifier: string) => void): void
+        +getPiMAdIdentifier(callback: (response: PiMAdResponse, identifier: string) => void): void
         +getMetaModelRef(callback: (response: PiMAdResponse, metaModelRef: string) => void): void
         +initialize(instructions: object): boolean
 	 }
@@ -192,8 +196,15 @@ export namespace ModuleAutomation {
         getDataItem(name: string,callback: (response: PiMAdResponse, dataItems: DataItem) => void): void;
 
         /**
+         * Getter for this.dataSourceIdentifier. This variable contains the identifier of the previous data source. It's
+         * mostly for debugging purpose and an assembling reference while importing the data.
+         * @param callback - Accessing the identifier via callback function.
+         */
+        getDataSourceIdentifier(callback: (response: PiMAdResponse, identifier: string) => void): void;
+
+        /**
          * Not implemented yet!
-         * @param callback - Accessing the InterfaceClass via callback funktion.
+         * @param callback - Accessing the InterfaceClass via callback function.
          */
         getInterfaceClass(callback: (response: PiMAdResponse, interfaceClass: string) => void): void;
 
@@ -210,10 +221,10 @@ export namespace ModuleAutomation {
         getName(callback: (response: PiMAdResponse, name: string) => void): void;
 
         /**
-         * Getter for this.identifier. A unique identifier in the PiMAd-core data model.
+         * Getter for this.pimadIdentifier. A unique identifier in the PiMAd-core data model.
          * @param callback - Accessing the identifier via callback function.
          */
-        getIdentifier(callback: (response: PiMAdResponse, identifier: string) => void): void;
+        getPiMAdIdentifier(callback: (response: PiMAdResponse, identifier: string) => void): void;
 
         /**
          * Getter for this.metaModelRef. It's a link to the meta model description of the instance.

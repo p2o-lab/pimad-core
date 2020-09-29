@@ -73,7 +73,7 @@ describe('class: BaseDataAssembly', () => {
             });
         });
         it('method: getIdentifier()', () => {
-            dataAssembly.getIdentifier((response, identifier) => {
+            dataAssembly.getPiMAdIdentifier((response, identifier) => {
                 expect(response.constructor.name).is.equal(successResponseAsString);
                 expect(identifier).is.equal('Test-Identifier');
             });
@@ -96,6 +96,12 @@ describe('class: BaseDataAssembly', () => {
                 expect(response.constructor.name).is.equal(errorResponseAsString);
             });
         });
+        it('method: getDataSourceIdentifier()', () => {
+            dataAssembly.getDataSourceIdentifier((response, identifier) => {
+                expect(response.constructor.name).equals(errorResponseAsString);
+                expect(identifier).equals('dataSourceIdentifier: undefined');
+            });
+        });
         it('method: getInterfaceClass()', () => {
             dataAssembly.getInterfaceClass((response, interfaceClass) => {
                 expect(response.constructor.name).is.equal(errorResponseAsString);
@@ -113,10 +119,10 @@ describe('class: BaseDataAssembly', () => {
                 expect(name).is.equal('name: undefined');
             });
         });
-        it('method: getIdentifier()', () => {
-            dataAssembly.getIdentifier((response, identifier) => {
+        it('method: getPiMAdIdentifier()', () => {
+            dataAssembly.getPiMAdIdentifier((response, identifier) => {
                 expect(response.constructor.name).equals(errorResponseAsString);
-                expect(identifier).equals('identifier: undefined');
+                expect(identifier).equals('pimadIdentifier: undefined');
             });
         });
         it('method: getMetaModelRef()', () => {

@@ -1,7 +1,7 @@
 import {PEA} from '../ModuleAutomation';
 import {Importer} from '../Converter/Importer/Importer';
 import {logger} from '../Utils';
-import * as crypto from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 import {Backbone} from '../Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import PiMAdResponseHandler = Backbone.PiMAdResponseHandler;
@@ -24,7 +24,7 @@ abstract class APEAPool implements PEAPool {
     }
 
     private generateUniqueIdentifier(callback: (identifier: string) => void): void {
-        const identifier = crypto.randomBytes(16).toString('hex');
+        const identifier = uuidv4();
         this.getPEA(identifier, response => {
             if(response.constructor.name === this.responseVendor.buyErrorResponse().constructor.name) {
                 callback(identifier);
