@@ -98,7 +98,7 @@ abstract class ADataAssembly implements ModuleAutomation.DataAssembly{
 }
 
 export class BasicDataAssembly extends ADataAssembly {
-    initialize(instructions: {tag: string; dataSourceIdentifier: string; description: string; dataItems: DataItem[]; metaModelRef: string,pimadIdentifier: string}): boolean {
+    initialize(instructions: {tag: string; dataSourceIdentifier: string; description: string; dataItems: DataItem[]; metaModelRef: string; pimadIdentifier: string}): boolean {
         if (!this.initialized) {
             this.name = instructions.tag;
             this.dataSourceIdentifier = instructions.dataSourceIdentifier;
