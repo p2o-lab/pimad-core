@@ -49,7 +49,6 @@ describe('class: BasePEAPool', () => {
                 pool.addPEA({source: 'test/Converter/PiMAd-core.0-0-1.aml'}, (response) => {
                     expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
                     expect(response.getContent().constructor.name).is.equal('BasePEA');
-                    //done();
                     pool.getAllPEAs((response, peas) => {
                         expect(peas.length).equals(1);
                         done()
