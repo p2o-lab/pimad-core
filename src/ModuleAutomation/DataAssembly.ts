@@ -37,7 +37,13 @@ abstract class ADataAssembly implements ModuleAutomation.DataAssembly{
             callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'The instance is not initialized', {}), this.dataItems);
         }
     }
-    getDataSourceIdentifier(callback: (response: PiMAdResponse, identifier: string) => void): void {}
+    getDataSourceIdentifier(callback: (response: PiMAdResponse, identifier: string) => void): void {
+        if(this.initialized) {
+            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success', {}), this.dataSourceIdentifier);
+        } else {
+            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'The instance is not initialized', {}), this.dataSourceIdentifier);
+        }
+    }
     getDataItem(name: string,callback: (response: PiMAdResponse, dataItems: DataItem) => void): void {
         if(this.initialized) {
             const localDataItem: DataItem | undefined = this.dataItems.find(dataItem => name === dataItem.getName());
@@ -92,18 +98,19 @@ abstract class ADataAssembly implements ModuleAutomation.DataAssembly{
 }
 
 export class BasicDataAssembly extends ADataAssembly {
-    initialize(instructions: {tag: string; description: string; dataItems: DataItem[]; identifier: string; metaModelRef: string}): boolean {
+    initialize(instructions: {tag: string; dataSourceIdentifier: string; description: string; dataItems: DataItem[]; metaModelRef: string,pimadIdentifier: string}): boolean {
         if (!this.initialized) {
             this.name = instructions.tag;
+            this.dataSourceIdentifier = instructions.dataSourceIdentifier;
             this.description = instructions.description;
             this.dataItems = instructions.dataItems;
-            this.pimadIdentifier = instructions.identifier;
+            this.pimadIdentifier = instructions.pimadIdentifier;
             this.metaModelRef = instructions.metaModelRef;
             this.initialized = (
                 this.name === instructions.tag &&
                 this.description == instructions.description &&
                 JSON.stringify(this.dataItems) === JSON.stringify(instructions.dataItems) &&
-                this.pimadIdentifier === instructions.identifier &&
+                this.pimadIdentifier === instructions.pimadIdentifier &&
                 this.metaModelRef === instructions.metaModelRef
             );
             return this.initialized;
@@ -221,7 +228,8 @@ export namespace ModuleAutomation {
         getName(callback: (response: PiMAdResponse, name: string) => void): void;
 
         /**
-         * Getter for this.pimadIdentifier. A unique identifier in the PiMAd-core data model.
+         * Getter for this.pimadIdentifier. A unique identifier in the PiMAd-core data model. Use this one while
+         * interacting with PiMAd-objects.
          * @param callback - Accessing the identifier via callback function.
          */
         getPiMAdIdentifier(callback: (response: PiMAdResponse, identifier: string) => void): void;

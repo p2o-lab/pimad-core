@@ -21,6 +21,7 @@ import PiMAdResponse = Backbone.PiMAdResponse;
 import DataAssemblyVendor = ModuleAutomation.DataAssemblyVendor;
 import DataAssembly = ModuleAutomation.DataAssembly;
 import DataAssemblyType = ModuleAutomation.DataAssemblyType;
+import { v4 as uuidv4 } from 'uuid';
 
 abstract class AImporterPart implements ImporterPart {
     protected responseVendor: PiMAdResponseVendor
@@ -320,8 +321,9 @@ export class MTPPart extends AImporterPart {
                 tag: instanceListElement.Name,
                 description: 'inline TODO above',
                 dataItems: localDataItems,
-                identifier: dataAssemblyIdentifier,
-                metaModelRef: instanceListElement.RefBaseSystemUnitPath
+                dataSourceIdentifier: dataAssemblyIdentifier,
+                metaModelRef: instanceListElement.RefBaseSystemUnitPath,
+                pimadIdentifier: uuidv4()
             })) {
                 // initializing successful -> push the new data assembly to the return variable.
                 dataAssemblies.push(localDataAssembly);

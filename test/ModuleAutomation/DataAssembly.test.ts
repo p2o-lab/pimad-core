@@ -29,10 +29,11 @@ describe('class: BaseDataAssembly', () => {
 
             dataAssembly.initialize({
                 tag: 'Test-DataAssembly',
+                dataSourceIdentifier: 'Test-DataSourceIdentifier',
                 description: 'Test-Description',
                 dataItems: [dataItemOne, dataItemTwo, dataItemThree],
-                identifier: 'Test-Identifier',
-                metaModelRef: 'Test-MetaModelRef'
+                metaModelRef: 'Test-MetaModelRef',
+                pimadIdentifier: 'Test-PiMAdIdentifier',
             });
         });
         it('method: getAllDataItems', () => {
@@ -52,6 +53,13 @@ describe('class: BaseDataAssembly', () => {
                 dataAssembly.getDataItem('DataItemFour', (response, dataItem) => {
                     expect(response.constructor.name).is.equal(errorResponseAsString);
                 });
+            });
+        });
+        it('method: getDataSourceIdentifier()', (done) => {
+            dataAssembly.getDataSourceIdentifier((response, identifier) => {
+                expect(response.constructor.name).is.equal(successResponseAsString);
+                expect(identifier).is.equal('Test-DataSourceIdentifier');
+                done()
             });
         });
         it('method: getInterfaceClass()', () => {
@@ -75,7 +83,7 @@ describe('class: BaseDataAssembly', () => {
         it('method: getIdentifier()', () => {
             dataAssembly.getPiMAdIdentifier((response, identifier) => {
                 expect(response.constructor.name).is.equal(successResponseAsString);
-                expect(identifier).is.equal('Test-Identifier');
+                expect(identifier).is.equal('Test-PiMAdIdentifier');
             });
         });
         it('method: getMetaModelRef()', () => {
@@ -96,10 +104,11 @@ describe('class: BaseDataAssembly', () => {
                 expect(response.constructor.name).is.equal(errorResponseAsString);
             });
         });
-        it('method: getDataSourceIdentifier()', () => {
+        it('method: getDataSourceIdentifier()', (done) => {
             dataAssembly.getDataSourceIdentifier((response, identifier) => {
                 expect(response.constructor.name).equals(errorResponseAsString);
                 expect(identifier).equals('dataSourceIdentifier: undefined');
+                done();
             });
         });
         it('method: getInterfaceClass()', () => {
