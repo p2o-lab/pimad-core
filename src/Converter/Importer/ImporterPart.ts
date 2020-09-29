@@ -323,7 +323,7 @@ export class MTPPart extends AImporterPart {
                 dataItems: localDataItems,
                 dataSourceIdentifier: dataAssemblyIdentifier,
                 metaModelRef: instanceListElement.RefBaseSystemUnitPath,
-                pimadIdentifier: uuidv4()
+                pimadIdentifier: uuidv4() // TODO: Maybe check if uuid maybe already exists?
             })) {
                 // initializing successful -> push the new data assembly to the return variable.
                 dataAssemblies.push(localDataAssembly);

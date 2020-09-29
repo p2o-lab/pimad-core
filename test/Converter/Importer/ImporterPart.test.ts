@@ -9,6 +9,7 @@ import {Backbone} from '../../../src/Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import {ModuleAutomation} from '../../../src/ModuleAutomation';
 import DataAssembly = ModuleAutomation.DataAssembly;
+import { validate as uuidValidate } from 'uuid';
 
 const responseVendor = new PiMAdResponseVendor()
 
@@ -26,6 +27,9 @@ describe('class: MTPPart', () => {
         });
         dataAssemblies[0].getDataSourceIdentifier((response, identifier) => {
             expect(identifier).equals('link6');
+        });
+        dataAssemblies[0].getPiMAdIdentifier((response, identifier) => {
+            expect(uuidValidate(identifier)).is.true;
         });
         dataAssemblies[0].getMetaModelRef((response, metaModelRef) => {
             expect(metaModelRef).equals('MTPDataObjectSUCLib/DataAssembly/ServiceControl');
