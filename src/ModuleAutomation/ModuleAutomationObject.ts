@@ -3,7 +3,7 @@ import PiMAdResponse = Backbone.PiMAdResponse;
 import PiMAdResponseHandler = Backbone.PiMAdResponseHandler;
 import PiMAdResponseTypes = Backbone.PiMAdResponseTypes;
 
-abstract class AModuleAutomationObject implements ModuleAutomationObject {
+export abstract class AModuleAutomationObject implements ModuleAutomationObject {
     protected dataSourceIdentifier: string;
     protected initialized: boolean;
     protected metaModelRef: string;
@@ -53,7 +53,7 @@ abstract class AModuleAutomationObject implements ModuleAutomationObject {
     }
 }
 
-interface ModuleAutomationObject {
+export interface ModuleAutomationObject {
     /**
      * Getter for this.dataSourceIdentifier. This variable contains the identifier of the previous data source. It's
      * mostly for debugging purpose and an assembling reference while importing the data.

@@ -7,8 +7,9 @@ import PiMAdResponse = Backbone.PiMAdResponse;
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import {ModuleAutomation} from './DataAssembly';
 import DataAssembly = ModuleAutomation.DataAssembly;
+import {AModuleAutomationObject, ModuleAutomationObject} from './ModuleAutomationObject';
 
-export interface Service {
+export interface Service extends ModuleAutomationObject {
     /**
      * Get a specific attribute of the service object.
      * @param name - The name of the attribute.
@@ -40,11 +41,7 @@ export interface Service {
      * @returns The service name as string.
      */
     getName(): string;
-    /**
-     * Getter for this.metaModelRef of the service object.
-     * @returns A response object.
-     */
-    getMetaModelReference(): PiMAdResponse;
+
     /**
      * Get a specific parameter of the service object.
      * @param name - The name of the attribute.
@@ -61,31 +58,29 @@ export interface Service {
      * Initialize the service object with data. This one works like a constructor.
      * @param attributes - An Array with attributes of the service object..
      * @param dataAssembly - The data assembly of the service object.. F. ex. with the communication interface data.
-     * @param identifier - A general identifier of the service object.
+     * @param dataSourceIdentifier - This variable stores the local identifier of the previous data source.
      * @param metaModelRef - A reference to a metamodel describing the service object.
      * @param name - The name of the service object.
      * @param parameter - An Array with service parameters.
+     * @param pimadIdentifier - A unique identifier in the PiMAd-core data model.
      * @param procedure - An Array with service procedures.
      * @returns True for a successful initialisation. False for a not successful initialisation.
      */
-    initialize(attributes: Attribute[], dataAssembly: DataAssembly, identifier: string, metaModelRef: string, name: string, parameter: Parameter[], procedure: Procedure[]): boolean;
+    initialize(attributes: Attribute[], dataAssembly: DataAssembly, dataSourceIdentifier: string, metaModelRef: string, name: string, parameter: Parameter[], pimadIdentifier: string, procedure: Procedure[]): boolean;
 }
 
-abstract class AService implements Service{
+abstract class AService extends AModuleAutomationObject implements Service {
     protected attributes: Attribute[];
     protected dataAssembly: DataAssembly;
-    protected identifier: string;
-    protected metaModelRef: string;
-    protected name: string;
     protected procedures: Procedure[];
     protected parameters: Parameter[];
-    protected initialized: boolean;
     protected responseVendor: PiMAdResponseVendor;
 
     constructor() {
+        super();
         this.attributes = [];
         this.dataAssembly = {} as DataAssembly;
-        this.identifier = 'identifier: not initialized';
+        //this.identifier = 'identifier: not initialized';
         this.metaModelRef = 'metaModelRef: not initialized';
         this.name = 'name: not initialized';
         this.procedures = [];
@@ -133,12 +128,6 @@ abstract class AService implements Service{
         return response;
     };
 
-    getMetaModelReference(): PiMAdResponse {
-        const response = this.responseVendor.buySuccessResponse();
-        response.initialize('Success!', {data: this.metaModelRef});
-        return response;
-    };
-
     getName(): string {
         return this.name;
     };
@@ -173,21 +162,23 @@ abstract class AService implements Service{
         });
     }
 
-    initialize(attributes: Attribute[], dataAssembly: DataAssembly, identifier: string, metaModelRef: string, name: string, parameter: Parameter[], procedure: Procedure[]): boolean {
+    initialize(attributes: Attribute[], dataAssembly: DataAssembly, dataSourceIdentifier: string, metaModelRef: string, name: string, parameter: Parameter[], pimadIdentifier: string, procedure: Procedure[]): boolean {
         if(!this.initialized) {
             this.attributes = attributes;
             this.dataAssembly = dataAssembly;
-            this.identifier = identifier;
+            this.dataSourceIdentifier = dataSourceIdentifier;
             this.metaModelRef = metaModelRef;
             this.name = name;
             this.parameters = parameter;
+            this.pimadIdentifier = pimadIdentifier;
             this.procedures = procedure;
             this.initialized = (JSON.stringify(this.attributes) === JSON.stringify(attributes) &&
                     JSON.stringify(this.dataAssembly) === JSON.stringify(dataAssembly) &&
-                    this.identifier === identifier &&
+                    this.dataSourceIdentifier === dataSourceIdentifier &&
                     this.metaModelRef === metaModelRef &&
                     this.name === name &&
                     JSON.stringify(this.parameters) === JSON.stringify(parameter) &&
+                    this.pimadIdentifier === pimadIdentifier &&
                     JSON.stringify(this.procedures) === JSON.stringify(procedure)
             );
             return this.initialized;
@@ -213,5 +204,6 @@ export class BaseServiceFactory extends AServiceFactory {
     create(): Service{
         const service = new BaseService();
         logger.debug(this.constructor.name + ' creates a ' + service.constructor.name);
-        return service;}
+        return service;
+    }
 }

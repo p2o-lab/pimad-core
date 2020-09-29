@@ -14,9 +14,12 @@ import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import DataAssemblyVendor = ModuleAutomation.DataAssemblyVendor;
 import DataAssemblyType = ModuleAutomation.DataAssemblyType;
 import DataAssembly = ModuleAutomation.DataAssembly;
+import {v4 as uuidv4} from 'uuid';
 
 const responseVendor = new PiMAdResponseVendor();
 const dataAssemblyVendor = new DataAssemblyVendor();
+const errorResponseAsString = responseVendor.buyErrorResponse().constructor.name
+const successResponseAsString = responseVendor.buySuccessResponse().constructor.name
 
 describe('class: BaseService', () => {
     let service: Service;
@@ -54,7 +57,7 @@ describe('class: BaseService', () => {
             procedure0.initialize({} as DataAssembly, '','', 'Test-Procedure0', [],[]);
             const procedure1 = procedureFactory.create();
             procedure1.initialize({} as DataAssembly, '','', 'Test-Procedure1', [],[]);
-            service.initialize(attributes, dataAssembly,'Test-Identifier','Test-MetaModelRef','Test-Name', [parameter, parameter2], [procedure0, procedure1]);
+            service.initialize(attributes, dataAssembly,'Test-Identifier','Test-MetaModelRef','Test-Name', [parameter, parameter2], uuidv4() ,[procedure0, procedure1]);
         });
         describe('method: getAttribute()', () => {
             it('test case: standard usage', done => {
@@ -89,8 +92,12 @@ describe('class: BaseService', () => {
                 expect(name).equals('Test-DataAssembly')
             });
         });
-        it('method: getMetaModelRef()', () => {
-            expect(JSON.stringify(service.getMetaModelReference().getContent())).is.equal(JSON.stringify({data: 'Test-MetaModelRef'}));
+        it('method: getMetaModelRef()', (done) => {
+            service.getMetaModelRef((response, metaModelRef) => {
+                expect(response.constructor.name).is.equal(successResponseAsString);
+                expect(metaModelRef).is.equal('Test-MetaModelRef');
+                done()
+            })
         });
         it('method: getName()', () => {
             expect(service.getName()).is.equal('Test-Name');
@@ -129,8 +136,8 @@ describe('class: BaseService', () => {
         });
     })
     it('method: initialize()', () => {
-        expect(service.initialize([], {} as DataAssembly, '', '', '', [], [])).is.true;
-        expect(service.initialize([], {} as DataAssembly, '', '', '', [], [])).is.false;
+        expect(service.initialize([], {} as DataAssembly, '', '', '', [],'',[])).is.true;
+        expect(service.initialize([], {} as DataAssembly, '', '', '', [],'',[])).is.false;
     });
 });
 describe('class: BaseServiceFactory', () => {

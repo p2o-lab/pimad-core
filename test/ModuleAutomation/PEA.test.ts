@@ -66,9 +66,9 @@ describe('class: BasePEA', () => {
             procedure1.initialize({} as DataAssembly, '','', 'Test-Procedure1', [],[]);
             const serviceFactory = new BaseServiceFactory();
             const service1 = serviceFactory.create();
-            service1.initialize(attributes, dataAssembly1,'Test-Identifier1','Test-MetaModelRef1','Test-Service1', [parameter, parameter2], [procedure0, procedure1]);
+            service1.initialize(attributes, dataAssembly1,'Test-DataSourceIdentifier1','Test-MetaModelRef1','Test-Service1', [parameter, parameter2],'Test-PiMAdIdentifier1' ,[procedure0, procedure1]);
             const service2 = serviceFactory.create();
-            service2.initialize(attributes, dataAssembly1,'Test-Identifier2','Test-MetaModelRef2','Test-Service2', [parameter], [procedure1]);
+            service2.initialize(attributes, dataAssembly1,'Test-DataSourceIdentifier2','Test-MetaModelRef2','Test-Service2', [parameter], 'Test-PiMAdIdentifier2',[procedure1]);
 
             pea.initialize({
                 DataAssemblies: [dataAssembly1,dataAssembly2],

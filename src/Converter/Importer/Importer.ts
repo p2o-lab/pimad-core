@@ -33,6 +33,7 @@ import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import PiMAdResponse = Backbone.PiMAdResponse;
 import DataAssemblyVendor = ModuleAutomation.DataAssemblyVendor;
 import DataAssembly = ModuleAutomation.DataAssembly;
+import { v4 as uuidv4 } from 'uuid';
 
 abstract class AImporter implements  Importer {
 
@@ -404,7 +405,7 @@ export class MTPFreeze202001Importer extends AImporter {
                         }
                     });
                     // initialize the new service object ...
-                    if(localService.initialize(serviceAttributes, localServiceDataAssembly, service.Identifier, service.MetaModelRef, service.Name, service.Parameters, localServiceProcedures)) {
+                    if(localService.initialize(serviceAttributes, localServiceDataAssembly, service.Identifier, service.MetaModelRef, service.Name, service.Parameters, uuidv4(),localServiceProcedures)) {
                         // ... and push it to the array.
                         localServices.push(localService);
                     }
