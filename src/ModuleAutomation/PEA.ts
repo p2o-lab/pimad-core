@@ -85,10 +85,10 @@ export interface PEA {
     getSensor(tag: string, callback: (response: PiMAdResponse) => void): void;
     /**
      * Get a specific service of the PEA object.
-     * @param name - The name of the service.
+     * @param identifier - The PiMAd-identifier of the service.
      * @param callback - A callback function. Use an instance of the interface Response as input.
      */
-    getService(name: string, callback: (response: PiMAdResponse) => void): void;
+    getService(identifier: string, callback: (response: PiMAdResponse) => void): void;
     /**
      * Initialize the PEA object with data. This one works like a constructor.
      * @param data - Various data for initialization of the PEA.
@@ -184,12 +184,20 @@ abstract class APEA implements PEA {
     getSensor(tag: string, callback: (response: PiMAdResponse) => void): void {
         this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, '', {}, callback);
     };
-    getService(name: string, callback: (response: PiMAdResponse) => void): void {
-        const localService: Service | undefined = this.services.find(service =>
-            service.getName() === name
+    getService(identifier: string, callback: (response: PiMAdResponse) => void): void {
+        const localService: Service | undefined = this.services.find(service => {
+                let testCondition = false;
+                service.getPiMAdIdentifier((response, pimadIdentifier) => {
+                    testCondition = (pimadIdentifier === identifier);
+                });
+                return testCondition;
+            }
         );
+        /*const localService: Service | undefined = this.services.find(service =>
+            service.getName() === name
+        );*/
         if(localService == undefined) {
-            this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'Could not find service <' + name + '> in PEA <' + this.name + '>', {}, callback);
+            this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'Could not find service <' + identifier + '> in PEA <' + this.name + '>', {}, callback);
         } else {
             this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.SUCCESS, 'Success!', localService, callback);
         }

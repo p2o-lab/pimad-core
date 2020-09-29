@@ -36,11 +36,6 @@ export interface Service extends ModuleAutomationObject {
      * @returns A response object.
      */
     getDataAssembly(): PiMAdResponse;
-    /**
-     * Getter for this.name of the service object.
-     * @returns The service name as string.
-     */
-    getName(): string;
 
     /**
      * Get a specific parameter of the service object.
@@ -126,10 +121,6 @@ abstract class AService extends AModuleAutomationObject implements Service {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('Success!', {data: this.dataAssembly});
         return response;
-    };
-
-    getName(): string {
-        return this.name;
     };
 
     getParameter(name: string, callback: (response: PiMAdResponse) => void): void {

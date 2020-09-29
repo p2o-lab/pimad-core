@@ -77,7 +77,7 @@ describe('class: BasePEA', () => {
                 FEAs:[],
                 Name:'Test-PEA',
                 PiMAdIdentifier: 'Test-Identifier',
-                Services:[service1]
+                Services:[service1, service2]
             } as PEAInitializeDataType);
         });
         describe('method: getActuator()', () => {
@@ -114,7 +114,7 @@ describe('class: BasePEA', () => {
         });
         it('method: getAllServices()', () => {
             const response = pea.getAllServices().getContent() as {data: Service[]};
-            expect(response.data.length).is.equal(1);
+            expect(response.data.length).is.equal(2);
         });
         describe('method: getDataAssembly()', () => {
             it('test case: standard usage', done => {
@@ -164,11 +164,16 @@ describe('class: BasePEA', () => {
         });
         describe('method: getService()', () => {
             it('test case: standard usage', done => {
-                pea.getService('Test-Service1', (response) => {
-                    expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
-                    const responseContent = response.getContent() as Service;
-                    expect(responseContent.getName()).is.equal('Test-Service1');
-                    done();
+                const services: Service[] = (pea.getAllServices().getContent() as {data: Service[]}).data;
+                services[1].getPiMAdIdentifier((responsePiMAdIdentifier, identifier) => {
+                    pea.getService(identifier, (responseGetService) => {
+                        expect(responseGetService.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
+                        const responseContent = responseGetService.getContent() as Service;
+                        responseContent.getName((responsGetName, name) => {
+                            expect(name).is.equal('Test-Service2');
+                            done();
+                        })
+                    })
                 })
             });
             it('test case: requested Service not in array', (done) => {

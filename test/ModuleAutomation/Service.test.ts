@@ -99,8 +99,12 @@ describe('class: BaseService', () => {
                 done()
             })
         });
-        it('method: getName()', () => {
-            expect(service.getName()).is.equal('Test-Name');
+        it('method: getName()', (done) => {
+            service.getName((response, name) => {
+                expect(response.constructor.name).is.equal(successResponseAsString);
+                expect(name).is.equal('Test-Name');
+                done()
+            });
         });
         describe('method: getParameter()', () => {
             it('test case: standard usage', done => {
