@@ -1,5 +1,4 @@
 import {
-    BaseNodeIdFactory,
     GUIDNodeIdFactory,
     NumericNodeIdFactory,
     QpaqueNodeIdFactory,
@@ -11,73 +10,77 @@ import {Backbone} from '../../src/Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 
 const responseVendor = new PiMAdResponseVendor();
-
-describe('class: BaseNodeId', () => {
-    let nodeId: NodeId;
-    beforeEach(() => {
-        nodeId = new BaseNodeIdFactory().create();
-    })
-    it('method: getNamespaceIndex()', () => {
-        let response = nodeId.getNamespaceIndex()
-        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
-        nodeId.initialize(3, 12)
-        response = nodeId.getNamespaceIndex()
-        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
-        const content: {namespaceIndex?: number} = response.getContent()
-        expect(content.namespaceIndex).is.undefined
-    });
-    it('method: getIdentifier()', () => {
-        let response = nodeId.getIdentifier()
-        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
-        nodeId.initialize(1, 42)
-        response = nodeId.getIdentifier()
-        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
-        const content: {identifier?: number} = response.getContent()
-        expect(content.identifier).is.undefined
-    });
-    it('method: getNodeId()', () => {
-        expect(typeof nodeId.getNodeId()).is.equal(typeof responseVendor.buyErrorResponse())
-    });
-    it('initialize()', () => {
-        expect(nodeId.initialize(1, 2)).is.false
-    });
-})
+const errorResponseAsString = responseVendor.buyErrorResponse().constructor.name
+const successResponseAsString = responseVendor.buySuccessResponse().constructor.name
 
 describe('class: NumericNodeId', () => {
     let nodeId: NodeId;
     beforeEach(() => {
         nodeId = new NumericNodeIdFactory().create();
-    })
-    it('method: getNamespaceIndex()', () => {
-        let response = nodeId.getNamespaceIndex()
-        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
-        nodeId.initialize(3, 12)
-        response = nodeId.getNamespaceIndex()
-        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
-        const content: {namespaceIndex?: number} = response.getContent()
-        expect(content.namespaceIndex).is.equal(3)
     });
-    it('method: getIdentifier()', () => {
-        let response = nodeId.getIdentifier()
-        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
-        nodeId.initialize(1, 42)
-        response = nodeId.getIdentifier()
-        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
-        const content: {identifier?: number} = response.getContent()
-        expect(content.identifier).is.equal(42)
+    describe('method: initialize', () => {
+        it('normal usage', () => {
+            expect(nodeId.initialize({namespaceIndex: 2, identifier: '2048'})).is.true;
+            expect(nodeId.initialize({namespaceIndex: 1, identifier: '1024'})).is.false;
+        });
+        it('wrong namespace', () => {
+            expect(nodeId.initialize({namespaceIndex: -1, identifier: '1'})).is.false;
+            expect(nodeId.initialize({namespaceIndex: -958, identifier: '1'})).is.false;
+        });
+        it('wrong identifier', () => {
+            expect(nodeId.initialize({namespaceIndex: 0, identifier: '-1'})).is.false;
+            expect(nodeId.initialize({namespaceIndex: 0, identifier: '0'})).is.false;
+            expect(nodeId.initialize({namespaceIndex: 1, identifier: 'Test-NodeId as string'})).is.false;
+        });
     });
-    it('method: getNodeId()', () => {
-        let response = nodeId.getNodeId()
-        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
-        nodeId.initialize(1, 4321)
-        response = nodeId.getNodeId()
-        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
-        const content: {nodeId?: string} = response.getContent()
-        expect(content.nodeId).is.equal('ns=1;i=4321')
+    describe('with initialization', () => {
+        beforeEach(() => {
+            nodeId.initialize({namespaceIndex: 4, identifier: '4096'});
+        });
+        it('method: getIdentifier', (done) => {
+            nodeId.getIdentifier((response, identifier) => {
+                expect(response.constructor.name).is.equal(successResponseAsString);
+                expect(identifier).is.equal('4096');
+                done();
+            });
+        });
+        it('method: getNamespaceIndex', (done) => {
+            nodeId.getNamespaceIndex((response, namespaceIndex) => {
+                expect(response.constructor.name).is.equal(successResponseAsString);
+                expect(namespaceIndex).is.equal(4);
+                done();
+            });
+        });
+        it('method: getNodeId', (done) => {
+            nodeId.getNodeId((response, nodeId) => {
+                expect(response.constructor.name).is.equal(successResponseAsString);
+                expect(nodeId).is.equal('ns=4;i=4096');
+                done();
+            });
+        });
     });
-    it('initialize()', () => {
-        expect(nodeId.initialize(0, 1)).is.true
-        expect(nodeId.initialize(1, 2)).is.false
+    describe('without initialization', () => {
+        it('method: getIdentifier', (done) => {
+            nodeId.getIdentifier((response, identifier) => {
+                expect(response.constructor.name).is.equal(errorResponseAsString);
+                expect(identifier).is.equal('-1');
+                done();
+            });
+        });
+        it('method: getNamespaceIndex', (done) => {
+            nodeId.getNamespaceIndex((response, namespaceIndex) => {
+                expect(response.constructor.name).is.equal(errorResponseAsString);
+                expect(namespaceIndex).is.equal(-1);
+                done();
+            });
+        });
+        it('method: getNodeId', (done) => {
+            nodeId.getNodeId((response, nodeId) => {
+                expect(response.constructor.name).is.equal(errorResponseAsString);
+                expect(nodeId).is.equal('ns=-1;i=-1');
+                done();
+            });
+        });
     });
 })
 
@@ -85,147 +88,188 @@ describe('class: QpaqueNodeId', () => {
     let nodeId: NodeId;
     beforeEach(() => {
         nodeId = new QpaqueNodeIdFactory().create();
-    })
-    it('method: getNamespaceIndex()', () => {
-        let response = nodeId.getNamespaceIndex()
-        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
-        nodeId.initialize(1, 'M/RbKBsRVkePCePcx24oRA==')
-        response = nodeId.getNamespaceIndex()
-        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
-        const content: {namespaceIndex?: number} = response.getContent()
-        expect(content.namespaceIndex).is.equal(1)
     });
-    it('method: getIdentifier()', () => {
-        let response = nodeId.getIdentifier()
-        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
-        nodeId.initialize(1, 'M/RbKBsRVkePCePcx24oRA==')
-        response = nodeId.getIdentifier()
-        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
-        const content: {identifier?: string} = response.getContent()
-        expect(content.identifier).is.equal('M/RbKBsRVkePCePcx24oRA==')
+    describe('method: initialize', () => {
+        it('normal usage', () => {
+            expect(nodeId.initialize({namespaceIndex: 3, identifier: 'M/RbKBsRVkePCePcx24oRA=='})).is.true;
+            expect(nodeId.initialize({namespaceIndex: 4, identifier: 'M/RbKBsRVkePCePcx44oRA=='})).is.false;
+        });
     });
-    it('method: getNodeId()', () => {
-        let response = nodeId.getNodeId()
-        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
-        nodeId.initialize(1, 'M/RbKBsRVkePCePcx24oRA==')
-        response = nodeId.getNodeId()
-        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
-        const content: {nodeId?: string} = response.getContent()
-        expect(content.nodeId).is.equal('ns=1;b=M/RbKBsRVkePCePcx24oRA==')
+    describe('with initialization', () => {
+        beforeEach(() => {
+            nodeId.initialize({namespaceIndex: 24, identifier: 'M/RbKBsRVkePCePcx84oRA=='});
+        });
+        it('method: getIdentifier', (done) => {
+            nodeId.getIdentifier((response, identifier) => {
+                expect(response.constructor.name).is.equal(successResponseAsString);
+                expect(identifier).is.equal('M/RbKBsRVkePCePcx84oRA==');
+                done();
+            });
+        });
+        it('method: getNamespaceIndex', (done) => {
+            nodeId.getNamespaceIndex((response, namespaceIndex) => {
+                expect(response.constructor.name).is.equal(successResponseAsString);
+                expect(namespaceIndex).is.equal(24);
+                done();
+            });
+        });
+        it('method: getNodeId', (done) => {
+            nodeId.getNodeId((response, nodeId) => {
+                expect(response.constructor.name).is.equal(successResponseAsString);
+                expect(nodeId).is.equal('ns=24;b=M/RbKBsRVkePCePcx84oRA==');
+                done();
+            });
+        });
     });
-    it('initialize()', () => {
-        expect(nodeId.initialize(0, 'M/RbKBsRVkePCePcx24oRA==')).is.true
-        expect(nodeId.initialize(1, 'M/RbKBsRVkePCePcx24oRA==')).is.false
+    describe('without initialization', () => {
+        it('method: getNodeId', (done) => {
+            nodeId.getNodeId((response, nodeId) => {
+                expect(response.constructor.name).is.equal(errorResponseAsString);
+                expect(nodeId).is.equal('ns=-1;b=identifier: not initialized');
+                done();
+            });
+        });
     });
-})
+});
 
 describe('class: StringNodeId', () => {
     let nodeId: NodeId;
     beforeEach(() => {
         nodeId = new StringNodeIdFactory().create();
-    })
-    it('method: getNamespaceIndex()', () => {
-        let response = nodeId.getNamespaceIndex()
-        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
-        nodeId.initialize(1, 'MyTemperature')
-        response = nodeId.getNamespaceIndex()
-        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
-        const content: {namespaceIndex?: number} = response.getContent()
-        expect(content.namespaceIndex).is.equal(1)
     });
-    it('method: getIdentifier()', () => {
-        let response = nodeId.getIdentifier()
-        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
-        nodeId.initialize(1, 'MyTemperature')
-        response = nodeId.getIdentifier()
-        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
-        const content: {identifier?: string} = response.getContent()
-        expect(content.identifier).is.equal('MyTemperature')
+    describe('method: initialize', () => {
+        it('normal usage', () => {
+            expect(nodeId.initialize({namespaceIndex: 3, identifier: 'Test-StringNodeId-1'})).is.true;
+            expect(nodeId.initialize({namespaceIndex: 4, identifier: 'Test-StringNodeId-2'})).is.false;
+        });
+        it('wrong namespace', () => {
+            expect(nodeId.initialize({namespaceIndex: -1, identifier: 'Test-StringNodeId-1'})).is.false;
+            expect(nodeId.initialize({namespaceIndex: -958, identifier: 'Test-StringNodeId-1'})).is.false;
+        });
     });
-    it('method: getNodeId()', () => {
-        let response = nodeId.getNodeId()
-        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
-        nodeId.initialize(1, 'MyTemperature')
-        response = nodeId.getNodeId()
-        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
-        const content: {nodeId?: string} = response.getContent()
-        expect(content.nodeId).is.equal('ns=1;s=MyTemperature')
+    describe('with initialization', () => {
+        beforeEach(() => {
+            nodeId.initialize({namespaceIndex: 12, identifier: 'Test-StringNodeId-@43'});
+        });
+        it('method: getIdentifier', (done) => {
+            nodeId.getIdentifier((response, identifier) => {
+                expect(response.constructor.name).is.equal(successResponseAsString);
+                expect(identifier).is.equal('Test-StringNodeId-@43');
+                done();
+            });
+        });
+        it('method: getNamespaceIndex', (done) => {
+            nodeId.getNamespaceIndex((response, namespaceIndex) => {
+                expect(response.constructor.name).is.equal(successResponseAsString);
+                expect(namespaceIndex).is.equal(12);
+                done();
+            });
+        });
+        it('method: getNodeId', (done) => {
+            nodeId.getNodeId((response, nodeId) => {
+                expect(response.constructor.name).is.equal(successResponseAsString);
+                expect(nodeId).is.equal('ns=12;s=Test-StringNodeId-@43');
+                done();
+            });
+        });
     });
-    it('initialize()', () => {
-        expect(nodeId.initialize(0, 'MyTemperature')).is.true
-        expect(nodeId.initialize(1, 'MyTemperature')).is.false
+    describe('without initialization', () => {
+        it('method: getIdentifier', (done) => {
+            nodeId.getIdentifier((response, identifier) => {
+                expect(response.constructor.name).is.equal(errorResponseAsString);
+                expect(identifier).is.equal('identifier: not initialized');
+                done();
+            });
+        });
+        it('method: getNamespaceIndex', (done) => {
+            nodeId.getNamespaceIndex((response, namespaceIndex) => {
+                expect(response.constructor.name).is.equal(errorResponseAsString);
+                expect(namespaceIndex).is.equal(-1);
+                done();
+            });
+        });
+        it('method: getNodeId', (done) => {
+            nodeId.getNodeId((response, nodeId) => {
+                expect(response.constructor.name).is.equal(errorResponseAsString);
+                expect(nodeId).is.equal('ns=-1;s=identifier: not initialized');
+                done();
+            });
+        });
     });
-})
+});
 
 describe('class: GUIDNodeId', () => {
     let nodeId: NodeId;
     beforeEach(() => {
         nodeId = new GUIDNodeIdFactory().create();
     })
-    it('method: getNamespaceIndex()', () => {
-        let response = nodeId.getNamespaceIndex()
-        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
-        nodeId.initialize(1, '09087e75-8e5e-499b-954f-f2a9603db28a')
-        response = nodeId.getNamespaceIndex()
-        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
-        const content: {namespaceIndex?: number} = response.getContent()
-        expect(content.namespaceIndex).is.equal(1)
+    describe('method: initialize', () => {
+        it('normal usage', () => {
+            expect(nodeId.initialize({namespaceIndex: 5, identifier: '09087e75-8e5e-499b-954f-f2a9603db28a'})).is.true;
+            expect(nodeId.initialize({namespaceIndex: 6, identifier: '09087e75-8e5e-499b-954f-f2a9603db28b'})).is.false;
+        });
     });
-    it('method: getIdentifier()', () => {
-        let response = nodeId.getIdentifier()
-        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
-        nodeId.initialize(1, '09087e75-8e5e-499b-954f-f2a9603db28a')
-        response = nodeId.getIdentifier()
-        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
-        const content: {identifier?: string} = response.getContent()
-        expect(content.identifier).is.equal('09087e75-8e5e-499b-954f-f2a9603db28a')
+    describe('with initialization', () => {
+        beforeEach(() => {
+            nodeId.initialize({namespaceIndex: 13, identifier: '09087e75-8e5e-499b-954f-f2a9603db28c'});
+        });
+        it('method: getIdentifier', (done) => {
+            nodeId.getIdentifier((response, identifier) => {
+                expect(response.constructor.name).is.equal(successResponseAsString);
+                expect(identifier).is.equal('09087e75-8e5e-499b-954f-f2a9603db28c');
+                done();
+            });
+        });
+        it('method: getNamespaceIndex', (done) => {
+            nodeId.getNamespaceIndex((response, namespaceIndex) => {
+                expect(response.constructor.name).is.equal(successResponseAsString);
+                expect(namespaceIndex).is.equal(13);
+                done();
+            });
+        });
+        it('method: getNodeId', (done) => {
+            nodeId.getNodeId((response, nodeId) => {
+                expect(response.constructor.name).is.equal(successResponseAsString);
+                expect(nodeId).is.equal('ns=13;g=09087e75-8e5e-499b-954f-f2a9603db28c');
+                done();
+            });
+        });
     });
-    it('method: getNodeId()', () => {
-        let response = nodeId.getNodeId()
-        expect(typeof response).is.equal(typeof responseVendor.buyErrorResponse())
-        nodeId.initialize(1, '09087e75-8e5e-499b-954f-f2a9603db28a')
-        response = nodeId.getNodeId()
-        expect(typeof response).is.equal(typeof responseVendor.buySuccessResponse())
-        const content: {nodeId?: string} = response.getContent()
-        expect(content.nodeId).is.equal('ns=1;g=09087e75-8e5e-499b-954f-f2a9603db28a')
+    describe('without initialization', () => {
+        it('method: getNodeId', (done) => {
+            nodeId.getNodeId((response, nodeId) => {
+                expect(response.constructor.name).is.equal(errorResponseAsString);
+                expect(nodeId).is.equal('ns=-1;g=identifier: not initialized');
+                done();
+            });
+        });
     });
-    it('initialize()', () => {
-        expect(nodeId.initialize(0, '09087e75-8e5e-499b-954f-f2a9603db28a')).is.true
-        expect(nodeId.initialize(1, '09087e75-8e5e-499b-954f-f2a9603db28a')).is.false
-    });
-})
-
-describe('class: BaseNodeIdFactory', () => {
-    const factory = new BaseNodeIdFactory();
-    it('method: create(): NodeId', () => {
-        expect(factory.create().constructor.name).is.equal('BaseNodeId')
-    });
-})
+});
 
 describe('class: NumericNodeIdFactory', () => {
     const factory = new NumericNodeIdFactory();
     it('method: create(): NodeId', () => {
         expect(factory.create().constructor.name).is.equal('NumericNodeId')
     });
-})
+});
 
 describe('class: QpaqueNodeIdFactory', () => {
     const factory = new QpaqueNodeIdFactory();
     it('method: create(): NodeId', () => {
         expect(factory.create().constructor.name).is.equal('QpaqueNodeId')
     });
-})
+});
 
 describe('class: StringNodeIdFactory', () => {
     const factory = new StringNodeIdFactory();
     it('method: create(): NodeId', () => {
         expect(factory.create().constructor.name).is.equal('StringNodeId')
     });
-})
+});
 
 describe('class: GUIDNodeIdFactory', () => {
     const factory = new GUIDNodeIdFactory();
     it('method: create(): NodeId', () => {
         expect(factory.create().constructor.name).is.equal('GUIDNodeId')
     });
-})
+});

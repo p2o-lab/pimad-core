@@ -69,7 +69,7 @@ abstract class AService extends AModuleAutomationObject implements Service {
     protected dataAssembly: DataAssembly;
     protected procedures: Procedure[];
     protected parameters: Parameter[];
-    protected responseVendor: PiMAdResponseVendor;
+    protected responseVendor: PiMAdResponseVendor; // TODO > in future deprecated
 
     constructor() {
         super();

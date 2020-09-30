@@ -1,42 +1,77 @@
 import {logger} from '../Utils';
 import {Backbone} from '../Backbone';
-import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import PiMAdResponse = Backbone.PiMAdResponse;
+import {AModuleAutomationObject, ModuleAutomationObject} from './ModuleAutomationObject';
 
-export interface NodeId {
-    getNamespaceIndex(): PiMAdResponse;
-    getIdentifier(): PiMAdResponse;
-    getNodeId(): PiMAdResponse;
-    initialize(namespaceIndex: number, identifier: string | number): boolean;
+export interface NodeId extends ModuleAutomationObject {
+    getIdentifier(callback: (response: PiMAdResponse, identifier: string) => void): void;
+    getNamespaceIndex(callback: (response: PiMAdResponse, namespaceIndex: number) => void): void;
+    getNodeId(callback: (response: PiMAdResponse, nodeId: string) => void): void;
+    initialize(instructions: {namespaceIndex: number; identifier: string}): boolean;
 }
 
-abstract class ANodeId implements NodeId {
+abstract class ANodeId<IdentifierType> extends AModuleAutomationObject implements NodeId {
     protected namespaceIndex: number;
-    protected identifier: string | number = '';
-    protected initialized: boolean;
-    protected responseVendor: PiMAdResponseVendor;
+    protected identifier: IdentifierType;
+
     protected constructor () {
+        super();
         this.namespaceIndex = -1;
-        this.initialized = false;
-        this.responseVendor = new PiMAdResponseVendor();
+        this.identifier = {} as IdentifierType;
     };
-    getIdentifier(): PiMAdResponse {
+
+    protected setNamespaceIndex(namespaceIndex: number): boolean {
+        if(namespaceIndex < 0) {
+            return false;
+        } else {
+            this.namespaceIndex = namespaceIndex;
+            return true;
+        }
+    }
+
+    getNamespaceIndex(callback: (response: PiMAdResponse, namespaceIndex: number) => void): void {
+        this.genericPiMAdGetter<number>(this.namespaceIndex, callback);
+    };
+
+    getIdentifier(callback: (response: PiMAdResponse, identifier: string) => void): void {
+        this.genericPiMAdGetter<string>('' + this.identifier, callback);
+    };
+
+    abstract getNodeId(callback: (response: PiMAdResponse, nodeId: string) => void): void;
+
+    initialize(instructions: {namespaceIndex: number; identifier: string}): boolean {
+        if(!this.initialized) {
+            this.identifier = instructions.identifier as unknown as IdentifierType;
+            if(!this.setNamespaceIndex(instructions.namespaceIndex)) {
+                return false;
+            }
+            this.initialized = (
+                this.identifier === instructions.identifier as unknown as IdentifierType &&
+                this.namespaceIndex === instructions.namespaceIndex
+            );
+            return this.initialized;
+        } else {
+            return false;
+        }
+    };
+
+    /*getIdentifier(): PiMAdResponse {
         return this.checkInitialized(() => {
             const response = this.responseVendor.buySuccessResponse();
             response.initialize('The identifier index of the node id.', {identifier: this.identifier});
             return response;
         });
-    };
-    getNamespaceIndex(): PiMAdResponse {
+    };*/
+    /*getNamespaceIndex(): PiMAdResponse {
         return this.checkInitialized(() => {
             const response = this.responseVendor.buySuccessResponse();
             response.initialize('The namespace index of the node id.', {namespaceIndex: this.namespaceIndex});
             return response;
         });
-    };
-    abstract getNodeId(): PiMAdResponse;
-    abstract initialize(namespaceIndex: number, identifier: string | number): boolean;
-    protected checkInitialized(callbackTrue: () => PiMAdResponse): PiMAdResponse {
+    };*/
+    //abstract getNodeId(): PiMAdResponse;
+    //abstract initialize(namespaceIndex: number, identifier: string | number): boolean;
+    /*protected checkInitialized(callbackTrue: () => PiMAdResponse): PiMAdResponse {
         let response: PiMAdResponse;
         if(this.initialized) {
             response = callbackTrue();
@@ -45,10 +80,10 @@ abstract class ANodeId implements NodeId {
             response.initialize('NodeId-Object not initialized yet!', {});
         }
         return response;
-    };
+    }; */
 }
 
-class BaseNodeId extends ANodeId {
+/*class BaseNodeId extends ANodeId {
     protected identifier: number;
     getNodeId(): PiMAdResponse {
         return this.responseVendor.buyErrorResponse();
@@ -60,44 +95,53 @@ class BaseNodeId extends ANodeId {
         super();
         this.identifier = -1;
     }
-}
+}*/
 
-class NumericNodeId extends ANodeId {
-    protected identifier: number;
-    getNodeId(): PiMAdResponse {
-        return this.checkInitialized(() => {
-            const response = this.responseVendor.buySuccessResponse();
-            response.initialize('The node id.', {nodeId: 'ns=' + this.namespaceIndex + ';i=' + this.identifier});
-            return response;
-        });
-    };
-    initialize(namespaceIndex: number, identifier: number): boolean {
-        if (!this.initialized) {
-            //TODO: much more checking: nsi >= 0, id >= 1 ...
-            this.namespaceIndex = namespaceIndex;
-            this.identifier = identifier;
-            this.initialized = (this.namespaceIndex == namespaceIndex && this.identifier == identifier);
+class NumericNodeId extends ANodeId<number> {
+
+    getNodeId(callback: (response: Backbone.PiMAdResponse, nodeId: string) => void): void {
+        this.genericPiMAdGetter('ns=' + this.namespaceIndex + ';i=' + this.identifier, callback);
+    }
+
+    initialize(instructions: {namespaceIndex: number; identifier: string}): boolean {
+        if(!this.initialized) {
+            if(isNaN(Number(instructions.identifier)) || (Number(instructions.identifier) <= 1)) {
+                return false;
+            } else {
+                this.identifier = Number(instructions.identifier);
+            }
+            if(!this.setNamespaceIndex(instructions.namespaceIndex)) {
+                return false;
+            }
+            this.initialized = (
+                String(this.identifier) === instructions.identifier &&
+                this.namespaceIndex === instructions.namespaceIndex
+            );
             return this.initialized;
         } else {
             return false;
         }
-    }
+    };
+
     constructor() {
         super();
         this.identifier = -1;
     }
 }
 
-class StringNodeId extends ANodeId {
-    protected identifier: string;
-    getNodeId(): PiMAdResponse {
+class StringNodeId extends ANodeId<string> {
+    /*getNodeId(): PiMAdResponse {
         return this.checkInitialized(() => {
             const response = this.responseVendor.buySuccessResponse();
             response.initialize('The node id.', {nodeId: 'ns=' + this.namespaceIndex + ';s=' + this.identifier});
             return response;
         });
-    };
-    initialize(namespaceIndex: number, identifier: string): boolean {
+    };*/
+    getNodeId(callback: (response: Backbone.PiMAdResponse, nodeId: string) => void): void {
+        this.genericPiMAdGetter('ns=' + this.namespaceIndex + ';s=' + this.identifier, callback);
+    }
+
+    /*initialize(namespaceIndex: number, identifier: string): boolean {
         if (!this.initialized) {
             this.namespaceIndex = namespaceIndex;
             this.identifier = identifier;
@@ -106,40 +150,32 @@ class StringNodeId extends ANodeId {
         } else {
             return false;
         }
-    };
+    };*/
     constructor() {
         super();
-        this.identifier = '';
+        this.identifier = 'identifier: not initialized';
     };
 }
 
 class QpaqueNodeId extends StringNodeId {
-    protected identifier: string;
-    getNodeId(): PiMAdResponse {
-        return this.checkInitialized(() => {
-            const response = this.responseVendor.buySuccessResponse();
-            response.initialize('The node id.', {nodeId: 'ns=' + this.namespaceIndex + ';b=' + this.identifier});
-            return response;
-        });
+
+    getNodeId(callback: (response: Backbone.PiMAdResponse, nodeId: string) => void): void {
+        this.genericPiMAdGetter('ns=' + this.namespaceIndex + ';b=' + this.identifier, callback);
     };
+
     constructor() {
         super();
-        this.identifier = '';
     };
 }
 
 class GUIDNodeId extends StringNodeId {
-    protected identifier: string;
-    getNodeId(): PiMAdResponse {
-        return this.checkInitialized(() => {
-            const response = this.responseVendor.buySuccessResponse();
-            response.initialize('The node id.', {nodeId: 'ns=' + this.namespaceIndex + ';g=' + this.identifier});
-            return response;
-        });
+
+    getNodeId(callback: (response: Backbone.PiMAdResponse, nodeId: string) => void): void {
+        this.genericPiMAdGetter('ns=' + this.namespaceIndex + ';g=' + this.identifier, callback);
     };
+
     constructor() {
         super();
-        this.identifier = '';
     };
 }
 
@@ -153,25 +189,17 @@ abstract class ANodeIdFactory implements NodeIdFactory {
     abstract create(): NodeId;
 }
 
-export class BaseNodeIdFactory extends ANodeIdFactory {
+/*export class BaseNodeIdFactory extends ANodeIdFactory {
     create(): NodeId {
         const nodeId = new BaseNodeId();
         logger.debug(this.constructor.name + ' creates a ' + nodeId.constructor.name);
         return nodeId;
     }
-}
+}*/
 
 export class NumericNodeIdFactory extends ANodeIdFactory {
     create(): NodeId {
         const nodeId = new NumericNodeId();
-        logger.debug(this.constructor.name + ' creates a ' + nodeId.constructor.name);
-        return nodeId;
-    }
-}
-
-export class QpaqueNodeIdFactory extends ANodeIdFactory {
-    create(): NodeId {
-        const nodeId = new QpaqueNodeId();
         logger.debug(this.constructor.name + ' creates a ' + nodeId.constructor.name);
         return nodeId;
     }
@@ -185,8 +213,16 @@ export class StringNodeIdFactory extends ANodeIdFactory {
     }
 }
 
-export class GUIDNodeIdFactory extends ANodeIdFactory {
-    create(): NodeId {
+export class QpaqueNodeIdFactory extends StringNodeIdFactory {
+    create(): NodeId  {
+        const nodeId = new QpaqueNodeId();
+        logger.debug(this.constructor.name + ' creates a ' + nodeId.constructor.name);
+        return nodeId;
+    }
+}
+
+export class GUIDNodeIdFactory extends StringNodeIdFactory {
+    create(): NodeId  {
         const nodeId = new GUIDNodeId();
         logger.debug(this.constructor.name + ' creates a ' + nodeId.constructor.name);
         return nodeId;

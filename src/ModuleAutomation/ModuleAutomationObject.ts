@@ -43,6 +43,14 @@ export abstract class AModuleAutomationObject implements ModuleAutomationObject 
         }
     };
 
+    protected genericPiMAdGetter<DataType>(data: DataType , callback: (response: Backbone.PiMAdResponse, responseGetter: DataType) => void): void {
+        if(this.initialized) {
+            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success', {}), data);
+        } else {
+            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'The instance is not initialized', {}), data);
+        }
+    }
+
     constructor() {
         this.dataSourceIdentifier = 'dataSourceIdentifier: undefined';
         this.name='name: undefined';
