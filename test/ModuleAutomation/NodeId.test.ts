@@ -38,7 +38,7 @@ describe('class: NumericNodeId', () => {
             nodeId.initialize({namespaceIndex: 4, identifier: '4096'});
         });
         it('method: getIdentifier', (done) => {
-            nodeId.getIdentifier((response, identifier) => {
+            nodeId.getNodeIdIdentifier((response, identifier) => {
                 expect(response.constructor.name).is.equal(successResponseAsString);
                 expect(identifier).is.equal('4096');
                 done();
@@ -61,7 +61,7 @@ describe('class: NumericNodeId', () => {
     });
     describe('without initialization', () => {
         it('method: getIdentifier', (done) => {
-            nodeId.getIdentifier((response, identifier) => {
+            nodeId.getNodeIdIdentifier((response, identifier) => {
                 expect(response.constructor.name).is.equal(errorResponseAsString);
                 expect(identifier).is.equal('-1');
                 done();
@@ -100,7 +100,7 @@ describe('class: QpaqueNodeId', () => {
             nodeId.initialize({namespaceIndex: 24, identifier: 'M/RbKBsRVkePCePcx84oRA=='});
         });
         it('method: getIdentifier', (done) => {
-            nodeId.getIdentifier((response, identifier) => {
+            nodeId.getNodeIdIdentifier((response, identifier) => {
                 expect(response.constructor.name).is.equal(successResponseAsString);
                 expect(identifier).is.equal('M/RbKBsRVkePCePcx84oRA==');
                 done();
@@ -152,7 +152,7 @@ describe('class: StringNodeId', () => {
             nodeId.initialize({namespaceIndex: 12, identifier: 'Test-StringNodeId-@43'});
         });
         it('method: getIdentifier', (done) => {
-            nodeId.getIdentifier((response, identifier) => {
+            nodeId.getNodeIdIdentifier((response, identifier) => {
                 expect(response.constructor.name).is.equal(successResponseAsString);
                 expect(identifier).is.equal('Test-StringNodeId-@43');
                 done();
@@ -175,7 +175,7 @@ describe('class: StringNodeId', () => {
     });
     describe('without initialization', () => {
         it('method: getIdentifier', (done) => {
-            nodeId.getIdentifier((response, identifier) => {
+            nodeId.getNodeIdIdentifier((response, identifier) => {
                 expect(response.constructor.name).is.equal(errorResponseAsString);
                 expect(identifier).is.equal('identifier: not initialized');
                 done();
@@ -214,7 +214,7 @@ describe('class: GUIDNodeId', () => {
             nodeId.initialize({namespaceIndex: 13, identifier: '09087e75-8e5e-499b-954f-f2a9603db28c'});
         });
         it('method: getIdentifier', (done) => {
-            nodeId.getIdentifier((response, identifier) => {
+            nodeId.getNodeIdIdentifier((response, identifier) => {
                 expect(response.constructor.name).is.equal(successResponseAsString);
                 expect(identifier).is.equal('09087e75-8e5e-499b-954f-f2a9603db28c');
                 done();
