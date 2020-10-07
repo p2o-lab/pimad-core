@@ -12,35 +12,19 @@ export abstract class AModuleAutomationObject implements ModuleAutomationObject 
     protected responseHandler: PiMAdResponseHandler;
 
     getDataSourceIdentifier(callback: (response: Backbone.PiMAdResponse, identifier: string) => void): void {
-        if(this.initialized) {
-            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success', {}), this.dataSourceIdentifier);
-        } else {
-            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'The instance is not initialized', {}), this.dataSourceIdentifier);
-        }
+        this.genericPiMAdGetter<string>(this.dataSourceIdentifier, callback);
     };
 
     getMetaModelRef(callback: (response: Backbone.PiMAdResponse, metaModelRef: string) => void): void {
-        if(this.initialized) {
-            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success', {}), this.metaModelRef);
-        } else {
-            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'The instance is not initialized', {}), this.metaModelRef);
-        }
+        this.genericPiMAdGetter<string>(this.metaModelRef, callback);
     };
 
     getName(callback: (response: Backbone.PiMAdResponse, name: string) => void): void {
-        if(this.initialized) {
-            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success', {}), this.name);
-        } else {
-            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'The instance is not initialized', {}), this.name);
-        }
+        this.genericPiMAdGetter<string>(this.name, callback);
     };
 
     getPiMAdIdentifier(callback: (response: Backbone.PiMAdResponse, identifier: string) => void): void {
-        if(this.initialized) {
-            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success', {}), this.pimadIdentifier);
-        } else {
-            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'The instance is not initialized', {}), this.pimadIdentifier);
-        }
+        this.genericPiMAdGetter<string>(this.pimadIdentifier, callback);
     };
 
     protected genericPiMAdGetter<DataType>(data: DataType , callback: (response: Backbone.PiMAdResponse, responseGetter: DataType) => void): void {
