@@ -43,15 +43,26 @@ describe('class: BasePEAPool', () => {
             mtpFreeze202001Importer.initialize(fImporter.create());
             pool.initialize(mtpFreeze202001Importer);
         });
-        it('method: addPEA()', (done) => {
-            pool.getAllPEAs((response, peas) => {
-                expect(peas.length).equals(0);
-                pool.addPEA({source: 'test/Converter/PiMAd-core.0-0-1.aml'}, (response) => {
-                    expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
-                    expect(response.getContent().constructor.name).is.equal('BasePEA');
+        describe('method: addPEA()', () => {
+            it('regular usage', (done) => {
+                pool.getAllPEAs((response, peas) => {
+                    expect(peas.length).equals(0);
+                    pool.addPEA({source: 'test/Converter/PiMAd-core.0-0-1.aml'}, (response) => {
+                        expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
+                        expect(response.getContent().constructor.name).is.equal('BasePEA');
+                        pool.getAllPEAs((response, peas) => {
+                            expect(peas.length).equals(1);
+                            done()
+                        });
+                    });
+                });
+            });
+            it('import fails', done => {
+                pool.addPEA({source: 'test/Converter/test.aml'}, (response) => {
+                    expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                     pool.getAllPEAs((response, peas) => {
-                        expect(peas.length).equals(1);
-                        done()
+                        expect(peas.length).equals(0);
+                        done();
                     });
                 });
             });

@@ -34,6 +34,20 @@ describe('class: OPCUAServerCommunication', () => {
                 done();
             });
         });
+        it('method: getMacrocosm', done => {
+            communicationInterfaceData.getMacrocosm((response, macrocosm) => {
+                expect(response.constructor.name).is.equal(successResponseAsString);
+                expect(macrocosm).is.equal('Test-Server-URL');
+                done();
+            });
+        });
+        it('method: getMicrocosm', done => {
+            communicationInterfaceData.getMicrocosm((response, microcosm) => {
+                expect(response.constructor.name).is.equal(successResponseAsString);
+                expect(microcosm).is.equal('Test-Port');
+                done();
+            });
+        });
     });
     describe('without initialization', () => {
         it('method: getInterfaceDescription()', (done) => {
@@ -41,6 +55,20 @@ describe('class: OPCUAServerCommunication', () => {
                 expect(response.constructor.name).is.equal(errorResponseAsString);
                 expect(interfaceDescription.macrocosm).is.equal('macrocosm: undefined');
                 expect(interfaceDescription.microcosm).is.equal('microcosm: undefined');
+                done();
+            });
+        });
+        it('method: getMacrocosm', done => {
+           communicationInterfaceData.getMacrocosm((response, macrocosm) => {
+               expect(response.constructor.name).is.equal(errorResponseAsString);
+               expect(macrocosm).is.equal('macrocosm: undefined');
+               done();
+           });
+        });
+        it('method: getMicrocosm', done => {
+            communicationInterfaceData.getMicrocosm((response, microcosm) => {
+                expect(response.constructor.name).is.equal(errorResponseAsString);
+                expect(microcosm).is.equal('microcosm: undefined');
                 done();
             });
         });

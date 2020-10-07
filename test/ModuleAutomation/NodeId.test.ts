@@ -24,8 +24,8 @@ describe('class: NumericNodeId', () => {
             expect(nodeId.initialize({namespaceIndex: 1, identifier: '1024'})).is.false;
         });
         it('wrong namespace', () => {
-            expect(nodeId.initialize({namespaceIndex: -1, identifier: '1'})).is.false;
-            expect(nodeId.initialize({namespaceIndex: -958, identifier: '1'})).is.false;
+            expect(nodeId.initialize({namespaceIndex: -1, identifier: '2048'})).is.false;
+            expect(nodeId.initialize({namespaceIndex: -958, identifier: '2048'})).is.false;
         });
         it('wrong identifier', () => {
             expect(nodeId.initialize({namespaceIndex: 0, identifier: '-1'})).is.false;
