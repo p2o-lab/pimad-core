@@ -117,12 +117,11 @@ export class OPCUAServerCommunication extends ACommunicationInterfaceData {
 
 export class OPCUANodeCommunication extends ACommunicationInterfaceData {
     protected nodeId: NodeId;
-    protected dataType: string;
+    protected access: string;
 
     getNodeId(callback: (response: Backbone.PiMAdResponse, nodeId: NodeId) => void): void {
         this.genericPiMAdGetter(this.nodeId, callback);
     };
-
     initialize(instructions: InitializeCommunicationInterfaceData): boolean {
         if (!this.initialized) {
             // TODO > The NodeId stuff is quick an dirty. It feels quit uncomfortable... Only supports String node id's sofar...
@@ -141,7 +140,7 @@ export class OPCUANodeCommunication extends ACommunicationInterfaceData {
     constructor() {
         super();
         this.nodeId = {} as NodeId;
-        this.dataType = '';
+        this.access = 'access: undefined';
     }
 }
 

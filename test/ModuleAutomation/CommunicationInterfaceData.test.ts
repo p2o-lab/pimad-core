@@ -24,20 +24,13 @@ describe('class: OPCUAServerCommunication', () => {
                 metaModelRef: 'Test-MetaModelRef',
                 pimadIdentifier: 'Test-PiMAdIdentifier',
                 name: 'Test-Server-Communication',
-            })
+            });
         });
-        it('method: getInterfaceData()', (done) => {
+        it('method: getInterfaceDescription()', (done) => {
             communicationInterfaceData.getInterfaceDescription((response, interfaceDescription) => {
                 expect(response.constructor.name).is.equal(successResponseAsString);
                 expect(interfaceDescription.macrocosm).is.equal('Test-Server-URL');
                 expect(interfaceDescription.microcosm).is.equal('Test-Port');
-                done();
-            });
-        });
-        it('method: getName()', (done) => {
-            communicationInterfaceData.getName((response, name) => {
-                expect(response.constructor.name).is.equal(successResponseAsString);
-                expect(name).is.equal('Test-Server-Communication');
                 done();
             });
         });
@@ -48,13 +41,6 @@ describe('class: OPCUAServerCommunication', () => {
                 expect(response.constructor.name).is.equal(errorResponseAsString);
                 expect(interfaceDescription.macrocosm).is.equal('macrocosm: undefined');
                 expect(interfaceDescription.microcosm).is.equal('microcosm: undefined');
-                done();
-            });
-        });
-        it('method: getName()', (done) => {
-            communicationInterfaceData.getName((response, name) => {
-                expect(response.constructor.name).is.equal(errorResponseAsString);
-                expect(name).is.equal('name: undefined');
                 done();
             });
         });
@@ -83,19 +69,35 @@ describe('class: OPCUANodeCommunication', () => {
         communicationInterfaceData = new CommunicationInterfaceDataVendor().buy(CommunicationInterfaceDataEnum.OPCUANode);
     });
     describe('without initialisation', () => {
-        it('method: getInterfaceDescription()', (done) => {
-            communicationInterfaceData.getInterfaceDescription((response, interfaceDescription) => {
+        it('method: getNodeId', done => {
+            (communicationInterfaceData as OPCUANodeCommunication).getNodeId((response, nodeId) => {
                 expect(response.constructor.name).is.equal(errorResponseAsString);
-                expect(interfaceDescription.macrocosm).is.equal('macrocosm: undefined');
-                expect(interfaceDescription.microcosm).is.equal('microcosm: undefined');
+                expect(JSON.stringify(nodeId)).is.equal(JSON.stringify({}));
                 done();
             });
         });
-        it('method: getName()', (done) => {
-            communicationInterfaceData.getName((response, name) => {
-                expect(response.constructor.name).is.equal(errorResponseAsString);
-                expect(name).is.equal('name: undefined');
-                done();
+    });
+    describe('with initialisation', () => {
+        beforeEach(function () {
+            communicationInterfaceData.initialize({
+                dataSourceIdentifier: 'Test-DataSourceIdentifier',
+                interfaceDescription: {
+                    macrocosm: '69',
+                    microcosm: '23'
+                },
+                metaModelRef: 'Test-MetaModelRef',
+                pimadIdentifier: 'Test-PiMAdIdentifier',
+                name: 'Test-Name',
+            });
+        });
+        it('method: getNodeId', done => {
+            (communicationInterfaceData as OPCUANodeCommunication).getNodeId((response, nodeId) => {
+                expect(response.constructor.name).is.equal(successResponseAsString);
+                nodeId.getNodeId((response1, nodeIdAsString) => {
+                    expect(response1.constructor.name).is.equal(successResponseAsString);
+                    expect(nodeIdAsString).is.equal('ns=69;s=23');
+                    done();
+                });
             });
         });
     });
