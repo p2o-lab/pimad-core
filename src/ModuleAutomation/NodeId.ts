@@ -1,7 +1,8 @@
 import {logger} from '../Utils';
 import {Backbone} from '../Backbone';
-import PiMAdResponse = Backbone.PiMAdResponse;
 import {AModuleAutomationObject, ModuleAutomationObject} from './ModuleAutomationObject';
+import {NodeIdTypeEnum} from 'PiMAd-types';
+import PiMAdResponse = Backbone.PiMAdResponse;
 
 /**
  * This interface describes an OPC-UA-NodeId for PiMAd-data-model. There is no OPC-UA connection, client or something
@@ -316,5 +317,25 @@ export class GUIDNodeIdFactory {
         const nodeId = new GUIDNodeId();
         logger.debug(this.constructor.name + ' creates a ' + nodeId.constructor.name);
         return nodeId;
+    }
+}
+
+export class NodeIdVendor {
+    private numericNodeIdFactory: NodeIdFactory = new NumericNodeIdFactory();
+    private stringNodeIdFactory: NodeIdFactory = new StringNodeIdFactory();
+    private qpaqueNodeIdFactory: NodeIdFactory = new QpaqueNodeIdFactory();
+    private gUIDNodeIdFactory: NodeIdFactory = new GUIDNodeIdFactory();
+
+    buy(type: NodeIdTypeEnum): NodeId {
+        switch (type) {
+            case NodeIdTypeEnum.GUID:
+                return this.gUIDNodeIdFactory.create();
+            case NodeIdTypeEnum.NUMERIC:
+                return this.numericNodeIdFactory.create();
+            case NodeIdTypeEnum.OPAQUE:
+                return this.qpaqueNodeIdFactory.create();
+            case NodeIdTypeEnum.STRING:
+                return this.stringNodeIdFactory.create();
+        }
     }
 }

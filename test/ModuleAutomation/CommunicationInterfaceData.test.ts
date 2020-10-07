@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {CommunicationInterfaceData, NodeId} from '../../src/ModuleAutomation';
+import {CommunicationInterfaceData} from '../../src/ModuleAutomation';
 import {
     CommunicationInterfaceDataEnum,
     CommunicationInterfaceDataVendor, OPCUANodeCommunication, OPCUAServerCommunication
@@ -8,51 +8,112 @@ import {Backbone} from '../../src/Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 
 const responseVendor = new PiMAdResponseVendor();
+const errorResponseAsString = responseVendor.buyErrorResponse().constructor.name;
+const successResponseAsString = responseVendor.buySuccessResponse().constructor.name;
 
 describe('class: OPCUAServerCommunication', () => {
-    let opcServerCommunication: CommunicationInterfaceData;
+    let communicationInterfaceData: CommunicationInterfaceData;
     beforeEach(function () {
-        opcServerCommunication = new CommunicationInterfaceDataVendor().buy(CommunicationInterfaceDataEnum.OPCUAServer);
+        communicationInterfaceData = new CommunicationInterfaceDataVendor().buy(CommunicationInterfaceDataEnum.OPCUAServer);
     });
     describe('with initialization', () => {
         beforeEach(function () {
-            opcServerCommunication.initialize({name: 'Test-Server-Communication', serverURL: 'Test-Server-URL'})
+            communicationInterfaceData.initialize({
+                dataSourceIdentifier: 'Test-DataSourceIdentifier',
+                interfaceDescription: {macrocosm: 'Test-Server-URL', microcosm: 'Test-Port'},
+                metaModelRef: 'Test-MetaModelRef',
+                pimadIdentifier: 'Test-PiMAdIdentifier',
+                name: 'Test-Server-Communication',
+            })
         });
-        it('method: getInterfaceData()', () => {
-            const content = opcServerCommunication.getInterfaceData().getContent() as {name: string; serverURL: string};
-            expect(content.name).is.equal('Test-Server-Communication');
-            expect(content.serverURL).is.equal('Test-Server-URL');
+        it('method: getInterfaceData()', (done) => {
+            communicationInterfaceData.getInterfaceDescription((response, interfaceDescription) => {
+                expect(response.constructor.name).is.equal(successResponseAsString);
+                expect(interfaceDescription.macrocosm).is.equal('Test-Server-URL');
+                expect(interfaceDescription.microcosm).is.equal('Test-Port');
+                done();
+            });
         });
-        it('method: getName()', () => {
-            const content = opcServerCommunication.getName().getContent() as {data: string};
-            expect(content.data).is.equal('Test-Server-Communication');
+        it('method: getName()', (done) => {
+            communicationInterfaceData.getName((response, name) => {
+                expect(response.constructor.name).is.equal(successResponseAsString);
+                expect(name).is.equal('Test-Server-Communication');
+                done();
+            });
         });
     });
     describe('without initialization', () => {
-        it('method: getInterfaceData()', () => {
-            expect(opcServerCommunication.getInterfaceData().constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
+        it('method: getInterfaceDescription()', (done) => {
+            communicationInterfaceData.getInterfaceDescription((response, interfaceDescription) => {
+                expect(response.constructor.name).is.equal(errorResponseAsString);
+                expect(interfaceDescription.macrocosm).is.equal('macrocosm: undefined');
+                expect(interfaceDescription.microcosm).is.equal('microcosm: undefined');
+                done();
+            });
         });
-        it('method: getName()', () => {
-            expect(opcServerCommunication.getName().constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
+        it('method: getName()', (done) => {
+            communicationInterfaceData.getName((response, name) => {
+                expect(response.constructor.name).is.equal(errorResponseAsString);
+                expect(name).is.equal('name: undefined');
+                done();
+            });
         });
     })
     it('method: initialize()', () => {
-        expect(opcServerCommunication.initialize({name: '', serverURL: ''})).is.true;
-        expect(opcServerCommunication.initialize({name: '', serverURL: ''})).is.false;
+        expect(communicationInterfaceData.initialize({
+            dataSourceIdentifier: '',
+            interfaceDescription: {macrocosm: '', microcosm: ''},
+            metaModelRef: '',
+            pimadIdentifier: '',
+            name: '',
+        })).is.true;
+        expect(communicationInterfaceData.initialize({
+            dataSourceIdentifier: '',
+            interfaceDescription: {macrocosm: '', microcosm: ''},
+            metaModelRef: '',
+            pimadIdentifier: '',
+            name: '',
+        })).is.false;
     });
 });
 
 describe('class: OPCUANodeCommunication', () => {
-    let opcNodeCommunication: CommunicationInterfaceData;
+    let communicationInterfaceData: CommunicationInterfaceData;
     beforeEach(function () {
-        opcNodeCommunication = new CommunicationInterfaceDataVendor().buy(CommunicationInterfaceDataEnum.OPCUANode);
+        communicationInterfaceData = new CommunicationInterfaceDataVendor().buy(CommunicationInterfaceDataEnum.OPCUANode);
     });
-    it('method: getDescription()', () => {
-        expect(typeof opcNodeCommunication.getInterfaceData()).is.equal(typeof {name:'',serverURL:''});
+    describe('without initialisation', () => {
+        it('method: getInterfaceDescription()', (done) => {
+            communicationInterfaceData.getInterfaceDescription((response, interfaceDescription) => {
+                expect(response.constructor.name).is.equal(errorResponseAsString);
+                expect(interfaceDescription.macrocosm).is.equal('macrocosm: undefined');
+                expect(interfaceDescription.microcosm).is.equal('microcosm: undefined');
+                done();
+            });
+        });
+        it('method: getName()', (done) => {
+            communicationInterfaceData.getName((response, name) => {
+                expect(response.constructor.name).is.equal(errorResponseAsString);
+                expect(name).is.equal('name: undefined');
+                done();
+            });
+        });
     });
     it('method: initialize()', () => {
-        expect(opcNodeCommunication.initialize({name:'', namespaceIndex:'',nodeId: {} as NodeId, dataType: ''})).is.true;
-        expect(opcNodeCommunication.initialize({name:'', namespaceIndex:'',nodeId: {} as NodeId, dataType: ''})).is.false;
+        expect(communicationInterfaceData.initialize({
+            dataSourceIdentifier: '',
+            interfaceDescription: {macrocosm: '', microcosm: ''},
+            metaModelRef: '',
+            pimadIdentifier: '',
+            name: '',
+        })).is.true;
+        expect(communicationInterfaceData.initialize({
+            dataSourceIdentifier: '',
+            interfaceDescription: {macrocosm: '', microcosm: ''},
+            metaModelRef: '',
+            pimadIdentifier: '',
+            name: '',
+        })).is.false;
     });
 });
 

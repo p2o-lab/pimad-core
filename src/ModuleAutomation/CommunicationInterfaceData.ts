@@ -1,89 +1,137 @@
-import {NodeId} from './NodeId';
+import {NodeId, NodeIdVendor} from './NodeId';
 import {logger} from '../Utils';
 import {Backbone} from '../Backbone';
-import PiMAdResponse = Backbone.PiMAdResponse;
-import PiMAdResponseHandler = Backbone.PiMAdResponseHandler;
-import PiMAdResponseTypes = Backbone.PiMAdResponseTypes;
+import {AModuleAutomationObject, ModuleAutomationObject} from './ModuleAutomationObject';
+import {NodeIdTypeEnum} from 'PiMAd-types';
 
-/** TODO: Refactoring - This stuff doesn't work as expected! */
-export interface CommunicationInterfaceData {
-    getInterfaceData(): PiMAdResponse;
-    getName(): PiMAdResponse;
-    initialize(interfaceDescription: object): boolean;
+/**
+ * This interface generalises the interaction with interface descriptions of communication systems. It's only data.
+ * There are no client functionality, etc.
+ */
+export interface CommunicationInterfaceData extends ModuleAutomationObject {
+    /**
+     * Get all generalised interface data.
+     * @param callback - A callback function. The response object shows the status (success while object was initialized
+     * or error while not) of the request, while the InterfaceDescription object the requested data.
+     */
+    getInterfaceDescription(callback: (response: Backbone.PiMAdResponse, interfaceDescription: InterfaceDescription) => void): void;
+
+    /**
+     * Get the macrocosm of the communication interface. F.ex. IP
+     * @param callback - A callback function. The response object shows the status (success while object was initialized
+     * or error while not) of the request, while the macrocosm object the requested data.
+     */
+    getMacrocosm(callback: (response: Backbone.PiMAdResponse, macrocosm: string) => void): void;
+
+    /**
+     * Get the microcosm of the communication interface. F.ex. port
+     * @param callback - A callback function. The response object shows the status (success while object was initialized
+     * or error while not) of the request, while the microcosm object the requested data.
+     */
+    getMicrocosm(callback: (response: Backbone.PiMAdResponse, microcosm: string) => void): void;
+
+    /**
+     * Initialize the communication interface with data.
+     * @param instructions - Standard  Pass macro and microcosm data of the interface instance. F. ex. a server address:
+     * IP/Hostname is the macrocosm, port is the microcosm.
+     */
+    initialize(instructions: InitializeCommunicationInterfaceData): boolean;
 }
 
-abstract class ACommunicationInterfaceData implements CommunicationInterfaceData {
-    protected name: string;
-    protected initialized: boolean;
-    protected responseHandler: PiMAdResponseHandler;
+export type InitializeCommunicationInterfaceData = {
+    dataSourceIdentifier: string;
+    interfaceDescription: InterfaceDescription;
+    metaModelRef: string;
+    pimadIdentifier: string;
+    name: string;
+}
+
+/**
+ * Generalisation of interface data. This is based on the approach that the addresses of the interfaces resemble a
+ * postal address. So street and house number are similar to IP and port.
+ */
+export type InterfaceDescription = {
+    /**
+     * Macro identifier: E.g. IP or namespace.
+     */
+    macrocosm: string;
+    /**
+     * micro identifier: E.g. port
+     */
+    microcosm: string;
+}
+
+abstract class ACommunicationInterfaceData extends AModuleAutomationObject implements CommunicationInterfaceData {
+    protected macrocosm: string
+    protected microcosm: string
 
     protected constructor() {
-        this.name = 'name: not initialized';
-        this.initialized = false;
-        this.responseHandler = new PiMAdResponseHandler();
+        super();
+        this.macrocosm = 'macrocosm: undefined';
+        this.microcosm = 'microcosm: undefined';
     };
 
-    public getName(): PiMAdResponse {
-        if(this.initialized) {
-            return this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success!', {data: this.name});
-        } else {
-            return this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'The instance is not initialized!', {data: this.name});
-        }
-    }
+    /**
+     * @inheritDoc {@link CommunicationInterfaceData.getInterfaceDescription}
+     */
+    getInterfaceDescription(callback: (response: Backbone.PiMAdResponse, interfaceDescription: InterfaceDescription) => void): void {
+        this.genericPiMAdGetter<InterfaceDescription>({macrocosm: this.macrocosm, microcosm: this.microcosm}, callback);
+    };
 
-    abstract getInterfaceData(): PiMAdResponse;
-    abstract initialize(interfaceDescription: object): boolean;
+    /**
+     * @inheritDoc {@link CommunicationInterfaceData.getMacrocosm}
+     */
+    getMacrocosm(callback: (response: Backbone.PiMAdResponse, macrocosm: string) => void): void {
+        this.genericPiMAdGetter<string>(this.macrocosm, callback);
+    };
+
+    /**
+     * @inheritDoc {@link CommunicationInterfaceData.getMicrocosm}
+     */
+    getMicrocosm(callback: (response: Backbone.PiMAdResponse, microcosm: string) => void): void {
+        this.genericPiMAdGetter<string>(this.microcosm, callback);
+    };
+
+    initialize(instruction: InitializeCommunicationInterfaceData): boolean {
+        if(!this.initialized) {
+            this.macrocosm = instruction.interfaceDescription.macrocosm;
+            this.microcosm = instruction.interfaceDescription.microcosm;
+            this.initialized = (
+                this.macrocosm === instruction.interfaceDescription.macrocosm &&
+                    this.microcosm === instruction.interfaceDescription.microcosm &&
+                        this.moduleAutomationObjectInitialize(instruction.dataSourceIdentifier, instruction.metaModelRef, instruction.name, instruction.pimadIdentifier)
+            );
+            return this.initialized;
+        } else {
+            return false;
+        }
+    };
 }
 
 export class OPCUAServerCommunication extends ACommunicationInterfaceData {
-    protected serverURL: string;
 
     constructor() {
         super();
-        this.serverURL = '';
     }
-
-    getInterfaceData(): PiMAdResponse {
-        if(this.initialized) {
-            return this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success!', { name: this.name, serverURL: this.serverURL});
-        } else {
-            return this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'This instance is not initialized!', {});
-        }
-    }
-
-    initialize(interfaceDescription: {name: string; serverURL: string}): boolean {
-        if (!this.initialized) {
-            this.name = interfaceDescription.name;
-            this.serverURL = interfaceDescription.serverURL;
-            this.initialized = (this.name == interfaceDescription.name && this.serverURL == interfaceDescription.serverURL);
-            return this.initialized;
-        } else {
-            return false;
-        }
-    };
-
 }
 
 export class OPCUANodeCommunication extends ACommunicationInterfaceData {
-    protected namespaceIndex: number | string;
     protected nodeId: NodeId;
     protected dataType: string;
 
-    getInterfaceData(): PiMAdResponse {
-        if (this.initialized) {
-            return this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success!', {name:this.name, namespaceIndex:this.namespaceIndex, nodeId:this.nodeId, dataType: this.dataType});
-        } else {
-            return this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'This instance is not initialized!', {});
-        }
+    getNodeId(callback: (response: Backbone.PiMAdResponse, nodeId: NodeId) => void): void {
+        this.genericPiMAdGetter(this.nodeId, callback);
     };
 
-    initialize(interfaceDescription: {name: string; namespaceIndex: number|string; nodeId: NodeId; dataType: string}): boolean {
+    initialize(instructions: InitializeCommunicationInterfaceData): boolean {
         if (!this.initialized) {
-            this.name = interfaceDescription.name;
-            this.namespaceIndex = interfaceDescription.namespaceIndex;
-            this.nodeId = interfaceDescription.nodeId;
-            this.dataType = interfaceDescription.dataType;
-            this.initialized = (this.name == interfaceDescription.name && this.namespaceIndex == interfaceDescription.namespaceIndex && this.nodeId == interfaceDescription.nodeId && this.dataType == interfaceDescription.dataType);
+            // TODO > The NodeId stuff is quick an dirty. It feels quit uncomfortable... Only supports String node id's sofar...
+            const localNodeId = new NodeIdVendor().buy(NodeIdTypeEnum.STRING);
+            this.initialized = (
+                this.moduleAutomationObjectInitialize(instructions.dataSourceIdentifier, instructions.metaModelRef, instructions.name, instructions.pimadIdentifier) &&
+                    localNodeId.initialize({namespaceIndex: instructions.interfaceDescription.macrocosm as unknown as number, identifier: instructions.interfaceDescription.microcosm})
+            );
+            this.nodeId = localNodeId;
             return this.initialized;
         } else {
             return false;
@@ -92,7 +140,6 @@ export class OPCUANodeCommunication extends ACommunicationInterfaceData {
 
     constructor() {
         super();
-        this.namespaceIndex = -1;
         this.nodeId = {} as NodeId;
         this.dataType = '';
     }

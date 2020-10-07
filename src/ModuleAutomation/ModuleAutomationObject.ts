@@ -35,6 +35,19 @@ export abstract class AModuleAutomationObject implements ModuleAutomationObject 
         }
     }
 
+    protected moduleAutomationObjectInitialize(dataSourceIdentifier: string, metaModelRef: string, name: string, pimadIdentifier: string): boolean {
+        this.dataSourceIdentifier = dataSourceIdentifier;
+        this.metaModelRef = metaModelRef;
+        this.name = name;
+        this.pimadIdentifier = pimadIdentifier;
+        return (
+            this.dataSourceIdentifier === dataSourceIdentifier &&
+            this.metaModelRef === metaModelRef &&
+            this.name === name &&
+            this.pimadIdentifier === pimadIdentifier
+        );
+    }
+
     constructor() {
         this.dataSourceIdentifier = 'dataSourceIdentifier: undefined';
         this.name='name: undefined';

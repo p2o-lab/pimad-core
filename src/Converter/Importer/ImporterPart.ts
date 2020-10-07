@@ -10,7 +10,10 @@ import {
 import {AML, InstanceList, SourceList} from 'PiMAd-types';
 import {logger} from '../../Utils';
 import {Backbone} from '../../Backbone';
-import {CommunicationInterfaceDataEnum} from '../../ModuleAutomation/CommunicationInterfaceData';
+import {
+    CommunicationInterfaceDataEnum,
+    OPCUANodeCommunication
+} from '../../ModuleAutomation/CommunicationInterfaceData';
 import DataItemInstanceList = AML.DataItemInstanceList;
 import DataItemSourceList = AML.DataItemSourceList;
 import DataItemSourceListExternalInterface = AML.DataItemSourceListExternalInterface;
@@ -208,11 +211,26 @@ export class MTPPart extends AImporterPart {
                 case 'MTPCommunicationSUCLib/ServerAssembly/OPCUAServer':
                     // Extract the server communication interface.
                     const localeComIntData = this.communicationInterfaceDataVendor.buy(CommunicationInterfaceDataEnum.OPCUAServer);
-                    if(localeComIntData.initialize({name: sourceListItem.Name, serverURL: sourceListItem.Attribute.Value})) {
+
+                    if(localeComIntData.initialize({
+                        dataSourceIdentifier: sourceListItem.ID,
+                        name: sourceListItem.Name,
+                        interfaceDescription: {
+                            macrocosm: sourceListItem.Attribute.Value, // Actual MTP combines IP and Port in one string
+                            microcosm: 'TODO'
+                        },
+                        metaModelRef: sourceListItem.RefBaseSystemUnitPath,
+                        pimadIdentifier: 'TODO'})) {
                         communicationInterfaceData.push(localeComIntData);
                     } else {
                         logger.warn('Cannot extract source <' + sourceListItem.Name + '> need MTPFreeze-2020-01!');
                     }
+                    /*
+                    if(localeComIntData.initialize({name: sourceListItem.Name, serverURL: sourceListItem.Attribute.Value})) {
+                        communicationInterfaceData.push(localeComIntData);
+                    } else {
+                        logger.warn('Cannot extract source <' + sourceListItem.Name + '> need MTPFreeze-2020-01!');
+                    } */
                     /* Store the source specific 'ExternalInterface' data temporary. You need these in the next parsing
                     step. */
                     sourceListItem.ExternalInterface.forEach((sourceListElementExternalInterfaceItem: DataItemSourceListExternalInterface) => {
@@ -267,10 +285,14 @@ export class MTPPart extends AImporterPart {
                                     // in the last loop circle initialize the communication interface.
                                     if (localeInterfaceAttribute == localeExternalInterface.Attribute[localeExternalInterface.Attribute.length - 1]) {
                                         if (opcuaNodeCommunication.initialize({
+                                            dataSourceIdentifier: localeExternalInterface.ID,
                                             name: instanceListElementAttribute.Name,
-                                            namespaceIndex: namespace,
-                                            nodeId: identifier,
-                                            dataType: '???'
+                                            interfaceDescription: {
+                                                macrocosm: namespace,
+                                                microcosm: identifier as string
+                                            },
+                                            metaModelRef: localeExternalInterface.RefBaseClassPath,
+                                            pimadIdentifier: 'TODO'
                                         })) {
                                             logger.info('Successfully add opcua-communication <' + instanceListElementAttribute.Name + '> to DataAssembly <' + instanceListElement.Name + '>');
                                         } else {
