@@ -38,6 +38,7 @@ export interface CommunicationInterfaceData extends ModuleAutomationObject {
     initialize(instructions: InitializeCommunicationInterfaceData): boolean;
 }
 
+//TODO Parts of this enum could be generic!!
 export type InitializeCommunicationInterfaceData = {
     dataSourceIdentifier: string;
     interfaceDescription: InterfaceDescription;
@@ -61,8 +62,20 @@ export type InterfaceDescription = {
     microcosm: string;
 }
 
+/**
+ * Implements the {@link CommunicationInterfaceData}-Interface. Generalize variables, methods, etc. Reduce code
+ * duplication.
+ */
 abstract class ACommunicationInterfaceData extends AModuleAutomationObject implements CommunicationInterfaceData {
+    /**
+     * The general part of the interface address. F.ex. an IP.
+     * @protected
+     */
     protected macrocosm: string
+    /**
+     * The more specific part of the interface address. F.ex. a port.
+     * @protected
+     */
     protected microcosm: string
 
     protected constructor() {
@@ -92,14 +105,20 @@ abstract class ACommunicationInterfaceData extends AModuleAutomationObject imple
         this.genericPiMAdGetter<string>(this.microcosm, callback);
     };
 
-    initialize(instruction: InitializeCommunicationInterfaceData): boolean {
+    /**
+     * Initialize this instance with interface description data. Caution: After a successful initialisation one cannot
+     * initialize it again. Spawn a new object instead.
+     * @param instructions - Most params a standard. In the context of opc-ua the macrocosm is the namespace and the
+     * microcosm is the identifier of the opc-ua-server.
+     */
+    initialize(instructions: InitializeCommunicationInterfaceData): boolean {
         if(!this.initialized) {
-            this.macrocosm = instruction.interfaceDescription.macrocosm;
-            this.microcosm = instruction.interfaceDescription.microcosm;
+            this.macrocosm = instructions.interfaceDescription.macrocosm;
+            this.microcosm = instructions.interfaceDescription.microcosm;
             this.initialized = (
-                this.macrocosm === instruction.interfaceDescription.macrocosm &&
-                    this.microcosm === instruction.interfaceDescription.microcosm &&
-                        this.moduleAutomationObjectInitialize(instruction.dataSourceIdentifier, instruction.metaModelRef, instruction.name, instruction.pimadIdentifier)
+                this.macrocosm === instructions.interfaceDescription.macrocosm &&
+                    this.microcosm === instructions.interfaceDescription.microcosm &&
+                        this.moduleAutomationObjectInitialize(instructions.dataSourceIdentifier, instructions.metaModelRef, instructions.name, instructions.pimadIdentifier)
             );
             return this.initialized;
         } else {
@@ -108,20 +127,36 @@ abstract class ACommunicationInterfaceData extends AModuleAutomationObject imple
     };
 }
 
+/**
+ * This class models the interface description of opc-ua-servers.
+ */
 export class OPCUAServerCommunication extends ACommunicationInterfaceData {
-
     constructor() {
         super();
     }
 }
 
+/**
+ * This class models the interface description of opc-ua-nodes.
+ */
 export class OPCUANodeCommunication extends ACommunicationInterfaceData {
     protected nodeId: NodeId;
     protected access: string;
 
+    /**
+     * Getter. Maybe use a TODO: new interface
+     * @param callback
+     */
     getNodeId(callback: (response: Backbone.PiMAdResponse, nodeId: NodeId) => void): void {
         this.genericPiMAdGetter(this.nodeId, callback);
     };
+
+    /**
+     * Initialize this instance with interface description data. Caution: After a successful initialisation one cannot
+     * initialize it again. Spawn a new object instead.
+     * @param instructions - Most params a standard. In the context of opc-ua the macrocosm is the namespace and the
+     * microcosm is the identifier of the opc-ua-node.
+     */
     initialize(instructions: InitializeCommunicationInterfaceData): boolean {
         if (!this.initialized) {
             // TODO > The NodeId stuff is quick an dirty. It feels quit uncomfortable... Only supports String node id's sofar...
@@ -144,21 +179,44 @@ export class OPCUANodeCommunication extends ACommunicationInterfaceData {
     }
 }
 
-/*  Factory */
+/**
+ * Factory interface for instances of {@link CommunicationInterfaceData}
+ */
 export interface CommunicationInterfaceDataFactory {
+    /**
+     * Create an instance of the {@link CommunicationInterfaceData} interface.
+     */
     create(): CommunicationInterfaceData;
 }
 
+/**
+ * Enum of different communication interface data classes.
+ */
 export enum CommunicationInterfaceDataEnum {
+    /**
+     * {@link OPCUAServerCommunication}
+     */
     OPCUAServer = 0,
+    /**
+     * {@link OPCUANodeCommunication}
+     */
     OPCUANode= 1
 }
 
+/**
+ * Actually no deeper purpose ...
+ */
 abstract class ACommunicationInterfaceDataFactory implements CommunicationInterfaceDataFactory {
     abstract create(): CommunicationInterfaceData;
 }
 
+/**
+ * Factory for instances of {@link OPCUANodeCommunication}.
+ */
 class OPCUANodeCommunicationFactory extends ACommunicationInterfaceDataFactory {
+    /**
+     * Create an instance of {@link OPCUANodeCommunication}.
+     */
     create(): CommunicationInterfaceData {
         const communicationInterfaceData = new OPCUANodeCommunication();
         logger.debug(this.constructor.name + ' creates a ' + communicationInterfaceData.constructor.name);
@@ -166,14 +224,23 @@ class OPCUANodeCommunicationFactory extends ACommunicationInterfaceDataFactory {
     }
 }
 
+/**
+ * Factory for instances of {@link OPCUAServerCommunication}.
+ */
 class OPCUAServerCommunicationFactory extends ACommunicationInterfaceDataFactory {
+    /**
+     * Create an instance of {@link OPCUAServerCommunication}.
+     */
     create(): CommunicationInterfaceData {
         const communicationInterfaceData = new OPCUAServerCommunication();
         logger.debug(this.constructor.name + ' creates a ' + communicationInterfaceData.constructor.name);
-        return new OPCUAServerCommunication();
+        return communicationInterfaceData;
     }
 }
 
+/**
+ * This class allows you to purchase different instances of the {@link CommunicationInterfaceData} interface.
+ */
 export class CommunicationInterfaceDataVendor {
     private opcuaNodeCommunicationFactory: OPCUANodeCommunicationFactory;
     private opcuaServerCommunicationFactory: OPCUAServerCommunicationFactory;
@@ -183,6 +250,10 @@ export class CommunicationInterfaceDataVendor {
         this.opcuaServerCommunicationFactory = new OPCUAServerCommunicationFactory();
     }
 
+    /**
+     * Buy a specific instance of CommunicationInterfaceData interface.
+     * @param interfaceDataClass - Define via parameter which interface you want to buy.
+     */
     public buy(interfaceDataClass: CommunicationInterfaceDataEnum): CommunicationInterfaceData {
         switch (interfaceDataClass) {
             case CommunicationInterfaceDataEnum.OPCUANode:
