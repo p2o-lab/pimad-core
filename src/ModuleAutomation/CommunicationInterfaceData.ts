@@ -53,11 +53,11 @@ export type InitializeCommunicationInterfaceData = {
  */
 export type InterfaceDescription = {
     /**
-     * Macro identifier: E.g. IP or namespace.
+     * Macro identifier: F.ex. IP or namespace.
      */
     macrocosm: string;
     /**
-     * micro identifier: E.g. port
+     * micro identifier: F.ex. port
      */
     microcosm: string;
 }
@@ -200,7 +200,7 @@ export enum CommunicationInterfaceDataEnum {
     /**
      * {@link OPCUANodeCommunication}
      */
-    OPCUANode= 1
+    OPCUANode = 1
 }
 
 /**
@@ -242,8 +242,8 @@ class OPCUAServerCommunicationFactory extends ACommunicationInterfaceDataFactory
  * This class allows you to purchase different instances of the {@link CommunicationInterfaceData} interface.
  */
 export class CommunicationInterfaceDataVendor {
-    private opcuaNodeCommunicationFactory: OPCUANodeCommunicationFactory;
-    private opcuaServerCommunicationFactory: OPCUAServerCommunicationFactory;
+    private opcuaNodeCommunicationFactory: CommunicationInterfaceDataFactory;
+    private opcuaServerCommunicationFactory: CommunicationInterfaceDataFactory;
 
     constructor() {
         this.opcuaNodeCommunicationFactory = new OPCUANodeCommunicationFactory();
@@ -261,5 +261,5 @@ export class CommunicationInterfaceDataVendor {
             case CommunicationInterfaceDataEnum.OPCUAServer:
                 return this.opcuaServerCommunicationFactory.create();
         }
-    }
+    };
 }
