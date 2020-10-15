@@ -406,7 +406,16 @@ export class MTPFreeze202001Importer extends AImporter {
                         }
                     });
                     // initialize the new service object ...
-                    if(localService.initialize(serviceAttributes, localServiceDataAssembly, service.Identifier, service.MetaModelRef, service.Name, service.Parameters, uuidv4(),localServiceProcedures)) {
+                    if(localService.initialize({
+                        attributes: serviceAttributes,
+                        dataAssembly: localServiceDataAssembly,
+                        dataSourceIdentifier: service.Identifier,
+                        metaModelRef: service.MetaModelRef,
+                        name: service.Name,
+                        parameter: service.Parameters,
+                        pimadIdentifier: uuidv4(),
+                        procedure: localServiceProcedures
+                    })) {
                         // ... and push it to the array.
                         localServices.push(localService);
                     }

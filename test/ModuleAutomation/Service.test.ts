@@ -14,7 +14,7 @@ import DataAssemblyVendor = ModuleAutomation.DataAssemblyVendor;
 import DataAssemblyType = ModuleAutomation.DataAssemblyType;
 import DataAssembly = ModuleAutomation.DataAssembly;
 import {v4 as uuidv4} from 'uuid';
-import {BaseServiceFactory} from '../../src/ModuleAutomation/Service';
+import {BaseServiceFactory, InitializeServiceType} from '../../src/ModuleAutomation/Service';
 
 const responseVendor = new PiMAdResponseVendor();
 const dataAssemblyVendor = new DataAssemblyVendor();
@@ -57,7 +57,17 @@ describe('class: BaseService', () => {
             procedure0.initialize({} as DataAssembly, '','', 'Test-Procedure0', [],[]);
             const procedure1 = procedureFactory.create();
             procedure1.initialize({} as DataAssembly, '','', 'Test-Procedure1', [],[]);
-            service.initialize(attributes, dataAssembly,'Test-Identifier','Test-MetaModelRef','Test-Name', [parameter, parameter2], uuidv4() ,[procedure0, procedure1]);
+            service.initialize({
+                attributes: attributes,
+                dataAssembly: dataAssembly,
+                dataSourceIdentifier: 'Test-Identifier',
+                metaModelRef: 'Test-MetaModelRef',
+                name: 'Test-Name',
+                parameter: [parameter, parameter2],
+                pimadIdentifier: uuidv4(),
+                procedure: [procedure0, procedure1]
+            });
+
         });
         describe('method: getAttribute()', () => {
             it('test case: standard usage', done => {
@@ -108,10 +118,9 @@ describe('class: BaseService', () => {
         });
         describe('method: getParameter()', () => {
             it('test case: standard usage', done => {
-                service.getParameter('Test-Parameter1', response => {
+                service.getParameter('Test-Parameter1', (response, data) => {
                     expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
-                    const responseContent = response.getContent() as Parameter;
-                    expect(responseContent.getName()).is.equal('Test-Parameter1');
+                    expect(data.getName()).is.equal('Test-Parameter1');
                     done();
                 })
             });
@@ -124,10 +133,9 @@ describe('class: BaseService', () => {
         });
         describe('method: getProcedure()', () => {
             it('test case: standard usage', done => {
-                service.getProcedure('Test-Procedure1', response => {
+                service.getProcedure('Test-Procedure1', (response, data) => {
                     expect(response.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
-                    const responseContent = response.getContent() as Parameter;
-                    expect(responseContent.getName()).is.equal('Test-Procedure1');
+                    expect(data.getName()).is.equal('Test-Procedure1');
                     done();
                 })
             });
@@ -140,8 +148,8 @@ describe('class: BaseService', () => {
         });
     })
     it('method: initialize()', () => {
-        expect(service.initialize([], {} as DataAssembly, '', '', '', [],'',[])).is.true;
-        expect(service.initialize([], {} as DataAssembly, '', '', '', [],'',[])).is.false;
+        expect(service.initialize({} as InitializeServiceType)).is.true;
+        expect(service.initialize({} as InitializeServiceType)).is.false;
     });
 });
 describe('class: BaseServiceFactory', () => {

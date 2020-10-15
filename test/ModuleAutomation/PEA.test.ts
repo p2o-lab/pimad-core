@@ -17,6 +17,7 @@ import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import DataAssemblyVendor = ModuleAutomation.DataAssemblyVendor;
 import DataAssemblyType = ModuleAutomation.DataAssemblyType;
 import DataAssembly = ModuleAutomation.DataAssembly;
+import {v4 as uuidv4} from 'uuid';
 
 const responseVendor = new PiMAdResponseVendor();
 const dataAssemblyVendor = new DataAssemblyVendor()
@@ -50,7 +51,7 @@ describe('class: BasePEA', () => {
             const attribute0 = serviceAttributeFactory.create();
             attribute0.initialize({Name: 'Test-Attribute0', DataType: '', Value:''});
             const attribute1 = serviceAttributeFactory.create();
-            attribute0.initialize({Name: 'Test-Attribute1', DataType: '', Value:'1'});
+            attribute1.initialize({Name: 'Test-Attribute1', DataType: '', Value:'1'});
             const attribute2 = serviceAttributeFactory.create();
             attribute2.initialize({Name: 'Test-Attribute2', DataType: '', Value:'0'});
             const attributes: Attribute[] = [attribute0, attribute1, attribute2];
@@ -66,10 +67,29 @@ describe('class: BasePEA', () => {
             const procedure1 = procedureFactory.create();
             procedure1.initialize({} as DataAssembly, '','', 'Test-Procedure1', [],[]);
             const serviceVendor = new ServiceVendor();
+
             const service1 = serviceVendor.buy(Services.BaseService);
-            service1.initialize(attributes, dataAssembly1,'Test-DataSourceIdentifier1','Test-MetaModelRef1','Test-Service1', [parameter, parameter2],'Test-PiMAdIdentifier1' ,[procedure0, procedure1]);
+            service1.initialize({
+                attributes: attributes,
+                dataAssembly: dataAssembly1,
+                dataSourceIdentifier: 'Test-DataSourceIdentifier1',
+                metaModelRef: 'Test-MetaModelRef1',
+                name: 'Test-Service1',
+                parameter: [parameter, parameter2],
+                pimadIdentifier: 'Test-PiMAdIdentifier1',
+                procedure: [procedure0, procedure1]
+            });
             const service2 = serviceVendor.buy(Services.BaseService);
-            service2.initialize(attributes, dataAssembly1,'Test-DataSourceIdentifier2','Test-MetaModelRef2','Test-Service2', [parameter], 'Test-PiMAdIdentifier2',[procedure1]);
+            service2.initialize({
+                attributes: attributes,
+                dataAssembly: dataAssembly1,
+                dataSourceIdentifier: 'Test-DataSourceIdentifier2',
+                metaModelRef: 'Test-MetaModelRef2',
+                name: 'Test-Service2',
+                parameter: [parameter],
+                pimadIdentifier: 'Test-PiMAdIdentifier2',
+                procedure: [procedure1]
+            });
 
             pea.initialize({
                 DataAssemblies: [dataAssembly1,dataAssembly2],
