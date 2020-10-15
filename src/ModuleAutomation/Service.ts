@@ -1,10 +1,9 @@
 import {Parameter} from './Parameter';
 import {logger} from '../Utils';
 import {Procedure} from './Procedure';
-import { Attribute } from './Attribute';
+import {Attribute} from './Attribute';
 import {Backbone} from '../Backbone';
 import PiMAdResponse = Backbone.PiMAdResponse;
-import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import {ModuleAutomation as ModuleAutomationNamespace } from './DataAssembly';
 import DataAssembly = ModuleAutomationNamespace.DataAssembly;
 import {AModuleAutomationObject, ModuleAutomationObject} from './ModuleAutomationObject';
@@ -14,7 +13,6 @@ abstract class AService extends AModuleAutomationObject implements Service {
     protected dataAssembly: DataAssembly;
     protected procedures: Procedure[];
     protected parameters: Parameter[];
-    protected responseVendor: PiMAdResponseVendor; // TODO > in future deprecated
 
     constructor() {
         super();
@@ -25,46 +23,46 @@ abstract class AService extends AModuleAutomationObject implements Service {
         this.procedures = [];
         this.parameters = [];
         this.initialized = false;
-        this.responseVendor = new PiMAdResponseVendor();
     };
 
-    getAttribute(name: string, callback: (response: PiMAdResponse) => void): void {
-        this.attributes.forEach((attribute: Attribute) => {
-            if((attribute.getName().getContent() as {data: string}).data === name) {
-                const response = this.responseVendor.buySuccessResponse();
-                response.initialize('Success!', attribute);
-                callback(response);
-            }
-            if(attribute === this.attributes[this.attributes.length -1]) {
-                const response = this.responseVendor.buyErrorResponse();
-                response.initialize('Could not find attribute <' + name + '> in service <' + this.name + '>', {});
-                callback(response);
-            }
-        });
+    /**
+     * @inheritDoc {@link Service.getAttribute}
+     */
+    getAttribute(name: string, callback: (response: PiMAdResponse, attribute: Attribute) => void): void {
+        const localAttribute: Attribute | undefined = this.attributes.find(attribute => (attribute.getName().getContent() as {data: string}).data === name);
+        if(localAttribute === undefined) {
+            this.genericPiMAdGetter<Attribute>({} as Attribute, callback);
+        } else {
+            this.genericPiMAdGetter<Attribute>(localAttribute, callback);
+        }
     }
 
-    getAllAttributes(): PiMAdResponse {
-        const response = this.responseVendor.buySuccessResponse();
-        response.initialize('Success!', {data: this.attributes});
-        return response;
+    /**
+     * @inheritDoc {@link Service.getAllAttributes}
+     */
+    getAllAttributes(callback: (response: PiMAdResponse, attributes: Attribute[]) => void): void {
+        this.genericPiMAdGetter<Attribute[]>(this.attributes, callback);
     };
 
-    getAllProcedures(): PiMAdResponse {
-        const response = this.responseVendor.buySuccessResponse();
-        response.initialize('Success!', {data: this.procedures});
-        return response;
+    /**
+     * @inheritDoc {@link Service.getAllProcedures}
+     */
+    getAllProcedures(callback: (response: PiMAdResponse, procedures: Procedure[]) => void): void {
+        this.genericPiMAdGetter<Procedure[]>(this.procedures, callback);
     }
 
-    getAllParameters(): PiMAdResponse {
-        const response = this.responseVendor.buySuccessResponse();
-        response.initialize('Success!', {data: this.parameters});
-        return response;
+    /**
+     * @inheritDoc {@link Service.getAllParameters}
+     */
+    getAllParameters(callback: (response: PiMAdResponse, parameters: Parameter[]) => void): void {
+        this.genericPiMAdGetter<Parameter[]>(this.parameters, callback);
     }
 
-    getDataAssembly(): PiMAdResponse {
-        const response = this.responseVendor.buySuccessResponse();
-        response.initialize('Success!', {data: this.dataAssembly});
-        return response;
+    /**
+     * @inheritDoc {@link Service.getDataAssembly}
+     */
+    getDataAssembly(callback: (response: PiMAdResponse, dataAssembly: DataAssembly) => void): void {
+        this.genericPiMAdGetter<DataAssembly>(this.dataAssembly, callback);
     };
 
     /**
@@ -91,6 +89,9 @@ abstract class AService extends AModuleAutomationObject implements Service {
         }
     }
 
+    /**
+     * @inheritDoc {@link Service.initialize}
+     */
     initialize(instructions: InitializeServiceType): boolean {
         if(!this.initialized) {
             this.attributes = instructions.attributes;
@@ -152,31 +153,31 @@ export interface Service extends ModuleAutomationObject {
      * @param name - The name of the attribute.
      * @param callback - A callback function. Use an instance of the interface Response as input.
      */
-    getAttribute(name: string, callback: (response: PiMAdResponse) => void): void;
+    getAttribute(name: string, callback: (response: PiMAdResponse, attribute: Attribute) => void): void;
 
     /**
      * Getter for this.attributes of the service object.
      * @returns A response object.
      */
-    getAllAttributes(): PiMAdResponse;
+    getAllAttributes(callback: (response: PiMAdResponse, attributes: Attribute[]) => void): void;
 
     /**
      * Getter for this.procedures of the service object.
      * @returns A response object.
      */
-    getAllProcedures(): PiMAdResponse;
+    getAllProcedures(callback: (response: PiMAdResponse, procedures: Procedure[]) => void): void;
 
     /**
      * Getter for this.parameters of the service object.
      * @returns A response object.
      */
-    getAllParameters(): PiMAdResponse;
+    getAllParameters(callback: (response: PiMAdResponse, parameters: Parameter[]) => void): void;
 
     /**
      * Getter for this.dataAssembly of the service object.
-     * @returns A response object.
+     * @returns
      */
-    getDataAssembly(): PiMAdResponse;
+    getDataAssembly(callback: (response: PiMAdResponse, dataAssembly: DataAssembly) => void): void;
 
     /**
      * Get a specific parameter of the service object.
@@ -188,7 +189,9 @@ export interface Service extends ModuleAutomationObject {
     /**
      * Get a specific procedure of the service object.
      * @param name - The name of the procedure.
-     * @param callback - A callback function. Use an instance of the interface Response as input.
+     * @param callback - A callback function. The response object shows the status (success if object was initialized
+     * || error if not initialized or no match) of the function call via the object-type. The procedure-object is the
+     * requested data.
      */
     getProcedure(name: string, callback: (response: PiMAdResponse, procedure: Procedure) => void): void;
 
