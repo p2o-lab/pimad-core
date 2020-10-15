@@ -4,10 +4,11 @@ import {
     BaseParameterFactory,
     BasePEAFactory,
     BaseProcedureFactory,
-    BaseServiceFactory,
     FEA,
     ModuleAutomation,
-    Service
+    Service,
+    Services,
+    ServiceVendor
 } from '../../src/ModuleAutomation';
 import {expect} from 'chai';
 import {Backbone, BasicSemanticVersion, SemanticVersion} from '../../src/Backbone';
@@ -64,10 +65,10 @@ describe('class: BasePEA', () => {
             procedure0.initialize({} as DataAssembly, '','', 'Test-Procedure0', [],[]);
             const procedure1 = procedureFactory.create();
             procedure1.initialize({} as DataAssembly, '','', 'Test-Procedure1', [],[]);
-            const serviceFactory = new BaseServiceFactory();
-            const service1 = serviceFactory.create();
+            const serviceVendor = new ServiceVendor();
+            const service1 = serviceVendor.buy(Services.BaseService);
             service1.initialize(attributes, dataAssembly1,'Test-DataSourceIdentifier1','Test-MetaModelRef1','Test-Service1', [parameter, parameter2],'Test-PiMAdIdentifier1' ,[procedure0, procedure1]);
-            const service2 = serviceFactory.create();
+            const service2 = serviceVendor.buy(Services.BaseService);
             service2.initialize(attributes, dataAssembly1,'Test-DataSourceIdentifier2','Test-MetaModelRef2','Test-Service2', [parameter], 'Test-PiMAdIdentifier2',[procedure1]);
 
             pea.initialize({

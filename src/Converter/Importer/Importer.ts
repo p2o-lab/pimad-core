@@ -26,7 +26,7 @@ import {
 } from '../../ModuleAutomation';
 import {CommunicationInterfaceData} from '../../ModuleAutomation';
 import {BasePEAFactory} from '../../ModuleAutomation';
-import {BaseServiceFactory, Service} from '../../ModuleAutomation';
+import {Service} from '../../ModuleAutomation';
 import {BaseProcedureFactory, Procedure, ProcedureFactory} from '../../ModuleAutomation';
 import {Gate} from '../Gate/Gate';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
@@ -34,6 +34,7 @@ import PiMAdResponse = Backbone.PiMAdResponse;
 import DataAssemblyVendor = ModuleAutomation.DataAssemblyVendor;
 import DataAssembly = ModuleAutomation.DataAssembly;
 import { v4 as uuidv4 } from 'uuid';
+import {BaseServiceFactory} from '../../ModuleAutomation/Service';
 
 abstract class AImporter implements  Importer {
 

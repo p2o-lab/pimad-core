@@ -7,4 +7,4 @@ export * from './NodeId';
 export * from './Parameter';
 export {PEA, PEAFactory, BasePEAFactory} from './PEA';
 export * from './Procedure';
-export * from './Service';
+export {Service, ServiceVendor, Services} from './Service';

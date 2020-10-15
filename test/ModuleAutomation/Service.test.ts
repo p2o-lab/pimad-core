@@ -3,7 +3,6 @@ import {
     AttributeFactoryVendor,
     BaseParameterFactory,
     BaseProcedureFactory,
-    BaseServiceFactory,
     ModuleAutomation,
     Parameter,
     Service
@@ -15,6 +14,7 @@ import DataAssemblyVendor = ModuleAutomation.DataAssemblyVendor;
 import DataAssemblyType = ModuleAutomation.DataAssemblyType;
 import DataAssembly = ModuleAutomation.DataAssembly;
 import {v4 as uuidv4} from 'uuid';
+import {BaseServiceFactory} from '../../src/ModuleAutomation/Service';
 
 const responseVendor = new PiMAdResponseVendor();
 const dataAssemblyVendor = new DataAssemblyVendor();
