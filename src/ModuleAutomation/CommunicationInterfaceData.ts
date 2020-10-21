@@ -116,9 +116,14 @@ abstract class ACommunicationInterfaceData extends AModuleAutomationObject imple
             this.macrocosm = instructions.interfaceDescription.macrocosm;
             this.microcosm = instructions.interfaceDescription.microcosm;
             this.initialized = (
-                this.macrocosm === instructions.interfaceDescription.macrocosm &&
-                    this.microcosm === instructions.interfaceDescription.microcosm &&
-                        this.moduleAutomationObjectInitialize(instructions.dataSourceIdentifier, instructions.metaModelRef, instructions.name, instructions.pimadIdentifier)
+                this.macrocosm === instructions.interfaceDescription.macrocosm
+                && this.microcosm === instructions.interfaceDescription.microcosm
+                && this.moduleAutomationObjectInitialize({
+                        dataSourceIdentifier: instructions.dataSourceIdentifier,
+                        metaModelRef: instructions.metaModelRef,
+                        name: instructions.name,
+                        pimadIdentifier: instructions.pimadIdentifier
+                    })
             );
             return this.initialized;
         } else {
@@ -159,11 +164,16 @@ export class OPCUANodeCommunication extends ACommunicationInterfaceData {
      */
     initialize(instructions: InitializeCommunicationInterfaceData): boolean {
         if (!this.initialized) {
-            // TODO > The NodeId stuff is quick an dirty. It feels quit uncomfortable... Only supports String node id's sofar...
+            // TODO > The NodeId stuff is quick an dirty. It feels quit uncomfortable... Only supports String node id's so far...
             const localNodeId = new NodeIdVendor().buy(NodeIdTypeEnum.STRING);
             this.initialized = (
-                this.moduleAutomationObjectInitialize(instructions.dataSourceIdentifier, instructions.metaModelRef, instructions.name, instructions.pimadIdentifier) &&
-                    localNodeId.initialize({namespaceIndex: instructions.interfaceDescription.macrocosm as unknown as number, identifier: instructions.interfaceDescription.microcosm})
+                this.moduleAutomationObjectInitialize({
+                    dataSourceIdentifier: instructions.dataSourceIdentifier,
+                    metaModelRef: instructions.metaModelRef,
+                    name: instructions.name,
+                    pimadIdentifier: instructions.pimadIdentifier
+                })
+                && localNodeId.initialize({namespaceIndex: instructions.interfaceDescription.macrocosm as unknown as number, identifier: instructions.interfaceDescription.microcosm})
             );
             this.nodeId = localNodeId;
             return this.initialized;

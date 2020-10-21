@@ -21,11 +21,32 @@ describe('class: BaseDataAssembly', () => {
     describe('with initialization', () => {
         beforeEach(() => {
             const dataItemOne = dataItemFactory.create();
-            dataItemOne.initialize('DataItemOne', {} as CommunicationInterfaceData, '', '');
+            dataItemOne.initialize({
+                ciData: {} as CommunicationInterfaceData,
+                dataSourceIdentifier: 'Test-DataSourceType',
+                dataType: 'Test-DataType',
+                metaModelRef: 'Test-MetaModelRef',
+                name: 'DataItemOne',
+                pimadIdentifier: 'Test-PiMAdIdentifier'
+            });
             const dataItemTwo = dataItemFactory.create();
-            dataItemTwo.initialize('DataItemTwo', {} as CommunicationInterfaceData, '', '');
+            dataItemTwo.initialize({
+                ciData: {} as CommunicationInterfaceData,
+                dataSourceIdentifier: 'Test-DataSourceType',
+                dataType: 'Test-DataType',
+                metaModelRef: 'Test-MetaModelRef',
+                name: 'DataItemTwo',
+                pimadIdentifier: 'Test-PiMAdIdentifier'
+            });
             const dataItemThree = dataItemFactory.create();
-            dataItemThree.initialize('DataItemThree', {} as CommunicationInterfaceData, '', '');
+            dataItemThree.initialize({
+                ciData: {} as CommunicationInterfaceData,
+                dataSourceIdentifier: 'Test-DataSourceType',
+                dataType: 'Test-DataType',
+                metaModelRef: 'Test-MetaModelRef',
+                name: 'DataItemThree',
+                pimadIdentifier: 'Test-PiMAdIdentifier'
+            });
 
             dataAssembly.initialize({
                 tag: 'Test-DataAssembly',
@@ -43,10 +64,13 @@ describe('class: BaseDataAssembly', () => {
             })
         });
         describe('method: getDataItem', () => {
-            it('DataItem exists', () => {
+            it('DataItem exists', (done) => {
                 dataAssembly.getDataItem('DataItemTwo', (response, dataItem) => {
                     expect(response.constructor.name).is.equal(successResponseAsString);
-                    expect(dataItem.getName()).is.equal('DataItemTwo');
+                    dataItem.getName((response, name) => {
+                        expect(name).is.equal('DataItemTwo')
+                        done();
+                    });
                 });
             });
             it('DataItem does not exist', () => {

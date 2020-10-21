@@ -2,93 +2,73 @@ import {logger} from '../Utils';
 import {CommunicationInterfaceData} from './CommunicationInterfaceData';
 import {Backbone} from '../Backbone';
 import PiMAdResponse = Backbone.PiMAdResponse;
-import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+import {
+    AModuleAutomationObject,
+    InitializeModuleAutomationObject,
+    ModuleAutomationObject
+} from './ModuleAutomationObject';
 
-export interface DataItem {
+export interface DataItem extends ModuleAutomationObject {
+
     /**
      * Getter for this.cIData.
      */
-    getCommunicationInterfaceData(): CommunicationInterfaceData;
+    getCommunicationInterfaceData(callback: (response: PiMAdResponse, communicationInterfaceData: CommunicationInterfaceData) => void ): void;
 
     /**
      *
      */
-    getDataType(): PiMAdResponse; //string;
+    getDataType(callback: (response: PiMAdResponse, dataType: string) => void ): void;
 
     /**
-     * Getter for this.identifier.
+     *
      */
-    getIdentifier(): string;
-
-    /**
-     * Getter for this.metaModelRef.
-     * @returns The reference to the meta model.
-     */
-    getMetaModelRef(): string;
-
-    /**
-     * Getter for this.name.
-     */
-    getName(): string;
-
-    /**
-     * Initialize the object of the class DataItem.
-     * @param name - The name.
-     * @param ciData - ???
-     * @param id - A identifier.
-     * @param metaModelRef - A reference to a meta model.
-     */
-    initialize(name: string, ciData: CommunicationInterfaceData, id: string, metaModelRef: string): boolean;
+    initialize(instructions: InitializeDataItem): boolean;
 }
 
-abstract class ADataItem implements DataItem {
+export type InitializeDataItem = InitializeModuleAutomationObject & {
+    ciData: CommunicationInterfaceData;
+    dataType: string;
+}
+
+abstract class ADataItem extends AModuleAutomationObject implements DataItem {
 
     protected cIData: CommunicationInterfaceData;
-    protected name: string;
-    protected identifier: string;
-    protected metaModelRef: string;
-    protected initialized: boolean;
-    protected responseVendor: PiMAdResponseVendor;
+    protected dataType: string; // ToDo > Should be an enum!
 
     constructor() {
-        this.cIData= {} as CommunicationInterfaceData;
-        this.name = '';
-        this.identifier = '';
-        this.metaModelRef = '';
+        super();
+        this.cIData = {} as CommunicationInterfaceData;
+        this.dataType = 'DataType: not initialized!';
         this.initialized = false;
-        this.responseVendor = new PiMAdResponseVendor();
     }
 
-    getCommunicationInterfaceData(): CommunicationInterfaceData{
-        return this.cIData;
+    getCommunicationInterfaceData(callback: (response: PiMAdResponse, communicationInterfaceData: CommunicationInterfaceData) => void ): void {
+        this.genericPiMAdGetter(this.cIData, callback);
     }
-    getDataType(): PiMAdResponse {
-        //TODO: Datatype of OPCUAServerCommunication definition
-        return this.responseVendor.buyErrorResponse();
-    }
-    getIdentifier(): string {
-        return this.identifier;
-    };
 
-    getMetaModelRef(): string {
-        return this.metaModelRef;
-    };
-    getName(): string {
-        return this.name;
+    getDataType(callback: (response: PiMAdResponse, dataType: string) => void ): void {
+        this.genericPiMAdGetter(this.dataType, callback);
     }
-    initialize(name: string, ciData: CommunicationInterfaceData, identifier: string, metaModelRef: string): boolean {
+
+    initialize(instructions: InitializeDataItem): boolean {
         if (!this.initialized) {
-            //TODO: much more checking
-            this.name = name;
-            this.cIData = ciData;
-            this.identifier = identifier;
-            this.metaModelRef = metaModelRef;
-            this.initialized = (this.name === name && this.cIData === ciData && this.identifier === identifier && this.metaModelRef === metaModelRef);
+            this.cIData = instructions.ciData;
+            this.dataType = instructions.dataType;
+            this.initialized = (JSON.stringify(this.cIData) === JSON.stringify(instructions.ciData)
+                && this.dataType === instructions.dataType
+                && this.moduleAutomationObjectInitialize({
+                    dataSourceIdentifier: instructions.dataSourceIdentifier,
+                    metaModelRef: instructions.metaModelRef,
+                    name: instructions.name,
+                    pimadIdentifier: instructions.pimadIdentifier,
+                })
+            );
             return this.initialized;
         } else {
             return false;
         }
-    }
+    };
 }
 
 class BaseDataItem extends ADataItem {

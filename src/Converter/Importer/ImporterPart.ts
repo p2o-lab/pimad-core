@@ -302,7 +302,14 @@ export class MTPPart extends AImporterPart {
                                 });
                                 // Create and initialize the data item.
                                 const localDataItem = this.baseDataItemFactory.create();
-                                if (localDataItem.initialize(instanceListElementAttribute.Name, opcuaNodeCommunication, localeExternalInterface.ID, localeExternalInterface.RefBaseClassPath)) {
+                                if (localDataItem.initialize({
+                                    ciData: opcuaNodeCommunication,
+                                    dataSourceIdentifier: localeExternalInterface.ID,
+                                    dataType: instanceListElementAttribute.AttributeDataType,
+                                    metaModelRef: localeExternalInterface.RefBaseClassPath,
+                                    name: instanceListElementAttribute.Name,
+                                    pimadIdentifier: 'TODO'
+                                })) {
                                     /* no error -> pushing it to the list of data items. later it will be aggregated in
                                     the data assembly object. */
                                     localDataItems.push(localDataItem);

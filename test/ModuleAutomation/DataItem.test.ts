@@ -7,7 +7,9 @@ import {
 import {Backbone} from '../../src/Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 
-const responseVendor = new PiMAdResponseVendor()
+const responseVendor = new PiMAdResponseVendor();
+const errorResponseAsString = responseVendor.buyErrorResponse().constructor.name;
+const successResponseAsString = responseVendor.buySuccessResponse().constructor.name;
 
 // TODO > Test-cases are crap
 describe('class: BaseDataItem', () => {
@@ -17,33 +19,72 @@ describe('class: BaseDataItem', () => {
     });
     describe('with initialization', () => {
         beforeEach(() => {
-            dataItem.initialize('Test-DataItem', new CommunicationInterfaceDataVendor().buy(CommunicationInterfaceDataEnum.OPCUANode), 'Test-ID', 'Test-MetaModelReference');
+            dataItem.initialize({
+                ciData: new CommunicationInterfaceDataVendor().buy(CommunicationInterfaceDataEnum.OPCUANode),
+                dataType: 'Test-DataType',
+                dataSourceIdentifier: 'Test-DataSourceIdentifier',
+                metaModelRef: 'Test-MetaModelReference',
+                name: 'Test-DataItem',
+                pimadIdentifier: 'Test-PiMAdIdentifier'
+            });
         });
-        it('method: getCommunicationInterfaceData()', () => {
-            //TODO: OPCServerCommunication as option
-            expect(dataItem.getCommunicationInterfaceData().constructor.name).is.equal('OPCUANodeCommunication')
+        it('method: getCommunicationInterfaceData()', (done) => {
+            dataItem.getCommunicationInterfaceData((response, communicationInterfaceData) => {
+                expect(response.constructor.name).is.equal(successResponseAsString);
+                expect(communicationInterfaceData.constructor.name).is.equal('OPCUANodeCommunication');
+                done();
+            });
         });
-    })
-    it('method: getDataType()', () => {
-        expect(dataItem.getDataType().constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
+        it('method: getDataType()', (done) => {
+            dataItem.getDataType((response, dataType) =>{
+                expect(response.constructor.name).is.equal(successResponseAsString);
+                expect(dataType).is.equal('Test-DataType');
+                done();
+            });
+        });
     });
-    describe('method: getIdentifier()', () => {
-        it('test case: standard usage', () => {
-            expect(dataItem.getIdentifier()).is.equal('');
+    describe('without initialization', () => {
+        it('method: getCommunicationInterfaceData()', (done) => {
+            dataItem.getCommunicationInterfaceData((response, communicationInterfaceData) => {
+                expect(response.constructor.name).is.equal(errorResponseAsString);
+                done();
+            });
         });
-    });
-    describe('method: getMetaModelRef()', () => {
-        it('test case: standard usage', () => {
-            expect(dataItem.getMetaModelRef()).is.equal('');
+        it('method: getDataType()', (done) => {
+            dataItem.getDataType((response, dataType) =>{
+                expect(response.constructor.name).is.equal(errorResponseAsString);
+                done();
+            });
         });
     });
     describe('method: initialize()', () => {
         it('test case: init twice', () => {
-            expect(dataItem.initialize('', new OPCUANodeCommunication(), '', '')).is.true;
-            expect(dataItem.initialize('', new OPCUANodeCommunication(), '', '')).is.false;
+            expect(dataItem.initialize({
+                ciData: {} as OPCUANodeCommunication,
+                dataType: '',
+                dataSourceIdentifier: '',
+                metaModelRef: '',
+                name: '',
+                pimadIdentifier: ''
+            })).is.true;
+            expect(dataItem.initialize({
+                ciData: {} as OPCUANodeCommunication,
+                dataType: '',
+                dataSourceIdentifier: '',
+                metaModelRef: '',
+                name: '',
+                pimadIdentifier: ''
+            })).is.false;
         });
         it('test case: standard usage', () => {
-            expect(dataItem.initialize('Test-Name', new OPCUANodeCommunication(), 'Test-Identifier', 'Test-MetaModelRef')).is.true;
+            expect((dataItem.initialize({
+                ciData: {} as OPCUANodeCommunication,
+                dataType: '',
+                dataSourceIdentifier: '',
+                metaModelRef: '',
+                name: '',
+                pimadIdentifier: ''
+            }))).is.true;
 
         });
     })

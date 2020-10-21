@@ -6,7 +6,7 @@ import PiMAdResponse = Backbone.PiMAdResponse;
 import PiMAdResponseHandler = Backbone.PiMAdResponseHandler;
 import PiMAdResponseTypes = Backbone.PiMAdResponseTypes;
 
-abstract class ADataAssembly implements ModuleAutomation.DataAssembly{
+abstract class ADataAssembly implements ModuleAutomation.DataAssembly {
 
     protected dataItems: DataItem[];
     protected description: string;
@@ -46,7 +46,13 @@ abstract class ADataAssembly implements ModuleAutomation.DataAssembly{
     }
     getDataItem(name: string,callback: (response: PiMAdResponse, dataItems: DataItem) => void): void {
         if(this.initialized) {
-            const localDataItem: DataItem | undefined = this.dataItems.find(dataItem => name === dataItem.getName());
+            const localDataItem: DataItem | undefined = this.dataItems.find(dataItem => {
+                let testCondition = false;
+                dataItem.getName((response, dataItemName) => {
+                    testCondition = dataItemName === name;
+                });
+                return testCondition;
+            });
             if(localDataItem === undefined) {
                 callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'This DataAssembly has no DataItem called <' + name +'>', {}), {} as DataItem);
             } else {

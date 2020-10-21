@@ -3,6 +3,13 @@ import PiMAdResponse = Backbone.PiMAdResponse;
 import PiMAdResponseHandler = Backbone.PiMAdResponseHandler;
 import PiMAdResponseTypes = Backbone.PiMAdResponseTypes;
 
+export type InitializeModuleAutomationObject = {
+    dataSourceIdentifier: string;
+    metaModelRef: string;
+    name: string;
+    pimadIdentifier: string;
+}
+
 export abstract class AModuleAutomationObject implements ModuleAutomationObject {
     protected dataSourceIdentifier: string;
     protected initialized: boolean;
@@ -39,16 +46,16 @@ export abstract class AModuleAutomationObject implements ModuleAutomationObject 
         }
     }
 
-    protected moduleAutomationObjectInitialize(dataSourceIdentifier: string, metaModelRef: string, name: string, pimadIdentifier: string): boolean {
-        this.dataSourceIdentifier = dataSourceIdentifier;
-        this.metaModelRef = metaModelRef;
-        this.name = name;
-        this.pimadIdentifier = pimadIdentifier;
+    protected moduleAutomationObjectInitialize(instructions: InitializeModuleAutomationObject): boolean {
+        this.dataSourceIdentifier = instructions.dataSourceIdentifier;
+        this.metaModelRef = instructions.metaModelRef;
+        this.name = instructions.name;
+        this.pimadIdentifier = instructions.pimadIdentifier;
         return (
-            this.dataSourceIdentifier === dataSourceIdentifier &&
-            this.metaModelRef === metaModelRef &&
-            this.name === name &&
-            this.pimadIdentifier === pimadIdentifier
+            this.dataSourceIdentifier === instructions.dataSourceIdentifier &&
+            this.metaModelRef === instructions.metaModelRef &&
+            this.name === instructions.name &&
+            this.pimadIdentifier === instructions.pimadIdentifier
         );
     }
 
