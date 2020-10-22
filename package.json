@@ -9,10 +9,11 @@
     "prepublish:linux": "rm -rf dist && tsc",
     "prepublish:win32": "(IF EXIST dist (rd /s /q dist)) && tsc",
     "prebuild": "npm run lint",
+    "build": "rm -rf dist && tsc",
     "build-gdocs": "run-script-os",
     "build-gdocs:linux": "rm -rf docs && typedoc --out docs src",
     "build-gdocs:win32": "(IF EXIST docs (rd /s /q docs)) && typedoc --out docs src",
-    "lint": "eslint -f pretty --ext \".ts\" src",
+    "lint": "eslint -f pretty --ext \".ts\" --ignore-pattern \"**/*.test.ts\" src",
     "test": "nyc mocha -r ts-node/register 'src/**/*.ts'"
   },
   "publishConfig": {

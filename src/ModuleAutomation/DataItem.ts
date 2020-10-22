@@ -68,7 +68,7 @@ abstract class ADataItem extends AModuleAutomationObject implements DataItem {
         } else {
             return false;
         }
-    };
+    }
 }
 
 class BaseDataItem extends ADataItem {

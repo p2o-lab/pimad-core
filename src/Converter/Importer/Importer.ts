@@ -55,7 +55,7 @@ abstract class AImporter implements  Importer {
     abstract convertFrom(instructions: object, callback: (response: PiMAdResponse) => void): void;
     getMetaModelVersion(): SemanticVersion {
         return this.metaModelVersion;
-    };
+    }
     initialize(nextImporter: Importer): boolean {
         if (!this.initialized) {
             this.nextImporter = nextImporter;
@@ -64,7 +64,7 @@ abstract class AImporter implements  Importer {
         } else {
             return false;
         }
-    };
+    }
 }
 
 /**
@@ -80,7 +80,7 @@ export class LastChainLinkImporter extends AImporter {
      */
     convertFrom(instructions: object, callback: (response: PiMAdResponse) => void): void {
         callback(this.responseVendor.buyErrorResponse());
-    };
+    }
     /**
      * Initializing the LastChainLink.
      * @param nextImporter - The next Importer element in the chain, but this is already the last element! Therefore the
@@ -96,7 +96,7 @@ export class LastChainLinkImporter extends AImporter {
         } else {
             return false;
         }
-    };
+    }
 }
 
 /**
@@ -321,7 +321,7 @@ export class MTPFreeze202001Importer extends AImporter {
             const localInternalElement = instance.InternalElement as unknown as {Name: string; ID: string; RefBaseSystemUnitPath: string; InternalElement: object[]};
             // TODO: Very bad style
             switch (instance.Name) {
-                case 'ModuleTypePackage':
+                case 'ModuleTypePackage': {
                     // store characteristic pea attributes
                     peaName = localInternalElement.Name;
                     peaMetaModelRef = localInternalElement.RefBaseSystemUnitPath;
@@ -340,12 +340,14 @@ export class MTPFreeze202001Importer extends AImporter {
                         }
                     });
                     break;
-                case 'Services':
+                }
+                case 'Services': {
                     const serviceImporterPart = new ServicePart();
                     serviceImporterPart.extract(instance as ServicePartExtractInputDataType, servicePartResponse => {
                         servicePartResponseContent = servicePartResponse.getContent() as InternalServiceType[];
                     });
                     break;
+                }
                 default:
                     break;
             }

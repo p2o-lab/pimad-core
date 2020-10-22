@@ -43,7 +43,7 @@ abstract class AAttribute implements Attribute {
             response.initialize('Attribute is not initialized!', {});
         }
         return response;
-    };
+    }
 
     getDataType(): PiMAdResponse {
         return this.getter(AttributeGetterVariables.DATATYPE);
@@ -51,11 +51,11 @@ abstract class AAttribute implements Attribute {
 
     getName(): PiMAdResponse {
         return this.getter(AttributeGetterVariables.NAME);
-    };
+    }
 
     getValue(): PiMAdResponse {
         return this.getter(AttributeGetterVariables.VALUE);
-    };
+    }
 
     initialize(data: InitializeAttribute): boolean {
         if(!this.initialized) {
@@ -67,7 +67,7 @@ abstract class AAttribute implements Attribute {
         } else {
             return false;
         }
-    };
+    }
 
     constructor() {
         this.dataType = 'dataType: undefined';
@@ -81,13 +81,13 @@ abstract class AAttribute implements Attribute {
 class ServiceAttribute extends AAttribute {
     initialize(data: InitializeServiceAttribute): boolean {
         return super.initialize(data);
-    };
+    }
 }
 
 class ProcedureAttribute extends AAttribute {
     initialize(data: InitializeProcedureAttribute): boolean {
         return super.initialize(data);
-    };
+    }
 }
 
 /* Factories */
@@ -121,12 +121,12 @@ export class AttributeFactoryVendor {
         const localAttributeFactory = new ServiceAttributeFactory();
         logger.debug(this.constructor.name + ' sells a ' + localAttributeFactory.constructor.name);
         return localAttributeFactory;
-    };
+    }
     public buyProcedureAttributeFactory(): AttributeFactory {
         const localAttributeFactory = new ProcedureAttributeFactory();
         logger.debug(this.constructor.name + ' sells a ' + localAttributeFactory.constructor.name);
         return localAttributeFactory;
-    };
+    }
 }
 
 /* types */

@@ -27,15 +27,13 @@ abstract class AGate implements Gate {
         const localResponse = this.responseVendor.buyErrorResponse();
         localResponse.initialize('Not implemented yet!', {});
         callback(localResponse);
-    };
+    }
 
     abstract receive(instructions: object, callback: (response: PiMAdResponse) => void): void;
-    /*abstract open(): Response;
-    abstract close(): Response;*/
 
     getGateAddress(): string | undefined {
         return this.gateAddress;
-    };
+    }
 
     initialize(address: string): boolean {
         if (!this.initialized) {
@@ -45,7 +43,7 @@ abstract class AGate implements Gate {
         } else {
             return false;
         }
-    };
+    }
 }
 
 /**
@@ -95,7 +93,7 @@ export class AMLGate extends AFileSystemGate {
             notInitialized.initialize('The Gate is not initialized yet! Aborting ... ', {});
             callback(notInitialized);
         }
-    };
+    }
     constructor() {
         super();
         this.xmlGateFactory = new XMLGateFactory();
@@ -112,7 +110,8 @@ export class MockGate extends AGate {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('This is a send-response of a mock gate.', instructions);
         callback(response);
-    };
+    }
+
     receive(instructions: object, callback: (response: PiMAdResponse) => void): void {
         if (this.initialized) {
             const response = this.responseVendor.buySuccessResponse();
@@ -124,7 +123,8 @@ export class MockGate extends AGate {
             notInitialized.initialize('The Gate is not initialized yet! Aborting ... ', {});
             callback(notInitialized);
         }
-    };
+    }
+
     constructor() {
         super();
         this.gateAddress = 'Valinor';
@@ -136,6 +136,7 @@ export class MockGate extends AGate {
  */
 export class MTPGate extends AFileSystemGate {
     private zipGateFactory: ZIPGateFactory;
+
     receive(instructions: object, callback: (response: PiMAdResponse) => void): void {
         if(this.initialized) {
             const zipGate = this.zipGateFactory.create();
@@ -189,7 +190,7 @@ export class XMLGate extends AFileSystemGate {
             notInitialized.initialize('The Gate is not initialized yet! Aborting ... ', {});
             callback(notInitialized);
         }
-    };
+    }
 }
 
 /**
@@ -216,7 +217,7 @@ export class ZIPGate extends AFileSystemGate {
                     // Supporting different file types
                     switch (ZIPGate.getFileType(entry.entryName)) {
                         // TODO: Coding > Generic one
-                        case '.aml':
+                        case '.aml': {
                             const amlGate = this.amlGateFactory.create();
                             amlGate.initialize(folderPath + '/' + entry.entryName);
                             amlGate.receive({}, (response: PiMAdResponse) => {
@@ -234,7 +235,8 @@ export class ZIPGate extends AFileSystemGate {
                                 }
                             });
                             break;
-                        case '.xml':
+                        }
+                        case '.xml': {
                             const xmlGate = this.xmlGateFactory.create();
                             xmlGate.initialize(folderPath + '/' + entry.entryName);
                             xmlGate.receive({}, (response: PiMAdResponse) => {
@@ -252,6 +254,7 @@ export class ZIPGate extends AFileSystemGate {
                                 }
                             });
                             break;
+                        }
                         default:
                             logger.warn('There is an unsupported file type. Ignoring...');
                             break;

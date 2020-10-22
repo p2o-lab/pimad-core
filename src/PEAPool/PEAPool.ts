@@ -59,7 +59,7 @@ abstract class APEAPool implements PEAPool {
         } else {
             this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'PEAPool is not initialized!', {}, callback);
         }
-    };
+    }
 
     public deletePEA(identifier: string, callback: (response: PiMAdResponse) => void): void {
         if(this.initialized) {
@@ -67,7 +67,7 @@ abstract class APEAPool implements PEAPool {
         } else {
             this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'PEAPool is not initialized!', {}, callback);
         }
-    };
+    }
 
     public getPEA(identifier: string, callback: (response: PiMAdResponse) => void): void {
         if(this.initialized) {
@@ -80,7 +80,7 @@ abstract class APEAPool implements PEAPool {
         } else {
             this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'PEAPool is not initialized!', {}, callback);
         }
-    };
+    }
 
     public getAllPEAs(callback: (response: PiMAdResponse, peas: PEA[]) => void): void {
         if(this.initialized) {
@@ -88,7 +88,7 @@ abstract class APEAPool implements PEAPool {
         } else {
             callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'This PEAPool is not initialized', {}), []);
         }
-    };
+    }
 }
 
 class BasePEAPool extends APEAPool {
@@ -113,7 +113,7 @@ class BasePEAPoolFactory extends APEAPoolFactory {
     create(): PEAPool {
         logger.debug('BasePEAPool generated via Factory');
         return new BasePEAPool();
-    };
+    }
 }
 
 export interface PEAPoolFactory {

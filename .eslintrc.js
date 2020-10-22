@@ -4,6 +4,7 @@ module.exports =  {
         "eslint-plugin-tsdoc"
     ],
     extends:  [
+        'eslint:recommended',
         'plugin:@typescript-eslint/recommended'
     ],
     parser:  '@typescript-eslint/parser',
@@ -18,5 +19,8 @@ module.exports =  {
         "@typescript-eslint/no-namespace": "warn",
         quotes: [2, "single", "avoid-escape"],
         semi: ["error", "always"]
+    },
+    env: {
+        jest: true
     }
 };

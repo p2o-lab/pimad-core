@@ -82,28 +82,28 @@ abstract class ACommunicationInterfaceData extends AModuleAutomationObject imple
         super();
         this.macrocosm = 'macrocosm: undefined';
         this.microcosm = 'microcosm: undefined';
-    };
+    }
 
     /**
      * @inheritDoc {@link CommunicationInterfaceData.getInterfaceDescription}
      */
     getInterfaceDescription(callback: (response: Backbone.PiMAdResponse, interfaceDescription: InterfaceDescription) => void): void {
         this.genericPiMAdGetter<InterfaceDescription>({macrocosm: this.macrocosm, microcosm: this.microcosm}, callback);
-    };
+    }
 
     /**
      * @inheritDoc {@link CommunicationInterfaceData.getMacrocosm}
      */
     getMacrocosm(callback: (response: Backbone.PiMAdResponse, macrocosm: string) => void): void {
         this.genericPiMAdGetter<string>(this.macrocosm, callback);
-    };
+    }
 
     /**
      * @inheritDoc {@link CommunicationInterfaceData.getMicrocosm}
      */
     getMicrocosm(callback: (response: Backbone.PiMAdResponse, microcosm: string) => void): void {
         this.genericPiMAdGetter<string>(this.microcosm, callback);
-    };
+    }
 
     /**
      * Initialize this instance with interface description data. Caution: After a successful initialisation one cannot
@@ -129,7 +129,7 @@ abstract class ACommunicationInterfaceData extends AModuleAutomationObject imple
         } else {
             return false;
         }
-    };
+    }
 }
 
 /**
@@ -154,7 +154,7 @@ export class OPCUANodeCommunication extends ACommunicationInterfaceData {
      */
     getNodeId(callback: (response: Backbone.PiMAdResponse, nodeId: NodeId) => void): void {
         this.genericPiMAdGetter(this.nodeId, callback);
-    };
+    }
 
     /**
      * Initialize this instance with interface description data. Caution: After a successful initialisation one cannot
@@ -271,5 +271,5 @@ export class CommunicationInterfaceDataVendor {
             case CommunicationInterfaceDataEnum.OPCUAServer:
                 return this.opcuaServerCommunicationFactory.create();
         }
-    };
+    }
 }

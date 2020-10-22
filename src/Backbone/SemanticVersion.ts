@@ -20,19 +20,19 @@ abstract class ASemanticVersion implements SemanticVersion {
                 return true;
             }
         }
-    };
+    }
     equals(semver: SemanticVersion): boolean {
         return this.major == semver.getMajor() && this.minor == semver.getMinor() && this.patch == semver.getPatch();
-    };
+    }
     getMajor(): number {
         return this.major;
-    };
+    }
     getMinor(): number {
         return this.minor;
-    };
+    }
     getPatch(): number {
         return this.patch;
-    };
+    }
     initialize(major: number, minor: number, patch: number): boolean {
         if (major < 0 || minor < 0 || patch < 0 || this.initialized) {
             return false;
@@ -43,7 +43,7 @@ abstract class ASemanticVersion implements SemanticVersion {
             this.initialized = true;
             return true;
         }
-    };
+    }
 
     constructor() {
         this.major = -1;
@@ -74,6 +74,7 @@ export class SemanticVersionVendor {
     constructor() {
         this.basicSemanticVersionFactory = new BasicSemanticVersionFactory();
     }
+    // TODO > Refactoring! buy() + Enum
     buyBasicSemanticVersion(): SemanticVersion {
         return this.basicSemanticVersionFactory.create();
     }

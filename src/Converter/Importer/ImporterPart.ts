@@ -111,7 +111,7 @@ export class MTPPart extends AImporterPart {
                 callback(elementWithListType);
             }
         });
-    };
+    }
 
     /**
      * This method extracts data from the ModuleTypePackage-CommunicationSet, evaluates it and then transfers it to the
@@ -208,7 +208,7 @@ export class MTPPart extends AImporterPart {
         sourceList.InternalElement.forEach((sourceListItem: DataItemSourceList) => {
             // So far we only know MTPs with a OPCUAServer as source.
             switch (sourceListItem.RefBaseSystemUnitPath) {
-                case 'MTPCommunicationSUCLib/ServerAssembly/OPCUAServer':
+                case 'MTPCommunicationSUCLib/ServerAssembly/OPCUAServer': {
                     // Extract the server communication interface.
                     const localeComIntData = this.communicationInterfaceDataVendor.buy(CommunicationInterfaceDataEnum.OPCUAServer);
 
@@ -237,6 +237,7 @@ export class MTPPart extends AImporterPart {
                         localExternalInterfaces.push(sourceListElementExternalInterfaceItem);
                     });
                     break;
+                }
                 default:
                     logger.warn('Unknown RefBaseSystemUnitPath of source' + sourceListItem.Name + '! Skipping ...');
                     break;
@@ -453,7 +454,7 @@ export class ServicePart extends AImporterPart {
             // extract all Procedures, etc
             amlService.InternalElement.forEach((amlServiceInternalElementItem: DataItemInstanceList) => {
                 switch (amlServiceInternalElementItem.RefBaseSystemUnitPath) {
-                    case 'MTPServiceSUCLib/ServiceProcedure':
+                    case 'MTPServiceSUCLib/ServiceProcedure': {
                         /* like the services above the data of the procedures in the MTP-ServiceSet is insufficient.
                         Therefore use again a quasi procedure. The importer will later merge the quasi procedure and the
                         referenced DataAssembly. */
@@ -475,6 +476,7 @@ export class ServicePart extends AImporterPart {
                         localService.Procedures.push(localProcedure);
                         // TODO: Missing Procedure-Parameters
                         break;
+                    }
                     //case 'TODO: Missing Service-Parameters'
                     default:
                         logger.warn('Unknown >InternalElement< in service <' + amlService.Name + '> Ignoring!');

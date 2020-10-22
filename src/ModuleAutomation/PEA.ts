@@ -121,35 +121,35 @@ abstract class APEA implements PEA {
         this.responseVendor = new PiMAdResponseVendor();
         this.services = [];
         this.initialized = false;
-    };
+    }
 
     getActuator(tag: string, callback: (response: PiMAdResponse) => void): void {
         const response = this.responseVendor.buyErrorResponse();
         callback(response);
-    };
+    }
     getAllActuators(callback: (response: PiMAdResponse) => void): void {
         const response = this.responseVendor.buyErrorResponse();
         callback(response);
-    };
+    }
     getAllDataAssemblies(): PiMAdResponse {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('Success!', {data: this.dataAssemblies});
         return response;
-    };
+    }
     getAllFEAs(): PiMAdResponse {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('Success!', {data: this.feas});
         return response;
-    };
+    }
     getAllSensors(callback: (response: PiMAdResponse) => void): void {
         const response = this.responseVendor.buyErrorResponse();
         callback(response);
-    };
+    }
     getAllServices(): PiMAdResponse {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('Success!', {data: this.services});
         return response;
-    };
+    }
     getDataAssembly(tag: string, callback: (response: PiMAdResponse) => void): void {
         this.dataAssemblies.forEach((dataAssembly: DataAssembly) => {
             dataAssembly.getName((response, name) => {
@@ -161,29 +161,29 @@ abstract class APEA implements PEA {
                 }
             });
         });
-    };
+    }
     getDataModel(): PiMAdResponse {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('Success!', {data: this.dataModel});
         return response;
-    };
+    }
     getDataModelVersion(): PiMAdResponse {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('Success!', {data: this.dataModelVersion});
         return response;
-    };
+    }
     getFEA(tag: string, callback: (response: PiMAdResponse) => void): void {
         this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, '', {}, callback);
-    };
+    }
     getPiMAdIdentifier(): string {
         return this.pimadIdentifier;
-    };
+    }
     getName(): string {
         return this.name;
-    };
+    }
     getSensor(tag: string, callback: (response: PiMAdResponse) => void): void {
         this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, '', {}, callback);
-    };
+    }
     getService(identifier: string, callback: (response: PiMAdResponse) => void): void {
         const localService: Service | undefined = this.services.find(service => {
                 let testCondition = false;
@@ -201,7 +201,7 @@ abstract class APEA implements PEA {
         } else {
             this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.SUCCESS, 'Success!', localService, callback);
         }
-    };
+    }
 
     initialize(data: PEAInitializeDataType): boolean {
         if (!this.initialized) {
@@ -224,7 +224,7 @@ abstract class APEA implements PEA {
         } else {
             return false;
         }
-    };
+    }
 }
 
 class BasePEA extends APEA {

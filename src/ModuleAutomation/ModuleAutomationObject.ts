@@ -20,19 +20,19 @@ export abstract class AModuleAutomationObject implements ModuleAutomationObject 
 
     getDataSourceIdentifier(callback: (response: Backbone.PiMAdResponse, identifier: string) => void): void {
         this.genericPiMAdGetter<string>(this.dataSourceIdentifier, callback);
-    };
+    }
 
     getMetaModelRef(callback: (response: Backbone.PiMAdResponse, metaModelRef: string) => void): void {
         this.genericPiMAdGetter<string>(this.metaModelRef, callback);
-    };
+    }
 
     getName(callback: (response: Backbone.PiMAdResponse, name: string) => void): void {
         this.genericPiMAdGetter<string>(this.name, callback);
-    };
+    }
 
     getPiMAdIdentifier(callback: (response: Backbone.PiMAdResponse, identifier: string) => void): void {
         this.genericPiMAdGetter<string>(this.pimadIdentifier, callback);
-    };
+    }
 
     protected genericPiMAdGetter<DataType>(data: DataType , callback: (response: Backbone.PiMAdResponse, responseGetter: DataType) => void): void {
         if(this.initialized) {

@@ -70,7 +70,7 @@ export abstract class AProcedure extends AModuleAutomationObject implements Proc
         this.name = 'name: not initialized';
         this.parameters = [];
         this.initialized = false;
-    };
+    }
 
     /**
      * @inheritDoc {@link Parameter.getAttribute}
@@ -89,7 +89,7 @@ export abstract class AProcedure extends AModuleAutomationObject implements Proc
      */
     getAllAttributes(callback: (response: PiMAdResponse, attributes: Attribute[]) => void): void {
         this.genericPiMAdGetter<Attribute[]>(this.attributes, callback);
-    };
+    }
 
     /**
      * @inheritDoc {@link Parameter.getAllParameters}
@@ -103,7 +103,7 @@ export abstract class AProcedure extends AModuleAutomationObject implements Proc
      */
     getDataAssembly(callback: (response: PiMAdResponse, dataAssembly: DataAssembly) => void): void {
         this.genericPiMAdGetter<DataAssembly>(this.dataAssembly, callback);
-    };
+    }
 
     /**
      *  @inheritDoc {@link Parameter.getParameter}
@@ -115,7 +115,7 @@ export abstract class AProcedure extends AModuleAutomationObject implements Proc
         } else {
             this.genericPiMAdGetter<Parameter>(localParameter, callback);
         }
-    };
+    }
 
     /**
      * @inheritDoc {@link Parameter.initialize}
@@ -139,7 +139,7 @@ export abstract class AProcedure extends AModuleAutomationObject implements Proc
         } else {
             return false;
         }
-    };
+    }
 }
 
 export type InitializeProcedureType = InitializeModuleAutomationObject & {

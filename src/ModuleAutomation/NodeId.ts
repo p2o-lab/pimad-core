@@ -99,7 +99,7 @@ abstract class ANodeId<IdentifierType> extends AModuleAutomationObject implement
         super();
         this.namespaceIndex = -1;
         this.identifier = {} as IdentifierType;
-    };
+    }
 
     /**
      * A general but protected setter for the namespace index of the OPC-UA-NodeId. Main goal: reduce code duplication.
@@ -113,21 +113,21 @@ abstract class ANodeId<IdentifierType> extends AModuleAutomationObject implement
             this.namespaceIndex = namespaceIndex;
             return true;
         }
-    };
+    }
 
     /**
      * @inheritDoc {@link NodeId.getNamespaceIndex}
      */
     getNamespaceIndex(callback: (response: PiMAdResponse, namespaceIndex: number) => void): void {
         this.genericPiMAdGetter<number>(this.namespaceIndex, callback);
-    };
+    }
 
     /**
      * @inheritDoc {@link NodeId.getNodeIdIdentifier}
      */
     getNodeIdIdentifier(callback: (response: PiMAdResponse, identifier: string) => void): void {
         this.genericPiMAdGetter<string>('' + this.identifier, callback);
-    };
+    }
 
     /**
      * @inheritDoc {@link NodeId.getNodeId}
@@ -151,7 +151,7 @@ abstract class ANodeId<IdentifierType> extends AModuleAutomationObject implement
         } else {
             return false;
         }
-    };
+    }
 }
 
 /**
@@ -192,7 +192,7 @@ class NumericNodeId extends ANodeId<number> {
         } else {
             return false;
         }
-    };
+    }
 
     constructor() {
         super();
@@ -219,7 +219,7 @@ class StringNodeId extends ANodeId<string> {
     constructor() {
         super();
         this.identifier = 'identifier: not initialized';
-    };
+    }
 }
 
 /**
@@ -235,11 +235,11 @@ class QpaqueNodeId extends StringNodeId {
      */
     getNodeId(callback: (response: Backbone.PiMAdResponse, nodeId: string) => void): void {
         this.genericPiMAdGetter('ns=' + this.namespaceIndex + ';b=' + this.identifier, callback);
-    };
+    }
 
     constructor() {
         super();
-    };
+    }
 }
 
 /**
@@ -255,11 +255,11 @@ class GUIDNodeId extends StringNodeId {
      */
     getNodeId(callback: (response: Backbone.PiMAdResponse, nodeId: string) => void): void {
         this.genericPiMAdGetter('ns=' + this.namespaceIndex + ';g=' + this.identifier, callback);
-    };
+    }
 
     constructor() {
         super();
-    };
+    }
 }
 
 /**

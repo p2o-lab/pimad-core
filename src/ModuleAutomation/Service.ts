@@ -9,7 +9,7 @@ abstract class AService extends AProcedure implements Service {
     constructor() {
         super();
         this.procedures = [];
-    };
+    }
 
     /**
      * @inheritDoc {@link Service.getAllProcedures}
@@ -60,7 +60,7 @@ abstract class AService extends AProcedure implements Service {
         } else {
             return false;
         }
-    };
+    }
 }
 
 class BaseService extends AService {
