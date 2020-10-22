@@ -1,47 +1,14 @@
-import {Parameter} from './Parameter';
 import {logger} from '../Utils';
-import {Procedure} from './Procedure';
-import {Attribute} from './Attribute';
+import {AProcedure, InitializeProcedureType, Procedure} from './Procedure';
 import {Backbone} from '../Backbone';
 import PiMAdResponse = Backbone.PiMAdResponse;
-import {ModuleAutomation as ModuleAutomationNamespace } from './DataAssembly';
-import DataAssembly = ModuleAutomationNamespace.DataAssembly;
-import {AModuleAutomationObject, ModuleAutomationObject} from './ModuleAutomationObject';
 
-abstract class AService extends AModuleAutomationObject implements Service {
-    protected attributes: Attribute[];
-    protected dataAssembly: DataAssembly;
+abstract class AService extends AProcedure implements Service {
     protected procedures: Procedure[];
-    protected parameters: Parameter[];
 
     constructor() {
         super();
-        this.attributes = [];
-        this.dataAssembly = {} as DataAssembly;
-        this.metaModelRef = 'metaModelRef: not initialized';
-        this.name = 'name: not initialized';
         this.procedures = [];
-        this.parameters = [];
-        this.initialized = false;
-    };
-
-    /**
-     * @inheritDoc {@link Service.getAttribute}
-     */
-    getAttribute(name: string, callback: (response: PiMAdResponse, attribute: Attribute) => void): void {
-        const localAttribute: Attribute | undefined = this.attributes.find(attribute => (attribute.getName().getContent() as {data: string}).data === name);
-        if(localAttribute === undefined) {
-            this.genericPiMAdGetter<Attribute>({} as Attribute, callback);
-        } else {
-            this.genericPiMAdGetter<Attribute>(localAttribute, callback);
-        }
-    }
-
-    /**
-     * @inheritDoc {@link Service.getAllAttributes}
-     */
-    getAllAttributes(callback: (response: PiMAdResponse, attributes: Attribute[]) => void): void {
-        this.genericPiMAdGetter<Attribute[]>(this.attributes, callback);
     };
 
     /**
@@ -52,36 +19,16 @@ abstract class AService extends AModuleAutomationObject implements Service {
     }
 
     /**
-     * @inheritDoc {@link Service.getAllParameters}
-     */
-    getAllParameters(callback: (response: PiMAdResponse, parameters: Parameter[]) => void): void {
-        this.genericPiMAdGetter<Parameter[]>(this.parameters, callback);
-    }
-
-    /**
-     * @inheritDoc {@link Service.getDataAssembly}
-     */
-    getDataAssembly(callback: (response: PiMAdResponse, dataAssembly: DataAssembly) => void): void {
-        this.genericPiMAdGetter<DataAssembly>(this.dataAssembly, callback);
-    };
-
-    /**
-     *  @inheritDoc {@link Service.getParameter}
-     */
-    getParameter(name: string, callback: (response: PiMAdResponse, parameter: Parameter) => void): void {
-        const localParameter: Parameter | undefined = this.parameters.find(parameter => name === parameter.getName());
-        if(localParameter === undefined) {
-            this.genericPiMAdGetter<Parameter>({} as Parameter, callback);
-        } else {
-            this.genericPiMAdGetter<Parameter>(localParameter, callback);
-        }
-    };
-
-    /**
      *  @inheritDoc {@link Service.getProcedure}
      */
     getProcedure(name: string, callback: (response: PiMAdResponse, procedure: Procedure) => void): void {
-        const localProcedure: Procedure | undefined = this.procedures.find(procedure => name === procedure.getName());
+        const localProcedure: Procedure | undefined = this.procedures.find(procedure => {
+            let testCondition = false;
+            procedure.getName((response, procedureName) => {
+                testCondition = name === procedureName;
+            });
+            return testCondition;
+        });
         if(localProcedure === undefined) {
             this.genericPiMAdGetter<Procedure>({} as Procedure, callback);
         } else {
@@ -96,20 +43,18 @@ abstract class AService extends AModuleAutomationObject implements Service {
         if(!this.initialized) {
             this.attributes = instructions.attributes;
             this.dataAssembly = instructions.dataAssembly;
-            this.dataSourceIdentifier = instructions.dataSourceIdentifier;
-            this.metaModelRef = instructions.metaModelRef;
-            this.name = instructions.name;
             this.parameters = instructions.parameter;
-            this.pimadIdentifier = instructions.pimadIdentifier;
             this.procedures = instructions.procedure;
-            this.initialized = (JSON.stringify(this.attributes) === JSON.stringify(instructions.attributes) &&
-                    JSON.stringify(this.dataAssembly) === JSON.stringify(instructions.dataAssembly) &&
-                    this.dataSourceIdentifier === instructions.dataSourceIdentifier &&
-                    this.metaModelRef === instructions.metaModelRef &&
-                    this.name === instructions.name &&
-                    JSON.stringify(this.parameters) === JSON.stringify(instructions.parameter) &&
-                    this.pimadIdentifier === instructions.pimadIdentifier &&
-                    JSON.stringify(this.procedures) === JSON.stringify(instructions.procedure)
+            this.initialized = (JSON.stringify(this.attributes) === JSON.stringify(instructions.attributes)
+                && JSON.stringify(this.dataAssembly) === JSON.stringify(instructions.dataAssembly)
+                && JSON.stringify(this.parameters) === JSON.stringify(instructions.parameter)
+                && JSON.stringify(this.procedures) === JSON.stringify(instructions.procedure)
+                && this.moduleAutomationObjectInitialize({
+                    dataSourceIdentifier: instructions.dataSourceIdentifier,
+                    metaModelRef: instructions.metaModelRef,
+                    name: instructions.name,
+                    pimadIdentifier: instructions.pimadIdentifier
+                })
             );
             return this.initialized;
         } else {
@@ -138,53 +83,17 @@ export class BaseServiceFactory extends AServiceFactory {
     }
 }
 
-export type InitializeServiceType = {
-    attributes: Attribute[];
-    dataAssembly: DataAssembly;
-    dataSourceIdentifier: string;
-    metaModelRef: string;
-    name: string; parameter: Parameter[];
-    pimadIdentifier: string; procedure: Procedure[];
+export type InitializeServiceType = InitializeProcedureType & {
+    procedure: Procedure[];
 }
 
-export interface Service extends ModuleAutomationObject {
-    /**
-     * Get a specific attribute of the service object.
-     * @param name - The name of the attribute.
-     * @param callback - A callback function. Use an instance of the interface Response as input.
-     */
-    getAttribute(name: string, callback: (response: PiMAdResponse, attribute: Attribute) => void): void;
-
-    /**
-     * Getter for this.attributes of the service object.
-     * @returns A response object.
-     */
-    getAllAttributes(callback: (response: PiMAdResponse, attributes: Attribute[]) => void): void;
+export interface Service extends Procedure {
 
     /**
      * Getter for this.procedures of the service object.
      * @returns A response object.
      */
     getAllProcedures(callback: (response: PiMAdResponse, procedures: Procedure[]) => void): void;
-
-    /**
-     * Getter for this.parameters of the service object.
-     * @returns A response object.
-     */
-    getAllParameters(callback: (response: PiMAdResponse, parameters: Parameter[]) => void): void;
-
-    /**
-     * Getter for this.dataAssembly of the service object.
-     * @returns
-     */
-    getDataAssembly(callback: (response: PiMAdResponse, dataAssembly: DataAssembly) => void): void;
-
-    /**
-     * Get a specific parameter of the service object.
-     * @param name - The name of the attribute.
-     * @param callback - A callback function. Use an instance of the interface Response as input.
-     */
-    getParameter(name: string, callback: (response: PiMAdResponse, parameter: Parameter) => void): void;
 
     /**
      * Get a specific procedure of the service object.

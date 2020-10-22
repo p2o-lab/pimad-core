@@ -53,9 +53,23 @@ describe('class: BaseService', () => {
             parameter2.initialize('Test-Parameter1', [], '');
             const procedureFactory = new BaseProcedureFactory();
             const procedure0 = procedureFactory.create();
-            procedure0.initialize({} as DataAssembly, '','', 'Test-Procedure0', [],[]);
+            procedure0.initialize({
+                dataAssembly: {} as DataAssembly,
+                dataSourceIdentifier: '',
+                metaModelRef: '',
+                name: 'Test-Procedure0', parameter: [],
+                attributes: [],
+                pimadIdentifier: uuidv4()
+            });
             const procedure1 = procedureFactory.create();
-            procedure1.initialize({} as DataAssembly, '','', 'Test-Procedure1', [],[]);
+            procedure1.initialize({
+                dataAssembly: {} as DataAssembly,
+                dataSourceIdentifier: '',
+                metaModelRef: '',
+                name: 'Test-Procedure1', parameter: [],
+                attributes: [],
+                pimadIdentifier: uuidv4()
+            });
             service.initialize({
                 attributes: attributes,
                 dataAssembly: dataAssembly,
@@ -67,36 +81,7 @@ describe('class: BaseService', () => {
                 procedure: [procedure0, procedure1]
             });
         });
-        describe('method: getAttribute()', () => {
-            it('test case: standard usage', done => {
-                service.getAttribute('Test-Attribute1', (response, data) => {
-                    expect(response.constructor.name).is.equal(successResponseAsString);
-                    const responseContent = data.getName().getContent() as {data: string}
-                    expect(responseContent.data).is.equal('Test-Attribute1');
-                    done();
-                });
-            });
-            it('test case: requested attribute not in array', done => {
-                service.getAttribute('Attribute', response => {
-                    expect(response.constructor.name).is.equal(errorResponseAsString);
-                    done();
-                });
-            });
-        });
-        it('method: getAllAttributes()', done => {
-            service.getAllAttributes((response, data) => {
-                expect(response.constructor.name).is.equal(successResponseAsString);
-                expect(data.length).is.equal(3);
-                done();
-            });
-        });
-        it('method: getAllParameters()', done => {
-            service.getAllParameters((response, data) => {
-                expect(response.constructor.name).is.equal(successResponseAsString);
-                expect(data.length).is.equal(2);
-                done();
-            });
-        });
+
         it('method: getAllProcedures()', done => {
             service.getAllProcedures((response, data) => {
                 expect(response.constructor.name).is.equal(successResponseAsString);
@@ -104,49 +89,14 @@ describe('class: BaseService', () => {
                 done();
             });
         });
-        it('method: getDataAssembly()', done => {
-            service.getDataAssembly((response, data) => {
-               data.getName((response, data) =>  {
-                   expect(data).equals('Test-DataAssembly')
-                   done();
-               });
-            });
-        });
-        it('method: getMetaModelRef()', (done) => {
-            service.getMetaModelRef((response, metaModelRef) => {
-                expect(response.constructor.name).is.equal(successResponseAsString);
-                expect(metaModelRef).is.equal('Test-MetaModelRef');
-                done();
-            });
-        });
-        it('method: getName()', (done) => {
-            service.getName((response, name) => {
-                expect(response.constructor.name).is.equal(successResponseAsString);
-                expect(name).is.equal('Test-Name');
-                done();
-            });
-        });
-        describe('method: getParameter()', () => {
-            it('test case: standard usage', done => {
-                service.getParameter('Test-Parameter1', (response, data) => {
-                    expect(response.constructor.name).is.equal(successResponseAsString);
-                    expect(data.getName()).is.equal('Test-Parameter1');
-                    done();
-                });
-            });
-            it('test case: requested attribute not in array', (done) => {
-                service.getParameter('Parameter', response => {
-                    expect(response.constructor.name).is.equal(errorResponseAsString);
-                    done();
-                });
-            });
-        });
         describe('method: getProcedure()', () => {
             it('test case: standard usage', done => {
                 service.getProcedure('Test-Procedure1', (response, data) => {
                     expect(response.constructor.name).is.equal(successResponseAsString);
-                    expect(data.getName()).is.equal('Test-Procedure1');
-                    done();
+                    data.getName((response, name) => {
+                        expect(name).is.equal('Test-Procedure1');
+                        done();
+                    });
                 });
             });
             it('test case: requested attribute not in array', (done) => {

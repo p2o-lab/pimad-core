@@ -63,9 +63,25 @@ describe('class: BasePEA', () => {
             parameter2.initialize('Test-Parameter1', [], '');
             const procedureFactory = new BaseProcedureFactory();
             const procedure0 = procedureFactory.create();
-            procedure0.initialize({} as DataAssembly, '','', 'Test-Procedure0', [],[]);
+            procedure0.initialize({
+                dataAssembly: {} as DataAssembly,
+                dataSourceIdentifier: '',
+                metaModelRef: '',
+                name: 'Test-Procedure0',
+                attributes: [],
+                parameter: [],
+                pimadIdentifier: uuidv4()
+            });
             const procedure1 = procedureFactory.create();
-            procedure1.initialize({} as DataAssembly, '','', 'Test-Procedure1', [],[]);
+            procedure1.initialize({
+                dataAssembly: {} as DataAssembly,
+                dataSourceIdentifier: '',
+                metaModelRef: '',
+                name: 'Test-Procedure1',
+                attributes: [],
+                parameter: [],
+                pimadIdentifier: uuidv4()
+            });
             const serviceVendor = new ServiceVendor();
 
             const service1 = serviceVendor.buy(Services.BaseService);

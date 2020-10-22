@@ -392,7 +392,15 @@ export class MTPFreeze202001Importer extends AImporter {
                                 }
                             });
                             const localProcedure = this.procedureFactory.create();
-                            if(localProcedure.initialize(localProcedureDataAssembly, procedure.Identifier, procedure.MetaModelRef, procedure.Name, procedureAttributes, procedure.Parameters)) {
+                            if(localProcedure.initialize({
+                                attributes: procedureAttributes,
+                                dataAssembly: localProcedureDataAssembly,
+                                dataSourceIdentifier: procedure.Identifier,
+                                metaModelRef: procedure.MetaModelRef,
+                                name: procedure.Name,
+                                parameter: procedure.Parameters,
+                                pimadIdentifier: 'TODO'
+                            })) {
                                 localServiceProcedures.push(localProcedure);
                             }
                         }
