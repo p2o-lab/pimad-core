@@ -4,21 +4,20 @@ import {
     BaseParameterFactory,
     BaseProcedureFactory,
     ModuleAutomation,
-    Parameter,
     Service
-} from '../../src/ModuleAutomation';
+} from './index';
 import {expect} from 'chai';
-import {Backbone} from '../../src/Backbone';
+import {Backbone} from '../Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import DataAssemblyVendor = ModuleAutomation.DataAssemblyVendor;
 import DataAssemblyType = ModuleAutomation.DataAssemblyType;
 import DataAssembly = ModuleAutomation.DataAssembly;
 import {v4 as uuidv4} from 'uuid';
-import {BaseServiceFactory, InitializeServiceType} from '../../src/ModuleAutomation/Service';
+import {BaseServiceFactory, InitializeServiceType} from './Service';
 const responseVendor = new PiMAdResponseVendor();
 const dataAssemblyVendor = new DataAssemblyVendor();
-const errorResponseAsString = responseVendor.buyErrorResponse().constructor.name
-const successResponseAsString = responseVendor.buySuccessResponse().constructor.name
+const errorResponseAsString = responseVendor.buyErrorResponse().constructor.name;
+const successResponseAsString = responseVendor.buySuccessResponse().constructor.name;
 
 describe('class: BaseService', () => {
     let service: Service;
@@ -28,7 +27,7 @@ describe('class: BaseService', () => {
     });
     describe('check getter', () => {
         beforeEach(function () {
-            const dataAssembly = dataAssemblyVendor.buy(DataAssemblyType.BASIC)
+            const dataAssembly = dataAssemblyVendor.buy(DataAssemblyType.BASIC);
             dataAssembly.initialize({
                 tag: 'Test-DataAssembly',
                 description: '',

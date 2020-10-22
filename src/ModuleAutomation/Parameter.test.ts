@@ -1,8 +1,8 @@
-import {BaseParameterFactory} from '../../src/ModuleAutomation';
+import {BaseParameterFactory} from './index';
 import {expect} from 'chai';
-import {OPCUANodeCommunication} from '../../src/ModuleAutomation/CommunicationInterfaceData';
-import {Parameter} from '../../src/ModuleAutomation';
-import {Backbone} from '../../src/Backbone';
+import {OPCUANodeCommunication} from './CommunicationInterfaceData';
+import {Parameter} from './index';
+import {Backbone} from '../Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 
 const responseVendor = new PiMAdResponseVendor();

@@ -7,16 +7,16 @@ import {
     ModuleAutomation,
     Parameter,
     Procedure
-} from '../../src/ModuleAutomation';
-import {Backbone} from '../../src/Backbone';
+} from './index';
+import {Backbone} from '../Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import DataAssemblyVendor = ModuleAutomation.DataAssemblyVendor;
 import DataAssemblyType = ModuleAutomation.DataAssemblyType;
 import {v4 as uuidv4} from 'uuid';
 const responseVendor = new PiMAdResponseVendor();
 const dataAssemblyVendor = new DataAssemblyVendor();
-const errorResponseAsString = responseVendor.buyErrorResponse().constructor.name
-const successResponseAsString = responseVendor.buySuccessResponse().constructor.name
+const errorResponseAsString = responseVendor.buyErrorResponse().constructor.name;
+const successResponseAsString = responseVendor.buySuccessResponse().constructor.name;
 
 describe('class: BaseProcedure', () => {
     let procedure: Procedure;
@@ -46,9 +46,9 @@ describe('class: BaseProcedure', () => {
 
             const parameterFactory = new BaseParameterFactory();
             const parameter = parameterFactory.create();
-            parameter.initialize('Test-Parameter', [], '')
+            parameter.initialize('Test-Parameter', [], '');
             const parameter2 = parameterFactory.create();
-            parameter2.initialize('Test-Parameter2', [], '')
+            parameter2.initialize('Test-Parameter2', [], '');
             procedure.initialize({
                 dataAssembly: dataAssembly,
                 dataSourceIdentifier: 'Test-Identifier',
@@ -65,7 +65,7 @@ describe('class: BaseProcedure', () => {
             it('test case: standard usage', done => {
                 procedure.getAttribute('Test-Attribute1', (response, data) => {
                     expect(response.constructor.name).is.equal(successResponseAsString);
-                    const responseContent = data.getName().getContent() as {data: string}
+                    const responseContent = data.getName().getContent() as {data: string};
                     expect(responseContent.data).is.equal('Test-Attribute1');
                     done();
                 });
@@ -94,7 +94,7 @@ describe('class: BaseProcedure', () => {
         it('method: getDataAssembly()', done => {
             procedure.getDataAssembly((response, data) => {
                 data.getName((response, data) =>  {
-                    expect(data).equals('Test-DataAssembly')
+                    expect(data).equals('Test-DataAssembly');
                     done();
                 });
             });

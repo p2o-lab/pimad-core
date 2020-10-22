@@ -1,11 +1,15 @@
 import {expect} from 'chai';
-import {CommunicationInterfaceData} from '../../src/ModuleAutomation';
+import {CommunicationInterfaceData} from './index';
 import {
     CommunicationInterfaceDataEnum,
-    CommunicationInterfaceDataVendor, OPCUANodeCommunication, OPCUAServerCommunication
-} from '../../src/ModuleAutomation/CommunicationInterfaceData';
-import {Backbone} from '../../src/Backbone';
+    CommunicationInterfaceDataVendor,
+    InitializeCommunicationInterfaceData,
+    OPCUANodeCommunication,
+    OPCUAServerCommunication
+} from './CommunicationInterfaceData';
+import {Backbone} from '../Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+import {v4 as uuidv4} from 'uuid';
 
 const responseVendor = new PiMAdResponseVendor();
 const errorResponseAsString = responseVendor.buyErrorResponse().constructor.name;
@@ -72,21 +76,27 @@ describe('class: OPCUAServerCommunication', () => {
                 done();
             });
         });
-    })
+    });
     it('method: initialize()', () => {
         expect(communicationInterfaceData.initialize({
-            dataSourceIdentifier: '',
-            interfaceDescription: {macrocosm: '', microcosm: ''},
-            metaModelRef: '',
-            pimadIdentifier: '',
-            name: '',
+            dataSourceIdentifier: 'Test-DataSource0',
+            interfaceDescription: {
+                macrocosm: 'Test-Macrocosm0',
+                microcosm: 'Test-Microcosm0'
+            },
+            metaModelRef: 'Test-MetaModelRef',
+            pimadIdentifier: uuidv4(),
+            name: 'Test-Name0',
         })).is.true;
         expect(communicationInterfaceData.initialize({
-            dataSourceIdentifier: '',
-            interfaceDescription: {macrocosm: '', microcosm: ''},
-            metaModelRef: '',
-            pimadIdentifier: '',
-            name: '',
+            dataSourceIdentifier: 'Test-DataSource1',
+            interfaceDescription: {
+                macrocosm: 'Test-Macrocosm1',
+                microcosm: 'Test-Microcosm1'
+            },
+            metaModelRef: 'Test-MetaModelRef',
+            pimadIdentifier: uuidv4(),
+            name: 'Test-Name1',
         })).is.false;
     });
 });
@@ -153,9 +163,9 @@ describe('class: CommunicationInterfaceDataVendor', () => {
         vendor = new CommunicationInterfaceDataVendor();
     });
     it('method: buy > OPCUANode ', () => {
-        expect(vendor.buy(CommunicationInterfaceDataEnum.OPCUANode).constructor.name).is.equal(new OPCUANodeCommunication().constructor.name)
+        expect(vendor.buy(CommunicationInterfaceDataEnum.OPCUANode).constructor.name).is.equal(new OPCUANodeCommunication().constructor.name);
     });
     it('method: buy > OPCUAServer', () => {
-        expect(vendor.buy(CommunicationInterfaceDataEnum.OPCUAServer).constructor.name).is.equal(new OPCUAServerCommunication().constructor.name)
+        expect(vendor.buy(CommunicationInterfaceDataEnum.OPCUAServer).constructor.name).is.equal(new OPCUAServerCommunication().constructor.name);
     });
 });

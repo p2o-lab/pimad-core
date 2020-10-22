@@ -13,7 +13,7 @@
     "build-gdocs:linux": "rm -rf docs && typedoc --out docs src",
     "build-gdocs:win32": "(IF EXIST docs (rd /s /q docs)) && typedoc --out docs src",
     "lint": "eslint -f pretty --ext \".ts\" src",
-    "test": "nyc mocha -r ts-node/register 'test/**/*.ts'"
+    "test": "nyc mocha -r ts-node/register 'src/**/*.ts'"
   },
   "publishConfig": {
     "registry": "http://nexus.plt.et.tu-dresden.de:8081/repository/npm_plt"

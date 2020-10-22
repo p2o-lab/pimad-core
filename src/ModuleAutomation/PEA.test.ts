@@ -9,10 +9,10 @@ import {
     Service,
     Services,
     ServiceVendor
-} from '../../src/ModuleAutomation';
+} from './index';
 import {expect} from 'chai';
-import {Backbone, BasicSemanticVersion, SemanticVersion} from '../../src/Backbone';
-import {PEA, PEAInitializeDataType} from '../../src/ModuleAutomation/PEA';
+import {Backbone, BasicSemanticVersion, SemanticVersion} from '../Backbone';
+import {PEA, PEAInitializeDataType} from './PEA';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import DataAssemblyVendor = ModuleAutomation.DataAssemblyVendor;
 import DataAssemblyType = ModuleAutomation.DataAssemblyType;
@@ -20,7 +20,7 @@ import DataAssembly = ModuleAutomation.DataAssembly;
 import {v4 as uuidv4} from 'uuid';
 
 const responseVendor = new PiMAdResponseVendor();
-const dataAssemblyVendor = new DataAssemblyVendor()
+const dataAssemblyVendor = new DataAssemblyVendor();
 
 describe('class: BasePEA', () => {
     let pea: PEA;
@@ -122,7 +122,7 @@ describe('class: BasePEA', () => {
                 pea.getActuator('Test-Actuator1', (response) => {
                     expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                     done();
-                })
+                });
             });
         });
         describe('method: getAllActuators()', () => {
@@ -130,7 +130,7 @@ describe('class: BasePEA', () => {
                 pea.getAllActuators( (response) => {
                     expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                     done();
-                })
+                });
             });
         });
         it('method: getAllDataAssemblies()', () => {
@@ -146,7 +146,7 @@ describe('class: BasePEA', () => {
                 pea.getAllSensors( (response) => {
                     expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                     done();
-                })
+                });
             });
         });
         it('method: getAllServices()', () => {
@@ -160,15 +160,15 @@ describe('class: BasePEA', () => {
                     const responseContent = response.getContent() as DataAssembly;
                     responseContent.getName((response, name) =>  {
                         expect(name).is.equal('Test-DataAssembly2');
-                    })
+                    });
                     done();
-                })
+                });
             });
             it('test case: requested DataAssembly not in array', (done) => {
                 pea.getDataAssembly('DataAssembly', (response) => {
                     expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                     done();
-                })
+                });
             });
         });
         it('method: getDataModel()', () => {
@@ -182,7 +182,7 @@ describe('class: BasePEA', () => {
                 pea.getFEA('Test-FEA1', (response) => {
                     expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                     done();
-                })
+                });
             });
         });
         it('method: getName()', () => {
@@ -196,7 +196,7 @@ describe('class: BasePEA', () => {
                 pea.getSensor('Test-Sensor1', (response) => {
                     expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                     done();
-                })
+                });
             });
         });
         describe('method: getService()', () => {
@@ -209,15 +209,15 @@ describe('class: BasePEA', () => {
                         responseContent.getName((responsGetName, name) => {
                             expect(name).is.equal('Test-Service2');
                             done();
-                        })
-                    })
-                })
+                        });
+                    });
+                });
             });
             it('test case: requested Service not in array', (done) => {
                 pea.getService('Service', (response) => {
                     expect(response.constructor.name).is.equal(responseVendor.buyErrorResponse().constructor.name);
                     done();
-                })
+                });
             });
         });
     });
@@ -236,7 +236,7 @@ describe('class: BasePEA', () => {
             expect(pea.initialize({DataAssemblies: [{} as DataAssembly], DataModel: '', DataModelVersion: {} as SemanticVersion, FEAs:[{} as FEA], Name:'', Services:[{} as Service]} as PEAInitializeDataType)).is.false;
             expect(pea.initialize({DataAssemblies: [{} as DataAssembly], DataModel: '', DataModelVersion: {} as SemanticVersion, FEAs:[{} as FEA], PiMAdIdentifier: '', Name:'', Services:[{} as Service]} as PEAInitializeDataType)).is.true;
         });
-    })
+    });
 });
 describe('class: BasePEAFactory', () => {
     it('method: create()', () => {

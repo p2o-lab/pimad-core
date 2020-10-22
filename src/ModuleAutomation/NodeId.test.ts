@@ -5,15 +5,15 @@ import {
     NumericNodeIdFactory,
     QpaqueNodeIdFactory,
     StringNodeIdFactory
-} from '../../src/ModuleAutomation';
+} from './index';
 import {expect} from 'chai';
-import {Backbone} from '../../src/Backbone';
+import {Backbone} from '../Backbone';
 import {NodeIdTypeEnum} from 'PiMAd-types';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 
 const responseVendor = new PiMAdResponseVendor();
-const errorResponseAsString = responseVendor.buyErrorResponse().constructor.name
-const successResponseAsString = responseVendor.buySuccessResponse().constructor.name
+const errorResponseAsString = responseVendor.buyErrorResponse().constructor.name;
+const successResponseAsString = responseVendor.buySuccessResponse().constructor.name;
 
 describe('class: NumericNodeId', () => {
     let nodeId: NodeId;
@@ -84,7 +84,7 @@ describe('class: NumericNodeId', () => {
             });
         });
     });
-})
+});
 
 describe('class: QpaqueNodeId', () => {
     let nodeId: NodeId;
@@ -204,7 +204,7 @@ describe('class: GUIDNodeId', () => {
     let nodeId: NodeId;
     beforeEach(() => {
         nodeId = new GUIDNodeIdFactory().create();
-    })
+    });
     describe('method: initialize', () => {
         it('normal usage', () => {
             expect(nodeId.initialize({namespaceIndex: 5, identifier: '09087e75-8e5e-499b-954f-f2a9603db28a'})).is.true;
@@ -251,28 +251,28 @@ describe('class: GUIDNodeId', () => {
 describe('class: NumericNodeIdFactory', () => {
     const factory = new NumericNodeIdFactory();
     it('method: create(): NodeId', () => {
-        expect(factory.create().constructor.name).is.equal('NumericNodeId')
+        expect(factory.create().constructor.name).is.equal('NumericNodeId');
     });
 });
 
 describe('class: QpaqueNodeIdFactory', () => {
     const factory = new QpaqueNodeIdFactory();
     it('method: create(): NodeId', () => {
-        expect(factory.create().constructor.name).is.equal('QpaqueNodeId')
+        expect(factory.create().constructor.name).is.equal('QpaqueNodeId');
     });
 });
 
 describe('class: StringNodeIdFactory', () => {
     const factory = new StringNodeIdFactory();
     it('method: create(): NodeId', () => {
-        expect(factory.create().constructor.name).is.equal('StringNodeId')
+        expect(factory.create().constructor.name).is.equal('StringNodeId');
     });
 });
 
 describe('class: GUIDNodeIdFactory', () => {
     const factory = new GUIDNodeIdFactory();
     it('method: create(): NodeId', () => {
-        expect(factory.create().constructor.name).is.equal('GUIDNodeId')
+        expect(factory.create().constructor.name).is.equal('GUIDNodeId');
     });
 });
 
@@ -290,4 +290,4 @@ describe('class: NodeIdVendor', () => {
     it('buy: GUIDNodeId', () => {
         expect(vendor.buy(NodeIdTypeEnum.GUID).constructor.name).is.equal('GUIDNodeId');
     });
-})
+});

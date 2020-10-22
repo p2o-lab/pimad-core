@@ -1,10 +1,10 @@
 import {expect} from 'chai';
-import {BaseDataItemFactory, CommunicationInterfaceDataVendor, DataItem} from '../../src/ModuleAutomation';
+import {BaseDataItemFactory, CommunicationInterfaceDataVendor, DataItem} from './index';
 import {
     CommunicationInterfaceDataEnum,
     OPCUANodeCommunication
-} from '../../src/ModuleAutomation/CommunicationInterfaceData';
-import {Backbone} from '../../src/Backbone';
+} from './CommunicationInterfaceData';
+import {Backbone} from '../Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 
 const responseVendor = new PiMAdResponseVendor();
@@ -87,7 +87,7 @@ describe('class: BaseDataItem', () => {
             }))).is.true;
 
         });
-    })
+    });
 });
 
 describe('class: BaseDataItemFactory', () => {

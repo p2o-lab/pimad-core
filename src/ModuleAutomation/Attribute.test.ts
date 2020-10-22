@@ -1,15 +1,15 @@
 import {expect} from 'chai';
-import {Attribute, AttributeFactoryVendor} from '../../src/ModuleAutomation';
+import {Attribute, AttributeFactoryVendor} from './index';
 
 describe('class: AttributeFactoryVendor', () => {
     const factoryVendor = new AttributeFactoryVendor();
     it('method: buyProcedureAttributeFactory()', () => {
         expect(factoryVendor.buyProcedureAttributeFactory().constructor.name).is.equal('ProcedureAttributeFactory');
-    })
+    });
     it('method: buyServiceAttributeFactory()', () => {
         expect(factoryVendor.buyServiceAttributeFactory().constructor.name).is.equal('ServiceAttributeFactory');
-    })
-})
+    });
+});
 
 describe('class: ProcedureAttributeFactory', () => {
     it('method: create()', () => {

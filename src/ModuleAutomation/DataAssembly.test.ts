@@ -1,16 +1,16 @@
 import {expect} from 'chai';
-import {Backbone} from '../../src/Backbone';
-import {BaseDataItemFactory, CommunicationInterfaceData, ModuleAutomation} from '../../src/ModuleAutomation';
+import {Backbone} from '../Backbone';
+import {BaseDataItemFactory, CommunicationInterfaceData, ModuleAutomation} from './index';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import DataAssembly = ModuleAutomation.DataAssembly;
 import DataAssemblyVendor = ModuleAutomation.DataAssemblyVendor;
 import DataAssemblyType = ModuleAutomation.DataAssemblyType;
-import {BasicDataAssembly} from '../../src/ModuleAutomation/DataAssembly';
+import {BasicDataAssembly} from './DataAssembly';
 
 const responseVendor = new PiMAdResponseVendor();
 const dataAssemblyVendor = new DataAssemblyVendor();
-const errorResponseAsString = responseVendor.buyErrorResponse().constructor.name
-const successResponseAsString = responseVendor.buySuccessResponse().constructor.name
+const errorResponseAsString = responseVendor.buyErrorResponse().constructor.name;
+const successResponseAsString = responseVendor.buySuccessResponse().constructor.name;
 
 describe('class: BaseDataAssembly', () => {
     let dataAssembly: DataAssembly;
@@ -61,14 +61,14 @@ describe('class: BaseDataAssembly', () => {
             dataAssembly.getAllDataItems((response, dataItems) => {
                 expect(response.constructor.name).is.equal(successResponseAsString);
                 expect(dataItems.length).is.equal(3);
-            })
+            });
         });
         describe('method: getDataItem', () => {
             it('DataItem exists', (done) => {
                 dataAssembly.getDataItem('DataItemTwo', (response, dataItem) => {
                     expect(response.constructor.name).is.equal(successResponseAsString);
                     dataItem.getName((response, name) => {
-                        expect(name).is.equal('DataItemTwo')
+                        expect(name).is.equal('DataItemTwo');
                         done();
                     });
                 });
@@ -83,7 +83,7 @@ describe('class: BaseDataAssembly', () => {
             dataAssembly.getDataSourceIdentifier((response, identifier) => {
                 expect(response.constructor.name).is.equal(successResponseAsString);
                 expect(identifier).is.equal('Test-DataSourceIdentifier');
-                done()
+                done();
             });
         });
         it('method: getInterfaceClass()', () => {
