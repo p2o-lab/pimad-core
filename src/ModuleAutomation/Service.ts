@@ -90,8 +90,9 @@ export type InitializeServiceType = InitializeProcedureType & {
 export interface Service extends Procedure {
 
     /**
-     * Getter for this.procedures of the service object.
-     * @returns A response object.
+     * TODO
+     * @param callback - TODO
+     * @returns TODO
      */
     getAllProcedures(callback: (response: PiMAdResponse, procedures: Procedure[]) => void): void;
 
@@ -105,16 +106,9 @@ export interface Service extends Procedure {
     getProcedure(name: string, callback: (response: PiMAdResponse, procedure: Procedure) => void): void;
 
     /**
-     * Initialize the service object with data. This one works like a constructor.
-     * @param attributes - An Array with attributes of the service object..
-     * @param dataAssembly - The data assembly of the service object.. F. ex. with the communication interface data.
-     * @param dataSourceIdentifier - This variable stores the local identifier of the previous data source.
-     * @param metaModelRef - A reference to a metamodel describing the service object.
-     * @param name - The name of the service object.
-     * @param parameter - An Array with service parameters.
-     * @param pimadIdentifier - A unique identifier in the PiMAd-core data model.
-     * @param procedure - An Array with service procedures.
-     * @returns True for a successful initialisation. False for a not successful initialisation.
+     * TODO
+     * @param instructions - TODO
+     * @returns TODO
      */
     initialize(instructions: InitializeServiceType): boolean;
 }

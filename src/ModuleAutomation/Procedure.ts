@@ -14,91 +14,43 @@ import {
 export interface Procedure extends ModuleAutomationObject {
 
     /**
-     * Get all attributes of this procedure.
-     */
-    //getAllAttributes(): Attribute[];
-
-    /**
-     * Get all parameters of this procedure.
-     */
-    //getAllParameters(): Parameter[];
-
-    /**
-     * Get a specific attribute of this procedure.
-     * @param name - The name of the attribute.
-     * @param callback - A callback function. Use an instance of the interface Response as input.
-     */
-    //getAttribute(name: string, callback: (response: PiMAdResponse) => void): void;
-
-    /**
-     * Get the DataAssembly-object of this procedure.
-     */
-    //getDataAssembly(): DataAssembly;
-
-    /**
-     * Get the identifier of this procedure.
-     */
-    //getIdentifier(): string;
-
-    /**
-     * Get the metamodel reference of this procedure.
-     */
-    //getMetaModelRef(): string;
-
-    /**
-     * Get the name of this procedure.
-     */
-    //getName(): string;
-
-    /**
-     * Get a specific parameter of this procedure.
-     * @param name - The name of the parameter.
-     * @param callback - A callback function. Use an instance of the interface PiMAd-core/src/Backbone/Response as input.
-     */
-    //getParameter(name: string, callback: (response: PiMAdResponse) => void): void;
-    //initialize(dataAssembly: DataAssembly, identifier: string, metaModelRef: string, name: string, attributes: Attribute[], para: Parameter[]): boolean;
-    /**
-     * Get a specific attribute of the service object.
-     * @param name - The name of the attribute.
-     * @param callback - A callback function. Use an instance of the interface Response as input.
+     * TODO
+     * @param callback - TODO
+     * @returns TODO
      */
     getAttribute(name: string, callback: (response: PiMAdResponse, attribute: Attribute) => void): void;
 
     /**
-     * Getter for this.attributes of the service object.
-     * @returns A response object.
+     * TODO
+     * @param callback - TODO
+     * @returns TODO
      */
     getAllAttributes(callback: (response: PiMAdResponse, attributes: Attribute[]) => void): void;
 
     /**
-     * Getter for this.parameters of the service object.
-     * @returns A response object.
+     * TODO
+     * @param callback - TODO
+     * @returns TODO
      */
     getAllParameters(callback: (response: PiMAdResponse, parameters: Parameter[]) => void): void;
 
     /**
-     * Getter for this.dataAssembly of the service object.
-     * @returns
+     * TODO
+     * @param callback - TODO
+     * @returns TODO
      */
     getDataAssembly(callback: (response: PiMAdResponse, dataAssembly: DataAssembly) => void): void;
 
     /**
-     * Get a specific parameter of the service object.
-     * @param name - The name of the attribute.
-     * @param callback - A callback function. Use an instance of the interface Response as input.
+     * TODO
+     * @param callback - TODO
+     * @returns TODO
      */
     getParameter(name: string, callback: (response: PiMAdResponse, parameter: Parameter) => void): void;
 
     /**
-     * Initialize the service object with data. This one works like a constructor.
-     * @param attributes - An Array with attributes of the service object..
-     * @param dataAssembly - The data assembly of the service object.. F. ex. with the communication interface data.
-     * @param dataSourceIdentifier - This variable stores the local identifier of the previous data source.
-     * @param metaModelRef - A reference to a metamodel describing the service object.
-     * @param name - The name of the service object.
-     * @param parameter - An Array with service parameters.
-     * @param pimadIdentifier - A unique identifier in the PiMAd-core data model.
-     * @param procedure - An Array with service procedures.
+     * Initialize the parameter object with data. This one works like a constructor.
+     * @param instructions - TODO
      * @returns True for a successful initialisation. False for a not successful initialisation.
      */
     initialize(instructions: InitializeProcedureType): boolean;
@@ -121,7 +73,7 @@ export abstract class AProcedure extends AModuleAutomationObject implements Proc
     };
 
     /**
-     * @inheritDoc {@link Service.getAttribute}
+     * @inheritDoc {@link Parameter.getAttribute}
      */
     getAttribute(name: string, callback: (response: PiMAdResponse, attribute: Attribute) => void): void {
         const localAttribute: Attribute | undefined = this.attributes.find(attribute => (attribute.getName().getContent() as {data: string}).data === name);
@@ -133,28 +85,28 @@ export abstract class AProcedure extends AModuleAutomationObject implements Proc
     }
 
     /**
-     * @inheritDoc {@link Service.getAllAttributes}
+     * @inheritDoc {@link Parameter.getAllAttributes}
      */
     getAllAttributes(callback: (response: PiMAdResponse, attributes: Attribute[]) => void): void {
         this.genericPiMAdGetter<Attribute[]>(this.attributes, callback);
     };
 
     /**
-     * @inheritDoc {@link Service.getAllParameters}
+     * @inheritDoc {@link Parameter.getAllParameters}
      */
     getAllParameters(callback: (response: PiMAdResponse, parameters: Parameter[]) => void): void {
         this.genericPiMAdGetter<Parameter[]>(this.parameters, callback);
     }
 
     /**
-     * @inheritDoc {@link Service.getDataAssembly}
+     * @inheritDoc {@link Parameter.getDataAssembly}
      */
     getDataAssembly(callback: (response: PiMAdResponse, dataAssembly: DataAssembly) => void): void {
         this.genericPiMAdGetter<DataAssembly>(this.dataAssembly, callback);
     };
 
     /**
-     *  @inheritDoc {@link Service.getParameter}
+     *  @inheritDoc {@link Parameter.getParameter}
      */
     getParameter(name: string, callback: (response: PiMAdResponse, parameter: Parameter) => void): void {
         const localParameter: Parameter | undefined = this.parameters.find(parameter => name === parameter.getName());
@@ -166,7 +118,7 @@ export abstract class AProcedure extends AModuleAutomationObject implements Proc
     };
 
     /**
-     * @inheritDoc {@link Service.initialize}
+     * @inheritDoc {@link Parameter.initialize}
      */
     initialize(instructions: InitializeProcedureType): boolean {
         if(!this.initialized) {
