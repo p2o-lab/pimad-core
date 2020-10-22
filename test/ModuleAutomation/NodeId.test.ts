@@ -1,12 +1,14 @@
 import {
     GUIDNodeIdFactory,
+    NodeId,
+    NodeIdVendor,
     NumericNodeIdFactory,
     QpaqueNodeIdFactory,
     StringNodeIdFactory
 } from '../../src/ModuleAutomation';
 import {expect} from 'chai';
-import {NodeId} from '../../src/ModuleAutomation';
 import {Backbone} from '../../src/Backbone';
+import {NodeIdTypeEnum} from 'PiMAd-types';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 
 const responseVendor = new PiMAdResponseVendor();
@@ -273,3 +275,19 @@ describe('class: GUIDNodeIdFactory', () => {
         expect(factory.create().constructor.name).is.equal('GUIDNodeId')
     });
 });
+
+describe('class: NodeIdVendor', () => {
+    const vendor = new NodeIdVendor();
+    it('buy: NumericNodeId', () => {
+        expect(vendor.buy(NodeIdTypeEnum.NUMERIC).constructor.name).is.equal('NumericNodeId');
+    });
+    it('buy: QpaqueNodeId', () => {
+        expect(vendor.buy(NodeIdTypeEnum.OPAQUE).constructor.name).is.equal('QpaqueNodeId');
+    });
+    it('buy: StringNodeId', () => {
+        expect(vendor.buy(NodeIdTypeEnum.STRING).constructor.name).is.equal('StringNodeId');
+    });
+    it('buy: GUIDNodeId', () => {
+        expect(vendor.buy(NodeIdTypeEnum.GUID).constructor.name).is.equal('GUIDNodeId');
+    });
+})
