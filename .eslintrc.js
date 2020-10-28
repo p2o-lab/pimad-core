@@ -15,7 +15,7 @@ module.exports =  {
         sourceType: "module"
     },
     rules: {
-        "tsdoc/syntax": "warn",
+        "tsdoc/syntax": "off",
         "@typescript-eslint/no-namespace": "warn",
         quotes: [2, "single", "avoid-escape"],
         semi: ["error", "always"]
