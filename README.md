@@ -1,10 +1,8 @@
 # PiMAd-core
 **P**rocess**i**ndustry-**M**odular-**A**utomation-**d**escription: High level access to automation of modular plants.  
-## LICENSING
-There may be SEMODIA content in this repository and the commit history. Therefore, a release on a public platform like GitHub or NPM is **strictly forbidden**!
 
 ## development
-Working so far on Ubuntu 18.04 LTS, 
+Working so far on Ubuntu 18.04 LTS
 ### prerequisites
 Install NPM via [Node.js](https://www.npmjs.com/get-npm) for your operating system (The LTS version should meet our requirements). Check the version of Node.js and NPM on your machine.
 ```shell script
