@@ -16,13 +16,6 @@
     "lint": "eslint -f pretty --ext \".ts\" --ignore-pattern \"**/*.test.ts\" src",
     "test": "nyc mocha -r ts-node/register 'src/**/*.ts'"
   },
-  "publishConfig": {
-    "registry": "http://nexus.plt.et.tu-dresden.de:8081/repository/npm_plt"
-  },
-  "repository": {
-    "type": "git",
-    "url": "svn@dev.plt.et.tu-dresden.de:modulare-automation/PiMAd-core.git"
-  },
   "files": [
     "dist",
     "index.js"
