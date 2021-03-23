@@ -8,7 +8,7 @@ import {
 } from './index';
 import {expect} from 'chai';
 import {Backbone} from '../Backbone';
-import {NodeIdTypeEnum} from 'PiMAd-types';
+import {NodeIdTypeEnum} from '@p2olab/pimad-types';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 
 const responseVendor = new PiMAdResponseVendor();

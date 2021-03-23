@@ -1,7 +1,7 @@
 import {logger} from '../Utils';
 import {Backbone} from '../Backbone';
 import {AModuleAutomationObject, ModuleAutomationObject} from './ModuleAutomationObject';
-import {NodeIdTypeEnum} from 'PiMAd-types';
+import {NodeIdTypeEnum} from '@p2olab/pimad-types';
 import PiMAdResponse = Backbone.PiMAdResponse;
 
 /**

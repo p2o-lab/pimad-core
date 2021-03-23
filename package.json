@@ -13,7 +13,9 @@
     "prepublish:linux": "rm -rf dist && tsc",
     "prepublish:win32": "(IF EXIST dist (rd /s /q dist)) && tsc",
     "prebuild": "npm run lint",
-    "build": "rm -rf dist && tsc",
+    "build": "run-script-os",
+    "build:linux": "rm -rf dist && tsc",
+    "build:win32": "(IF EXIST dist (rd /s /q dist)) && tsc",
     "build-gdocs": "run-script-os",
     "build-gdocs:linux": "rm -rf docs && typedoc --out docs src",
     "build-gdocs:win32": "(IF EXIST docs (rd /s /q docs)) && typedoc --out docs src",
@@ -36,6 +38,7 @@
     "Anselm Klose <anselm.klose@tu-dresden.de>"
   ],
   "devDependencies": {
+    "@p2olab/pimad-types": "1.0.0",
     "@types/adm-zip": "^0.4.33",
     "@types/chai": "^4.2.11",
     "@types/express": "^4.17.6",
@@ -47,7 +50,6 @@
     "@types/xml2json": "^0.11.0",
     "@typescript-eslint/eslint-plugin": "^2.29.0",
     "@typescript-eslint/parser": "^2.29.0",
-    "PiMAd-types": "1.0.0",
     "adm-zip": "^0.4.14",
     "chai": "^4.2.0",
     "eslint": "^6.8.0",

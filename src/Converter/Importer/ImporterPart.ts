@@ -7,13 +7,10 @@ import {
     ModuleAutomation,
     Parameter
 } from '../../ModuleAutomation';
-import {AML, InstanceList, SourceList} from 'PiMAd-types';
+import {AML, InstanceList, SourceList} from '@p2olab/pimad-types';
 import {logger} from '../../Utils';
 import {Backbone} from '../../Backbone';
-import {
-    CommunicationInterfaceDataEnum,
-    OPCUANodeCommunication
-} from '../../ModuleAutomation/CommunicationInterfaceData';
+import {CommunicationInterfaceDataEnum} from '../../ModuleAutomation/CommunicationInterfaceData';
 import DataItemInstanceList = AML.DataItemInstanceList;
 import DataItemSourceList = AML.DataItemSourceList;
 import DataItemSourceListExternalInterface = AML.DataItemSourceListExternalInterface;

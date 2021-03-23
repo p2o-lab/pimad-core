@@ -18,9 +18,8 @@ import {
     GateFactory,
     MockGateFactory
 } from '../Gate/GateFactory';
-import {AML} from 'PiMAd-types';
+import {AML, CAEXFile} from '@p2olab/pimad-types';
 import InstanceHierarchy = AML.InstanceHierarchy
-import { CAEXFile } from 'PiMAd-types';
 import {
     Attribute, AttributeFactoryVendor, ModuleAutomation
 } from '../../ModuleAutomation';
