@@ -1,8 +1,6 @@
 # PiMAd-core
 **P**rocess**i**ndustry-**M**odular-**A**utomation-**d**escription: High level access to automation of modular plants.  
 
-## development
-Working so far on Ubuntu 18.04 LTS
 ### prerequisites
 Install NPM via [Node.js](https://www.npmjs.com/get-npm) for your operating system (The LTS version should meet our requirements). Check the version of Node.js and NPM on your machine.
 ```shell script
@@ -17,7 +15,8 @@ npm install
 ``` 
 Awesome. We are ready to code! You may install an IDE like [WebStorm](https://www.jetbrains.com/de-de/webstorm/): The many little helpers make programming more pleasant. 
 ### testing & linting
-Understanding the use of Test-Driven-Development and linters please feel free to consult the [PiMAd-doc](https://dev.plt.et.tu-dresden.de/modulare-automation/PiMAd-doc) at the *Contribution* section.
+Understanding the use of Test-Driven-Development and linters please feel free to consult us and may have 
+a look at the *Contribution* section.
 ```shell script
 # run tests + code coverage report
 npm run test
