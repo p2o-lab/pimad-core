@@ -1,0 +1,7 @@
+[
+  {
+    "name": "Test Control Engine OPC UA Server",
+    "initialized": true,
+    "serverURL": "opc.tcp://127.0.0.1:4840"
+  }
+]

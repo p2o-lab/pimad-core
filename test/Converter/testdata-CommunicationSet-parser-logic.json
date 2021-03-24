@@ -1,0 +1,197 @@
+[
+  {
+    "Name": "SourceList",
+    "ID": "string3",
+    "RefBaseSystemUnitPath": "MTPSUCLib/CommunicationSet/SourceList",
+    "InternalElement": [
+      {
+        "Name": "Test Control Engine OPC UA Server",
+        "ID": "string0",
+        "RefBaseSystemUnitPath": "MTPCommunicationSUCLib/ServerAssembly/OPCUAServer",
+        "Attribute": {
+          "Name": "Endpoint",
+          "AttributeDataType": "xs:string",
+          "Value": "opc.tcp://127.0.0.1:4840"
+        },
+        "ExternalInterface": [
+          {
+            "Name": "CrystalCrasher_CommandExt",
+            "ID": "link5",
+            "RefBaseClassPath": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "Attribute": [
+              {
+                "Name": "Identifier",
+                "AttributeDataType": "xs:string",
+                "Value": "Test.SnickersPooper.JustAVirtualSnickersPooper.PooperService.CrystalCrasher.CommandExt"
+              },
+              {
+                "Name": "Namespace",
+                "AttributeDataType": "xs:string",
+                "Value": "http://www.refugess-welcome.dd.com/noafd"
+              },
+              {
+                "Name": "Access",
+                "AttributeDataType": "xs:unsignedByte",
+                "Value": "3"
+              },
+              {
+                "Name": "Test-Attribute",
+                "AttributeDataType": "xs:unsignedByte",
+                "Value": "3"
+              }
+            ]
+          },
+          {
+            "Name": "CrystalCrasher_CommandInt",
+            "ID": "link4",
+            "RefBaseClassPath": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "Attribute": [
+              {
+                "Name": "Identifier",
+                "AttributeDataType": "xs:string",
+                "Value": "Test.SnickersPooper.JustAVirtualSnickersPooper.PooperService.CrystalCrasher.CommandInt"
+              },
+              {
+                "Name": "Namespace",
+                "AttributeDataType": "xs:string",
+                "Value": "http://www.refugess-welcome.dd.com/noafd"
+              },
+              {
+                "Name": "Access",
+                "AttributeDataType": "xs:unsignedByte",
+                "Value": "1"
+              }
+            ]
+          },
+          {
+            "Name": "CrystalCrasher_CommandOp",
+            "ID": "link3",
+            "RefBaseClassPath": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "Attribute": [
+              {
+                "Name": "Identifier",
+                "AttributeDataType": "xs:string",
+                "Value": "Test.SnickersPooper.JustAVirtualSnickersPooper.PooperService.CrystalCrasher.CommandOp"
+              },
+              {
+                "Name": "Namespace",
+                "AttributeDataType": "xs:string",
+                "Value": "http://www.refugess-welcome.dd.com/noafd"
+              },
+              {
+                "Name": "Access",
+                "AttributeDataType": "xs:unsignedByte",
+                "Value": "3"
+              }
+            ]
+          },
+          {
+            "Name": "CrystalCrasher_OSLevel",
+            "ID": "link2",
+            "RefBaseClassPath": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "Attribute": [
+              {
+                "Name": "Identifier",
+                "AttributeDataType": "xs:string",
+                "Value": "Test.SnickersPooper.JustAVirtualSnickersPooper.PooperService.CrystalCrasher.OSLevel"
+              },
+              {
+                "Name": "Namespace",
+                "AttributeDataType": "xs:string",
+                "Value": "http://www.refugess-welcome.dd.com/noafd"
+              },
+              {
+                "Name": "Access",
+                "AttributeDataType": "xs:unsignedByte",
+                "Value": "3"
+              }
+            ]
+          },
+          {
+            "Name": "CrystalCrasher_WQC",
+            "ID": "link1",
+            "RefBaseClassPath": "MTPCommunicationICLib/DataItem/OPCUAItem",
+            "Attribute": [
+              {
+                "Name": "Identifier",
+                "AttributeDataType": "xs:string",
+                "Value": "Test.SnickersPooper.JustAVirtualSnickersPooper.PooperService.CrystalCrasher.WQC"
+              },
+              {
+                "Name": "Namespace",
+                "AttributeDataType": "xs:string",
+                "Value": "http://www.refugess-welcome.dd.com/noafd"
+              },
+              {
+                "Name": "Access",
+                "AttributeDataType": "xs:unsignedByte",
+                "Value": "1"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "Name": "Fake-Server",
+        "ID": "",
+        "RefBaseSystemUnitPath": "MTPCommunicationSUCLib/ServerAssembly/FakeServer",
+        "Attribute": {},
+        "ExternalInterface": []
+      }
+    ]
+  },
+  {
+    "Name": "InstanceList",
+    "ID": "string1",
+    "RefBaseSystemUnitPath": "MTPSUCLib/CommunicationSet/InstanceList",
+    "InternalElement": [
+      {
+        "Name": "CrystalCrasher",
+        "ID": "string2",
+        "RefBaseSystemUnitPath": "MTPDataObjectSUCLib/DataAssembly/ServiceControl",
+        "Attribute": [
+          {
+            "Name": "TagName",
+            "AttributeDataType": "xs:string",
+            "DefaultValue": "CrystalCrasher",
+            "Value": "CrystalCrasher"
+          },
+          {
+            "Name": "TagDescription",
+            "AttributeDataType": "xs:string"
+          },
+          {
+            "Name": "WQC",
+            "AttributeDataType": "xs:IDREF",
+            "Value": "link1"
+          },
+          {
+            "Name": "OSLevel",
+            "AttributeDataType": "xs:IDREF",
+            "Value": "link2"
+          },
+          {
+            "Name": "CommandOp",
+            "AttributeDataType": "xs:IDREF",
+            "Value": "link3"
+          },
+          {
+            "Name": "CommandInt",
+            "AttributeDataType": "xs:IDREF",
+            "Value": "link4"
+          },
+          {
+            "Name": "CommandExt",
+            "AttributeDataType": "xs:IDREF",
+            "Value": "link5"
+          },
+          {
+            "Name": "RefID",
+            "AttributeDataType": "xs:ID",
+            "Value": "link6"
+          }
+        ]
+      }
+    ]
+  }
+]
