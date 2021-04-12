@@ -1,7 +1,6 @@
 import {AMLGateFactory, XMLGateFactory, ZIPGateFactory} from './GateFactory';
 import fileSystem = require('fs');
 import xml2jsonParser = require('xml2json');
-import AdmZip from 'adm-zip';
 import rimraf = require('rimraf');
 import {logger} from '../../Utils';
 import {IZipEntry} from 'adm-zip';
@@ -9,6 +8,7 @@ import {Backbone} from '../../Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import PiMAdResponse = Backbone.PiMAdResponse;
 
+import AdmZip = require('adm-zip');
 /**
  * AGate is an abstract implementation of the Gate-Interface. Mainly this one reduces the code.
  */
