@@ -22,6 +22,10 @@ describe('class: BasePEAPool', () => {
         expect(pool.initialize(fImporter.create())).is.true;
         expect(pool.initialize(fImporter.create())).is.false;
     });
+    it('method: initializeMTPFreeze202001Importer()', () => {
+        expect(pool.initializeMTPFreeze202001Importer()).is.true;
+        expect(pool.initializeMTPFreeze202001Importer()).is.false;
+    });
     describe('without initialization', () => {
         it('method: addPEA()', () => {
             pool.addPEA({source: ''}, (response) => {
@@ -49,7 +53,7 @@ describe('class: BasePEAPool', () => {
             it('regular usage', (done) => {
                 pool.getAllPEAs((response, peas) => {
                     expect(peas.length).equals(0);
-                    pool.addPEA({source: 'test/Converter/PiMAd-core.0-0-1.aml'}, (response) => {
+                    pool.addPEA({source: 'test/local/Manifest.aml'}, (response) => {
                         expect(response.constructor.name).is.equal(successResponseAsString);
                         expect(response.getContent().constructor.name).is.equal('BasePEA');
                         pool.getAllPEAs((response, peas) => {

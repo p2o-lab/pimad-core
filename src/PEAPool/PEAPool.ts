@@ -1,5 +1,5 @@
 import {PEA} from '../ModuleAutomation';
-import {Importer} from '../Converter/Importer/Importer';
+import {Importer, LastChainElementImporterFactory, MTPFreeze202001ImporterFactory} from '../Converter/Importer/Importer';
 import {logger} from '../Utils';
 import { v4 as uuidv4 } from 'uuid';
 import {Backbone} from '../Backbone';
@@ -39,6 +39,19 @@ abstract class APEAPool implements PEAPool {
             this.initialized = true;
             this.importerChainFirstElement = firstChainElement;
             return (JSON.stringify(this.importerChainFirstElement) == JSON.stringify(firstChainElement));
+        } else {
+            return false;
+        }
+    }
+
+    public initializeMTPFreeze202001Importer(): boolean{
+        if (!this.initialized) {
+            this.initialized = true;
+            const fImporter = new LastChainElementImporterFactory();
+            const mtpFreeze202001Importer = new MTPFreeze202001ImporterFactory().create();
+            mtpFreeze202001Importer.initialize(fImporter.create());
+            this.importerChainFirstElement = mtpFreeze202001Importer;
+            return true;
         } else {
             return false;
         }
@@ -101,6 +114,7 @@ export interface PEAPool {
     getPEA(identifier: string, callback: (response: PiMAdResponse) => void): void;
     getAllPEAs(callback: (response: PiMAdResponse, peas: PEA[]) => void): void;
     initialize(firstChainElement: Importer): boolean;
+    initializeMTPFreeze202001Importer(): boolean;
 }
 
 /* Factory */
