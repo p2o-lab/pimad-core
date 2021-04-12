@@ -1,7 +1,7 @@
 import {AMLGateFactory, XMLGateFactory, ZIPGateFactory} from './GateFactory';
 import fileSystem = require('fs');
 import xml2jsonParser = require('xml2json');
-import AdmZip = require('adm-zip');
+import AdmZip from 'adm-zip';
 import rimraf = require('rimraf');
 import {logger} from '../../Utils';
 import {IZipEntry} from 'adm-zip';
