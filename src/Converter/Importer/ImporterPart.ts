@@ -228,6 +228,12 @@ export class MTPPart extends AImporterPart {
                     } else {
                         logger.warn('Cannot extract source <' + sourceListItem.Name + '> need MTPFreeze-2020-01!');
                     } */
+
+                    /* Easier handling of 'single' and 'multiple' sources in one code section. Therefore a single source is
+                    transferred to an array with one entry. */
+                    if(!(Array.isArray(sourceListItem.ExternalInterface))) {
+                        sourceListItem.ExternalInterface = [sourceListItem.ExternalInterface];
+                    }
                     /* Store the source specific 'ExternalInterface' data temporary. You need these in the next parsing
                     step. */
                     sourceListItem.ExternalInterface.forEach((sourceListElementExternalInterfaceItem: DataItemSourceListExternalInterface) => {
@@ -241,11 +247,21 @@ export class MTPPart extends AImporterPart {
             }
         });
         // Handle the InstanceList. Merging data with SourceList and generating mainly PiMAd-core-DataAssemblies.
+        /* Easier handling of 'single' and 'multiple' sources in one code section. Therefore a single source is
+        transferred to an array with one entry. */
+        if(!(Array.isArray(instanceList.InternalElement))) {
+            instanceList.InternalElement = [instanceList.InternalElement];
+        }
         instanceList.InternalElement.forEach((instanceListElement: DataItemInstanceList) => {
             // like above these variables will be continuously filled with data in the following lines.
             const localDataItems: DataItem[] = [];
             let dataAssemblyIdentifier = '';
             // iterate through all attributes
+            /* Easier handling of 'single' and 'multiple' attributes in one code section. Therefore a single attribute is
+            transferred to an array with one entry. */
+            if(!(Array.isArray(instanceListElement.Attribute))) {
+                instanceListElement.Attribute = [instanceListElement.Attribute];
+            }
             instanceListElement.Attribute.forEach((instanceListElementAttribute: Attribute) => {
                 // These are treated differently depending on the attribute data type.
                 switch (instanceListElementAttribute.AttributeDataType) {
@@ -255,7 +271,7 @@ export class MTPPart extends AImporterPart {
                         /* First we need the element with the correct ID from the ExternalInterfaceList. Safe some time
                         with Array.prototype.some(). Therefore the 'strange' syntax in the last part. */
                         localExternalInterfaces.some((localeExternalInterface: DataItemSourceListExternalInterface) => {
-                            // TODO: Extract description via new switch case szenario
+                            // TODO: Extract description via new switch case scenario
                             if (localeExternalInterface.ID === instanceListElementAttribute.Value) {
                                 /* Merging attribute and external interface data to one communication interface. */
                                 // TODO: Aktuell gehen wir immer von opcua nodes aus. Kann sich in Zukunft ändern!
@@ -265,6 +281,11 @@ export class MTPPart extends AImporterPart {
                                 let namespace = '';
                                 let access = '';
                                 /* There are again attributes...  looping and extracting */
+                                /* Easier handling of 'single' and 'multiple' attributes in one code section. Therefore a single attribute is
+                                transferred to an array with one entry. */
+                                if(!(Array.isArray(localeExternalInterface.Attribute))) {
+                                    localeExternalInterface.Attribute = [localeExternalInterface.Attribute];
+                                }
                                 localeExternalInterface.Attribute.forEach((localeInterfaceAttribute: Attribute) => {
                                     switch (localeInterfaceAttribute.Name) {
                                         case ('Identifier'):
@@ -418,38 +439,55 @@ export class ServicePart extends AImporterPart {
         PiMAd-core Service. */
         const extractedServiceData: InternalServiceType[] = []; // will be the content of the response.
         // typing
-        const services = data.InternalElement as ServiceInternalElement[];
+        let servicePartInternalElementArray = data.InternalElement as ServiceInternalElement[];
         // looping through all elements of the array.
-        services.forEach((amlService: ServiceInternalElement) => {
+        /* Easier handling of 'single' and 'multiple' attributes in one code section. Therefore a single attribute is
+        transferred to an array with one entry. */
+        if(!(Array.isArray(servicePartInternalElementArray))) {
+            servicePartInternalElementArray = [servicePartInternalElementArray];
+        }
+        servicePartInternalElementArray.forEach((amlServiceInternalElement: ServiceInternalElement) => {
             // TODO > Better solution possible?
             // TODO > Why no check? RefBaseSystemUnitPath
-            let localAMLServiceAttributes: Attribute[] = [];
-            if(!Array.isArray(amlService.Attribute)) {
-                localAMLServiceAttributes.push(amlService.Attribute as Attribute);
+            // Skip Service Relation in FirstPlace
+            if (amlServiceInternalElement.RefBaseSystemUnitPath.includes('ServiceRelation')) return;
+            let localAMLServiceInternalElementAttributes: Attribute[] = [];
+            if(!Array.isArray(amlServiceInternalElement.Attribute)) {
+                localAMLServiceInternalElementAttributes.push(amlServiceInternalElement.Attribute as Attribute);
             } else {
-                localAMLServiceAttributes = amlService.Attribute;
+                localAMLServiceInternalElementAttributes = amlServiceInternalElement.Attribute;
             }
             // will be continuously filled while in the loop circle
             const localService = {} as InternalServiceType;
             localService.Attributes = [];
-            localService.Identifier = amlService.ID;
-            localService.MetaModelRef = amlService.RefBaseSystemUnitPath;
-            localService.Name = amlService.Name;
+            localService.Identifier = amlServiceInternalElement.ID;
+            localService.MetaModelRef = amlServiceInternalElement.RefBaseSystemUnitPath;
+            localService.Name = amlServiceInternalElement.Name;
             localService.Parameters = [];
             localService.Procedures = [];
             /* extract the 'RefID'-Attribute. It's important! and referencing to the DataAssembly of the service which
             stores all the interface data to the hardware. */
-            this.getAttribute('RefID', localAMLServiceAttributes, (response: PiMAdResponse) => {
+            this.getAttribute('RefID', localAMLServiceInternalElementAttributes, (response: PiMAdResponse) => {
                 if(response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
                     localService.DataAssembly = response.getContent() as Attribute;
                 }
             });
             // extract and store all other attributes
-            this.extractAttributes(localAMLServiceAttributes, (response => {
+            this.extractAttributes(localAMLServiceInternalElementAttributes, (response => {
                 localService.Attributes = response.getContent() as Attribute[];
             }));
             // extract all Procedures, etc
-            amlService.InternalElement.forEach((amlServiceInternalElementItem: DataItemInstanceList) => {
+            // const internalElementArray = amlService.InternalElement.constructor === Object? [amlService.InternalElement as object as DataItemInstanceList] : amlService.InternalElement;
+
+            let internalElementArray = amlServiceInternalElement.InternalElement;
+            /* Easier handling of 'single' and 'multiple' attributes in one code section. Therefore a single attribute is
+            transferred to an array with one entry. */
+            if(!(Array.isArray(internalElementArray))) {
+                internalElementArray = [internalElementArray];
+            }
+            // do foreach
+            internalElementArray.forEach((amlServiceInternalElementItem: DataItemInstanceList) => {
+                if (!amlServiceInternalElementItem){return;}
                 switch (amlServiceInternalElementItem.RefBaseSystemUnitPath) {
                     case 'MTPServiceSUCLib/ServiceProcedure': {
                         /* like the services above the data of the procedures in the MTP-ServiceSet is insufficient.
@@ -476,9 +514,10 @@ export class ServicePart extends AImporterPart {
                     }
                     //case 'TODO: Missing Service-Parameters'
                     default:
-                        logger.warn('Unknown >InternalElement< in service <' + amlService.Name + '> Ignoring!');
+                        logger.warn('Unknown >InternalElement< in service <' + amlServiceInternalElement.Name + '> Ignoring!');
                         break;
                 }
+
             });
             extractedServiceData.push(localService);
         });
@@ -495,6 +534,11 @@ export class ServicePart extends AImporterPart {
      */
     private extractAttributes(attributes: Attribute[], callback: (response: PiMAdResponse) => void): void {
         const responseAttributes: Attribute[] = [];
+        /* Easier handling of 'single' and 'multiple' attributes in one code section. Therefore a single attribute is
+            transferred to an array with one entry. */
+        if(!(Array.isArray(attributes))) {
+            attributes = [attributes];
+        }
         attributes.forEach((attribute: Attribute) => {
             switch (attribute.Name) {
                 case 'RefID':
