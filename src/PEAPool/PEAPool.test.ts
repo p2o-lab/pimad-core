@@ -53,7 +53,7 @@ describe('class: BasePEAPool', () => {
             it('regular usage', (done) => {
                 pool.getAllPEAs((response, peas) => {
                     expect(peas.length).equals(0);
-                    pool.addPEA({source: 'test/local/Manifest.aml'}, (response) => {
+                    pool.addPEA( {source: 'test/Converter/PiMAd-core.0-0-1.mtp'}, (response) => {
                         expect(response.constructor.name).is.equal(successResponseAsString);
                         expect(response.getContent().constructor.name).is.equal('BasePEA');
                         pool.getAllPEAs((response, peas) => {
