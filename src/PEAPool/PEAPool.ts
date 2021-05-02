@@ -76,7 +76,15 @@ abstract class APEAPool implements PEAPool {
 
     public deletePEA(identifier: string, callback: (response: PiMAdResponse) => void): void {
         if(this.initialized) {
-            this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, '', {}, callback);
+            // find pea by id
+            const localPEA: PEA | undefined  = this.peas.find(pea => identifier === pea.getPiMAdIdentifier());
+            // find index of pea
+            const index = this.peas.indexOf(localPEA as PEA,0);
+            if (index > -1) {
+                this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.SUCCESS, 'Success!', {}, callback);
+            }else {
+                this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'Index of PEA is lower than 0!', {}, callback);
+            }
         } else {
             this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'PEAPool is not initialized!', {}, callback);
         }
@@ -96,8 +104,9 @@ abstract class APEAPool implements PEAPool {
     }
 
     public getAllPEAs(callback: (response: PiMAdResponse, peas: PEA[]) => void): void {
+        //TODO: this.peas already gets passed via callback content, so maybe remove peas param
         if(this.initialized) {
-            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success!', {}), this.peas);
+            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success!', this.peas), this.peas);
         } else {
             callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'This PEAPool is not initialized', {}), []);
         }
