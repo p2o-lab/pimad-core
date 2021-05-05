@@ -53,13 +53,20 @@ describe('class: BasePEAPool', () => {
             it('regular usage', (done) => {
                 pool.getAllPEAs((response, peas) => {
                     expect(peas.length).equals(0);
-                    pool.addPEA( {source: 'test/Converter/PiMAd-core.0-0-1.mtp'}, (response) => {
+                    pool.addPEA( {source: 'test/Converter/Module2.zip'}, (response) => {
                         expect(response.constructor.name).is.equal(successResponseAsString);
                         expect(response.getContent().constructor.name).is.equal('BasePEA');
                         pool.getAllPEAs((response, peas) => {
                             expect(peas.length).equals(1);
-                            done();
                         });
+                        pool.addPEA( {source: 'test/Converter/Module2.zip'}, (response) => {
+                            expect(response.constructor.name).is.equal(successResponseAsString);
+                            expect(response.getContent().constructor.name).is.equal('BasePEA');
+                            pool.getAllPEAs((response, peas) => {
+                                expect(peas.length).equals(2);
+                                console.log(peas)
+                                done();
+                            });
                     });
                 });
             });
@@ -80,7 +87,7 @@ describe('class: BasePEAPool', () => {
         });
         describe('method: getPEA()', () => {
             beforeEach(() => {
-                pool.addPEA({source: 'test/Converter/PiMAd-core.0-0-1.aml'}, (response) => {
+                pool.addPEA({source: 'test/Converter/Module2.zip'}, (response) => {
                     //done();
                 });
             });
