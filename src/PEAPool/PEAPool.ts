@@ -81,6 +81,7 @@ abstract class APEAPool implements PEAPool {
             // find index of pea
             const index = this.peas.indexOf(localPEA as PEA,0);
             if (index > -1) {
+                // delete
                 this.peas.splice(index, 1);
                 this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.SUCCESS, 'Success!', {}, callback);
             }else {
