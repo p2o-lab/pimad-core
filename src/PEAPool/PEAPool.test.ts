@@ -64,16 +64,19 @@ describe('class: BasePEAPool', () => {
                                 expect(response.getContent().constructor.name).is.equal('BasePEA');
                                 pool.getAllPEAs((response, peas) => {
                                     expect(peas.length).equals(2);
-                                    console.log(peas)
-                                    done()
+                                    // testing deletePEA()
+                                    pool.deletePEA(peas[0].getPiMAdIdentifier(), (response) => {
+                                        expect(response.constructor.name).is.equal(successResponseAsString);
+                                        expect(peas.length).equals(1);
+                                        done()
+                                    });
                                 });
                             });
                         });
                     });
-
-
                 });
             });
+
             it('import fails', done => {
                 pool.addPEA({source: 'test/Converter/test.aml'}, (response) => {
                     expect(response.constructor.name).is.equal(errorResponseAsString);

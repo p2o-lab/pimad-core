@@ -83,7 +83,6 @@ abstract class APEAPool implements PEAPool {
             if (index > -1) {
                 this.peas.splice(index, 1);
                 this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.SUCCESS, 'Success!', {}, callback);
-
             }else {
                 this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'Index of PEA is lower than 0!', {}, callback);
             }
