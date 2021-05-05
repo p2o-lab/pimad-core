@@ -49,25 +49,29 @@ describe('class: BasePEAPool', () => {
             mtpFreeze202001Importer.initialize(fImporter.create());
             pool.initialize(mtpFreeze202001Importer);
         });
+        // test adding multiple Modules
         describe('method: addPEA()', () => {
             it('regular usage', (done) => {
                 pool.getAllPEAs((response, peas) => {
                     expect(peas.length).equals(0);
-                    pool.addPEA( {source: 'test/Converter/Module2.zip'}, (response) => {
+                    pool.addPEA( {source: 'test/Converter/Module.zip'}, (response) => {
                         expect(response.constructor.name).is.equal(successResponseAsString);
                         expect(response.getContent().constructor.name).is.equal('BasePEA');
                         pool.getAllPEAs((response, peas) => {
                             expect(peas.length).equals(1);
-                        });
-                        pool.addPEA( {source: 'test/Converter/Module2.zip'}, (response) => {
-                            expect(response.constructor.name).is.equal(successResponseAsString);
-                            expect(response.getContent().constructor.name).is.equal('BasePEA');
-                            pool.getAllPEAs((response, peas) => {
-                                expect(peas.length).equals(2);
-                                console.log(peas)
-                                done();
+                            pool.addPEA( {source: 'test/Converter/Module2.zip'}, (response) => {
+                                expect(response.constructor.name).is.equal(successResponseAsString);
+                                expect(response.getContent().constructor.name).is.equal('BasePEA');
+                                pool.getAllPEAs((response, peas) => {
+                                    expect(peas.length).equals(2);
+                                    console.log(peas)
+                                    done()
+                                });
                             });
+                        });
                     });
+
+
                 });
             });
             it('import fails', done => {
@@ -87,7 +91,7 @@ describe('class: BasePEAPool', () => {
         });
         describe('method: getPEA()', () => {
             beforeEach(() => {
-                pool.addPEA({source: 'test/Converter/Module2.zip'}, (response) => {
+                pool.addPEA({source: 'test/Converter/Module1.zip'}, (response) => {
                     //done();
                 });
             });
