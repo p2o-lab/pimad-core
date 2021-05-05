@@ -207,17 +207,14 @@ export class ZIPGate extends AFileSystemGate {
 
             if (zipEntries.length >= 0) {
                 // build the path to the parent and the extracted folder
-                //remove everthing after last slash
-                const folderPath: string = (''+ this.gateAddress).substr(0, (''+ this.gateAddress).lastIndexOf('/'));
-                //const unzippedFolderPath: string = ('' + this.gateAddress).slice(0,-4);
                 const responseData: object[] = [];
-                //make folder with name of module, this step is currently neccessary
                 const unzippedFolderPath = (''+ this.gateAddress).split('.')[0];
+                const folderPath = unzippedFolderPath;
                 if (!fileSystem.existsSync(unzippedFolderPath)){
                     fileSystem.mkdirSync(unzippedFolderPath);
                 }
                 // extract the zip
-                zipHandler.extractAllTo(unzippedFolderPath, true);
+                zipHandler.extractAllTo(folderPath, true);
                 // parse the entries ...
                 zipEntries.forEach((entry: IZipEntry) => {
                     // Supporting different file types
