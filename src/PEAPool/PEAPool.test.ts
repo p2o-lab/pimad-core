@@ -54,12 +54,12 @@ describe('class: BasePEAPool', () => {
             it('regular usage', (done) => {
                 pool.getAllPEAs((response, peas) => {
                     expect(peas.length).equals(0);
-                    pool.addPEA( {source: 'test/Converter/Module.zip'}, (response) => {
+                    pool.addPEA( {source: 'test/Converter/PiMAd-core.0-0-1.mtp'}, (response) => {
                         expect(response.constructor.name).is.equal(successResponseAsString);
                         expect(response.getContent().constructor.name).is.equal('BasePEA');
                         pool.getAllPEAs((response, peas) => {
                             expect(peas.length).equals(1);
-                            pool.addPEA( {source: 'test/Converter/Module2.zip'}, (response) => {
+                            pool.addPEA( {source: 'test/Converter/PiMAd-core.0-0-1.mtp'}, (response) => {
                                 expect(response.constructor.name).is.equal(successResponseAsString);
                                 expect(response.getContent().constructor.name).is.equal('BasePEA');
                                 pool.getAllPEAs((response, peas) => {
@@ -94,7 +94,7 @@ describe('class: BasePEAPool', () => {
         });
         describe('method: getPEA()', () => {
             beforeEach(() => {
-                pool.addPEA({source: 'test/Converter/Module1.zip'}, (response) => {
+                pool.addPEA({source: 'test/Converter/PiMAd-core.0-0-1.mtp'}, (response) => {
                     //done();
                 });
             });
