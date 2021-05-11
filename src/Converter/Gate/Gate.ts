@@ -208,7 +208,7 @@ export class ZIPGate extends AFileSystemGate {
             if (zipEntries.length >= 0) {
                 const responseData: object[] = [];
                 // this is the path, where files will be extracted to, e.g. uploads/Module (Module.zip)
-                const unzippedFolderPath = (''+ this.gateAddress).split('.')[0];
+                const unzippedFolderPath = (''+ this.gateAddress).substr(0, (''+ this.gateAddress).lastIndexOf('.'));
                 // TODO:only use one constant, because they are equal
                 const folderPath = unzippedFolderPath;
 
