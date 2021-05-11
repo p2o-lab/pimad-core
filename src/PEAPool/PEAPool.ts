@@ -74,6 +74,11 @@ abstract class APEAPool implements PEAPool {
         }
     }
 
+    /**
+     * Delete PEA from PiMad-Pool by given Identifier
+     * @param identifier
+     * @param callback - contains Success/Failure message with Reason of Failure
+     */
     public deletePEA(identifier: string, callback: (response: PiMAdResponse) => void): void {
         if(this.initialized) {
             // find pea by id
@@ -83,15 +88,22 @@ abstract class APEAPool implements PEAPool {
             if (index > -1) {
                 // delete
                 this.peas.splice(index, 1);
+                //TODO: Check if splice was successful?
                 this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.SUCCESS, 'Success!', {}, callback);
             }else {
-                this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'Index of PEA is lower than 0!', {}, callback);
+                // index == -1 means no match
+                this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'PEA not found', {}, callback);
             }
         } else {
             this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'PEAPool is not initialized!', {}, callback);
         }
     }
 
+    /**
+     * Get PEA by given Identifier
+     * @param identifier
+     * @param callback - contains Success/Failure message with Reason of Failure
+     */
     public getPEA(identifier: string, callback: (response: PiMAdResponse) => void): void {
         if(this.initialized) {
             const localPEA: PEA | undefined = this.peas.find(pea => identifier === pea.getPiMAdIdentifier());
@@ -105,12 +117,16 @@ abstract class APEAPool implements PEAPool {
         }
     }
 
-    public getAllPEAs(callback: (response: PiMAdResponse, peas: PEA[]) => void): void {
+    /**
+     * get All PEAs from PiMad-Pool
+     * @param callback
+     */
+    public getAllPEAs(callback: (response: PiMAdResponse) => void): void {
         //TODO: this.peas already gets passed via callback content, so maybe remove peas param
         if(this.initialized) {
-            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success!', this.peas), this.peas);
+            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success!', this.peas));
         } else {
-            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'This PEAPool is not initialized', {}), []);
+            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'This PEAPool is not initialized', {}));
         }
     }
 }
@@ -123,7 +139,7 @@ export interface PEAPool {
     addPEA(instructions: object, callback: (response: PiMAdResponse) => void): void;
     deletePEA(identifier: string, callback: (response: PiMAdResponse) => void): void;
     getPEA(identifier: string, callback: (response: PiMAdResponse) => void): void;
-    getAllPEAs(callback: (response: PiMAdResponse, peas: PEA[]) => void): void;
+    getAllPEAs(callback: (response: PiMAdResponse) => void): void;
     initialize(firstChainElement: Importer): boolean;
     initializeMTPFreeze202001Importer(): boolean;
 }
