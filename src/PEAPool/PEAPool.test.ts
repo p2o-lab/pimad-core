@@ -60,17 +60,12 @@ describe('class: BasePEAPool', () => {
                         expect(response.getContent().constructor.name).is.equal('BasePEA');
                         pool.getAllPEAs((response) => {
                             expect((response.getContent() as PEA[]).length).equals(1);
-                            pool.addPEA( {source: 'test/Converter/PiMAd-core.0-0-1.mtp'}, (response) => {
+                            // testing deletePEA()
+                            pool.deletePEA((response.getContent() as PEA[])[0].getPiMAdIdentifier(), (response) => {
                                 expect(response.constructor.name).is.equal(successResponseAsString);
-                                expect(response.getContent().constructor.name).is.equal('BasePEA');
                                 pool.getAllPEAs((response) => {
-                                    expect((response.getContent() as PEA[]).length).equals(2);
-                                    // testing deletePEA()
-                                    pool.deletePEA((response.getContent() as PEA[])[0].getPiMAdIdentifier(), (response) => {
-                                        expect(response.constructor.name).is.equal(successResponseAsString);
-                                        expect((response.getContent() as PEA[]).length).equals(1);
-                                        done()
-                                    });
+                                    expect((response.getContent() as PEA[]).length).equals(0);
+                                    done()
                                 });
                             });
                         });
