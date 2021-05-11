@@ -127,7 +127,6 @@ abstract class APEAPool implements PEAPool {
      * @param callback
      */
     public getAllPEAs(callback: (response: PiMAdResponse) => void): void {
-        //TODO: this.peas already gets passed via callback content, so maybe remove peas param
         if(this.initialized) {
             callback(this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success!', this.peas));
         } else {
