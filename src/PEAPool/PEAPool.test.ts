@@ -54,16 +54,19 @@ describe('class: BasePEAPool', () => {
         describe('method: addPEA()', () => {
             it('regular usage', (done) => {
                 pool.getAllPEAs((response) => {
+                    //list should be empty
                     expect((response.getContent() as PEA[]).length).equals(0);
                     pool.addPEA( {source: 'test/Converter/PiMAd-core.0-0-1.mtp'}, (response) => {
                         expect(response.constructor.name).is.equal(successResponseAsString);
                         expect(response.getContent().constructor.name).is.equal('BasePEA');
                         pool.getAllPEAs((response) => {
+                            // list should have one PEA added to it
                             expect((response.getContent() as PEA[]).length).equals(1);
                             // testing deletePEA()
                             pool.deletePEA((response.getContent() as PEA[])[0].getPiMAdIdentifier(), (response) => {
                                 expect(response.constructor.name).is.equal(successResponseAsString);
                                 pool.getAllPEAs((response) => {
+                                    //list should be empty, after deleting PEA
                                     expect((response.getContent() as PEA[]).length).equals(0);
                                     done()
                                 });

@@ -57,6 +57,11 @@ abstract class APEAPool implements PEAPool {
         }
     }
 
+    /**
+     * Add PEA to Pool
+     * @param instructions - parsing instructions including the filepath of uploaded file
+     * @param callback
+     */
     public addPEA(instructions: {source: string}, callback: (response: PiMAdResponse) => void): void {
         if(this.initialized) {
             this.generateUniqueIdentifier(identifier => {
@@ -76,7 +81,7 @@ abstract class APEAPool implements PEAPool {
 
     /**
      * Delete PEA from PiMad-Pool by given Identifier
-     * @param identifier
+     * @param identifier - individual identifier of PEA
      * @param callback - contains Success/Failure message with Reason of Failure
      */
     public deletePEA(identifier: string, callback: (response: PiMAdResponse) => void): void {
@@ -101,7 +106,7 @@ abstract class APEAPool implements PEAPool {
 
     /**
      * Get PEA by given Identifier
-     * @param identifier
+     * @param identifier - individual identifier of PEA
      * @param callback - contains Success/Failure message with Reason of Failure
      */
     public getPEA(identifier: string, callback: (response: PiMAdResponse) => void): void {
@@ -135,6 +140,9 @@ class BasePEAPool extends APEAPool {
 
 }
 
+/**
+ * This interface describes the functions of PEAPool, which can be called from backend
+ */
 export interface PEAPool {
     addPEA(instructions: object, callback: (response: PiMAdResponse) => void): void;
     deletePEA(identifier: string, callback: (response: PiMAdResponse) => void): void;
