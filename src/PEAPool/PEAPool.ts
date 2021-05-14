@@ -90,13 +90,13 @@ abstract class APEAPool implements PEAPool {
             const localPEA: PEA | undefined  = this.peas.find(pea => identifier === pea.getPiMAdIdentifier());
             // find index of pea
             const index = this.peas.indexOf(localPEA as PEA,0);
-            if (index > -1) {
+            // check if pea exists
+            if (localPEA) {
                 // delete
                 this.peas.splice(index, 1);
                 //TODO: Check if splice was successful?
                 this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.SUCCESS, 'Success!', {}, callback);
             }else {
-                // index == -1 means no match
                 this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'PEA not found', {}, callback);
             }
         } else {

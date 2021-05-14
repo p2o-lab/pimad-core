@@ -88,6 +88,7 @@ describe('class: BasePEAPool', () => {
         });
         it('method: deletePEA()', () => {
             pool.deletePEA('', (response) => {
+                // we except an error, because PEA can not be found with empty/wrong identifier
                 expect(response.constructor.name).is.equal(errorResponseAsString);
             });
         });
