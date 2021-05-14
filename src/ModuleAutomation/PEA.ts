@@ -7,6 +7,8 @@ import PiMAdResponse = Backbone.PiMAdResponse;
 import PiMAdResponseTypes = Backbone.PiMAdResponseTypes;
 import {ModuleAutomation} from './DataAssembly';
 import DataAssembly = ModuleAutomation.DataAssembly;
+import {AML} from '@p2olab/pimad-types';
+import Attribute = AML.Attribute;
 
 export interface PEA {
     /**
@@ -107,7 +109,7 @@ abstract class APEA implements PEA {
     protected responseHandler: PiMAdResponseHandler;
     protected responseVendor: PiMAdResponseVendor;
     protected services: Service[];
-
+    protected endpoint: {};
     protected initialized: boolean;
 
     constructor() {
@@ -116,6 +118,7 @@ abstract class APEA implements PEA {
         this.dataModelVersion = new BasicSemanticVersion();
         this.feas = [];
         this.name = 'name: undefined';
+        this.endpoint = {};
         this.pimadIdentifier = 'identifier: undefined';
         this.responseHandler = new PiMAdResponseHandler();
         this.responseVendor = new PiMAdResponseVendor();
@@ -212,6 +215,7 @@ abstract class APEA implements PEA {
             this.pimadIdentifier = data.PiMAdIdentifier;
             this.name = data.Name;
             this.services = data.Services;
+            this.endpoint = data.Endpoint;
             this.initialized = (JSON.stringify(this.dataAssemblies) === JSON.stringify(data.DataAssemblies) &&
                     this.dataModel === data.DataModel &&
                     this.dataModelVersion === data.DataModelVersion &&
@@ -275,4 +279,8 @@ export type PEAInitializeDataType = {
      * An Array with the PEA related Services.
      */
     Services: Service[];
+    /**
+     * OPCUAServerURL
+     */
+    Endpoint: {};
 }

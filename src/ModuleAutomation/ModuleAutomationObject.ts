@@ -54,11 +54,11 @@ export abstract class AModuleAutomationObject implements ModuleAutomationObject 
     }
 
     protected moduleAutomationObjectInitialize(instructions: InitializeModuleAutomationObject): boolean {
-        if(instructions.dataSourceIdentifier) this.dataSourceIdentifier = instructions.dataSourceIdentifier;
-        if(instructions.metaModelRef)        this.metaModelRef = instructions.metaModelRef;
-        if(instructions.value) this.value = instructions.value;
-        if(instructions.defaultValue) this.defaultValue = instructions.defaultValue;
-        if(instructions.description) this.description = instructions.description;
+        if(instructions.dataSourceIdentifier != undefined) this.dataSourceIdentifier = instructions.dataSourceIdentifier;
+        if(instructions.metaModelRef != undefined) this.metaModelRef = instructions.metaModelRef;
+        if(instructions.value != undefined) this.value = instructions.value;
+        if(instructions.defaultValue != undefined) this.defaultValue = instructions.defaultValue;
+        if(instructions.description != undefined) this.description = instructions.description;
 
         this.name = instructions.name;
         this.pimadIdentifier = instructions.pimadIdentifier;

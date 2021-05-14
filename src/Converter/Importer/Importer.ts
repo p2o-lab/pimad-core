@@ -315,6 +315,7 @@ export class MTPFreeze202001Importer extends AImporter {
         let servicePartResponseContent: InternalServiceType[] = [];
         let peaName = 'name: undefined';
         let peaMetaModelRef = 'metaModelRef: undefined';
+        let endpoint = {};
         // looping through the first level instance hierarchy of the CAEX-File.
         data.InstanceHierarchy.forEach((instance: InstanceHierarchy) => {
             const localInternalElement = instance.InternalElement as unknown as {Name: string; ID: string; RefBaseSystemUnitPath: string; InternalElement: object[]};
@@ -334,6 +335,7 @@ export class MTPFreeze202001Importer extends AImporter {
                             mtpPartResponseContent = mtpPartResponse.getContent() as ExtractDataFromCommunicationSetResponseType;
                             communicationInterfaceData = mtpPartResponseContent.CommunicationInterfaceData;
                             dataAssemblies = mtpPartResponseContent.DataAssemblies;
+                            endpoint = mtpPartResponseContent.Endpoint;
                         } else {
                           logger.warn('Could not extract CommunicationSet');
                         }
@@ -433,9 +435,17 @@ export class MTPFreeze202001Importer extends AImporter {
                     }
                 }
             });
+
+
             const localPEA = this.peaFactory.create();
             // Initializing the local pea
-            if(localPEA.initialize({DataAssemblies: dataAssemblies, DataModel: peaMetaModelRef, DataModelVersion: new BasicSemanticVersion(), FEAs: [], Name: peaName, PiMAdIdentifier: pimadIdentifier, Services: localServices})) {
+            if(localPEA.initialize({
+                DataAssemblies: dataAssemblies,
+                DataModel: peaMetaModelRef,
+                DataModelVersion: new BasicSemanticVersion(),
+                FEAs: [], Name: peaName, PiMAdIdentifier: pimadIdentifier,
+                Services: localServices, Endpoint: endpoint})) {
+
                 // successful -> callback with successful response
                 const localSuccessResponse = this.responseVendor.buySuccessResponse();
                 localSuccessResponse.initialize('Success!', localPEA);

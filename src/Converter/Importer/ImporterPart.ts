@@ -178,6 +178,7 @@ export class MTPPart extends AImporterPart {
         const communicationInterfaceData: CommunicationInterfaceData[] = [];
         const dataAssemblies: DataAssembly[] = [];
         const localExternalInterfaces: DataItemSourceListExternalInterface[] = [];
+        let endpoint: {} = {};
         // Extract InstantList and SourceList from communicationSet
         // TODO: I like this approach: const localProcedureDataAssembly: DataAssembly | undefined = dataAssemblies.find(dataAssembly => service.DataAssembly.Value === dataAssembly.getIdentifier())
         let instanceList: InstanceList = {} as InstanceList;
@@ -193,7 +194,8 @@ export class MTPPart extends AImporterPart {
             logger.error('Could not extract InstanceList and SourceList of the CommunicationSet. Aborting!');
             return {
                 CommunicationInterfaceData: [],
-                DataAssemblies: []
+                DataAssemblies: [],
+                Endpoint: {}
             };
         }
         /* Easier handling of 'single' and 'multiple' sources in one code section. Therefore a single source is
@@ -206,9 +208,11 @@ export class MTPPart extends AImporterPart {
             // So far we only know MTPs with a OPCUAServer as source.
             switch (sourceListItem.RefBaseSystemUnitPath) {
                 case 'MTPCommunicationSUCLib/ServerAssembly/OPCUAServer': {
-                    // Extract the server communication interface.
-                    const localeComIntData = this.communicationInterfaceDataVendor.buy(CommunicationInterfaceDataEnum.OPCUAServer);
+                    // assign endpoint
+                    endpoint = sourceListItem.Attribute;
 
+                    // Extract the server communication interface
+                    const localeComIntData = this.communicationInterfaceDataVendor.buy(CommunicationInterfaceDataEnum.OPCUAServer);
                     if(localeComIntData.initialize({
                         dataSourceIdentifier: sourceListItem.ID,
                         name: sourceListItem.Name,
@@ -406,7 +410,8 @@ export class MTPPart extends AImporterPart {
         // We are done. Return the extracted Data.
         return {
             CommunicationInterfaceData: communicationInterfaceData,
-            DataAssemblies: dataAssemblies
+            DataAssemblies: dataAssemblies,
+            Endpoint: endpoint
         };
     }
 
@@ -602,6 +607,7 @@ export interface ImporterPart {
 export type ExtractDataFromCommunicationSetResponseType = {
     CommunicationInterfaceData: CommunicationInterfaceData[];
     DataAssemblies: DataAssembly[];
+    Endpoint: {};
 }
 
 /**

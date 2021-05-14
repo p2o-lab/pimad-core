@@ -6,7 +6,9 @@ import {LastChainElementImporterFactory, MTPFreeze202001ImporterFactory} from '.
 import {expect} from 'chai';
 import {Backbone} from '../Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
-import {PEA} from "../ModuleAutomation";
+import {ModuleAutomation, PEA} from "../ModuleAutomation";
+import {BasicDataAssembly} from "../ModuleAutomation/DataAssembly";
+import DataAssembly = ModuleAutomation.DataAssembly;
 
 const responseVendor = new PiMAdResponseVendor();
 const errorResponseAsString = responseVendor.buyErrorResponse().constructor.name;
@@ -56,7 +58,7 @@ describe('class: BasePEAPool', () => {
                 pool.getAllPEAs((response) => {
                     //list should be empty
                     expect((response.getContent() as PEA[]).length).equals(0);
-                    pool.addPEA( {source: 'test/Converter/PiMAd-core.0-0-1.mtp'}, (response) => {
+                    pool.addPEA( {source: 'local/Module.zip'}, (response) => {
                         expect(response.constructor.name).is.equal(successResponseAsString);
                         expect(response.getContent().constructor.name).is.equal('BasePEA');
                         pool.getAllPEAs((response) => {
