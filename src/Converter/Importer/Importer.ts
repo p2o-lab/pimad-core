@@ -394,6 +394,8 @@ export class MTPFreeze202001Importer extends AImporter {
                             });
                             const localProcedure = this.procedureFactory.create();
                             if(localProcedure.initialize({
+                                defaultValue: '',
+                                description: '',
                                 attributes: procedureAttributes,
                                 dataAssembly: localProcedureDataAssembly,
                                 dataSourceIdentifier: procedure.Identifier,
@@ -416,6 +418,7 @@ export class MTPFreeze202001Importer extends AImporter {
                     });
                     // initialize the new service object ...
                     if(localService.initialize({
+                        defaultValue: '', description: '',
                         attributes: serviceAttributes,
                         dataAssembly: localServiceDataAssembly,
                         dataSourceIdentifier: service.Identifier,

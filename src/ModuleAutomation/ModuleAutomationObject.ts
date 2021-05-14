@@ -4,10 +4,14 @@ import PiMAdResponseHandler = Backbone.PiMAdResponseHandler;
 import PiMAdResponseTypes = Backbone.PiMAdResponseTypes;
 
 export type InitializeModuleAutomationObject = {
-    dataSourceIdentifier: string;
-    metaModelRef: string;
+    dataSourceIdentifier?: string;
+    defaultValue?: string;
+    description?: string;
+    metaModelRef?: string;
     name: string;
     pimadIdentifier: string;
+    value?: string;
+
 }
 
 export abstract class AModuleAutomationObject implements ModuleAutomationObject {
@@ -17,6 +21,9 @@ export abstract class AModuleAutomationObject implements ModuleAutomationObject 
     protected name: string;
     protected pimadIdentifier: string;
     protected responseHandler: PiMAdResponseHandler;
+    protected defaultValue: string;
+    protected description: string;
+    protected value: string;
 
     getDataSourceIdentifier(callback: (response: Backbone.PiMAdResponse, identifier: string) => void): void {
         this.genericPiMAdGetter<string>(this.dataSourceIdentifier, callback);
@@ -47,8 +54,12 @@ export abstract class AModuleAutomationObject implements ModuleAutomationObject 
     }
 
     protected moduleAutomationObjectInitialize(instructions: InitializeModuleAutomationObject): boolean {
-        this.dataSourceIdentifier = instructions.dataSourceIdentifier;
-        this.metaModelRef = instructions.metaModelRef;
+        if(instructions.dataSourceIdentifier) this.dataSourceIdentifier = instructions.dataSourceIdentifier;
+        if(instructions.metaModelRef)        this.metaModelRef = instructions.metaModelRef;
+        if(instructions.value) this.value = instructions.value;
+        if(instructions.defaultValue) this.defaultValue = instructions.defaultValue;
+        if(instructions.description) this.description = instructions.description;
+
         this.name = instructions.name;
         this.pimadIdentifier = instructions.pimadIdentifier;
         return (
@@ -62,6 +73,9 @@ export abstract class AModuleAutomationObject implements ModuleAutomationObject 
     constructor() {
         this.dataSourceIdentifier = 'dataSourceIdentifier: undefined';
         this.name='name: undefined';
+        this.defaultValue = 'defaultValue: undefined';
+        this.value = 'value: undefined';
+        this.description = 'description: undefined';
         this.initialized = false;
         this.metaModelRef = 'metaModelRef: undefined';
         this.pimadIdentifier = 'pimadIdentifier: undefined';

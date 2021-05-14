@@ -27,7 +27,7 @@ export interface DataItem extends ModuleAutomationObject {
 }
 
 export type InitializeDataItem = InitializeModuleAutomationObject & {
-    ciData: CommunicationInterfaceData;
+    ciData?: CommunicationInterfaceData;
     dataType: string;
 }
 
@@ -53,17 +53,37 @@ abstract class ADataItem extends AModuleAutomationObject implements DataItem {
 
     initialize(instructions: InitializeDataItem): boolean {
         if (!this.initialized) {
-            this.cIData = instructions.ciData;
             this.dataType = instructions.dataType;
-            this.initialized = (JSON.stringify(this.cIData) === JSON.stringify(instructions.ciData)
-                && this.dataType === instructions.dataType
-                && this.moduleAutomationObjectInitialize({
-                    dataSourceIdentifier: instructions.dataSourceIdentifier,
-                    metaModelRef: instructions.metaModelRef,
-                    name: instructions.name,
-                    pimadIdentifier: instructions.pimadIdentifier,
-                })
-            );
+            this.name = instructions.name;
+
+            if(instructions.ciData) {
+                this.cIData = instructions.ciData;
+                this.initialized = (JSON.stringify(this.cIData) === JSON.stringify(instructions.ciData)
+                    && this.dataType === instructions.dataType
+                    && this.moduleAutomationObjectInitialize({
+                        dataSourceIdentifier: instructions.dataSourceIdentifier,
+                        defaultValue: instructions.defaultValue,
+                        description: instructions.description,
+                        metaModelRef: instructions.metaModelRef,
+                        name: instructions.name,
+                        pimadIdentifier: instructions.pimadIdentifier,
+                    })
+                );
+           }else{
+                this.initialized = (
+                    this.dataType === instructions.dataType
+                    && this.moduleAutomationObjectInitialize({
+                        dataSourceIdentifier: instructions.dataSourceIdentifier,
+                        defaultValue: instructions.defaultValue,
+                        description: instructions.description,
+                        metaModelRef: instructions.metaModelRef,
+                        name: instructions.name,
+                        pimadIdentifier: instructions.pimadIdentifier,
+                        value: instructions.value
+                    })
+                );
+            }
+
             return this.initialized;
         } else {
             return false;
