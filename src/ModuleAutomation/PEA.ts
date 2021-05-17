@@ -136,7 +136,7 @@ abstract class APEA implements PEA {
     }
     getAllDataAssemblies(): PiMAdResponse {
         const response = this.responseVendor.buySuccessResponse();
-        response.initialize('Success!', {data: this.dataAssemblies});
+        response.initialize('Success!', this.dataAssemblies);
         return response;
     }
     getAllFEAs(): PiMAdResponse {
