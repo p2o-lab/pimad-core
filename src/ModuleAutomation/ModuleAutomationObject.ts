@@ -54,6 +54,7 @@ export abstract class AModuleAutomationObject implements ModuleAutomationObject 
     }
 
     protected moduleAutomationObjectInitialize(instructions: InitializeModuleAutomationObject): boolean {
+        // WP
         if(instructions.dataSourceIdentifier != undefined) this.dataSourceIdentifier = instructions.dataSourceIdentifier;
         if(instructions.metaModelRef != undefined) this.metaModelRef = instructions.metaModelRef;
         if(instructions.value != undefined) this.value = instructions.value;
@@ -62,9 +63,10 @@ export abstract class AModuleAutomationObject implements ModuleAutomationObject 
 
         this.name = instructions.name;
         this.pimadIdentifier = instructions.pimadIdentifier;
+        //TODO: e.g. TAGName doesn't has datasourceidentifier...
         return (
-            this.dataSourceIdentifier === instructions.dataSourceIdentifier &&
-            this.metaModelRef === instructions.metaModelRef &&
+            //this.dataSourceIdentifier === instructions.dataSourceIdentifier &&
+           // this.metaModelRef === instructions.metaModelRef &&
             this.name === instructions.name &&
             this.pimadIdentifier === instructions.pimadIdentifier
         );
