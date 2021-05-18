@@ -73,7 +73,7 @@ export interface NodeId extends ModuleAutomationObject {
      * @param callback - A callback function. The response object shows the status (success while object was initialized
      * or error while not) of the request, while the namespaceIndex object the requested data.
      */
-    getNamespaceIndex(callback: (response: PiMAdResponse, namespaceIndex: number) => void): void;
+    getNamespaceIndex(callback: (response: PiMAdResponse, namespaceIndex: string) => void): void;
 
     /**
      * Get the hole nodeId as string. Like toString() but via callback.
