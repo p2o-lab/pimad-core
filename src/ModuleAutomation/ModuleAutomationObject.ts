@@ -28,6 +28,12 @@ export abstract class AModuleAutomationObject implements ModuleAutomationObject 
     getDataSourceIdentifier(callback: (response: Backbone.PiMAdResponse, identifier: string) => void): void {
         this.genericPiMAdGetter<string>(this.dataSourceIdentifier, callback);
     }
+    getDefaultValue(callback: (response: Backbone.PiMAdResponse, defaultValue: string) => void): void {
+        this.genericPiMAdGetter<string>(this.defaultValue, callback);
+    }
+    getDescription(callback: (response: Backbone.PiMAdResponse, defaultValue: string) => void): void {
+        this.genericPiMAdGetter<string>(this.description, callback);
+    }
 
     getMetaModelRef(callback: (response: Backbone.PiMAdResponse, metaModelRef: string) => void): void {
         this.genericPiMAdGetter<string>(this.metaModelRef, callback);
@@ -39,6 +45,10 @@ export abstract class AModuleAutomationObject implements ModuleAutomationObject 
 
     getPiMAdIdentifier(callback: (response: Backbone.PiMAdResponse, identifier: string) => void): void {
         this.genericPiMAdGetter<string>(this.pimadIdentifier, callback);
+    }
+
+    getValue(callback: (response: Backbone.PiMAdResponse, value: string) => void): void {
+        this.genericPiMAdGetter<string>(this.value, callback);
     }
 
     protected genericPiMAdGetter<DataType>(data: DataType , callback: (response: Backbone.PiMAdResponse, responseGetter: DataType) => void): void {

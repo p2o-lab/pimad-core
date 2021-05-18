@@ -23,7 +23,13 @@ export interface DataItem extends ModuleAutomationObject {
     /**
      *
      */
+    getValue(callback: (response: PiMAdResponse, value: string) => void ): void;
+
+    /**
+     *
+     */
     initialize(instructions: InitializeDataItem): boolean;
+
 }
 
 export type InitializeDataItem = InitializeModuleAutomationObject & {
@@ -40,6 +46,7 @@ abstract class ADataItem extends AModuleAutomationObject implements DataItem {
         super();
         this.cIData = {} as CommunicationInterfaceData;
         this.dataType = 'DataType: not initialized!';
+        this.value = 'Value: not initialized';
         this.initialized = false;
     }
 

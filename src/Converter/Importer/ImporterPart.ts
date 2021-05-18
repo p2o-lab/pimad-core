@@ -10,7 +10,7 @@ import {
 import {AML, InstanceList, SourceList} from '@p2olab/pimad-types';
 import {logger} from '../../Utils';
 import {Backbone} from '../../Backbone';
-import {CommunicationInterfaceDataEnum} from '../../ModuleAutomation/CommunicationInterfaceData';
+import {CommunicationInterfaceDataEnum,} from '../../ModuleAutomation/CommunicationInterfaceData';
 import DataItemInstanceList = AML.DataItemInstanceList;
 import DataItemSourceList = AML.DataItemSourceList;
 import DataItemSourceListExternalInterface = AML.DataItemSourceListExternalInterface;
@@ -214,6 +214,7 @@ export class MTPPart extends AImporterPart {
                     // Extract the server communication interface
                     const localeComIntData = this.communicationInterfaceDataVendor.buy(CommunicationInterfaceDataEnum.OPCUAServer);
                     if(localeComIntData.initialize({
+                        access: 'TODO',
                         dataSourceIdentifier: sourceListItem.ID,
                         name: sourceListItem.Name,
                         interfaceDescription: {
@@ -327,6 +328,7 @@ export class MTPPart extends AImporterPart {
                                 // in the last loop circle initialize the communication interface.
                                 if (localeInterfaceAttribute == localeExternalInterface.Attribute[localeExternalInterface.Attribute.length - 1]) {
                                     if (opcuaNodeCommunication.initialize({
+                                        access: access,
                                         dataSourceIdentifier: localeExternalInterface.ID,
                                         name: instanceListElementAttribute.Name,
                                         interfaceDescription: {
