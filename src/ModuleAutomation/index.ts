@@ -1,10 +1,10 @@
 export {Attribute, AttributeFactory, AttributeFactoryVendor} from './Attribute';
 export {CommunicationInterfaceDataFactory, CommunicationInterfaceData, CommunicationInterfaceDataVendor} from './CommunicationInterfaceData';
-export {ModuleAutomation} from './DataAssembly';
-export * from './DataItem';
+export {ModuleAutomation} from './DataAssemblyModel';
+export * from './DataItemModel';
 export * from './FEA';
 export * from './NodeId';
 export * from './Parameter';
-export {PEA, PEAFactory, BasePEAFactory} from './PEA';
-export * from './Procedure';
-export {Service, ServiceVendor, Services} from './Service';
+export {PEAModel, PEAFactory, BasePEAFactory} from './PEAModel';
+export * from './ProcedureModel';
+export {ServiceModel, ServiceVendor, Services} from './ServiceModel';

@@ -1,8 +1,8 @@
 import {expect} from 'chai';
 import {LastChainElementImporterFactory, LastChainLinkImporter, MTPFreeze202001Importer} from './Importer';
 import {Backbone, BasicSemanticVersion, SemanticVersion} from '../../Backbone';
-import {ModuleAutomation, PEA} from '../../ModuleAutomation';
-import {Service} from '../../ModuleAutomation';
+import {ModuleAutomation, PEAModel} from '../../ModuleAutomation';
+import {ServiceModel} from '../../ModuleAutomation';
 import {FEA} from '../../ModuleAutomation';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import PiMAdResponse = Backbone.PiMAdResponse;
@@ -35,10 +35,10 @@ describe('class: LastChainElementImporter', () => {
 
 function evaluateMTPFreeze202001Importer(response: PiMAdResponse, callback: () => void): void {
     expect(response.constructor.name).is.equal(successResponseAsString);
-    const testResult = response.getContent() as PEA;
+    const testResult = response.getContent() as PEAModel;
     expect((testResult.getAllDataAssemblies().getContent() as {data: DataAssembly[]}).data.length).is.equal(8);
     expect((testResult.getAllFEAs().getContent() as {data: FEA[]}).data.length).is.equal(0);
-    expect((testResult.getAllServices().getContent() as {data: Service[]}).data.length).is.equal(2);
+    expect((testResult.getAllServices().getContent() as {data: ServiceModel[]}).data.length).is.equal(2);
     expect(JSON.stringify(testResult.getDataModel().getContent() as {data: string})).is.equal(JSON.stringify({data: 'MTPSUCLib/ModuleTypePackage'}));
     expect(typeof (testResult.getDataModelVersion().getContent() as SemanticVersion)).is.equal(typeof new BasicSemanticVersion());
     expect(testResult.getPiMAdIdentifier()).is.equal('Test-Identifier');

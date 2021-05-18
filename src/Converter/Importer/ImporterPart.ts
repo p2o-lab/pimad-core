@@ -3,7 +3,7 @@ import {
     BaseProcedureFactory,
     CommunicationInterfaceData,
     CommunicationInterfaceDataVendor,
-    DataItem,
+    DataItemModel,
     ModuleAutomation,
     Parameter
 } from '../../ModuleAutomation';
@@ -160,7 +160,7 @@ export class MTPPart extends AImporterPart {
      *       while (more Attributes\nin InternalElement?) is (true)
      *         if(attributeDataType == xs:IDREF)
      *           :merging attribute data\nwith external interface data;
-     *           :initialize DataItem with\nmerged data and push\nit to the local storage;
+     *           :initialize DataItemModel with\nmerged data and push\nit to the local storage;
      *         elseif (attributeDataType == xs:ID)
      *           :save the RefID as\nDataAssembly-Identifier;
      *         endif
@@ -259,7 +259,7 @@ export class MTPPart extends AImporterPart {
         }
         instanceList.InternalElement.forEach((instanceListElement: DataItemInstanceList) => {
             // like above these variables will be continuously filled with data in the following lines.
-            const localDataItems: DataItem[] = [];
+            const localDataItems: DataItemModel[] = [];
             let dataAssemblyIdentifier = '';
             // iterate through all attributes
             /* Easier handling of 'single' and 'multiple' attributes in one code section. Therefore a single attribute is
@@ -273,8 +273,6 @@ export class MTPPart extends AImporterPart {
 
                 switch (instanceListElementAttribute.AttributeDataType) {
 
-                    /* In this case the attribute references to an ExternalInterface. Later both data sources will be
-                    merged as one PiMAd-core-DataItem. */
                     case 'xs:string':
                         // eslint-disable-next-line no-case-declarations
                         if (localDataItem.initialize({
@@ -285,8 +283,7 @@ export class MTPPart extends AImporterPart {
                             pimadIdentifier: 'TODO',
                             value: instanceListElementAttribute.Value
                         })) {
-                            /* no error -> pushing it to the list of data items. later it will be aggregated in
-                            the data assembly object. */
+                            // push to the list of data items. later it will be aggregated in the data assembly object.
                            localDataItems.push(localDataItem);
                         }
                         break;
@@ -370,7 +367,7 @@ export class MTPPart extends AImporterPart {
                         }
                     });
                     break;
-                    /* Now the attributes are id's and doesn't referencing to an DataAssembly/DataItem. In this case the
+                    /* Now the attributes are id's and doesn't referencing to an DataAssembly/DataItemModel. In this case the
                     id connect different data items in the MTP. (Real talk) me (CHe) as an software engineer, i don't
                     understand this concept... why fucking up the system above with ID & RefIDs in the
                     DataItems... never mind */
@@ -461,10 +458,10 @@ export class ServicePart extends AImporterPart {
      * @param callback - A callback function with an instance of the Response-Interface.
      */
     extract(data: ServicePartExtractInputDataType, callback: (response: PiMAdResponse) => void): void {
-        /* One big issue: In the ServicePart of the MTP are not all data to build a PiMAd-core Service. There are
+        /* One big issue: In the ServicePart of the MTP are not all data to build a PiMAd-core ServiceModel. There are
         references to DataAssemblies extracted via the MTPPart. Therefore this one extracts the data like a quasi
         service. Later one the Importer merges the data of quasi service and the referenced DataAssembly to one
-        PiMAd-core Service. */
+        PiMAd-core ServiceModel. */
         const extractedServiceData: InternalServiceType[] = []; // will be the content of the response.
         // typing
         let servicePartInternalElementArray = data.InternalElement as ServiceInternalElement[];
@@ -477,7 +474,7 @@ export class ServicePart extends AImporterPart {
         servicePartInternalElementArray.forEach((amlServiceInternalElement: ServiceInternalElement) => {
             // TODO > Better solution possible?
             // TODO > Why no check? RefBaseSystemUnitPath
-            // Skip Service Relation in FirstPlace
+            // Skip ServiceModel Relation in FirstPlace
             if (amlServiceInternalElement.RefBaseSystemUnitPath.includes('ServiceRelation')) return;
             let localAMLServiceInternalElementAttributes: Attribute[] = [];
             if(!Array.isArray(amlServiceInternalElement.Attribute)) {
@@ -537,10 +534,10 @@ export class ServicePart extends AImporterPart {
                             localProcedure.Attributes = response.getContent() as Attribute[];
                         }));
                         localService.Procedures.push(localProcedure);
-                        // TODO: Missing Procedure-Parameters
+                        // TODO: Missing ProcedureModel-Parameters
                         break;
                     }
-                    //case 'TODO: Missing Service-Parameters'
+                    //case 'TODO: Missing ServiceModel-Parameters'
                     default:
                         logger.warn('Unknown >InternalElement< in service <' + amlServiceInternalElement.Name + '> Ignoring!');
                         break;

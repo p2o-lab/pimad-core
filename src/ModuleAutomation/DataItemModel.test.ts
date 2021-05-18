@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {BaseDataItemFactory, CommunicationInterfaceDataVendor, DataItem} from './index';
+import {BaseDataItemFactory, CommunicationInterfaceDataVendor, DataItemModel} from './index';
 import {
     CommunicationInterfaceDataEnum,
     OPCUANodeCommunication
@@ -13,7 +13,7 @@ const successResponseAsString = responseVendor.buySuccessResponse().constructor.
 
 // TODO > Test-cases are crap
 describe('class: BaseDataItem', () => {
-    let dataItem: DataItem;
+    let dataItem: DataItemModel;
     beforeEach(function () {
         dataItem = new BaseDataItemFactory().create();
     });

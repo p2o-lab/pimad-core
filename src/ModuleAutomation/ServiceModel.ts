@@ -1,10 +1,10 @@
 import {logger} from '../Utils';
-import {AProcedure, InitializeProcedureType, Procedure} from './Procedure';
+import {AProcedure, InitializeProcedureType, ProcedureModel} from './ProcedureModel';
 import {Backbone} from '../Backbone';
 import PiMAdResponse = Backbone.PiMAdResponse;
 
-abstract class AService extends AProcedure implements Service {
-    protected procedures: Procedure[];
+abstract class AService extends AProcedure implements ServiceModel {
+    protected procedures: ProcedureModel[];
 
     constructor() {
         super();
@@ -12,17 +12,17 @@ abstract class AService extends AProcedure implements Service {
     }
 
     /**
-     * @inheritDoc {@link Service.getAllProcedures}
+     * @inheritDoc {@link ServiceModel.getAllProcedures}
      */
-    getAllProcedures(callback: (response: PiMAdResponse, procedures: Procedure[]) => void): void {
-        this.genericPiMAdGetter<Procedure[]>(this.procedures, callback);
+    getAllProcedures(callback: (response: PiMAdResponse, procedures: ProcedureModel[]) => void): void {
+        this.genericPiMAdGetter<ProcedureModel[]>(this.procedures, callback);
     }
 
     /**
-     *  @inheritDoc {@link Service.getProcedure}
+     *  @inheritDoc {@link ServiceModel.getProcedure}
      */
-    getProcedure(name: string, callback: (response: PiMAdResponse, procedure: Procedure) => void): void {
-        const localProcedure: Procedure | undefined = this.procedures.find(procedure => {
+    getProcedure(name: string, callback: (response: PiMAdResponse, procedure: ProcedureModel) => void): void {
+        const localProcedure: ProcedureModel | undefined = this.procedures.find(procedure => {
             let testCondition = false;
             procedure.getName((response, procedureName) => {
                 testCondition = name === procedureName;
@@ -30,14 +30,14 @@ abstract class AService extends AProcedure implements Service {
             return testCondition;
         });
         if(localProcedure === undefined) {
-            this.genericPiMAdGetter<Procedure>({} as Procedure, callback);
+            this.genericPiMAdGetter<ProcedureModel>({} as ProcedureModel, callback);
         } else {
-            this.genericPiMAdGetter<Procedure>(localProcedure, callback);
+            this.genericPiMAdGetter<ProcedureModel>(localProcedure, callback);
         }
     }
 
     /**
-     * @inheritDoc {@link Service.initialize}
+     * @inheritDoc {@link ServiceModel.initialize}
      */
     initialize(instructions: InitializeServiceType): boolean {
         if(!this.initialized) {
@@ -68,15 +68,15 @@ class BaseService extends AService {
 }
 
 export interface ServiceFactory {
-    create(): Service;
+    create(): ServiceModel;
 }
 
 abstract class AServiceFactory implements ServiceFactory {
-    abstract create(): Service;
+    abstract create(): ServiceModel;
 }
 
 export class BaseServiceFactory extends AServiceFactory {
-    create(): Service{
+    create(): ServiceModel{
         const service = new BaseService();
         logger.debug(this.constructor.name + ' creates a ' + service.constructor.name);
         return service;
@@ -84,17 +84,17 @@ export class BaseServiceFactory extends AServiceFactory {
 }
 
 export type InitializeServiceType = InitializeProcedureType & {
-    procedure: Procedure[];
+    procedure: ProcedureModel[];
 }
 
-export interface Service extends Procedure {
+export interface ServiceModel extends ProcedureModel {
 
     /**
      * TODO
      * @param callback - TODO
      * @returns TODO
      */
-    getAllProcedures(callback: (response: PiMAdResponse, procedures: Procedure[]) => void): void;
+    getAllProcedures(callback: (response: PiMAdResponse, procedures: ProcedureModel[]) => void): void;
 
     /**
      * Get a specific procedure of the service object.
@@ -103,7 +103,7 @@ export interface Service extends Procedure {
      * || error if not initialized or no match) of the function call via the object-type. The procedure-object is the
      * requested data.
      */
-    getProcedure(name: string, callback: (response: PiMAdResponse, procedure: Procedure) => void): void;
+    getProcedure(name: string, callback: (response: PiMAdResponse, procedure: ProcedureModel) => void): void;
 
     /**
      * TODO
@@ -120,7 +120,7 @@ export enum Services {
 export class ServiceVendor {
     private baseServiceFactory: BaseServiceFactory;
 
-    buy(serviceType: Services): Service {
+    buy(serviceType: Services): ServiceModel {
         switch (serviceType) {
             case Services.BaseService:
                 return this.baseServiceFactory.create();

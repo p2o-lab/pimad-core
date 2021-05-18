@@ -8,7 +8,7 @@ import {
     ModuleAutomationObject
 } from './ModuleAutomationObject';
 
-export interface DataItem extends ModuleAutomationObject {
+export interface DataItemModel extends ModuleAutomationObject {
 
     /**
      * Getter for this.cIData.
@@ -37,7 +37,7 @@ export type InitializeDataItem = InitializeModuleAutomationObject & {
     dataType: string;
 }
 
-abstract class ADataItem extends AModuleAutomationObject implements DataItem {
+abstract class ADataItem extends AModuleAutomationObject implements DataItemModel {
 
     protected cIData: CommunicationInterfaceData;
     protected dataType: string; // ToDo > Should be an enum!
@@ -102,20 +102,20 @@ class BaseDataItem extends ADataItem {
 }
 
 /**
- * This one is a Interface for a DataItemFactory. It creates objects of the class DataItem.
+ * This one is a Interface for a DataItemFactory. It creates objects of the class DataItemModel.
  */
 export interface DataItemFactory {
     /**
-     * Create a uninitialized object of the class DataItem.
+     * Create a uninitialized object of the class DataItemModel.
      */
-    create(): DataItem;
+    create(): DataItemModel;
 }
 
 /**
  * This one is a abstract DataItemFactory, actually without deeper purpose. In future this one is a extra abstraction layer.
  */
 abstract class ADataItemFactory implements DataItemFactory {
-    abstract create(): DataItem;
+    abstract create(): DataItemModel;
 }
 
 /**
@@ -125,7 +125,7 @@ export class BaseDataItemFactory extends ADataItemFactory {
     /**
      *
      */
-    create(): DataItem {
+    create(): DataItemModel {
         const dataItem = new BaseDataItem();
         logger.debug(this.constructor.name + ' creates a ' + dataItem.constructor.name);
         return dataItem;

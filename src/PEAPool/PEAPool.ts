@@ -1,4 +1,4 @@
-import {PEA} from '../ModuleAutomation';
+import {PEAModel} from '../ModuleAutomation';
 import {Importer, LastChainElementImporterFactory, MTPFreeze202001ImporterFactory} from '../Converter/Importer/Importer';
 import {logger} from '../Utils';
 import { v4 as uuidv4 } from 'uuid';
@@ -11,7 +11,7 @@ import PiMAdResponseTypes = Backbone.PiMAdResponseTypes;
 abstract class APEAPool implements PEAPool {
     private initialized: boolean;
     protected importerChainFirstElement: Importer;
-    protected peas: PEA[];
+    protected peas: PEAModel[];
     protected responseVendor: PiMAdResponseVendor;
     protected responseHandler: PiMAdResponseHandler;
 
@@ -58,7 +58,7 @@ abstract class APEAPool implements PEAPool {
     }
 
     /**
-     * Add PEA to Pool
+     * Add PEAModel to Pool
      * @param instructions - parsing instructions including the filepath of uploaded file
      * @param callback
      */
@@ -67,7 +67,7 @@ abstract class APEAPool implements PEAPool {
             this.generateUniqueIdentifier(identifier => {
                 this.importerChainFirstElement.convertFrom({source: instructions.source, identifier: identifier}, (response) => {
                     if(response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
-                        this.peas.push(response.getContent() as PEA);
+                        this.peas.push(response.getContent() as PEAModel);
                         callback(response);
                     } else {
                         callback(response);
@@ -80,16 +80,16 @@ abstract class APEAPool implements PEAPool {
     }
 
     /**
-     * Delete PEA from PiMad-Pool by given Identifier
-     * @param identifier - individual identifier of PEA
+     * Delete PEAModel from PiMad-Pool by given Identifier
+     * @param identifier - individual identifier of PEAModel
      * @param callback - contains Success/Failure message with Reason of Failure
      */
     public deletePEA(identifier: string, callback: (response: PiMAdResponse) => void): void {
         if(this.initialized) {
             // find pea by id
-            const localPEA: PEA | undefined  = this.peas.find(pea => identifier === pea.getPiMAdIdentifier());
+            const localPEA: PEAModel | undefined  = this.peas.find(pea => identifier === pea.getPiMAdIdentifier());
             // find index of pea
-            const index = this.peas.indexOf(localPEA as PEA,0);
+            const index = this.peas.indexOf(localPEA as PEAModel,0);
             // check if pea exists
             if (localPEA) {
                 // delete
@@ -97,7 +97,7 @@ abstract class APEAPool implements PEAPool {
                 //TODO: Check if splice was successful?
                 this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.SUCCESS, 'Success!', {}, callback);
             }else {
-                this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'PEA not found', {}, callback);
+                this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'PEAModel not found', {}, callback);
             }
         } else {
             this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'PEAPool is not initialized!', {}, callback);
@@ -105,15 +105,15 @@ abstract class APEAPool implements PEAPool {
     }
 
     /**
-     * Get PEA by given Identifier
-     * @param identifier - individual identifier of PEA
+     * Get PEAModel by given Identifier
+     * @param identifier - individual identifier of PEAModel
      * @param callback - contains Success/Failure message with Reason of Failure
      */
     public getPEA(identifier: string, callback: (response: PiMAdResponse) => void): void {
         if(this.initialized) {
-            const localPEA: PEA | undefined = this.peas.find(pea => identifier === pea.getPiMAdIdentifier());
+            const localPEA: PEAModel | undefined = this.peas.find(pea => identifier === pea.getPiMAdIdentifier());
             if (localPEA === undefined)  {
-                this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'PEA <' + identifier + '> is not part of the pool party!', {}, callback);
+                this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'PEAModel <' + identifier + '> is not part of the pool party!', {}, callback);
             } else {
                 this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.SUCCESS, 'Success!', localPEA, callback);
             }

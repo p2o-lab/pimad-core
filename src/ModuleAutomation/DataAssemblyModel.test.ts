@@ -5,7 +5,7 @@ import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import DataAssembly = ModuleAutomation.DataAssembly;
 import DataAssemblyVendor = ModuleAutomation.DataAssemblyVendor;
 import DataAssemblyType = ModuleAutomation.DataAssemblyType;
-import {BasicDataAssembly} from './DataAssembly';
+import {BasicDataAssembly} from './DataAssemblyModel';
 
 const responseVendor = new PiMAdResponseVendor();
 const dataAssemblyVendor = new DataAssemblyVendor();
@@ -64,7 +64,7 @@ describe('class: BaseDataAssembly', () => {
             });
         });
         describe('method: getDataItem', () => {
-            it('DataItem exists', (done) => {
+            it('DataItemModel exists', (done) => {
                 dataAssembly.getDataItem('DataItemTwo', (response, dataItem) => {
                     expect(response.constructor.name).is.equal(successResponseAsString);
                     dataItem.getName((response, name) => {
@@ -73,7 +73,7 @@ describe('class: BaseDataAssembly', () => {
                     });
                 });
             });
-            it('DataItem does not exist', () => {
+            it('DataItemModel does not exist', () => {
                 dataAssembly.getDataItem('DataItemFour', (response, dataItem) => {
                     expect(response.constructor.name).is.equal(errorResponseAsString);
                 });
@@ -124,7 +124,7 @@ describe('class: BaseDataAssembly', () => {
             });
         });
         it('method: getDataItem', () => {
-            dataAssembly.getDataItem('Test-DataItem',(response, dataItems) => {
+            dataAssembly.getDataItem('Test-DataItemModel',(response, dataItems) => {
                 expect(response.constructor.name).is.equal(errorResponseAsString);
             });
         });

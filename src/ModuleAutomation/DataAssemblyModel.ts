@@ -1,4 +1,4 @@
-import {DataItem} from './DataItem';
+import {DataItemModel} from './DataItemModel';
 import {logger} from '../Utils';
 import {Backbone} from '../Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
@@ -8,7 +8,7 @@ import PiMAdResponseTypes = Backbone.PiMAdResponseTypes;
 
 abstract class ADataAssembly implements ModuleAutomation.DataAssembly {
 
-    protected dataItems: DataItem[];
+    protected dataItems: DataItemModel[];
     protected description: string;
     protected dataSourceIdentifier: string;
     protected name: string;
@@ -44,9 +44,9 @@ abstract class ADataAssembly implements ModuleAutomation.DataAssembly {
             callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'The instance is not initialized', {}), this.dataSourceIdentifier);
         }
     }
-    getDataItem(name: string,callback: (response: PiMAdResponse, dataItems: DataItem) => void): void {
+    getDataItem(name: string,callback: (response: PiMAdResponse, dataItems: DataItemModel) => void): void {
         if(this.initialized) {
-            const localDataItem: DataItem | undefined = this.dataItems.find(dataItem => {
+            const localDataItem: DataItemModel | undefined = this.dataItems.find(dataItem => {
                 let testCondition = false;
                 dataItem.getName((response, dataItemName) => {
                     testCondition = dataItemName === name;
@@ -54,12 +54,12 @@ abstract class ADataAssembly implements ModuleAutomation.DataAssembly {
                 return testCondition;
             });
             if(localDataItem === undefined) {
-                callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'This DataAssembly has no DataItem called <' + name +'>', {}), {} as DataItem);
+                callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'This DataAssembly has no DataItemModel called <' + name +'>', {}), {} as DataItemModel);
             } else {
                 callback(this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success', {}), localDataItem);
             }
         } else {
-            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'This instance is not initialized', {}), {} as DataItem);
+            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'This instance is not initialized', {}), {} as DataItemModel);
         }
     }
     getInterfaceClass(callback: (response: PiMAdResponse, interfaceClass: string) => void): void {
@@ -104,7 +104,7 @@ abstract class ADataAssembly implements ModuleAutomation.DataAssembly {
 }
 
 export class BasicDataAssembly extends ADataAssembly {
-    initialize(instructions: {tag: string; dataSourceIdentifier: string; description: string; dataItems: DataItem[]; metaModelRef: string; pimadIdentifier: string}): boolean {
+    initialize(instructions: {tag: string; dataSourceIdentifier: string; description: string; dataItems: DataItemModel[]; metaModelRef: string; pimadIdentifier: string}): boolean {
         if (!this.initialized) {
             this.name = instructions.tag;
             this.dataSourceIdentifier = instructions.dataSourceIdentifier;
@@ -151,7 +151,7 @@ export namespace ModuleAutomation {
      <uml>
      abstract class ADataAssemblyFactory
      abstract class ADataAssembly {
-	    #dataItems: DataItem[]
+	    #dataItems: DataItemModel[]
 	    #description: string
 	    #name: string
 	    #initialized: boolean = false
@@ -163,7 +163,7 @@ export namespace ModuleAutomation {
 
      class BasicDataAssemblyFactory
      class BasicDataAssembly {
-        +initialize(instructions: {tag: string; description: string; dataItems: DataItem[]; identifier: string; metaModelRef: string}): boolean
+        +initialize(instructions: {tag: string; description: string; dataItems: DataItemModel[]; identifier: string; metaModelRef: string}): boolean
      }
      class DataAssemblyVendor {
         +buy(type: DataAssemblyType): DataAssembly
@@ -175,8 +175,8 @@ export namespace ModuleAutomation {
 
      interface DataAssemblyFactory
      interface DataAssembly {
-        +getAllDataItems(callback: (response: PiMAdResponse, dataItems: DataItem[]) => void): void
-        +getDataItem(name: string,callback: (response: PiMAdResponse, dataItems: DataItem) => void): void
+        +getAllDataItems(callback: (response: PiMAdResponse, dataItems: DataItemModel[]) => void): void
+        +getDataItem(name: string,callback: (response: PiMAdResponse, dataItems: DataItemModel) => void): void
         +getDataSourceIdentifier(callback: (response: PiMAdResponse, identifier: string) => void): void
         +getInterfaceClass(callback: (response: PiMAdResponse, interfaceClass: string) => void): void
         +getHumanReadableDescription(callback: (response: PiMAdResponse, tagDescription: string) => void): void
@@ -196,17 +196,17 @@ export namespace ModuleAutomation {
      */
     export interface DataAssembly {
         /**
-         * Getter for this.dataItems. Returns all {@link DataItem}s aggregated in this instance.
-         * @param callback - Accessing the {@link DataItem}s-Array via callback function.
+         * Getter for this.dataItems. Returns all {@link DataItemModel}s aggregated in this instance.
+         * @param callback - Accessing the {@link DataItemModel}s-Array via callback function.
          */
-        getAllDataItems(callback: (response: PiMAdResponse, dataItems: DataItem[]) => void ): void;
+        getAllDataItems(callback: (response: PiMAdResponse, dataItems: DataItemModel[]) => void ): void;
 
         /**
-         * Get a single {@link DataItem} via it's name.
-         * @param name - The name of the {@link DataItem}
-         * @param callback - Accessing the matching {@link DataItem} via callback function.
+         * Get a single {@link DataItemModel} via it's name.
+         * @param name - The name of the {@link DataItemModel}
+         * @param callback - Accessing the matching {@link DataItemModel} via callback function.
          */
-        getDataItem(name: string,callback: (response: PiMAdResponse, dataItems: DataItem) => void): void;
+        getDataItem(name: string,callback: (response: PiMAdResponse, dataItems: DataItemModel) => void): void;
 
         /**
          * Getter for this.dataSourceIdentifier. This variable contains the identifier of the previous data source. It's
@@ -320,9 +320,9 @@ abstract class AIndicator extends ADataAssembly implements Sensor{
 /**
  * Callback for {@link ModuleAutomation.DataAssembly.getAllDataItems}.
  * @param response - Indicates the status of the result. F.ex. a {@link SuccessResponse} for a successful ?.
- * @param dataItems - An Array with {@link DataItem}s.
+ * @param dataItems - An Array with {@link DataItemModel}s.
  */
 type GetAllDataItems = (
     response: PiMAdResponse,
-    dataItems: DataItem[]
+    dataItems: DataItemModel[]
 ) => void
