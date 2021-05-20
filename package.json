@@ -38,7 +38,7 @@
     "Anselm Klose <anselm.klose@tu-dresden.de>"
   ],
   "devDependencies": {
-    "@p2olab/pimad-types": "1.0.0",
+    "@p2olab/pimad-types": "1.0.1-alpha1",
     "@types/adm-zip": "^0.4.33",
     "@types/chai": "^4.2.11",
     "@types/express": "^4.17.6",
