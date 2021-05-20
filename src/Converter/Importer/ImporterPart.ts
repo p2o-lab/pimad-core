@@ -209,12 +209,12 @@ export class MTPPart extends AImporterPart {
             switch (sourceListItem.RefBaseSystemUnitPath) {
                 case 'MTPCommunicationSUCLib/ServerAssembly/OPCUAServer': {
                     // assign endpoint
+                    // TODO: CHeck standard for endpoint MTP?
                     endpoint = sourceListItem.Attribute;
 
                     // Extract the server communication interface
                     const localeComIntData = this.communicationInterfaceDataVendor.buy(CommunicationInterfaceDataEnum.OPCUAServer);
                     if(localeComIntData.initialize({
-                        access: 'TODO',
                         dataSourceIdentifier: sourceListItem.ID,
                         name: sourceListItem.Name,
                         interfaceDescription: {
@@ -274,7 +274,6 @@ export class MTPPart extends AImporterPart {
                 switch (instanceListElementAttribute.AttributeDataType) {
 
                     case 'xs:string':
-                        // eslint-disable-next-line no-case-declarations
                         if (localDataItem.initialize({
                             dataType: instanceListElementAttribute.AttributeDataType,
                             defaultValue: instanceListElementAttribute.DefaultValue,
@@ -316,6 +315,7 @@ export class MTPPart extends AImporterPart {
                                         namespace = localeInterfaceAttribute.Value;
                                         break;
                                     case ('Access'):
+                                        //TODO: Do we need access?
                                         access = localeInterfaceAttribute.Value;
                                         break;
                                     default:
@@ -325,7 +325,6 @@ export class MTPPart extends AImporterPart {
                                 // in the last loop circle initialize the communication interface.
                                 if (localeInterfaceAttribute == localeExternalInterface.Attribute[localeExternalInterface.Attribute.length - 1]) {
                                     if (opcuaNodeCommunication.initialize({
-                                        access: access,
                                         dataSourceIdentifier: localeExternalInterface.ID,
                                         name: instanceListElementAttribute.Name,
                                         interfaceDescription: {

@@ -40,7 +40,6 @@ export interface CommunicationInterfaceData extends ModuleAutomationObject {
 
 //TODO Parts of this enum could be generic!!
 export type InitializeCommunicationInterfaceData = {
-    access: string;
     dataSourceIdentifier: string;
     interfaceDescription: InterfaceDescription;
     metaModelRef: string;
@@ -176,7 +175,6 @@ export class OPCUANodeCommunication extends ACommunicationInterfaceData {
                 })
                 && localNodeId.initialize({namespaceIndex: instructions.interfaceDescription.macrocosm as unknown as number, identifier: instructions.interfaceDescription.microcosm})
             );
-            this.access = instructions.access;
             this.nodeId = localNodeId;
             return this.initialized;
         } else {
