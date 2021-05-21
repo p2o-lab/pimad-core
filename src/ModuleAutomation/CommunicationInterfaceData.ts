@@ -9,33 +9,34 @@ import {NodeIdTypeEnum} from '@p2olab/pimad-types';
  * There are no client functionality, etc.
  */
 export interface CommunicationInterfaceData extends ModuleAutomationObject {
-    /**
+    //TODO: Do we need those getters?
+   /* /!**
      * Get all generalised interface data.
      * @param callback - A callback function. The response object shows the status (success while object was initialized
      * or error while not) of the request, while the InterfaceDescription object the requested data.
-     */
-    getInterfaceDescription(callback: (response: Backbone.PiMAdResponse, interfaceDescription: InterfaceDescription) => void): void;
+     *!/
+    getInterfaceDescription(callback: (response: Backbone.PiMAdResponse, interfaceDescription: InterfaceDescription | undefined) => void): void;
 
-    /**
+    /!**
      * Get the macrocosm of the communication interface. F.ex. IP
      * @param callback - A callback function. The response object shows the status (success while object was initialized
      * or error while not) of the request, while the macrocosm object the requested data.
-     */
-    getMacrocosm(callback: (response: Backbone.PiMAdResponse, macrocosm: string) => void): void;
+     *!/
+    getMacrocosm(callback: (response: Backbone.PiMAdResponse, macrocosm: string | undefined) => void): void;
 
-    /**
+    /!**
      * Get the microcosm of the communication interface. F.ex. port
      * @param callback - A callback function. The response object shows the status (success while object was initialized
      * or error while not) of the request, while the microcosm object the requested data.
-     */
-    getMicrocosm(callback: (response: Backbone.PiMAdResponse, microcosm: string) => void): void;
+     *!/
+    getMicrocosm(callback: (response: Backbone.PiMAdResponse, microcosm: string | undefined) => void): void;
 
-    /**
+    /!**
      * Initialize the communication interface with data.
      * @param instructions - Standard  Pass macro and microcosm data of the interface instance. F. ex. a server address:
      * IP/Hostname is the macrocosm, port is the microcosm.
-     */
-    initialize(instructions: InitializeCommunicationInterfaceData): boolean;
+     *!/*/
+    initialize(instructions: InitializeCommunicationInterfaceData | undefined): boolean;
 }
 
 //TODO Parts of this enum could be generic!!
@@ -71,39 +72,39 @@ abstract class ACommunicationInterfaceData extends AModuleAutomationObject imple
      * The general part of the interface address. F.ex. an IP.
      * @protected
      */
-    protected macrocosm: string
+    protected macrocosm?: string
     /**
      * The more specific part of the interface address. F.ex. a port.
      * @protected
      */
-    protected microcosm: string
+    protected microcosm?: string
 
     protected constructor() {
         super();
-        this.macrocosm = 'macrocosm: undefined';
-        this.microcosm = 'microcosm: undefined';
+        //this.macrocosm = 'macrocosm: undefined';
+       // this.microcosm = 'microcosm: undefined';
     }
-
+    // TODO: Do we need these Getters?
     /**
      * @inheritDoc {@link CommunicationInterfaceData.getInterfaceDescription}
-     */
-    getInterfaceDescription(callback: (response: Backbone.PiMAdResponse, interfaceDescription: InterfaceDescription) => void): void {
-        this.genericPiMAdGetter<InterfaceDescription>({macrocosm: this.macrocosm, microcosm: this.microcosm}, callback);
+     *!/
+    getInterfaceDescription(callback: (response: Backbone.PiMAdResponse, interfaceDescription: InterfaceDescription)  => void): void {
+        this.genericPiMAdGetter<InterfaceDescription | undefined>({macrocosm: this.macrocosm, microcosm: this.microcosm}, callback);
     }
 
-    /**
+    /!**
      * @inheritDoc {@link CommunicationInterfaceData.getMacrocosm}
-     */
+     *!/
     getMacrocosm(callback: (response: Backbone.PiMAdResponse, macrocosm: string) => void): void {
-        this.genericPiMAdGetter<string>(this.macrocosm, callback);
+       // this.genericPiMAdGetter<string>(this.macrocosm, callback);
     }
 
-    /**
+    /!**
      * @inheritDoc {@link CommunicationInterfaceData.getMicrocosm}
-     */
+     *!/
     getMicrocosm(callback: (response: Backbone.PiMAdResponse, microcosm: string) => void): void {
-        this.genericPiMAdGetter<string>(this.microcosm, callback);
-    }
+        //this.genericPiMAdGetter<string>(this.microcosm, callback);
+    }*/
 
     /**
      * Initialize this instance with interface description data. Caution: After a successful initialisation one cannot
@@ -118,12 +119,12 @@ abstract class ACommunicationInterfaceData extends AModuleAutomationObject imple
             this.initialized = (
                 this.macrocosm === instructions.interfaceDescription.macrocosm
                 && this.microcosm === instructions.interfaceDescription.microcosm
-                && this.moduleAutomationObjectInitialize({
+           /*     && this.moduleAutomationObjectInitialize({
                         dataSourceIdentifier: instructions.dataSourceIdentifier,
                         metaModelRef: instructions.metaModelRef,
                         name: instructions.name,
                         pimadIdentifier: instructions.pimadIdentifier
-                    })
+                    })*/
             );
             return this.initialized;
         } else {
@@ -146,7 +147,7 @@ export class OPCUAServerCommunication extends ACommunicationInterfaceData {
  */
 export class OPCUANodeCommunication extends ACommunicationInterfaceData {
     protected nodeId: NodeId;
-    protected access: string;
+    // protected access: string;
 
     /**
      * Getter. Maybe use a TODO: new interface
@@ -167,13 +168,16 @@ export class OPCUANodeCommunication extends ACommunicationInterfaceData {
             // TODO > The NodeId stuff is quick an dirty. It feels quit uncomfortable... Only supports String node id's so far...
             const localNodeId = new NodeIdVendor().buy(NodeIdTypeEnum.STRING);
             this.initialized = (
-                this.moduleAutomationObjectInitialize({
+       /*         this.moduleAutomationObjectInitialize({
                     dataSourceIdentifier: instructions.dataSourceIdentifier,
                     metaModelRef: instructions.metaModelRef,
                     name: instructions.name,
                     pimadIdentifier: instructions.pimadIdentifier
-                })
-                && localNodeId.initialize({namespaceIndex: instructions.interfaceDescription.macrocosm as unknown as number, identifier: instructions.interfaceDescription.microcosm})
+                })*/
+                 localNodeId.initialize({
+                     namespaceIndex: instructions.interfaceDescription.macrocosm as unknown as number,
+                     identifier: instructions.interfaceDescription.microcosm
+                 })
             );
             this.nodeId = localNodeId;
             return this.initialized;
@@ -185,7 +189,7 @@ export class OPCUANodeCommunication extends ACommunicationInterfaceData {
     constructor() {
         super();
         this.nodeId = {} as NodeId;
-        this.access = 'access: undefined';
+        // this.access = 'access: undefined';
     }
 }
 

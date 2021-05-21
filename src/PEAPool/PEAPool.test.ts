@@ -6,9 +6,9 @@ import {LastChainElementImporterFactory, MTPFreeze202001ImporterFactory} from '.
 import {expect} from 'chai';
 import {Backbone} from '../Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
-import {ModuleAutomation, PEAModel} from "../ModuleAutomation";
+import {PEAModel} from "../ModuleAutomation";
 import {BasicDataAssembly} from "../ModuleAutomation/DataAssemblyModel";
-import DataAssembly = ModuleAutomation.DataAssembly;
+import {OPCUANodeCommunication} from "../ModuleAutomation/CommunicationInterfaceData";
 
 const responseVendor = new PiMAdResponseVendor();
 const errorResponseAsString = responseVendor.buyErrorResponse().constructor.name;
@@ -62,6 +62,19 @@ describe('class: BasePEAPool', () => {
                         expect(response.constructor.name).is.equal(successResponseAsString);
                         expect(response.getContent().constructor.name).is.equal('BasePEA');
                         pool.getAllPEAs((response) => {
+                            const dataAssemblies =
+                                ((response.getContent() as PEAModel[])[0].getAllDataAssemblies().getContent() as {data: BasicDataAssembly[]}).data
+
+                            dataAssemblies[1].getAllDataItems((response1, dataItems) => {
+                                console.log(dataItems);
+                                dataItems[3].getCommunicationInterfaceData((response2, communicationInterfaceData) => {
+                                    (communicationInterfaceData as OPCUANodeCommunication).getNodeId((response3, nodeId) => {
+                                        console.log(nodeId);
+                                    })
+                                })
+                            });
+                            //getAllDataItems((response1, dataItems) =>
+                           //console.log(dataItems));
                             // list should have one PEAModel added to it
                             expect((response.getContent() as PEAModel[]).length).equals(1);
                             // testing deletePEA()

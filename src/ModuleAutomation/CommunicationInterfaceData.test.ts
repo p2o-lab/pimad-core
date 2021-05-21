@@ -30,7 +30,7 @@ describe('class: OPCUAServerCommunication', () => {
                 name: 'Test-Server-Communication',
             });
         });
-        it('method: getInterfaceDescription()', (done) => {
+       /* it('method: getInterfaceDescription()', (done) => {
             communicationInterfaceData.getInterfaceDescription((response, interfaceDescription) => {
                 expect(response.constructor.name).is.equal(successResponseAsString);
                 expect(interfaceDescription.macrocosm).is.equal('Test-Server-URL');
@@ -51,10 +51,10 @@ describe('class: OPCUAServerCommunication', () => {
                 expect(microcosm).is.equal('Test-Port');
                 done();
             });
-        });
+        });*/
     });
     describe('without initialization', () => {
-        it('method: getInterfaceDescription()', (done) => {
+       /* it('method: getInterfaceDescription()', (done) => {
             communicationInterfaceData.getInterfaceDescription((response, interfaceDescription) => {
                 expect(response.constructor.name).is.equal(errorResponseAsString);
                 expect(interfaceDescription.macrocosm).is.equal('macrocosm: undefined');
@@ -75,7 +75,7 @@ describe('class: OPCUAServerCommunication', () => {
                 expect(microcosm).is.equal('microcosm: undefined');
                 done();
             });
-        });
+        });*/
     });
     it('method: initialize()', () => {
         expect(communicationInterfaceData.initialize({

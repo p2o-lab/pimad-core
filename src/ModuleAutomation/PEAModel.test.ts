@@ -204,7 +204,7 @@ describe('class: BasePEA', () => {
             it('test case: standard usage', done => {
                 const services: ServiceModel[] = (pea.getAllServices().getContent() as {data: ServiceModel[]}).data;
                 services[1].getPiMAdIdentifier((responsePiMAdIdentifier, identifier) => {
-                    pea.getService(identifier, (responseGetService) => {
+                    pea.getService(identifier as string, (responseGetService) => {
                         expect(responseGetService.constructor.name).is.equal(responseVendor.buySuccessResponse().constructor.name);
                         const responseContent = responseGetService.getContent() as ServiceModel;
                         responseContent.getName((responsGetName, name) => {

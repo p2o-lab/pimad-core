@@ -1,5 +1,10 @@
 import {expect} from 'chai';
-import {BaseDataItemFactory, CommunicationInterfaceDataVendor, DataItemModel} from './index';
+import {
+    BaseDataItemFactory,
+    CommunicationInterfaceData,
+    CommunicationInterfaceDataVendor,
+    DataItemModel
+} from './index';
 import {
     CommunicationInterfaceDataEnum,
     OPCUANodeCommunication
@@ -31,7 +36,7 @@ describe('class: BaseDataItem', () => {
         it('method: getCommunicationInterfaceData()', (done) => {
             dataItem.getCommunicationInterfaceData((response, communicationInterfaceData) => {
                 expect(response.constructor.name).is.equal(successResponseAsString);
-                expect(communicationInterfaceData.constructor.name).is.equal('OPCUANodeCommunication');
+                expect((communicationInterfaceData as CommunicationInterfaceData).constructor.name).is.equal('OPCUANodeCommunication');
                 done();
             });
         });

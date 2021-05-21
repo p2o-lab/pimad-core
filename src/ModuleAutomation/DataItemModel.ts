@@ -13,7 +13,7 @@ export interface DataItemModel extends ModuleAutomationObject {
     /**
      * Getter for this.cIData.
      */
-    getCommunicationInterfaceData(callback: (response: PiMAdResponse, communicationInterfaceData: CommunicationInterfaceData) => void ): void;
+    getCommunicationInterfaceData(callback: (response: PiMAdResponse, communicationInterfaceData: CommunicationInterfaceData | undefined) => void ): void;
 
     /**
      *
@@ -23,7 +23,7 @@ export interface DataItemModel extends ModuleAutomationObject {
     /**
      *
      */
-    getValue(callback: (response: PiMAdResponse, value: string) => void ): void;
+    getValue(callback: (response: PiMAdResponse, value: string | undefined) => void ): void;
 
     /**
      *
@@ -39,18 +39,18 @@ export type InitializeDataItem = InitializeModuleAutomationObject & {
 
 abstract class ADataItem extends AModuleAutomationObject implements DataItemModel {
 
-    protected cIData: CommunicationInterfaceData;
+    protected cIData?: CommunicationInterfaceData;
     protected dataType: string; // ToDo > Should be an enum!
 
     constructor() {
         super();
-        this.cIData = {} as CommunicationInterfaceData;
+        //this.cIData = {} as CommunicationInterfaceData;
         this.dataType = 'DataType: not initialized!';
-        this.value = 'Value: not initialized';
+        // this.value = 'Value: not initialized';
         this.initialized = false;
     }
 
-    getCommunicationInterfaceData(callback: (response: PiMAdResponse, communicationInterfaceData: CommunicationInterfaceData) => void ): void {
+    getCommunicationInterfaceData(callback: (response: PiMAdResponse, communicationInterfaceData: CommunicationInterfaceData | undefined) => void ): void {
         this.genericPiMAdGetter(this.cIData, callback);
     }
 
