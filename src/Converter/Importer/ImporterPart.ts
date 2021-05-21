@@ -287,6 +287,48 @@ export class MTPPart extends AImporterPart {
                         }
                         break;
 
+                    case 'xs:byte':
+                        if (localDataItem.initialize({
+                            dataType: instanceListElementAttribute.AttributeDataType,
+                            defaultValue: instanceListElementAttribute.DefaultValue,
+                            description: instanceListElementAttribute.Description,
+                            name: instanceListElementAttribute.Name,
+                            pimadIdentifier: 'TODO',
+                            value: instanceListElementAttribute.Value
+                        })) {
+                            // push to the list of data items. later it will be aggregated in the data assembly object.
+                            localDataItems.push(localDataItem);
+                        }
+                        break;
+
+                    case 'xs:ID':
+                        if (localDataItem.initialize({
+                            dataType: instanceListElementAttribute.AttributeDataType,
+                            defaultValue: instanceListElementAttribute.DefaultValue,
+                            description: instanceListElementAttribute.Description,
+                            name: instanceListElementAttribute.Name,
+                            pimadIdentifier: 'TODO',
+                            value: instanceListElementAttribute.Value
+                        })) {
+                            // push to the list of data items. later it will be aggregated in the data assembly object.
+                            localDataItems.push(localDataItem);
+                        }
+                        break;
+
+                    case 'xs:boolean':
+                        if (localDataItem.initialize({
+                            dataType: instanceListElementAttribute.AttributeDataType,
+                            defaultValue: instanceListElementAttribute.DefaultValue,
+                            description: instanceListElementAttribute.Description,
+                            name: instanceListElementAttribute.Name,
+                            pimadIdentifier: 'TODO',
+                            value: instanceListElementAttribute.Value
+                        })) {
+                            // push to the list of data items. later it will be aggregated in the data assembly object.
+                            localDataItems.push(localDataItem);
+                        }
+                        break;
+
                     case 'xs:IDREF':
                     /* First we need the element with the correct ID from the ExternalInterfaceList. Safe some time
                     with Array.prototype.some(). Therefore the 'strange' syntax in the last part. */

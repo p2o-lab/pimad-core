@@ -58,11 +58,11 @@ describe('class: BasePEAPool', () => {
                 pool.getAllPEAs((response) => {
                     //list should be empty
                     expect((response.getContent() as PEAModel[]).length).equals(0);
-                    pool.addPEA( {source: 'local/Module.zip'}, (response) => {
+                    pool.addPEA( {source: 'test/Converter/PiMAd-core.0-0-1.mtp'}, (response) => {
                         expect(response.constructor.name).is.equal(successResponseAsString);
                         expect(response.getContent().constructor.name).is.equal('BasePEA');
                         pool.getAllPEAs((response) => {
-                            const dataAssemblies =
+                            /*const dataAssemblies =
                                 ((response.getContent() as PEAModel[])[0].getAllDataAssemblies().getContent() as {data: BasicDataAssembly[]}).data
 
                             dataAssemblies[1].getAllDataItems((response1, dataItems) => {
@@ -72,7 +72,7 @@ describe('class: BasePEAPool', () => {
                                         console.log(nodeId);
                                     })
                                 })
-                            });
+                            });*/
                             //getAllDataItems((response1, dataItems) =>
                            //console.log(dataItems));
                             // list should have one PEAModel added to it
