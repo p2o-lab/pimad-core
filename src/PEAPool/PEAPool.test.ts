@@ -45,6 +45,11 @@ describe('class: BasePEAPool', () => {
                 expect(response.constructor.name).is.equal(errorResponseAsString);
             });
         });
+        it('method: getAllPEAs()', () => {
+            pool.getAllPEAs((response) => {
+                expect(response.constructor.name).is.equal(errorResponseAsString);
+            });
+        });
     });
     describe('with initialization', () => {
         beforeEach(() => {
@@ -64,7 +69,6 @@ describe('class: BasePEAPool', () => {
                         pool.getAllPEAs((response) => {
                             /*const dataAssemblies =
                                 ((response.getContent() as PEAModel[])[0].getAllDataAssemblies().getContent() as {data: BasicDataAssembly[]}).data
-
                             dataAssemblies[1].getAllDataItems((response1, dataItems) => {
                                 console.log(dataItems);
                                 dataItems[3].getCommunicationInterfaceData((response2, communicationInterfaceData) => {
@@ -108,14 +112,15 @@ describe('class: BasePEAPool', () => {
             });
         });
         describe('method: getPEA()', () => {
-            beforeEach(() => {
+            it('method: getPEA()', done => {
                 pool.addPEA({source: 'test/Converter/PiMAd-core.0-0-1.mtp'}, (response) => {
-                    //done();
-                });
-            });
-            it('method: getPEA()', () => {
-                pool.getPEA('', (response) => {
-                    expect(response.constructor.name).is.equal(errorResponseAsString);
+                    pool.getAllPEAs(response1 => {
+                        const pimadIdentifier = (response1.getContent() as PEAModel[])[0].getPiMAdIdentifier()
+                        pool.getPEA(pimadIdentifier, (response) => {
+                            expect(response.constructor.name).is.equal(successResponseAsString);
+                            done();
+                        });
+                    })
                 });
             });
         });

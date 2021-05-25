@@ -39,24 +39,25 @@ describe('class: MTPPart', () => {
             expect(metaModelRef).equals('MTPDataObjectSUCLib/DataAssembly/ServiceControl');
         });
 
+        // TODO: check pimadIdentifier of DataItems
         dataAssembly.getAllDataItems((response, dataItems) => {
             expect(dataItems.length).equals(8);
-
-            // check 'xs:string' and attributes of TagName (should be enough, if we only check TagName)
+            // check 'xs:string' (should be enough, if only check all attributes of TagName)
             dataItems[0].getValue((response1, value) =>
                 expect(value).equals('CrystalCrasher'));
             dataItems[0].getDefaultValue((response1, value) =>
                 expect(value).equals('CrystalCrasher'));
             dataItems[0].getDescription((response1, value) =>
                 expect(value).equals('This is the description!'));
-
             // check 'xs:byte'
             dataItems[6].getValue((response1, value) =>
                 expect(value).equals('0'));
-
             // check 'xs:boolean'
             dataItems[7].getValue((response1, value) =>
                 expect(value).equals('false'));
+            // check 'xs:IDREF'
+            dataItems[3].getCommunicationInterfaceData((response1, cIData) =>
+                expect(cIData).to.not.be.undefined);
             }
         )
     }

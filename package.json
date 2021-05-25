@@ -35,7 +35,8 @@
   "contributors": [
     "Christoph Jesaja Heidelbach <christoph.jesaja.heidelbach@gmail.com>",
     "Julius Lorenz <julius.lorenz@tu-dresden.de>",
-    "Anselm Klose <anselm.klose@tu-dresden.de>"
+    "Anselm Klose <anselm.klose@tu-dresden.de>",
+    "Tuan Son Dinh <tuansondinh96@gmail.com"
   ],
   "devDependencies": {
     "@p2olab/pimad-types": "1.0.1-alpha1.0",
