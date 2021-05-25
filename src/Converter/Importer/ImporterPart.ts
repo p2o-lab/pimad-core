@@ -282,7 +282,6 @@ export class MTPPart extends AImporterPart {
                             pimadIdentifier: 'TODO',
                             value: instanceListElementAttribute.Value
                         })) {
-                            // push to the list of data items. later it will be aggregated in the data assembly object.
                            localDataItems.push(localDataItem);
                         }
                         break;
@@ -301,19 +300,6 @@ export class MTPPart extends AImporterPart {
                         }
                         break;
 
-                    case 'xs:ID':
-                        if (localDataItem.initialize({
-                            dataType: instanceListElementAttribute.AttributeDataType,
-                            defaultValue: instanceListElementAttribute.DefaultValue,
-                            description: instanceListElementAttribute.Description,
-                            name: instanceListElementAttribute.Name,
-                            pimadIdentifier: 'TODO',
-                            value: instanceListElementAttribute.Value
-                        })) {
-                            // push to the list of data items. later it will be aggregated in the data assembly object.
-                            localDataItems.push(localDataItem);
-                        }
-                        break;
 
                     case 'xs:boolean':
                         if (localDataItem.initialize({
@@ -409,9 +395,8 @@ export class MTPPart extends AImporterPart {
                     });
                     break;
                     /* Now the attributes are id's and doesn't referencing to an DataAssembly/DataItemModel. In this case the
-                    id connect different data items in the MTP. (Real talk) me (CHe) as an software engineer, i don't
-                    understand this concept... why fucking up the system above with ID & RefIDs in the
-                    DataItems... never mind */
+                    id connect different data items in the MTP. (why messing up the system above with ID & RefIDs in the
+                    DataItems?)*/
                     case 'xs:ID':
                         switch(instanceListElementAttribute.Name) {
                             /* Take this data for the data assembly identifier. Why? The services f.ex. referencing on
@@ -423,6 +408,7 @@ export class MTPPart extends AImporterPart {
                                 break;
                         }
                         break;
+
                     default:
                         break;
                 }

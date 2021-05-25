@@ -24,18 +24,41 @@ describe('class: MTPPart', () => {
         expect(communicationInterfaceData.length).is.equal(1);
         // ... do server stuff
         expect(dataAssemblies.length).is.equal(1);
-        dataAssemblies[0].getName((response, name) =>  {
+
+        const dataAssembly= dataAssemblies[0];
+        dataAssembly.getName((response, name) =>  {
            expect(name).is.equal('CrystalCrasher');
         });
-        dataAssemblies[0].getDataSourceIdentifier((response, identifier) => {
+        dataAssembly.getDataSourceIdentifier((response, identifier) => {
             expect(identifier).equals('link6');
         });
-        dataAssemblies[0].getPiMAdIdentifier((response, identifier) => {
+        dataAssembly.getPiMAdIdentifier((response, identifier) => {
             expect(uuidValidate(identifier)).is.true;
         });
-        dataAssemblies[0].getMetaModelRef((response, metaModelRef) => {
+        dataAssembly.getMetaModelRef((response, metaModelRef) => {
             expect(metaModelRef).equals('MTPDataObjectSUCLib/DataAssembly/ServiceControl');
         });
+
+        dataAssembly.getAllDataItems((response, dataItems) => {
+            expect(dataItems.length).equals(8);
+
+            // check 'xs:string' and attributes of TagName (should be enough, if we only check TagName)
+            dataItems[0].getValue((response1, value) =>
+                expect(value).equals('CrystalCrasher'));
+            dataItems[0].getDefaultValue((response1, value) =>
+                expect(value).equals('CrystalCrasher'));
+            dataItems[0].getDescription((response1, value) =>
+                expect(value).equals('This is the description!'));
+
+            // check 'xs:byte'
+            dataItems[6].getValue((response1, value) =>
+                expect(value).equals('0'));
+
+            // check 'xs:boolean'
+            dataItems[7].getValue((response1, value) =>
+                expect(value).equals('false'));
+            }
+        )
     }
     describe('method: extract()', () => {
         it('test case: standard way', () => {
