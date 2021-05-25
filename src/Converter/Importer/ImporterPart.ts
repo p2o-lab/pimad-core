@@ -213,6 +213,7 @@ export class MTPPart extends AImporterPart {
                     endpoint = sourceListItem.Attribute;
 
                     // Extract the server communication interface
+                    //TODO: macrocosm, microcosm and some other attributes can currently be undefined. is that ok?
                     const localeComIntData = this.communicationInterfaceDataVendor.buy(CommunicationInterfaceDataEnum.OPCUAServer);
                     if(localeComIntData.initialize({
                         dataSourceIdentifier: sourceListItem.ID,
@@ -272,7 +273,6 @@ export class MTPPart extends AImporterPart {
                 const localDataItem = this.baseDataItemFactory.create();
 
                 switch (instanceListElementAttribute.AttributeDataType) {
-
                     case 'xs:string':
                         if (localDataItem.initialize({
                             dataType: instanceListElementAttribute.AttributeDataType,
@@ -331,6 +331,7 @@ export class MTPPart extends AImporterPart {
                             /* There are again attributes...  looping and extracting */
                             /* Easier handling of 'single' and 'multiple' attributes in one code section. Therefore a single attribute is
                             transferred to an array with one entry. */
+                            //TODO: is this neccessary?
                             if(!(Array.isArray(localeExternalInterface.Attribute))) {
                                 localeExternalInterface.Attribute = [localeExternalInterface.Attribute];
                             }

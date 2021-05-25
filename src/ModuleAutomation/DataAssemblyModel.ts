@@ -113,6 +113,9 @@ export class BasicDataAssembly extends ADataAssembly {
             this.pimadIdentifier = instructions.pimadIdentifier;
             this.metaModelRef = instructions.metaModelRef;
             this.initialized = (
+                // make sure every property is defined
+                Object.values(instructions).every(el => el !== undefined) &&
+                //TODO: is this really necessary?
                 this.name === instructions.tag &&
                 this.description == instructions.description &&
                 JSON.stringify(this.dataItems) === JSON.stringify(instructions.dataItems) &&

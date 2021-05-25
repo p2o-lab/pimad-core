@@ -29,6 +29,8 @@ abstract class APEAPool implements PEAPool {
             if(response.constructor.name === this.responseVendor.buyErrorResponse().constructor.name) {
                 callback(identifier);
             } else {
+                // identifier is already used, so try again
+                // TODO: how to test that?
                 this.generateUniqueIdentifier(callback);
             }
         });

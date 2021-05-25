@@ -205,69 +205,65 @@ export class ZIPGate extends AFileSystemGate {
             const zipHandler = new AdmZip(this.gateAddress);
             const zipEntries = zipHandler.getEntries(); // an array of ZipEntry records
 
-            if (zipEntries.length >= 0) {
-                const responseData: object[] = [];
-                // this is the path, where files will be extracted to, e.g. uploads/Module (Module.zip)
-                const unzippedFolderPath = (''+ this.gateAddress).substr(0, (''+ this.gateAddress).lastIndexOf('.'));
-                // TODO:only use one constant, because they are equal
-                const folderPath = unzippedFolderPath;
+            const responseData: object[] = [];
+            // this is the path, where files will be extracted to, e.g. uploads/Module (Module.zip)
+            const unzippedFolderPath = (''+ this.gateAddress).substr(0, (''+ this.gateAddress).lastIndexOf('.'));
+            // TODO:only use one constant, because they are equal
+            const folderPath = unzippedFolderPath;
 
-                // make sure path does not exist yet (this path will be deleted later anyway)
-                if (!fileSystem.existsSync(unzippedFolderPath)){
-                    // create directory with the filename, e.g. uploads/Module
-                    fileSystem.mkdirSync(unzippedFolderPath);
-                }
-                // extract the zip
-                zipHandler.extractAllTo(folderPath, true);
-                // parse the entries ...
-                zipEntries.forEach((entry: IZipEntry) => {
-                    // Supporting different file types
-                    switch (ZIPGate.getFileType(entry.entryName)) {
-                        // TODO: Coding > Generic one
-                        case '.aml': {
-                            const amlGate = this.amlGateFactory.create();
-                            amlGate.initialize(folderPath + '/' + entry.entryName);
-                            amlGate.receive({}, (response: PiMAdResponse) => {
-                                if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
-                                    responseData.push(response.getContent());
-                                    // Calling the callback in the last loop cycle
-                                    // if (entry == zipEntries[zipEntries.length-1]) {
-                                        const zipGateResponse = this.responseVendor.buySuccessResponse();
-                                        zipGateResponse.initialize('Success!', {data: responseData});
-                                        // delete the extracted data
-                                        rimraf(unzippedFolderPath, function () {
-                                            callback(zipGateResponse);
-                                        });
-                                    // }
-                                }
-                            });
-                            break;
-                        }
-                        case '.xml': {
-                            const xmlGate = this.xmlGateFactory.create();
-                            xmlGate.initialize(folderPath + '/' + entry.entryName);
-                            xmlGate.receive({}, (response: PiMAdResponse) => {
-                                if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
-                                    responseData.push(response.getContent());
-                                    // Calling the callback in the last loop cycle
-                                        const zipGateResponse = this.responseVendor.buySuccessResponse();
-                                        zipGateResponse.initialize('Success!', {data: responseData});
-                                        // delete the extracted data
-                                        rimraf(unzippedFolderPath, function () {
-                                            callback(zipGateResponse);
-                                        });
-                                }
-                            });
-                            break;
-                        }
-                        default:
-                            logger.warn('There is an unsupported file type. Ignoring...');
-                            break;
-                    }
-                });
-            } else {
-                callback(this.responseVendor.buyErrorResponse());
+            // make sure path does not exist yet (this path will be deleted later anyway)
+            if (!fileSystem.existsSync(unzippedFolderPath)){
+                // create directory with the filename, e.g. uploads/Module
+                fileSystem.mkdirSync(unzippedFolderPath);
             }
+            // extract the zip
+            zipHandler.extractAllTo(folderPath, true);
+            // parse the entries ...
+            zipEntries.forEach((entry: IZipEntry) => {
+                // Supporting different file types
+                switch (ZIPGate.getFileType(entry.entryName)) {
+                    // TODO: Coding > Generic one
+                    case '.aml': {
+                        const amlGate = this.amlGateFactory.create();
+                        amlGate.initialize(folderPath + '/' + entry.entryName);
+                        amlGate.receive({}, (response: PiMAdResponse) => {
+                            if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
+                                responseData.push(response.getContent());
+                                // Calling the callback in the last loop cycle
+                                // if (entry == zipEntries[zipEntries.length-1]) {
+                                    const zipGateResponse = this.responseVendor.buySuccessResponse();
+                                    zipGateResponse.initialize('Success!', {data: responseData});
+                                    // delete the extracted data
+                                    rimraf(unzippedFolderPath, function () {
+                                        callback(zipGateResponse);
+                                    });
+                                // }
+                            }
+                        });
+                        break;
+                    }
+                    case '.xml': {
+                        const xmlGate = this.xmlGateFactory.create();
+                        xmlGate.initialize(folderPath + '/' + entry.entryName);
+                        xmlGate.receive({}, (response: PiMAdResponse) => {
+                            if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
+                                responseData.push(response.getContent());
+                                // Calling the callback in the last loop cycle
+                                    const zipGateResponse = this.responseVendor.buySuccessResponse();
+                                    zipGateResponse.initialize('Success!', {data: responseData});
+                                    // delete the extracted data
+                                    rimraf(unzippedFolderPath, function () {
+                                        callback(zipGateResponse);
+                                    });
+                            }
+                        });
+                        break;
+                    }
+                    default:
+                        logger.warn('There is an unsupported file type. Ignoring...');
+                        break;
+                }
+            });
         } else {
             const notInitialized = this.responseVendor.buyErrorResponse();
             logger.error('Use of a non initialized ZIP-Gate. This one rejects the Request!');
