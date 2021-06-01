@@ -36,7 +36,8 @@ describe('class: LastChainElementImporter', () => {
 function evaluateMTPFreeze202001Importer(response: PiMAdResponse, callback: () => void): void {
     expect(response.constructor.name).is.equal(successResponseAsString);
     const testResult = response.getContent() as PEAModel;
-    expect((testResult.getAllDataAssemblies().getContent() as {data: DataAssembly[]}).data.length).is.equal(8);
+    // we expect zero DataAssemblies, because the test mtp only contains HealthStateViews/Procedures and ServiceControls
+    expect((testResult.getAllDataAssemblies().getContent() as {data: DataAssembly[]}).data.length).is.equal(0);
     expect((testResult.getAllFEAs().getContent() as {data: FEA[]}).data.length).is.equal(0);
     expect((testResult.getAllServices().getContent() as {data: ServiceModel[]}).data.length).is.equal(2);
     expect(JSON.stringify(testResult.getDataModel().getContent() as {data: string})).is.equal(JSON.stringify({data: 'MTPSUCLib/ModuleTypePackage'}));

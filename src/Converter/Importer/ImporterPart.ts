@@ -89,7 +89,7 @@ export class MTPPart extends AImporterPart {
      */
     extract(data: {CommunicationSet: object[]; HMISet: object; ServiceSet: object; TextSet: object}, callback: (response: PiMAdResponse) => void): void {
         const communicationSet = this.extractDataFromCommunicationSet(data.CommunicationSet);
-        if(communicationSet.CommunicationInterfaceData.length === 0 && communicationSet.DataAssemblies.length === 0) {
+        if(communicationSet.ServerCommunicationInterfaceData.length === 0 && communicationSet.DataAssemblies.length === 0) {
             const localeResponse = this.responseVendor.buyErrorResponse();
             localeResponse.initialize('Could not parse the CommunicationSet!', {});
             callback(localeResponse);
@@ -175,10 +175,10 @@ export class MTPPart extends AImporterPart {
      */
     private extractDataFromCommunicationSet(communicationSet: object[]): ExtractDataFromCommunicationSetResponseType  {
         // The following arrays will be continuously filled with data in the following lines.
-        const communicationInterfaceData: CommunicationInterfaceData[] = [];
+       // const communicationInterfaceData: CommunicationInterfaceData[] = [];
+        const serverCommunicationInterfaceData: DataItemModel[] = [];
         const dataAssemblies: DataAssembly[] = [];
         const localExternalInterfaces: DataItemSourceListExternalInterface[] = [];
-        let endpoint: {} = {};
         // Extract InstantList and SourceList from communicationSet
         // TODO: I like this approach: const localProcedureDataAssembly: DataAssembly | undefined = dataAssemblies.find(dataAssembly => service.DataAssembly.Value === dataAssembly.getIdentifier())
         let instanceList: InstanceList = {} as InstanceList;
@@ -193,9 +193,8 @@ export class MTPPart extends AImporterPart {
         if(JSON.stringify(instanceList) == JSON.stringify({}) || JSON.stringify(sourceList) == JSON.stringify({})) {
             logger.error('Could not extract InstanceList and SourceList of the CommunicationSet. Aborting!');
             return {
-                CommunicationInterfaceData: [],
                 DataAssemblies: [],
-                Endpoint: {}
+                ServerCommunicationInterfaceData: []
             };
         }
         /* Easier handling of 'single' and 'multiple' sources in one code section. Therefore a single source is
@@ -208,32 +207,30 @@ export class MTPPart extends AImporterPart {
             // So far we only know MTPs with a OPCUAServer as source.
             switch (sourceListItem.RefBaseSystemUnitPath) {
                 case 'MTPCommunicationSUCLib/ServerAssembly/OPCUAServer': {
-                    // assign endpoint
-                    // TODO: CHeck standard for endpoint MTP?
-                    endpoint = sourceListItem.Attribute;
+
+                    const localDataItem = this.baseDataItemFactory.create();
+                    const sourceListElementAttribute = sourceListItem.Attribute;
 
                     // Extract the server communication interface
-                    //TODO: macrocosm, microcosm and some other attributes can currently be undefined. is that ok?
-                    const localeComIntData = this.communicationInterfaceDataVendor.buy(CommunicationInterfaceDataEnum.OPCUAServer);
-                    if(localeComIntData.initialize({
-                        dataSourceIdentifier: sourceListItem.ID,
-                        name: sourceListItem.Name,
-                        interfaceDescription: {
-                            macrocosm: sourceListItem.Attribute.Value, // Actual MTP combines IP and Port in one string
-                            microcosm: 'TODO'
-                        },
-                        metaModelRef: sourceListItem.RefBaseSystemUnitPath,
-                        pimadIdentifier: 'TODO'})) {
-                        communicationInterfaceData.push(localeComIntData);
-                    } else {
-                        logger.warn('Cannot extract source <' + sourceListItem.Name + '> need MTPFreeze-2020-01!');
+                    switch(sourceListElementAttribute.AttributeDataType){
+                        // TODO: standard for endpoint MTP? static, dynamic?
+                        case('xs:string'):
+                            if (localDataItem.initialize({
+                                dataType: sourceListElementAttribute.AttributeDataType,
+                                defaultValue: sourceListElementAttribute.DefaultValue,
+                                description: sourceListElementAttribute.Description,
+                                name: sourceListElementAttribute.Name,
+                                pimadIdentifier: 'TODO',
+                                value: sourceListElementAttribute.Value
+                            })) {
+                                serverCommunicationInterfaceData.push(localDataItem);
+                            } else{
+                                logger.warn('Cannot extract source <' + sourceListItem.Name + '> need MTPFreeze-2020-01!');
+                            }
+
+                        //case('xs:IDREF'):
+
                     }
-                    /*
-                    if(localeComIntData.initialize({name: sourceListItem.Name, serverURL: sourceListItem.Attribute.Value})) {
-                        communicationInterfaceData.push(localeComIntData);
-                    } else {
-                        logger.warn('Cannot extract source <' + sourceListItem.Name + '> need MTPFreeze-2020-01!');
-                    } */
 
                     /* Easier handling of 'single' and 'multiple' sources in one code section. Therefore a single source is
                     transferred to an array with one entry. */
@@ -253,8 +250,7 @@ export class MTPPart extends AImporterPart {
             }
         });
         // Handle the InstanceList. Merging data with SourceList and generating mainly PiMAd-core-DataAssemblies.
-        /* Easier handling of 'single' and 'multiple' sources in one code section. Therefore a single source is
-        transferred to an array with one entry. */
+
         if(!(Array.isArray(instanceList.InternalElement))) {
             instanceList.InternalElement = [instanceList.InternalElement];
         }
@@ -268,9 +264,14 @@ export class MTPPart extends AImporterPart {
             if(!(Array.isArray(instanceListElement.Attribute))) {
                 instanceListElement.Attribute = [instanceListElement.Attribute];
             }
+/*            if(instanceListElement.RefBaseSystemUnitPath.includes('HealthStateView')
+                || instanceListElement.RefBaseSystemUnitPath.includes('ServiceControl')){
+                return;
+            }*/
             instanceListElement.Attribute.forEach((instanceListElementAttribute: Attribute) => {
                 // These are treated differently depending on the attribute data type.
                 const localDataItem = this.baseDataItemFactory.create();
+
 
                 switch (instanceListElementAttribute.AttributeDataType) {
                     case 'xs:string':
@@ -285,7 +286,6 @@ export class MTPPart extends AImporterPart {
                            localDataItems.push(localDataItem);
                         }
                         break;
-
                     case 'xs:byte':
                         if (localDataItem.initialize({
                             dataType: instanceListElementAttribute.AttributeDataType,
@@ -299,8 +299,6 @@ export class MTPPart extends AImporterPart {
                             localDataItems.push(localDataItem);
                         }
                         break;
-
-
                     case 'xs:boolean':
                         if (localDataItem.initialize({
                             dataType: instanceListElementAttribute.AttributeDataType,
@@ -314,7 +312,6 @@ export class MTPPart extends AImporterPart {
                             localDataItems.push(localDataItem);
                         }
                         break;
-
                     case 'xs:IDREF':
                     /* First we need the element with the correct ID from the ExternalInterfaceList. Safe some time
                     with Array.prototype.some(). Therefore the 'strange' syntax in the last part. */
@@ -436,9 +433,8 @@ export class MTPPart extends AImporterPart {
         });
         // We are done. Return the extracted Data.
         return {
-            CommunicationInterfaceData: communicationInterfaceData,
             DataAssemblies: dataAssemblies,
-            Endpoint: endpoint
+            ServerCommunicationInterfaceData: serverCommunicationInterfaceData
         };
     }
 
@@ -632,9 +628,8 @@ export interface ImporterPart {
  * Type of the object that is created by the method {@link extractDataFromCommunicationSet}
  */
 export type ExtractDataFromCommunicationSetResponseType = {
-    CommunicationInterfaceData: CommunicationInterfaceData[];
     DataAssemblies: DataAssembly[];
-    Endpoint: {};
+    ServerCommunicationInterfaceData: DataItemModel[];
 }
 
 /**

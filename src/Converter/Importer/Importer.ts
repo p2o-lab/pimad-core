@@ -21,7 +21,7 @@ import {
 import {AML, CAEXFile} from '@p2olab/pimad-types';
 import InstanceHierarchy = AML.InstanceHierarchy
 import {
-    Attribute, AttributeFactoryVendor, ModuleAutomation
+    Attribute, AttributeFactoryVendor, DataItemModel, ModuleAutomation
 } from '../../ModuleAutomation';
 import {CommunicationInterfaceData} from '../../ModuleAutomation';
 import {BasePEAFactory} from '../../ModuleAutomation';
@@ -308,14 +308,13 @@ export class MTPFreeze202001Importer extends AImporter {
      */
     private convert(data: CAEXFile, pimadIdentifier: string, callback: (response: PiMAdResponse) => void): void {
         // These variables will be continuously filled
-        let communicationInterfaceData: CommunicationInterfaceData[] = []; // TODO > link to communication interface
+        let communicationInterfaceData: DataItemModel[] = []; // TODO > link to communication interface
         let dataAssemblies: DataAssembly[] = [];
         let communicationSet: {InternalElement: object[]} = {} as {InternalElement: object[]};
         let mtpPartResponseContent: ExtractDataFromCommunicationSetResponseType = {} as ExtractDataFromCommunicationSetResponseType;
         let servicePartResponseContent: InternalServiceType[] = [];
         let peaName = 'name: undefined';
         let peaMetaModelRef = 'metaModelRef: undefined';
-        let endpoint = {};
         // looping through the first level instance hierarchy of the CAEX-File.
         data.InstanceHierarchy.forEach((instance: InstanceHierarchy) => {
             const localInternalElement = instance.InternalElement as unknown as {Name: string; ID: string; RefBaseSystemUnitPath: string; InternalElement: object[]};
@@ -333,9 +332,8 @@ export class MTPFreeze202001Importer extends AImporter {
                     mtpImporterPart.extract({CommunicationSet: communicationSet.InternalElement, HMISet: {}, ServiceSet: {}, TextSet: {}}, mtpPartResponse => {
                         if(mtpPartResponse.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
                             mtpPartResponseContent = mtpPartResponse.getContent() as ExtractDataFromCommunicationSetResponseType;
-                            communicationInterfaceData = mtpPartResponseContent.CommunicationInterfaceData;
+                            communicationInterfaceData = mtpPartResponseContent.ServerCommunicationInterfaceData;
                             dataAssemblies = mtpPartResponseContent.DataAssemblies;
-                            endpoint = mtpPartResponseContent.Endpoint;
                         } else {
                           logger.warn('Could not extract CommunicationSet');
                         }
@@ -436,6 +434,7 @@ export class MTPFreeze202001Importer extends AImporter {
                 }
             });
 
+            this.cleanUpDataAssemblies(dataAssemblies);
 
             const localPEA = this.peaFactory.create();
             // Initializing the local pea
@@ -444,7 +443,7 @@ export class MTPFreeze202001Importer extends AImporter {
                 DataModel: peaMetaModelRef,
                 DataModelVersion: new BasicSemanticVersion(),
                 FEAs: [], Name: peaName, PiMAdIdentifier: pimadIdentifier,
-                Services: localServices, Endpoint: endpoint})) {
+                Services: localServices, Endpoint: communicationInterfaceData})) {
 
                 // successful -> callback with successful response
                 const localSuccessResponse = this.responseVendor.buySuccessResponse();
@@ -455,6 +454,30 @@ export class MTPFreeze202001Importer extends AImporter {
                 const localErrorResponse = this.responseVendor.buyErrorResponse();
                 localErrorResponse.initialize('Could not extract PEAModel from ???. Aborting', {});
                 callback(localErrorResponse);
+            }
+        }
+    }
+
+    /**
+     * remove HealthStateView(Procedures) and ServiceControls from dataAssemblies, because subscribeToAllVariables()
+     * in backend will take this list for the variables
+     * @param dataAssemblies
+     * @private
+     */
+    private cleanUpDataAssemblies(dataAssemblies: DataAssembly[]){
+        for(const dataAssembly of dataAssemblies){
+            // at first, get metaModelRef of dataAssembly
+            let mMetaModelRef='';
+            dataAssembly.getMetaModelRef((response, metaModelRef) =>
+                mMetaModelRef = metaModelRef);
+
+            if(mMetaModelRef.includes('HealthStateView') || mMetaModelRef.includes('ServiceControl')){
+                // if DataAssembly is Procedure or Service, remove it!
+                const index = dataAssemblies.indexOf(dataAssembly);
+                dataAssemblies.splice(index, 1);
+                // the dataAssemblies has changed-> start function again, but with updated list
+                this.cleanUpDataAssemblies(dataAssemblies);
+                break;
             }
         }
     }

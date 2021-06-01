@@ -1,5 +1,12 @@
 import {expect} from 'chai';
-import {HMIPart, InternalServiceType, MTPPart, ServicePart, TextPart} from './ImporterPart';
+import {
+    ExtractDataFromCommunicationSetResponseType,
+    HMIPart,
+    InternalServiceType,
+    MTPPart,
+    ServicePart,
+    TextPart
+} from './ImporterPart';
 import * as communicationsSetData from '../../../test/Converter/testdata-CommunicationSet-parser-logic.json';
 import * as communicationsSetDataMixingDataStructure from '../../../test/Converter/testdata-CommunicationSet-mixing-data-structure.json';
 import * as communicationsSetDataSpecial from '../../../test/Converter/testdata-CommunicationSet-special.json';
@@ -10,7 +17,7 @@ import * as servicePartData from '../../../test/Converter/testdata-ServicePart.j
 import { OPCUAServerCommunication } from '../../ModuleAutomation/CommunicationInterfaceData';
 import {Backbone} from '../../Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
-import {ModuleAutomation} from '../../ModuleAutomation';
+import {DataItemModel, ModuleAutomation} from '../../ModuleAutomation';
 import DataAssembly = ModuleAutomation.DataAssembly;
 import { validate as uuidValidate } from 'uuid';
 
@@ -24,8 +31,8 @@ describe('class: MTPPart', () => {
         part = new MTPPart();
     });
 
-    function evaluateMTPPart(communicationInterfaceData: OPCUAServerCommunication[], dataAssemblies: DataAssembly[]): void {
-        expect(communicationInterfaceData.length).is.equal(1);
+    function evaluateMTPPart(serverCommunicationInterfaceData: DataItemModel[], dataAssemblies: DataAssembly[]): void {
+        expect(serverCommunicationInterfaceData.length).is.equal(1);
         // ... do server stuff
         expect(dataAssemblies.length).is.equal(1);
 
@@ -75,8 +82,9 @@ describe('class: MTPPart', () => {
                 TextSet: {}
             }, (response) => {
                 expect(response.constructor.name).is.equal(successResponseAsString);
-                const testData: { CommunicationInterfaceData?: OPCUAServerCommunication[]; DataAssemblies?: DataAssembly[] } = response.getContent();
-                evaluateMTPPart(testData.CommunicationInterfaceData as OPCUAServerCommunication[], testData.DataAssemblies as DataAssembly[]);
+                const testData: ExtractDataFromCommunicationSetResponseType =
+                    response.getContent() as ExtractDataFromCommunicationSetResponseType;
+                evaluateMTPPart(testData.ServerCommunicationInterfaceData, testData.DataAssemblies);
             });
         });
         it('test case: mixing data structure', () => {
@@ -87,9 +95,9 @@ describe('class: MTPPart', () => {
                 TextSet: {}
             }, (response) => {
                 expect(response.constructor.name).is.equal(successResponseAsString);
-                const testData: { CommunicationInterfaceData?: OPCUAServerCommunication[]; DataAssemblies?: DataAssembly[] } = response.getContent();
-
-                evaluateMTPPart(testData.CommunicationInterfaceData as OPCUAServerCommunication[], testData.DataAssemblies as DataAssembly[]);
+                const testData: ExtractDataFromCommunicationSetResponseType =
+                    response.getContent() as ExtractDataFromCommunicationSetResponseType;
+                evaluateMTPPart(testData.ServerCommunicationInterfaceData, testData.DataAssemblies);
             });
         });
         describe('Messing with CommunicationSet-Data', () => {
