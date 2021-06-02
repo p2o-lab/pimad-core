@@ -88,15 +88,20 @@ abstract class APEAPool implements PEAPool {
         if(this.initialized) {
             // find pea by id
             const localPEA: PEA | undefined  = this.peas.find(pea => identifier === pea.getPiMAdIdentifier());
-            // find index of pea
-            const index = this.peas.indexOf(localPEA as PEA,0);
-            // check if pea exists
-            if (localPEA) {
-                // delete
-                this.peas.splice(index, 1);
-                this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.SUCCESS, 'Success!', {}, callback);
-            }else {
+            // check if PEA exists
+            if(!localPEA) {
                 this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'PEA not found', {}, callback);
+            } else{
+                // get index of pea
+                const index = this.peas.indexOf(localPEA as PEA,0);
+                // delete PEA
+                this.peas.splice(index, 1);
+                // check if deletion was successful
+                if(this.peas.find(pea => identifier === pea.getPiMAdIdentifier()) == undefined){
+                    this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.SUCCESS, 'Success!', {}, callback);
+                }else{
+                    this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'Deletion was unsuccessful!', {}, callback);
+                }
             }
         } else {
             this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'PEAPool is not initialized!', {}, callback);
