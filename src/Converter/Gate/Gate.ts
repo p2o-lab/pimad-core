@@ -208,14 +208,12 @@ export class ZIPGate extends AFileSystemGate {
             if (zipEntries.length >= 0) {
                 const responseData: object[] = [];
                 // this is the path, where files will be extracted to, e.g. uploads/Module (Module.zip)
-                const unzippedFolderPath = (''+ this.gateAddress).substr(0, (''+ this.gateAddress).lastIndexOf('.'));
-                // TODO:only use one constant, because they are equal
-                const folderPath = unzippedFolderPath;
+                const folderPath = (''+ this.gateAddress).substr(0, (''+ this.gateAddress).lastIndexOf('.'));
 
                 // make sure path does not exist yet (this path will be deleted later anyway)
-                if (!fileSystem.existsSync(unzippedFolderPath)){
+                if (!fileSystem.existsSync(folderPath)){
                     // create directory with the filename, e.g. uploads/Module
-                    fileSystem.mkdirSync(unzippedFolderPath);
+                    fileSystem.mkdirSync(folderPath);
                 }
                 // extract the zip
                 zipHandler.extractAllTo(folderPath, true);
@@ -231,14 +229,12 @@ export class ZIPGate extends AFileSystemGate {
                                 if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
                                     responseData.push(response.getContent());
                                     // Calling the callback in the last loop cycle
-                                    // if (entry == zipEntries[zipEntries.length-1]) {
                                         const zipGateResponse = this.responseVendor.buySuccessResponse();
                                         zipGateResponse.initialize('Success!', {data: responseData});
                                         // delete the extracted data
-                                        rimraf(unzippedFolderPath, function () {
+                                        rimraf(folderPath, function () {
                                             callback(zipGateResponse);
                                         });
-                                    // }
                                 }
                             });
                             break;
@@ -253,7 +249,7 @@ export class ZIPGate extends AFileSystemGate {
                                         const zipGateResponse = this.responseVendor.buySuccessResponse();
                                         zipGateResponse.initialize('Success!', {data: responseData});
                                         // delete the extracted data
-                                        rimraf(unzippedFolderPath, function () {
+                                        rimraf(folderPath, function () {
                                             callback(zipGateResponse);
                                         });
                                 }
@@ -274,7 +270,6 @@ export class ZIPGate extends AFileSystemGate {
             notInitialized.initialize('The Gate is not initialized yet! Aborting ... ', {});
             callback(notInitialized);
         }
-
     }
 
     constructor() {

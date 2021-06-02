@@ -94,7 +94,6 @@ abstract class APEAPool implements PEAPool {
             if (localPEA) {
                 // delete
                 this.peas.splice(index, 1);
-                //TODO: Check if splice was successful?
                 this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.SUCCESS, 'Success!', {}, callback);
             }else {
                 this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'PEA not found', {}, callback);
