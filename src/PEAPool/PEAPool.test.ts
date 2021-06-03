@@ -6,6 +6,7 @@ import {LastChainElementImporterFactory, MTPFreeze202001ImporterFactory} from '.
 import {expect} from 'chai';
 import {Backbone} from '../Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
+import {PEA} from "../ModuleAutomation";
 
 const responseVendor = new PiMAdResponseVendor();
 const errorResponseAsString = responseVendor.buyErrorResponse().constructor.name;
@@ -49,25 +50,37 @@ describe('class: BasePEAPool', () => {
             mtpFreeze202001Importer.initialize(fImporter.create());
             pool.initialize(mtpFreeze202001Importer);
         });
+        // test adding multiple Modules
         describe('method: addPEA()', () => {
             it('regular usage', (done) => {
-                pool.getAllPEAs((response, peas) => {
-                    expect(peas.length).equals(0);
-                    pool.addPEA({source: 'test/local/Manifest.aml'}, (response) => {
+                pool.getAllPEAs((response) => {
+                    //list should be empty
+                    expect((response.getContent() as PEA[]).length).equals(0);
+                    pool.addPEA( {source: 'test/Converter/PiMAd-core.0-0-1.mtp'}, (response) => {
                         expect(response.constructor.name).is.equal(successResponseAsString);
                         expect(response.getContent().constructor.name).is.equal('BasePEA');
-                        pool.getAllPEAs((response, peas) => {
-                            expect(peas.length).equals(1);
-                            done();
+                        pool.getAllPEAs((response) => {
+                            // list should have one PEA added to it
+                            expect((response.getContent() as PEA[]).length).equals(1);
+                            // testing deletePEA()
+                            pool.deletePEA((response.getContent() as PEA[])[0].getPiMAdIdentifier(), (response) => {
+                                expect(response.constructor.name).is.equal(successResponseAsString);
+                                pool.getAllPEAs((response) => {
+                                    //list should be empty, after deleting PEA
+                                    expect((response.getContent() as PEA[]).length).equals(0);
+                                    done()
+                                });
+                            });
                         });
                     });
                 });
             });
+
             it('import fails', done => {
                 pool.addPEA({source: 'test/Converter/test.aml'}, (response) => {
                     expect(response.constructor.name).is.equal(errorResponseAsString);
-                    pool.getAllPEAs((response, peas) => {
-                        expect(peas.length).equals(0);
+                    pool.getAllPEAs((response) => {
+                        expect((response.getContent() as PEA[]).length).equals(0);
                         done();
                     });
                 });
@@ -75,12 +88,13 @@ describe('class: BasePEAPool', () => {
         });
         it('method: deletePEA()', () => {
             pool.deletePEA('', (response) => {
+                // we except an error, because PEA can not be found with empty/wrong identifier
                 expect(response.constructor.name).is.equal(errorResponseAsString);
             });
         });
         describe('method: getPEA()', () => {
             beforeEach(() => {
-                pool.addPEA({source: 'test/Converter/PiMAd-core.0-0-1.aml'}, (response) => {
+                pool.addPEA({source: 'test/Converter/PiMAd-core.0-0-1.mtp'}, (response) => {
                     //done();
                 });
             });

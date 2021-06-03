@@ -1,7 +1,7 @@
 {
   "name": "@p2olab/pimad-core",
   "description": "PiMAd (Process-industry-Modular-Automation-description) High level access to automation of modular plants.",
-  "version": "0.0.1-alpha2",
+  "version": "0.0.1-alpha8",
   "author": "P2O-Lab <p2o-lab@mailbox.tu-dresden.de>",
   "repository": "https://github.com/p2o-lab/pimad-core.git",
   "homepage": "https://github.com/p2o-lab/pimad-core",

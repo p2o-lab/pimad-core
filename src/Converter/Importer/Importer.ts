@@ -168,17 +168,17 @@ export class MTPFreeze202001Importer extends AImporter {
      */
     private accessDataSource(instructions: InstructionsConvertFrom, callback: (response: PiMAdResponse) => void): void {
         let gate: Gate = new MockGateFactory().create();
-        switch (instructions.source.slice(-4)) {
-            case '.aml':
+        switch (instructions.source.split('.').pop()) {
+            case 'aml':
                 gate = this.amlGateFactory.create();
                 break;
-            case '.mtp':
+            case 'mtp':
                 gate = this.mtpGateFactory.create();
                 break;
-            case '.xml':
+            case 'xml':
                 gate = this.xmlGateFactory.create();
                 break;
-            case '.zip':
+            case 'zip':
                 gate = this.zipGateFactory.create();
                 break;
             default:

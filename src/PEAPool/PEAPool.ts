@@ -57,6 +57,11 @@ abstract class APEAPool implements PEAPool {
         }
     }
 
+    /**
+     * Add PEA to Pool
+     * @param instructions - parsing instructions including the filepath of uploaded file
+     * @param callback
+     */
     public addPEA(instructions: {source: string}, callback: (response: PiMAdResponse) => void): void {
         if(this.initialized) {
             this.generateUniqueIdentifier(identifier => {
@@ -74,14 +79,40 @@ abstract class APEAPool implements PEAPool {
         }
     }
 
+    /**
+     * Delete PEA from PiMad-Pool by given Identifier
+     * @param identifier - individual identifier of PEA
+     * @param callback - contains Success/Failure message with Reason of Failure
+     */
     public deletePEA(identifier: string, callback: (response: PiMAdResponse) => void): void {
         if(this.initialized) {
-            this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, '', {}, callback);
+            // find pea by id
+            const localPEA: PEA | undefined  = this.peas.find(pea => identifier === pea.getPiMAdIdentifier());
+            // check if PEA exists
+            if(!localPEA) {
+                this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'PEA not found', {}, callback);
+            } else{
+                // get index of pea
+                const index = this.peas.indexOf(localPEA as PEA,0);
+                // delete PEA
+                this.peas.splice(index, 1);
+                // check if deletion was successful
+                if(this.peas.find(pea => identifier === pea.getPiMAdIdentifier()) == undefined){
+                    this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.SUCCESS, 'Success!', {}, callback);
+                }else{
+                    this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'Deletion was unsuccessful!', {}, callback);
+                }
+            }
         } else {
             this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'PEAPool is not initialized!', {}, callback);
         }
     }
 
+    /**
+     * Get PEA by given Identifier
+     * @param identifier - individual identifier of PEA
+     * @param callback - contains Success/Failure message with Reason of Failure
+     */
     public getPEA(identifier: string, callback: (response: PiMAdResponse) => void): void {
         if(this.initialized) {
             const localPEA: PEA | undefined = this.peas.find(pea => identifier === pea.getPiMAdIdentifier());
@@ -95,11 +126,15 @@ abstract class APEAPool implements PEAPool {
         }
     }
 
-    public getAllPEAs(callback: (response: PiMAdResponse, peas: PEA[]) => void): void {
+    /**
+     * get All PEAs from PiMad-Pool
+     * @param callback
+     */
+    public getAllPEAs(callback: (response: PiMAdResponse) => void): void {
         if(this.initialized) {
-            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success!', {}), this.peas);
+            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.SUCCESS, 'Success!', this.peas));
         } else {
-            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'This PEAPool is not initialized', {}), []);
+            callback(this.responseHandler.handleResponse(PiMAdResponseTypes.ERROR, 'This PEAPool is not initialized', {}));
         }
     }
 }
@@ -108,11 +143,14 @@ class BasePEAPool extends APEAPool {
 
 }
 
+/**
+ * This interface describes the functions of PEAPool, which can be called from backend
+ */
 export interface PEAPool {
     addPEA(instructions: object, callback: (response: PiMAdResponse) => void): void;
     deletePEA(identifier: string, callback: (response: PiMAdResponse) => void): void;
     getPEA(identifier: string, callback: (response: PiMAdResponse) => void): void;
-    getAllPEAs(callback: (response: PiMAdResponse, peas: PEA[]) => void): void;
+    getAllPEAs(callback: (response: PiMAdResponse) => void): void;
     initialize(firstChainElement: Importer): boolean;
     initializeMTPFreeze202001Importer(): boolean;
 }
