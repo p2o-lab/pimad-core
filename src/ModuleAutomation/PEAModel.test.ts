@@ -115,7 +115,7 @@ describe('class: BasePEA', () => {
                 Name:'Test-PEAModel',
                 PiMAdIdentifier: 'Test-Identifier',
                 Services:[service1, service2],
-                Endpoint:{}
+                Endpoint:[]
             } as PEAInitializeDataType);
         });
         describe('method: getActuator()', () => {

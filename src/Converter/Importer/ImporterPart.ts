@@ -227,9 +227,7 @@ export class MTPPart extends AImporterPart {
                             } else{
                                 logger.warn('Cannot extract source <' + sourceListItem.Name + '> need MTPFreeze-2020-01!');
                             }
-
                         //case('xs:IDREF'):
-
                     }
 
                     /* Easier handling of 'single' and 'multiple' sources in one code section. Therefore a single source is
@@ -271,7 +269,6 @@ export class MTPPart extends AImporterPart {
             instanceListElement.Attribute.forEach((instanceListElementAttribute: Attribute) => {
                 // These are treated differently depending on the attribute data type.
                 const localDataItem = this.baseDataItemFactory.create();
-
 
                 switch (instanceListElementAttribute.AttributeDataType) {
                     case 'xs:string':

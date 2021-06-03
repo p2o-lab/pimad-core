@@ -9,6 +9,7 @@ import {ModuleAutomation} from './DataAssemblyModel';
 import DataAssembly = ModuleAutomation.DataAssembly;
 import {AML} from '@p2olab/pimad-types';
 import Attribute = AML.Attribute;
+import {DataItemModel} from './DataItemModel';
 
 export interface PEAModel {
     /**
@@ -62,6 +63,10 @@ export interface PEAModel {
      */
     getDataAssembly(tag: string, callback: (response: PiMAdResponse) => void): void;
     /**
+     *
+     */
+    getEndpoint(): PiMAdResponse;
+    /**
      * NOT YET IMPLEMENTED
      * Get a specific FEA of the PEAModel object.
      * @param tag - The tag of the FEA.
@@ -109,7 +114,7 @@ abstract class APEA implements PEAModel {
     protected responseHandler: PiMAdResponseHandler;
     protected responseVendor: PiMAdResponseVendor;
     protected services: ServiceModel[];
-    protected endpoint: {};
+    protected endpoint: DataItemModel[];
     protected initialized: boolean;
 
     constructor() {
@@ -118,7 +123,7 @@ abstract class APEA implements PEAModel {
         this.dataModelVersion = new BasicSemanticVersion();
         this.feas = [];
         this.name = 'name: undefined';
-        this.endpoint = {};
+        this.endpoint = [];
         this.pimadIdentifier = 'identifier: undefined';
         this.responseHandler = new PiMAdResponseHandler();
         this.responseVendor = new PiMAdResponseVendor();
@@ -173,6 +178,11 @@ abstract class APEA implements PEAModel {
     getDataModelVersion(): PiMAdResponse {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('Success!', {data: this.dataModelVersion});
+        return response;
+    }
+    getEndpoint(): PiMAdResponse {
+        const response = this.responseVendor.buySuccessResponse();
+        response.initialize('Success!', {data:this.endpoint});
         return response;
     }
     getFEA(tag: string, callback: (response: PiMAdResponse) => void): void {
@@ -282,5 +292,5 @@ export type PEAInitializeDataType = {
     /**
      * OPCUAServerURL
      */
-    Endpoint: {};
+    Endpoint: DataItemModel[];
 }
