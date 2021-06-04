@@ -3,7 +3,7 @@ import {Parameter} from './Parameter';
 import {Attribute} from './Attribute';
 import {Backbone} from '../Backbone';
 import PiMAdResponse = Backbone.PiMAdResponse;
-import {ModuleAutomation} from './DataAssembly';
+import {ModuleAutomation} from './DataAssemblyModel';
 import DataAssembly = ModuleAutomation.DataAssembly;
 import {
     AModuleAutomationObject,
@@ -11,7 +11,7 @@ import {
     ModuleAutomationObject
 } from './ModuleAutomationObject';
 
-export interface Procedure extends ModuleAutomationObject {
+export interface ProcedureModel extends ModuleAutomationObject {
 
     /**
      * TODO
@@ -56,7 +56,7 @@ export interface Procedure extends ModuleAutomationObject {
     initialize(instructions: InitializeProcedureType): boolean;
 }
 
-export abstract class AProcedure extends AModuleAutomationObject implements Procedure {
+export abstract class AProcedure extends AModuleAutomationObject implements ProcedureModel {
 
     protected attributes: Attribute[];
     protected dataAssembly: DataAssembly;
@@ -152,13 +152,13 @@ class BaseProcedure extends AProcedure {
 }
 
 export interface ProcedureFactory {
-    create(): Procedure;
+    create(): ProcedureModel;
 }
 abstract class AProcedureFactory implements ProcedureFactory {
-    abstract create(): Procedure;
+    abstract create(): ProcedureModel;
 }
 export class BaseProcedureFactory extends AProcedureFactory {
-    create(): Procedure {
+    create(): ProcedureModel {
         const procedure = new BaseProcedure();
         logger.debug(this.constructor.name + ' creates a ' + procedure.constructor.name);
         return procedure;

@@ -4,34 +4,51 @@ import PiMAdResponseHandler = Backbone.PiMAdResponseHandler;
 import PiMAdResponseTypes = Backbone.PiMAdResponseTypes;
 
 export type InitializeModuleAutomationObject = {
-    dataSourceIdentifier: string;
-    metaModelRef: string;
+    dataSourceIdentifier?: string;
+    defaultValue?: string;
+    description?: string;
+    metaModelRef?: string;
     name: string;
     pimadIdentifier: string;
+    value?: string;
+
 }
 
 export abstract class AModuleAutomationObject implements ModuleAutomationObject {
-    protected dataSourceIdentifier: string;
+    protected dataSourceIdentifier?: string;
     protected initialized: boolean;
-    protected metaModelRef: string;
-    protected name: string;
-    protected pimadIdentifier: string;
+    protected metaModelRef?: string;
+    protected name?: string;
+    protected pimadIdentifier?: string;
     protected responseHandler: PiMAdResponseHandler;
+    protected defaultValue?: string;
+    protected description?: string;
+    protected value?: string;
 
-    getDataSourceIdentifier(callback: (response: Backbone.PiMAdResponse, identifier: string) => void): void {
-        this.genericPiMAdGetter<string>(this.dataSourceIdentifier, callback);
+    getDataSourceIdentifier(callback: (response: Backbone.PiMAdResponse, identifier: string | undefined) => void): void {
+        this.genericPiMAdGetter<string | undefined>(this.dataSourceIdentifier, callback);
+    }
+    getDefaultValue(callback: (response: Backbone.PiMAdResponse, defaultValue: string | undefined) => void): void {
+        this.genericPiMAdGetter<string | undefined>(this.defaultValue, callback);
+    }
+    getDescription(callback: (response: Backbone.PiMAdResponse, defaultValue: string | undefined) => void): void {
+        this.genericPiMAdGetter<string | undefined>(this.description, callback);
     }
 
-    getMetaModelRef(callback: (response: Backbone.PiMAdResponse, metaModelRef: string) => void): void {
-        this.genericPiMAdGetter<string>(this.metaModelRef, callback);
+    getMetaModelRef(callback: (response: Backbone.PiMAdResponse, metaModelRef: string | undefined) => void): void {
+        this.genericPiMAdGetter<string | undefined>(this.metaModelRef, callback);
     }
 
-    getName(callback: (response: Backbone.PiMAdResponse, name: string) => void): void {
-        this.genericPiMAdGetter<string>(this.name, callback);
+    getName(callback: (response: Backbone.PiMAdResponse, name: string | undefined) => void): void {
+        this.genericPiMAdGetter<string | undefined>(this.name, callback);
     }
 
-    getPiMAdIdentifier(callback: (response: Backbone.PiMAdResponse, identifier: string) => void): void {
-        this.genericPiMAdGetter<string>(this.pimadIdentifier, callback);
+    getPiMAdIdentifier(callback: (response: Backbone.PiMAdResponse, identifier: string | undefined) => void): void {
+        this.genericPiMAdGetter<string | undefined>(this.pimadIdentifier, callback);
+    }
+
+    getValue(callback: (response: Backbone.PiMAdResponse, value: string | undefined) => void): void {
+        this.genericPiMAdGetter<string | undefined >(this.value, callback);
     }
 
     protected genericPiMAdGetter<DataType>(data: DataType , callback: (response: Backbone.PiMAdResponse, responseGetter: DataType) => void): void {
@@ -47,24 +64,33 @@ export abstract class AModuleAutomationObject implements ModuleAutomationObject 
     }
 
     protected moduleAutomationObjectInitialize(instructions: InitializeModuleAutomationObject): boolean {
-        this.dataSourceIdentifier = instructions.dataSourceIdentifier;
-        this.metaModelRef = instructions.metaModelRef;
+        // WP
+        if(instructions.dataSourceIdentifier != undefined) this.dataSourceIdentifier = instructions.dataSourceIdentifier;
+        if(instructions.metaModelRef != undefined) this.metaModelRef = instructions.metaModelRef;
+        if(instructions.value != undefined) this.value = instructions.value;
+        if(instructions.defaultValue != undefined) this.defaultValue = instructions.defaultValue;
+        if(instructions.description != undefined) this.description = instructions.description;
+
         this.name = instructions.name;
         this.pimadIdentifier = instructions.pimadIdentifier;
+        //TODO: e.g. TAGName doesn't has datasourceidentifier...
         return (
-            this.dataSourceIdentifier === instructions.dataSourceIdentifier &&
-            this.metaModelRef === instructions.metaModelRef &&
+            //this.dataSourceIdentifier === instructions.dataSourceIdentifier &&
+           // this.metaModelRef === instructions.metaModelRef &&
             this.name === instructions.name &&
             this.pimadIdentifier === instructions.pimadIdentifier
         );
     }
 
     constructor() {
-        this.dataSourceIdentifier = 'dataSourceIdentifier: undefined';
-        this.name='name: undefined';
+        // this.dataSourceIdentifier = 'dataSourceIdentifier: undefined';
+        // this.name='name: undefined';
+        // this.defaultValue = 'defaultValue: undefined';
+        // this.value = 'value: undefined';
+        // this.description = 'description: undefined';
         this.initialized = false;
-        this.metaModelRef = 'metaModelRef: undefined';
-        this.pimadIdentifier = 'pimadIdentifier: undefined';
+        // this.metaModelRef = 'metaModelRef: undefined';
+        //this.pimadIdentifier = 'pimadIdentifier: undefined';
         this.responseHandler = new PiMAdResponseHandler();
     }
 }
@@ -75,24 +101,38 @@ export interface ModuleAutomationObject {
      * mostly for debugging purpose and an assembling reference while importing the data.
      * @param callback - Accessing the identifier via callback function.
      */
-    getDataSourceIdentifier(callback: (response: PiMAdResponse, identifier: string) => void): void;
+    getDataSourceIdentifier(callback: (response: PiMAdResponse, identifier: string | undefined) => void): void;
 
     /**
      * Getter for this.name. The name of this instance.
      * @param callback - Accessing the name via callback function.
      */
-    getName(callback: (response: PiMAdResponse, name: string) => void): void;
+    getName(callback: (response: PiMAdResponse, name: string | undefined) => void): void;
 
     /**
      * Getter for this.pimadIdentifier. A unique identifier in the PiMAd-core data model. Use this one while
      * interacting with PiMAd-objects.
      * @param callback - Accessing the identifier via callback function.
      */
-    getPiMAdIdentifier(callback: (response: PiMAdResponse, identifier: string) => void): void;
+    getPiMAdIdentifier(callback: (response: PiMAdResponse, identifier: string | undefined) => void): void;
 
     /**
      * Getter for this.metaModelRef. It's a link to the meta model description of the instance.
      * @param callback - Accessing the meta model reference via callback function.
      */
-    getMetaModelRef(callback: (response: PiMAdResponse, metaModelRef: string) => void): void;
+    getMetaModelRef(callback: (response: PiMAdResponse, metaModelRef: string | undefined) => void): void;
+
+
+    /**
+     * Getter for this.description.
+     * @param callback - Accessing the meta model reference via callback function.
+     */
+    getDescription(callback: (response: PiMAdResponse, description: string | undefined) => void): void;
+
+    /**
+     * Getter for this.defaultValue.
+     * @param callback - Accessing the meta model reference via callback function.
+     */
+    getDefaultValue(callback: (response: PiMAdResponse, defaultValue: string | undefined) => void): void;
+
 }

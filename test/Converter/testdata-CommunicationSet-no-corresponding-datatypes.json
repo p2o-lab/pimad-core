@@ -1,0 +1,44 @@
+[
+  {
+    "Name": "SourceList",
+    "ID": "string3",
+    "RefBaseSystemUnitPath": "MTPSUCLib/CommunicationSet/SourceList",
+    "InternalElement":
+      {
+        "Name": "Test Control Engine OPC UA Server",
+        "ID": "string0",
+        "RefBaseSystemUnitPath": "MTPCommunicationSUCLib/ServerAssembly/OPCUAServer",
+        "Attribute": {
+          "Name": "Endpoint",
+          "AttributeDataType": "xs:string",
+          "Value": "opc.tcp://127.0.0.1:4840"
+        },
+        "ExternalInterface": {
+          "Name": "CrystalCrasher_WQC",
+          "ID": "link1",
+          "RefBaseClassPath": "MTPCommunicationICLib/DataItem/OPCUAItem",
+          "Attribute": {
+            "Name": "Identifier",
+            "AttributeDataType": "xs:string",
+            "Value": "Test.SnickersPooper.JustAVirtualSnickersPooper.PooperService.CrystalCrasher.WQC"
+          }
+        }
+      }
+  },
+  {
+    "Name": "InstanceList",
+    "ID": "string1",
+    "RefBaseSystemUnitPath": "MTPSUCLib/CommunicationSet/InstanceList",
+    "InternalElement":
+      {
+        "ID": "string2",
+        "RefBaseSystemUnitPath": "MTPDataObjectSUCLib/DataAssembly/ServiceControl",
+        "Attribute":
+        {
+          "Name": "notRefID",
+          "AttributeDataType": "xs:notSupportedDatatype",
+          "Value": "link6"
+        }
+      }
+  }
+]

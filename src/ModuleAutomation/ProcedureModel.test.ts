@@ -6,7 +6,7 @@ import {
     BaseProcedureFactory, InitializeProcedureType,
     ModuleAutomation,
     Parameter,
-    Procedure
+    ProcedureModel
 } from './index';
 import {Backbone} from '../Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
@@ -19,7 +19,7 @@ const errorResponseAsString = responseVendor.buyErrorResponse().constructor.name
 const successResponseAsString = responseVendor.buySuccessResponse().constructor.name;
 
 describe('class: BaseProcedure', () => {
-    let procedure: Procedure;
+    let procedure: ProcedureModel;
     const procedureFactory = new BaseProcedureFactory();
     beforeEach(function () {
         procedure = procedureFactory.create();

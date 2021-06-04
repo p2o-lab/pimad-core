@@ -13,7 +13,8 @@
             "Name": "TagName",
             "AttributeDataType": "xs:string",
             "DefaultValue": "CrystalCrasher",
-            "Value": "CrystalCrasher"
+            "Value": "CrystalCrasher",
+            "Description": "This is the description!"
           },
           {
             "Name": "TagDescription",
@@ -23,11 +24,6 @@
             "Name": "WQC",
             "AttributeDataType": "xs:IDREF",
             "Value": "link1"
-          },
-          {
-            "Name": "OSLevel",
-            "AttributeDataType": "xs:IDREF",
-            "Value": "link2"
           },
           {
             "Name": "CommandOp",
@@ -43,6 +39,16 @@
             "Name": "CommandExt",
             "AttributeDataType": "xs:IDREF",
             "Value": "link5"
+          },
+          {
+            "Name": "OSLevel",
+            "AttributeDataType": "xs:byte",
+            "Value": "0"
+          },
+          {
+            "Name": "SafetyFlag",
+            "AttributeDataType": "xs:boolean",
+            "Value": "false"
           },
           {
             "Name": "RefID",

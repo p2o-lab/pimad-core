@@ -810,8 +810,19 @@
             <Attribute Name="WQC" AttributeDataType="xs:IDREF">
               <Value>id37</Value>
             </Attribute>
-            <Attribute Name="OSLevel" AttributeDataType="xs:IDREF">
-              <Value>id36</Value>
+            <Attribute Name="OSLevel" AttributeDataType="xs:byte">
+              <DefaultValue>0</DefaultValue>
+              <Value>0</Value>
+            </Attribute>
+            <Attribute Name="SafetyFlag" Unit="" AttributeDataType="xs:boolean">
+              <Description>The Safety Flag signs that this data structure contains variables out of a safety relevant system (only reading) or not</Description>
+              <DefaultValue>false</DefaultValue>
+              <Value>false</Value>
+            </Attribute>
+            <Attribute Name="RefID" Unit="" AttributeDataType="xs:ID">
+              <Description>Reference ID - Relation of different data sets to a complete described Instance Object</Description>
+              <DefaultValue />
+              <Value>980d4337-1aaf-457a-906f-f0ba0f95bbe5</Value>
             </Attribute>
             <Attribute Name="CommandOp" AttributeDataType="xs:IDREF">
               <Value>id35</Value>
@@ -938,6 +949,8 @@
               <Value>255</Value>
             </Attribute>
             <Attribute Name="RefID" AttributeDataType="xs:ID">
+            <Description>Reference ID - Relation of different data sets to a complete described Instance Object</Description>
+            <DefaultValue />
               <Value>refid1</Value>
             </Attribute>
           </InternalElement>

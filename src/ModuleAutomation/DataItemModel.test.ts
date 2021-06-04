@@ -1,5 +1,10 @@
 import {expect} from 'chai';
-import {BaseDataItemFactory, CommunicationInterfaceDataVendor, DataItem} from './index';
+import {
+    BaseDataItemFactory,
+    CommunicationInterfaceData,
+    CommunicationInterfaceDataVendor,
+    DataItemModel
+} from './index';
 import {
     CommunicationInterfaceDataEnum,
     OPCUANodeCommunication
@@ -13,7 +18,7 @@ const successResponseAsString = responseVendor.buySuccessResponse().constructor.
 
 // TODO > Test-cases are crap
 describe('class: BaseDataItem', () => {
-    let dataItem: DataItem;
+    let dataItem: DataItemModel;
     beforeEach(function () {
         dataItem = new BaseDataItemFactory().create();
     });
@@ -31,7 +36,7 @@ describe('class: BaseDataItem', () => {
         it('method: getCommunicationInterfaceData()', (done) => {
             dataItem.getCommunicationInterfaceData((response, communicationInterfaceData) => {
                 expect(response.constructor.name).is.equal(successResponseAsString);
-                expect(communicationInterfaceData.constructor.name).is.equal('OPCUANodeCommunication');
+                expect((communicationInterfaceData as CommunicationInterfaceData).constructor.name).is.equal('OPCUANodeCommunication');
                 done();
             });
         });

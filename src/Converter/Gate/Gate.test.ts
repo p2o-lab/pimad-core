@@ -4,6 +4,7 @@ import {Backbone} from '../../Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import PiMAdResponse = Backbone.PiMAdResponse;
 import {Gate} from './Gate';
+import exp = require("constants");
 
 const responseVendor = new PiMAdResponseVendor();
 const errorResponseAsString = responseVendor.buyErrorResponse().constructor.name;
@@ -30,6 +31,11 @@ describe('class: MockGate', () => {
             expect(response.constructor.name).is.equal(successResponseAsString);
             const content: {test?: string} = response.getContent();
             expect(JSON.stringify(content)).is.equal(JSON.stringify(instruction));
+        });
+    });
+    it('without initialization', () => {
+        gate.receive({},(response) => {
+            expect(response.constructor.name).is.equal(errorResponseAsString);
         });
     });
 });
@@ -70,9 +76,15 @@ describe('class MTPGate', () => {
         gate.initialize(address);
         expect(gate.getGateAddress()).is.equal(address);
     });
+    it('without initialization', () => {
+        gate.receive({},(response) => {
+            expect(response.constructor.name).is.equal(errorResponseAsString);
+        });
+    });
 });
 
 describe('class AMLGate', () => {
+
     const factory = new AMLGateFactory();
     let gate = factory.create();
     beforeEach(() => {
@@ -102,6 +114,11 @@ describe('class AMLGate', () => {
         it('wrong path', () => {
             gate.initialize('this/is/a/wrong/path');
             gate.receive({source: 'this/is/a/wrong/path'},(response: PiMAdResponse) => {
+                expect(response.constructor.name).is.equal(errorResponseAsString);
+            });
+        });
+        it('without initialization', () => {
+            gate.receive({source: 'test/Converter/test.aml'},(response: PiMAdResponse) => {
                 expect(response.constructor.name).is.equal(errorResponseAsString);
             });
         });
@@ -153,6 +170,11 @@ describe('class XMLGate', () => {
         gate.initialize(address);
         expect(gate.getGateAddress()).is.equal(address);
     });
+    it('receive() without initialization', () => {
+        gate.receive({},(response) => {
+            expect(response.constructor.name).is.equal(errorResponseAsString);
+        });
+    });
 });
 
 describe('class ZIPGate', () => {
@@ -176,7 +198,9 @@ describe('class ZIPGate', () => {
     describe('method: receive()', () => {
         it('zip-archive with single xml-file', done => {
             const xml2jsonTest = JSON.stringify({'data':{'test':{'title':{'value':'PiMAd-XML-Gate-Test'},'greeting':'Hello, World !'}}});
+            //gate.initialize('test/Converter/test-xml.zip');
             gate.initialize('test/Converter/test-xml.zip');
+
             gate.receive({},(response: PiMAdResponse) => {
                 const content: {data?: object[]} = response.getContent();
                 if (content.data === undefined) {
@@ -200,7 +224,11 @@ describe('class ZIPGate', () => {
                 done();
             });
         }).timeout(500);
-
+        it('without initialization', () => {
+            gate.receive({},(response) => {
+                expect(response.constructor.name).is.equal(errorResponseAsString);
+            });
+        });
     });
     it('method: getGateAddress()', () => {
         const address = 'test/Converter/test-xml.zip';

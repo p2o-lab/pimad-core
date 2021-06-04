@@ -3,14 +3,14 @@ import {
     BaseProcedureFactory,
     CommunicationInterfaceData,
     CommunicationInterfaceDataVendor,
-    DataItem,
+    DataItemModel,
     ModuleAutomation,
     Parameter
 } from '../../ModuleAutomation';
 import {AML, InstanceList, SourceList} from '@p2olab/pimad-types';
 import {logger} from '../../Utils';
 import {Backbone} from '../../Backbone';
-import {CommunicationInterfaceDataEnum} from '../../ModuleAutomation/CommunicationInterfaceData';
+import {CommunicationInterfaceDataEnum,} from '../../ModuleAutomation/CommunicationInterfaceData';
 import DataItemInstanceList = AML.DataItemInstanceList;
 import DataItemSourceList = AML.DataItemSourceList;
 import DataItemSourceListExternalInterface = AML.DataItemSourceListExternalInterface;
@@ -89,7 +89,7 @@ export class MTPPart extends AImporterPart {
      */
     extract(data: {CommunicationSet: object[]; HMISet: object; ServiceSet: object; TextSet: object}, callback: (response: PiMAdResponse) => void): void {
         const communicationSet = this.extractDataFromCommunicationSet(data.CommunicationSet);
-        if(communicationSet.CommunicationInterfaceData.length === 0 && communicationSet.DataAssemblies.length === 0) {
+        if(communicationSet.ServerCommunicationInterfaceData.length === 0 && communicationSet.DataAssemblies.length === 0) {
             const localeResponse = this.responseVendor.buyErrorResponse();
             localeResponse.initialize('Could not parse the CommunicationSet!', {});
             callback(localeResponse);
@@ -160,7 +160,7 @@ export class MTPPart extends AImporterPart {
      *       while (more Attributes\nin InternalElement?) is (true)
      *         if(attributeDataType == xs:IDREF)
      *           :merging attribute data\nwith external interface data;
-     *           :initialize DataItem with\nmerged data and push\nit to the local storage;
+     *           :initialize DataItemModel with\nmerged data and push\nit to the local storage;
      *         elseif (attributeDataType == xs:ID)
      *           :save the RefID as\nDataAssembly-Identifier;
      *         endif
@@ -175,7 +175,8 @@ export class MTPPart extends AImporterPart {
      */
     private extractDataFromCommunicationSet(communicationSet: object[]): ExtractDataFromCommunicationSetResponseType  {
         // The following arrays will be continuously filled with data in the following lines.
-        const communicationInterfaceData: CommunicationInterfaceData[] = [];
+       // const communicationInterfaceData: CommunicationInterfaceData[] = [];
+        const serverCommunicationInterfaceData: DataItemModel[] = [];
         const dataAssemblies: DataAssembly[] = [];
         const localExternalInterfaces: DataItemSourceListExternalInterface[] = [];
         // Extract InstantList and SourceList from communicationSet
@@ -192,8 +193,8 @@ export class MTPPart extends AImporterPart {
         if(JSON.stringify(instanceList) == JSON.stringify({}) || JSON.stringify(sourceList) == JSON.stringify({})) {
             logger.error('Could not extract InstanceList and SourceList of the CommunicationSet. Aborting!');
             return {
-                CommunicationInterfaceData: [],
-                DataAssemblies: []
+                DataAssemblies: [],
+                ServerCommunicationInterfaceData: []
             };
         }
         /* Easier handling of 'single' and 'multiple' sources in one code section. Therefore a single source is
@@ -206,28 +207,28 @@ export class MTPPart extends AImporterPart {
             // So far we only know MTPs with a OPCUAServer as source.
             switch (sourceListItem.RefBaseSystemUnitPath) {
                 case 'MTPCommunicationSUCLib/ServerAssembly/OPCUAServer': {
-                    // Extract the server communication interface.
-                    const localeComIntData = this.communicationInterfaceDataVendor.buy(CommunicationInterfaceDataEnum.OPCUAServer);
 
-                    if(localeComIntData.initialize({
-                        dataSourceIdentifier: sourceListItem.ID,
-                        name: sourceListItem.Name,
-                        interfaceDescription: {
-                            macrocosm: sourceListItem.Attribute.Value, // Actual MTP combines IP and Port in one string
-                            microcosm: 'TODO'
-                        },
-                        metaModelRef: sourceListItem.RefBaseSystemUnitPath,
-                        pimadIdentifier: 'TODO'})) {
-                        communicationInterfaceData.push(localeComIntData);
-                    } else {
-                        logger.warn('Cannot extract source <' + sourceListItem.Name + '> need MTPFreeze-2020-01!');
+                    const localDataItem = this.baseDataItemFactory.create();
+                    const sourceListElementAttribute = sourceListItem.Attribute;
+
+                    // Extract the server communication interface
+                    switch(sourceListElementAttribute.AttributeDataType){
+                        // TODO: standard for endpoint MTP? static, dynamic?
+                        case('xs:string'):
+                            if (localDataItem.initialize({
+                                dataType: sourceListElementAttribute.AttributeDataType,
+                                defaultValue: sourceListElementAttribute.DefaultValue,
+                                description: sourceListElementAttribute.Description,
+                                name: sourceListElementAttribute.Name,
+                                pimadIdentifier: 'TODO',
+                                value: sourceListElementAttribute.Value
+                            })) {
+                                serverCommunicationInterfaceData.push(localDataItem);
+                            } else{
+                                logger.warn('Cannot extract source <' + sourceListItem.Name + '> need MTPFreeze-2020-01!');
+                            }
+                        //case('xs:IDREF'):
                     }
-                    /*
-                    if(localeComIntData.initialize({name: sourceListItem.Name, serverURL: sourceListItem.Attribute.Value})) {
-                        communicationInterfaceData.push(localeComIntData);
-                    } else {
-                        logger.warn('Cannot extract source <' + sourceListItem.Name + '> need MTPFreeze-2020-01!');
-                    } */
 
                     /* Easier handling of 'single' and 'multiple' sources in one code section. Therefore a single source is
                     transferred to an array with one entry. */
@@ -247,14 +248,13 @@ export class MTPPart extends AImporterPart {
             }
         });
         // Handle the InstanceList. Merging data with SourceList and generating mainly PiMAd-core-DataAssemblies.
-        /* Easier handling of 'single' and 'multiple' sources in one code section. Therefore a single source is
-        transferred to an array with one entry. */
+
         if(!(Array.isArray(instanceList.InternalElement))) {
             instanceList.InternalElement = [instanceList.InternalElement];
         }
         instanceList.InternalElement.forEach((instanceListElement: DataItemInstanceList) => {
             // like above these variables will be continuously filled with data in the following lines.
-            const localDataItems: DataItem[] = [];
+            const localDataItems: DataItemModel[] = [];
             let dataAssemblyIdentifier = '';
             // iterate through all attributes
             /* Easier handling of 'single' and 'multiple' attributes in one code section. Therefore a single attribute is
@@ -262,91 +262,136 @@ export class MTPPart extends AImporterPart {
             if(!(Array.isArray(instanceListElement.Attribute))) {
                 instanceListElement.Attribute = [instanceListElement.Attribute];
             }
+/*            if(instanceListElement.RefBaseSystemUnitPath.includes('HealthStateView')
+                || instanceListElement.RefBaseSystemUnitPath.includes('ServiceControl')){
+                return;
+            }*/
             instanceListElement.Attribute.forEach((instanceListElementAttribute: Attribute) => {
                 // These are treated differently depending on the attribute data type.
+                const localDataItem = this.baseDataItemFactory.create();
+
                 switch (instanceListElementAttribute.AttributeDataType) {
-                    /* In this case the attribute references to an ExternalInterface. Later both data sources will be
-                    merged as one PiMAd-core-DataItem. */
-                    case 'xs:IDREF':
-                        /* First we need the element with the correct ID from the ExternalInterfaceList. Safe some time
-                        with Array.prototype.some(). Therefore the 'strange' syntax in the last part. */
-                        localExternalInterfaces.some((localeExternalInterface: DataItemSourceListExternalInterface) => {
-                            // TODO: Extract description via new switch case scenario
-                            if (localeExternalInterface.ID === instanceListElementAttribute.Value) {
-                                /* Merging attribute and external interface data to one communication interface. */
-                                // TODO: Aktuell gehen wir immer von opcua nodes aus. Kann sich in Zukunft ändern!
-                                const opcuaNodeCommunication = this.communicationInterfaceDataVendor.buy(CommunicationInterfaceDataEnum.OPCUANode);
-                                // ... continuously filled ...
-                                let identifier: number | string = -1;
-                                let namespace = '';
-                                let access = '';
-                                /* There are again attributes...  looping and extracting */
-                                /* Easier handling of 'single' and 'multiple' attributes in one code section. Therefore a single attribute is
-                                transferred to an array with one entry. */
-                                if(!(Array.isArray(localeExternalInterface.Attribute))) {
-                                    localeExternalInterface.Attribute = [localeExternalInterface.Attribute];
-                                }
-                                localeExternalInterface.Attribute.forEach((localeInterfaceAttribute: Attribute) => {
-                                    switch (localeInterfaceAttribute.Name) {
-                                        case ('Identifier'):
-                                            identifier = localeInterfaceAttribute.Value;
-                                            break;
-                                        case ('Namespace'):
-                                            namespace = localeInterfaceAttribute.Value;
-                                            break;
-                                        case ('Access'):
-                                            access = localeInterfaceAttribute.Value;
-                                            break;
-                                        default:
-                                            logger.warn('The opcua-node-communication object contains the unknown attribute <' + instanceListElementAttribute.Name + '>! Ignoring ...');
-                                            break;
-                                    }
-                                    // in the last loop circle initialize the communication interface.
-                                    if (localeInterfaceAttribute == localeExternalInterface.Attribute[localeExternalInterface.Attribute.length - 1]) {
-                                        if (opcuaNodeCommunication.initialize({
-                                            dataSourceIdentifier: localeExternalInterface.ID,
-                                            name: instanceListElementAttribute.Name,
-                                            interfaceDescription: {
-                                                macrocosm: namespace,
-                                                microcosm: identifier as string
-                                            },
-                                            metaModelRef: localeExternalInterface.RefBaseClassPath,
-                                            pimadIdentifier: 'TODO'
-                                        })) {
-                                            logger.info('Successfully add opcua-communication <' + instanceListElementAttribute.Name + '> to DataAssembly <' + instanceListElement.Name + '>');
-                                        } else {
-                                            logger.warn('Could not add opcua-communication <' + instanceListElementAttribute.Name + '> to DataAssembly <' + instanceListElement.Name + '>');
-                                        }
-                                    }
-                                });
-                                // Create and initialize the data item.
-                                const localDataItem = this.baseDataItemFactory.create();
-                                if (localDataItem.initialize({
-                                    ciData: opcuaNodeCommunication,
-                                    dataSourceIdentifier: localeExternalInterface.ID,
-                                    dataType: instanceListElementAttribute.AttributeDataType,
-                                    metaModelRef: localeExternalInterface.RefBaseClassPath,
-                                    name: instanceListElementAttribute.Name,
-                                    pimadIdentifier: 'TODO'
-                                })) {
-                                    /* no error -> pushing it to the list of data items. later it will be aggregated in
-                                    the data assembly object. */
-                                    localDataItems.push(localDataItem);
-                                } else {
-                                    // logging
-                                }
-                                // Array.prototype.some() stuff...
-                                return true;
-                            } else {
-                                //Array.prototype.some() stuff...
-                                return false;
-                            }
-                        });
+                    case 'xs:string':
+                        if (localDataItem.initialize({
+                            dataType: instanceListElementAttribute.AttributeDataType,
+                            defaultValue: instanceListElementAttribute.DefaultValue,
+                            description: instanceListElementAttribute.Description,
+                            name: instanceListElementAttribute.Name,
+                            pimadIdentifier: 'TODO',
+                            value: instanceListElementAttribute.Value
+                        })) {
+                           localDataItems.push(localDataItem);
+                        }
                         break;
-                    /* Now the attributes are id's and doesn't referencing to an DataAssembly/DataItem. In this case the
-                    id connect different data items in the MTP. (Real talk) me (CHe) as an software engineer, i don't
-                    understand this concept... why fucking up the system above with ID & RefIDs in the
-                    DataItems... never mind */
+                    case 'xs:byte':
+                        if (localDataItem.initialize({
+                            dataType: instanceListElementAttribute.AttributeDataType,
+                            defaultValue: instanceListElementAttribute.DefaultValue,
+                            description: instanceListElementAttribute.Description,
+                            name: instanceListElementAttribute.Name,
+                            pimadIdentifier: 'TODO',
+                            value: instanceListElementAttribute.Value
+                        })) {
+                            // push to the list of data items. later it will be aggregated in the data assembly object.
+                            localDataItems.push(localDataItem);
+                        }
+                        break;
+                    case 'xs:boolean':
+                        if (localDataItem.initialize({
+                            dataType: instanceListElementAttribute.AttributeDataType,
+                            defaultValue: instanceListElementAttribute.DefaultValue,
+                            description: instanceListElementAttribute.Description,
+                            name: instanceListElementAttribute.Name,
+                            pimadIdentifier: 'TODO',
+                            value: instanceListElementAttribute.Value
+                        })) {
+                            // push to the list of data items. later it will be aggregated in the data assembly object.
+                            localDataItems.push(localDataItem);
+                        }
+                        break;
+                    case 'xs:IDREF':
+                    /* First we need the element with the correct ID from the ExternalInterfaceList. Safe some time
+                    with Array.prototype.some(). Therefore the 'strange' syntax in the last part. */
+                    localExternalInterfaces.some((localeExternalInterface: DataItemSourceListExternalInterface) => {
+                        // TODO: Extract description via new switch case scenario
+                        if (localeExternalInterface.ID === instanceListElementAttribute.Value) {
+                            /* Merging attribute and external interface data to one communication interface. */
+                            // TODO: Aktuell gehen wir immer von opcua nodes aus. Kann sich in Zukunft ändern!
+                            const opcuaNodeCommunication = this.communicationInterfaceDataVendor.buy(CommunicationInterfaceDataEnum.OPCUANode);
+                            // ... continuously filled ...
+                            let identifier: number | string = -1;
+                            let namespace = '';
+                            let access = '';
+                            /* There are again attributes...  looping and extracting */
+                            /* Easier handling of 'single' and 'multiple' attributes in one code section. Therefore a single attribute is
+                            transferred to an array with one entry. */
+                            //TODO: is this neccessary?
+                            if(!(Array.isArray(localeExternalInterface.Attribute))) {
+                                localeExternalInterface.Attribute = [localeExternalInterface.Attribute];
+                            }
+                            localeExternalInterface.Attribute.forEach((localeInterfaceAttribute: Attribute) => {
+                                switch (localeInterfaceAttribute.Name) {
+                                    case ('Identifier'):
+                                        identifier = localeInterfaceAttribute.Value;
+                                        break;
+                                    case ('Namespace'):
+                                        namespace = localeInterfaceAttribute.Value;
+                                        break;
+                                    case ('Access'):
+                                        //TODO: Do we need access?
+                                        access = localeInterfaceAttribute.Value;
+                                        break;
+                                    default:
+                                        logger.warn('The opcua-node-communication object contains the unknown attribute <' + instanceListElementAttribute.Name + '>! Ignoring ...');
+                                        break;
+                                }
+                                // in the last loop circle initialize the communication interface.
+                                if (localeInterfaceAttribute == localeExternalInterface.Attribute[localeExternalInterface.Attribute.length - 1]) {
+                                    if (opcuaNodeCommunication.initialize({
+                                        dataSourceIdentifier: localeExternalInterface.ID,
+                                        name: instanceListElementAttribute.Name,
+                                        interfaceDescription: {
+                                            macrocosm: namespace,
+                                            microcosm: identifier as string
+                                        },
+                                        metaModelRef: localeExternalInterface.RefBaseClassPath,
+                                        pimadIdentifier: 'TODO'
+                                    })) {
+                                        logger.info('Successfully add opcua-communication <' + instanceListElementAttribute.Name + '> to DataAssembly <' + instanceListElement.Name + '>');
+                                    } else {
+                                        logger.warn('Could not add opcua-communication <' + instanceListElementAttribute.Name + '> to DataAssembly <' + instanceListElement.Name + '>');
+                                    }
+                                }
+                            });
+                            // Create and initialize the data item.
+                            const localDataItem = this.baseDataItemFactory.create();
+                            if (localDataItem.initialize({
+                                ciData: opcuaNodeCommunication,
+                                dataSourceIdentifier: localeExternalInterface.ID,
+                                defaultValue: instanceListElementAttribute.DefaultValue,
+                                description: instanceListElementAttribute.Description,
+                                dataType: instanceListElementAttribute.AttributeDataType,
+                                metaModelRef: localeExternalInterface.RefBaseClassPath,
+                                name: instanceListElementAttribute.Name,
+                                pimadIdentifier: 'TODO'
+                            })) {
+                                /* no error -> pushing it to the list of data items. later it will be aggregated in
+                                the data assembly object. */
+                                localDataItems.push(localDataItem);
+                            } else {
+                                // logging
+                            }
+                            // Array.prototype.some() stuff...
+                            return true;
+                        } else {
+                            //Array.prototype.some() stuff...
+                            return false;
+                        }
+                    });
+                    break;
+                    /* Now the attributes are id's and doesn't referencing to an DataAssembly/DataItemModel. In this case the
+                    id connect different data items in the MTP. (why messing up the system above with ID & RefIDs in the
+                    DataItems?)*/
                     case 'xs:ID':
                         switch(instanceListElementAttribute.Name) {
                             /* Take this data for the data assembly identifier. Why? The services f.ex. referencing on
@@ -358,6 +403,7 @@ export class MTPPart extends AImporterPart {
                                 break;
                         }
                         break;
+
                     default:
                         break;
                 }
@@ -384,8 +430,8 @@ export class MTPPart extends AImporterPart {
         });
         // We are done. Return the extracted Data.
         return {
-            CommunicationInterfaceData: communicationInterfaceData,
-            DataAssemblies: dataAssemblies
+            DataAssemblies: dataAssemblies,
+            ServerCommunicationInterfaceData: serverCommunicationInterfaceData
         };
     }
 
@@ -433,10 +479,10 @@ export class ServicePart extends AImporterPart {
      * @param callback - A callback function with an instance of the Response-Interface.
      */
     extract(data: ServicePartExtractInputDataType, callback: (response: PiMAdResponse) => void): void {
-        /* One big issue: In the ServicePart of the MTP are not all data to build a PiMAd-core Service. There are
+        /* One big issue: In the ServicePart of the MTP are not all data to build a PiMAd-core ServiceModel. There are
         references to DataAssemblies extracted via the MTPPart. Therefore this one extracts the data like a quasi
         service. Later one the Importer merges the data of quasi service and the referenced DataAssembly to one
-        PiMAd-core Service. */
+        PiMAd-core ServiceModel. */
         const extractedServiceData: InternalServiceType[] = []; // will be the content of the response.
         // typing
         let servicePartInternalElementArray = data.InternalElement as ServiceInternalElement[];
@@ -449,7 +495,7 @@ export class ServicePart extends AImporterPart {
         servicePartInternalElementArray.forEach((amlServiceInternalElement: ServiceInternalElement) => {
             // TODO > Better solution possible?
             // TODO > Why no check? RefBaseSystemUnitPath
-            // Skip Service Relation in FirstPlace
+            // Skip ServiceModel Relation in FirstPlace
             if (amlServiceInternalElement.RefBaseSystemUnitPath.includes('ServiceRelation')) return;
             let localAMLServiceInternalElementAttributes: Attribute[] = [];
             if(!Array.isArray(amlServiceInternalElement.Attribute)) {
@@ -509,10 +555,10 @@ export class ServicePart extends AImporterPart {
                             localProcedure.Attributes = response.getContent() as Attribute[];
                         }));
                         localService.Procedures.push(localProcedure);
-                        // TODO: Missing Procedure-Parameters
+                        // TODO: Missing ProcedureModel-Parameters
                         break;
                     }
-                    //case 'TODO: Missing Service-Parameters'
+                    //case 'TODO: Missing ServiceModel-Parameters'
                     default:
                         logger.warn('Unknown >InternalElement< in service <' + amlServiceInternalElement.Name + '> Ignoring!');
                         break;
@@ -579,8 +625,8 @@ export interface ImporterPart {
  * Type of the object that is created by the method {@link extractDataFromCommunicationSet}
  */
 export type ExtractDataFromCommunicationSetResponseType = {
-    CommunicationInterfaceData: CommunicationInterfaceData[];
     DataAssemblies: DataAssembly[];
+    ServerCommunicationInterfaceData: DataItemModel[];
 }
 
 /**

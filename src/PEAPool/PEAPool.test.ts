@@ -6,7 +6,9 @@ import {LastChainElementImporterFactory, MTPFreeze202001ImporterFactory} from '.
 import {expect} from 'chai';
 import {Backbone} from '../Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
-import {PEA} from "../ModuleAutomation";
+import {PEAModel} from "../ModuleAutomation";
+import {BasicDataAssembly} from "../ModuleAutomation/DataAssemblyModel";
+import {OPCUANodeCommunication} from "../ModuleAutomation/CommunicationInterfaceData";
 
 const responseVendor = new PiMAdResponseVendor();
 const errorResponseAsString = responseVendor.buyErrorResponse().constructor.name;
@@ -43,6 +45,11 @@ describe('class: BasePEAPool', () => {
                 expect(response.constructor.name).is.equal(errorResponseAsString);
             });
         });
+        it('method: getAllPEAs()', () => {
+            pool.getAllPEAs((response) => {
+                expect(response.constructor.name).is.equal(errorResponseAsString);
+            });
+        });
     });
     describe('with initialization', () => {
         beforeEach(() => {
@@ -55,19 +62,19 @@ describe('class: BasePEAPool', () => {
             it('regular usage', (done) => {
                 pool.getAllPEAs((response) => {
                     //list should be empty
-                    expect((response.getContent() as PEA[]).length).equals(0);
+                    expect((response.getContent() as PEAModel[]).length).equals(0);
                     pool.addPEA( {source: 'test/Converter/PiMAd-core.0-0-1.mtp'}, (response) => {
                         expect(response.constructor.name).is.equal(successResponseAsString);
                         expect(response.getContent().constructor.name).is.equal('BasePEA');
                         pool.getAllPEAs((response) => {
-                            // list should have one PEA added to it
-                            expect((response.getContent() as PEA[]).length).equals(1);
+                            // list should have one PEAModel added to it
+                            expect((response.getContent() as PEAModel[]).length).equals(1);
                             // testing deletePEA()
-                            pool.deletePEA((response.getContent() as PEA[])[0].getPiMAdIdentifier(), (response) => {
+                            pool.deletePEA((response.getContent() as PEAModel[])[0].getPiMAdIdentifier(), (response) => {
                                 expect(response.constructor.name).is.equal(successResponseAsString);
                                 pool.getAllPEAs((response) => {
-                                    //list should be empty, after deleting PEA
-                                    expect((response.getContent() as PEA[]).length).equals(0);
+                                    //list should be empty, after deleting PEAModel
+                                    expect((response.getContent() as PEAModel[]).length).equals(0);
                                     done()
                                 });
                             });
@@ -80,7 +87,7 @@ describe('class: BasePEAPool', () => {
                 pool.addPEA({source: 'test/Converter/test.aml'}, (response) => {
                     expect(response.constructor.name).is.equal(errorResponseAsString);
                     pool.getAllPEAs((response) => {
-                        expect((response.getContent() as PEA[]).length).equals(0);
+                        expect((response.getContent() as PEAModel[]).length).equals(0);
                         done();
                     });
                 });
@@ -88,19 +95,20 @@ describe('class: BasePEAPool', () => {
         });
         it('method: deletePEA()', () => {
             pool.deletePEA('', (response) => {
-                // we except an error, because PEA can not be found with empty/wrong identifier
+                // we except an error, because PEAModel can not be found with empty/wrong identifier
                 expect(response.constructor.name).is.equal(errorResponseAsString);
             });
         });
         describe('method: getPEA()', () => {
-            beforeEach(() => {
+            it('method: getPEA()', done => {
                 pool.addPEA({source: 'test/Converter/PiMAd-core.0-0-1.mtp'}, (response) => {
-                    //done();
-                });
-            });
-            it('method: getPEA()', () => {
-                pool.getPEA('', (response) => {
-                    expect(response.constructor.name).is.equal(errorResponseAsString);
+                    pool.getAllPEAs(response1 => {
+                        const pimadIdentifier = (response1.getContent() as PEAModel[])[0].getPiMAdIdentifier()
+                        pool.getPEA(pimadIdentifier, (response) => {
+                            expect(response.constructor.name).is.equal(successResponseAsString);
+                            done();
+                        });
+                    })
                 });
             });
         });

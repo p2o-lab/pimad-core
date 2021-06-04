@@ -4,7 +4,7 @@ import {
     BaseParameterFactory,
     BaseProcedureFactory,
     ModuleAutomation,
-    Service
+    ServiceModel
 } from './index';
 import {expect} from 'chai';
 import {Backbone} from '../Backbone';
@@ -13,14 +13,14 @@ import DataAssemblyVendor = ModuleAutomation.DataAssemblyVendor;
 import DataAssemblyType = ModuleAutomation.DataAssemblyType;
 import DataAssembly = ModuleAutomation.DataAssembly;
 import {v4 as uuidv4} from 'uuid';
-import {BaseServiceFactory, InitializeServiceType} from './Service';
+import {BaseServiceFactory, InitializeServiceType} from './ServiceModel';
 const responseVendor = new PiMAdResponseVendor();
 const dataAssemblyVendor = new DataAssemblyVendor();
 const errorResponseAsString = responseVendor.buyErrorResponse().constructor.name;
 const successResponseAsString = responseVendor.buySuccessResponse().constructor.name;
 
 describe('class: BaseService', () => {
-    let service: Service;
+    let service: ServiceModel;
     const serviceFactory = new BaseServiceFactory();
     beforeEach(function () {
         service = serviceFactory.create();

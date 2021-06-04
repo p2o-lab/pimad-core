@@ -189,6 +189,7 @@ dist
 
 dist/
 docs/
+local/
 
 # custom code style
 .idea/codeStyles/codeStyleConfig.xml

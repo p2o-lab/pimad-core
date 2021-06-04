@@ -1,103 +1,110 @@
 import {FEA} from './FEA';
-import {Service} from './Service';
+import {ServiceModel} from './ServiceModel';
 import {Backbone, BasicSemanticVersion, SemanticVersion} from '../Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import PiMAdResponseHandler = Backbone.PiMAdResponseHandler;
 import PiMAdResponse = Backbone.PiMAdResponse;
 import PiMAdResponseTypes = Backbone.PiMAdResponseTypes;
-import {ModuleAutomation} from './DataAssembly';
+import {ModuleAutomation} from './DataAssemblyModel';
 import DataAssembly = ModuleAutomation.DataAssembly;
+import {AML} from '@p2olab/pimad-types';
+import Attribute = AML.Attribute;
+import {DataItemModel} from './DataItemModel';
 
-export interface PEA {
+export interface PEAModel {
     /**
      * NOT YET IMPLEMENTED
-     * Get a specific actuator of the PEA object.
+     * Get a specific actuator of the PEAModel object.
      * @param tag - The tag of the actuator.
      * @param callback - A callback function. Use an instance of the interface Response as input.
      */
     getActuator(tag: string, callback: (response: PiMAdResponse) => void): void;
     /**
      * NOT YET IMPLEMENTED
-     * Getter for all actuators  within this.dataAssemblies of the PEA object.
+     * Getter for all actuators  within this.dataAssemblies of the PEAModel object.
      * @returns A response object.
      */
     getAllActuators(callback: (response: PiMAdResponse) => void): void;
     /**
-     * Getter for this.dataAssemblies of the PEA object.
+     * Getter for this.dataAssemblies of the PEAModel object.
      * @returns A response object.
      */
     getAllDataAssemblies(): PiMAdResponse;
     /**
-     * Getter for this.feas of the PEA object.
+     * Getter for this.feas of the PEAModel object.
      * @returns A response object.
      */
     getAllFEAs(): PiMAdResponse;
     /**
      * NOT YET IMPLEMENTED
-     * Getter for all sensors within this.dataAssemblies of the PEA object.
+     * Getter for all sensors within this.dataAssemblies of the PEAModel object.
      * @returns A response object.
      */
     getAllSensors(callback: (response: PiMAdResponse) => void): void;
     /**
-     * Getter for this.services of the PEA object.
+     * Getter for this.services of the PEAModel object.
      * @returns A response object.
      */
     getAllServices(): PiMAdResponse;
     /**
-     * Getter for this.dataModel of the PEA object.
+     * Getter for this.dataModel of the PEAModel object.
      * @returns A response object.
      */
     getDataModel(): PiMAdResponse;
     /**
-     * Getter for this.dataModelVersion of the PEA object.
+     * Getter for this.dataModelVersion of the PEAModel object.
      * @returns A response object.
      */
     getDataModelVersion(): PiMAdResponse;
     /**
-     * Get a specific dataAssembly of the PEA object.
+     * Get a specific dataAssembly of the PEAModel object.
      * @param tag - The tag of the dataAssembly.
      * @param callback - A callback function. Use an instance of the interface Response as input.
      */
     getDataAssembly(tag: string, callback: (response: PiMAdResponse) => void): void;
     /**
+     *
+     */
+    getEndpoint(): PiMAdResponse;
+    /**
      * NOT YET IMPLEMENTED
-     * Get a specific FEA of the PEA object.
+     * Get a specific FEA of the PEAModel object.
      * @param tag - The tag of the FEA.
      * @param callback - A callback function. Use an instance of the interface Response as input.
      */
     getFEA(tag: string, callback: (response: PiMAdResponse) => void): void;
     /**
-     * Getter for this.identifier of the PEA object.
-     * @returns The identifier of the PEA.
+     * Getter for this.identifier of the PEAModel object.
+     * @returns The identifier of the PEAModel.
      */
     getPiMAdIdentifier(): string;
     /**
-     * Getter for this.name of the PEA object.
-     * @returns The name of the PEA..
+     * Getter for this.name of the PEAModel object.
+     * @returns The name of the PEAModel..
      */
     getName(): string;
     /**
      * NOT YET IMPLEMENTED
-     * Get a specific sensor of the PEA object.
+     * Get a specific sensor of the PEAModel object.
      * @param tag - The tag of the sensor.
      * @param callback - A callback function. Use an instance of the interface Response as input.
      */
     getSensor(tag: string, callback: (response: PiMAdResponse) => void): void;
     /**
-     * Get a specific service of the PEA object.
+     * Get a specific service of the PEAModel object.
      * @param identifier - The PiMAd-identifier of the service.
      * @param callback - A callback function. Use an instance of the interface Response as input.
      */
     getService(identifier: string, callback: (response: PiMAdResponse) => void): void;
     /**
-     * Initialize the PEA object with data. This one works like a constructor.
-     * @param data - Various data for initialization of the PEA.
+     * Initialize the PEAModel object with data. This one works like a constructor.
+     * @param data - Various data for initialization of the PEAModel.
      * @returns True for a successful initialisation. False for a not successful initialisation.
      * */
     initialize(data: PEAInitializeDataType): boolean;
 }
 
-abstract class APEA implements PEA {
+abstract class APEA implements PEAModel {
     protected dataAssemblies: DataAssembly[];
     protected dataModel: string; // PiMAd-core DataModel
     protected dataModelVersion: SemanticVersion;
@@ -106,8 +113,8 @@ abstract class APEA implements PEA {
     protected name: string;
     protected responseHandler: PiMAdResponseHandler;
     protected responseVendor: PiMAdResponseVendor;
-    protected services: Service[];
-
+    protected services: ServiceModel[];
+    protected endpoint: DataItemModel[];
     protected initialized: boolean;
 
     constructor() {
@@ -116,6 +123,7 @@ abstract class APEA implements PEA {
         this.dataModelVersion = new BasicSemanticVersion();
         this.feas = [];
         this.name = 'name: undefined';
+        this.endpoint = [];
         this.pimadIdentifier = 'identifier: undefined';
         this.responseHandler = new PiMAdResponseHandler();
         this.responseVendor = new PiMAdResponseVendor();
@@ -133,7 +141,7 @@ abstract class APEA implements PEA {
     }
     getAllDataAssemblies(): PiMAdResponse {
         const response = this.responseVendor.buySuccessResponse();
-        response.initialize('Success!', {data: this.dataAssemblies});
+        response.initialize('Success!', {data:this.dataAssemblies});
         return response;
     }
     getAllFEAs(): PiMAdResponse {
@@ -157,7 +165,7 @@ abstract class APEA implements PEA {
                     this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.SUCCESS, 'Success!', dataAssembly, callback);
                 }
                 if(dataAssembly === this.dataAssemblies[this.dataAssemblies.length -1]) {
-                    this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'Could not find dataAssembly <' + tag + '> in PEA <' + this.name + '>', {}, callback);
+                    this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'Could not find dataAssembly <' + tag + '> in PEAModel <' + this.name + '>', {}, callback);
                 }
             });
         });
@@ -170,6 +178,11 @@ abstract class APEA implements PEA {
     getDataModelVersion(): PiMAdResponse {
         const response = this.responseVendor.buySuccessResponse();
         response.initialize('Success!', {data: this.dataModelVersion});
+        return response;
+    }
+    getEndpoint(): PiMAdResponse {
+        const response = this.responseVendor.buySuccessResponse();
+        response.initialize('Success!', {data:this.endpoint});
         return response;
     }
     getFEA(tag: string, callback: (response: PiMAdResponse) => void): void {
@@ -185,7 +198,7 @@ abstract class APEA implements PEA {
         this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, '', {}, callback);
     }
     getService(identifier: string, callback: (response: PiMAdResponse) => void): void {
-        const localService: Service | undefined = this.services.find(service => {
+        const localService: ServiceModel | undefined = this.services.find(service => {
                 let testCondition = false;
                 service.getPiMAdIdentifier((response, pimadIdentifier) => {
                     testCondition = (pimadIdentifier === identifier);
@@ -193,11 +206,11 @@ abstract class APEA implements PEA {
                 return testCondition;
             }
         );
-        /*const localService: Service | undefined = this.services.find(service =>
+        /*const localService: ServiceModel | undefined = this.services.find(service =>
             service.getName() === name
         );*/
         if(localService == undefined) {
-            this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'Could not find service <' + identifier + '> in PEA <' + this.name + '>', {}, callback);
+            this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.ERROR, 'Could not find service <' + identifier + '> in PEAModel <' + this.name + '>', {}, callback);
         } else {
             this.responseHandler.handleCallbackWithResponse(PiMAdResponseTypes.SUCCESS, 'Success!', localService, callback);
         }
@@ -212,6 +225,7 @@ abstract class APEA implements PEA {
             this.pimadIdentifier = data.PiMAdIdentifier;
             this.name = data.Name;
             this.services = data.Services;
+            this.endpoint = data.Endpoint;
             this.initialized = (JSON.stringify(this.dataAssemblies) === JSON.stringify(data.DataAssemblies) &&
                     this.dataModel === data.DataModel &&
                     this.dataModelVersion === data.DataModelVersion &&
@@ -233,30 +247,30 @@ class BasePEA extends APEA {
 
 /* Factories */
 abstract class APEAFactory implements PEAFactory {
-    abstract create(): PEA;
+    abstract create(): PEAModel;
 }
 
 export class BasePEAFactory extends APEAFactory {
-    create(): PEA {
+    create(): PEAModel {
         return new BasePEA();
     }
 }
 
 export interface PEAFactory {
-    create(): PEA;
+    create(): PEAModel;
 }
 
 export type PEAInitializeDataType = {
     /**
-     * The data assembly of the PEA object.. F. ex. with the communication interface data.
+     * The data assembly of the PEAModel object.. F. ex. with the communication interface data.
      */
     DataAssemblies: DataAssembly[];
     /**
-     * A reference to a data-model describing the PEA object.
+     * A reference to a data-model describing the PEAModel object.
      */
     DataModel: string; // PiMAd-core DataModel
     /**
-     * A reference to a data-model describing the PEA object.
+     * A reference to a data-model describing the PEAModel object.
      */
     DataModelVersion: SemanticVersion;
     /**
@@ -264,15 +278,19 @@ export type PEAInitializeDataType = {
      */
     PiMAdIdentifier: string;
     /**
-     * An Array with the PEA related FEAs.
+     * An Array with the PEAModel related FEAs.
      */
     FEAs: FEA[];
     /**
-     * The name of the PEA object.
+     * The name of the PEAModel object.
      */
     Name: string;
     /**
-     * An Array with the PEA related Services.
+     * An Array with the PEAModel related Services.
      */
-    Services: Service[];
+    Services: ServiceModel[];
+    /**
+     * OPCUAServerURL
+     */
+    Endpoint: DataItemModel[];
 }

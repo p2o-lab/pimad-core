@@ -1,7 +1,7 @@
 {
   "name": "@p2olab/pimad-core",
   "description": "PiMAd (Process-industry-Modular-Automation-description) High level access to automation of modular plants.",
-  "version": "0.0.1-alpha8",
+  "version": "0.0.1-alpha12",
   "author": "P2O-Lab <p2o-lab@mailbox.tu-dresden.de>",
   "repository": "https://github.com/p2o-lab/pimad-core.git",
   "homepage": "https://github.com/p2o-lab/pimad-core",
@@ -35,10 +35,11 @@
   "contributors": [
     "Christoph Jesaja Heidelbach <christoph.jesaja.heidelbach@gmail.com>",
     "Julius Lorenz <julius.lorenz@tu-dresden.de>",
-    "Anselm Klose <anselm.klose@tu-dresden.de>"
+    "Anselm Klose <anselm.klose@tu-dresden.de>",
+    "Tuan Son Dinh <tuansondinh96@gmail.com"
   ],
   "devDependencies": {
-    "@p2olab/pimad-types": "1.0.0",
+    "@p2olab/pimad-types": "1.0.1-alpha1.0",
     "@types/adm-zip": "^0.4.33",
     "@types/chai": "^4.2.11",
     "@types/express": "^4.17.6",

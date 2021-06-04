@@ -21,19 +21,19 @@ import {
 import {AML, CAEXFile} from '@p2olab/pimad-types';
 import InstanceHierarchy = AML.InstanceHierarchy
 import {
-    Attribute, AttributeFactoryVendor, ModuleAutomation
+    Attribute, AttributeFactoryVendor, DataItemModel, ModuleAutomation
 } from '../../ModuleAutomation';
 import {CommunicationInterfaceData} from '../../ModuleAutomation';
 import {BasePEAFactory} from '../../ModuleAutomation';
-import {Service} from '../../ModuleAutomation';
-import {BaseProcedureFactory, Procedure, ProcedureFactory} from '../../ModuleAutomation';
+import {ServiceModel} from '../../ModuleAutomation';
+import {BaseProcedureFactory, ProcedureModel, ProcedureFactory} from '../../ModuleAutomation';
 import {Gate} from '../Gate/Gate';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import PiMAdResponse = Backbone.PiMAdResponse;
 import DataAssemblyVendor = ModuleAutomation.DataAssemblyVendor;
 import DataAssembly = ModuleAutomation.DataAssembly;
 import { v4 as uuidv4 } from 'uuid';
-import {BaseServiceFactory} from '../../ModuleAutomation/Service';
+import {BaseServiceFactory} from '../../ModuleAutomation/ServiceModel';
 
 abstract class AImporter implements  Importer {
 
@@ -138,7 +138,7 @@ export class MTPFreeze202001Importer extends AImporter {
      * Answers the first question of the activity {@link Importer.convertFrom} for this importer.
      *
      * @param instructions - Pass the address of the source via the source attribute of the object.
-     * @param callback - Returns a successful {@link SuccessResponse} with PEA or an {@link ErrorResponse} with
+     * @param callback - Returns a successful {@link SuccessResponse} with PEAModel or an {@link ErrorResponse} with
      * a message why this step has finally failed.
      */
     private followInstructions(instructions: InstructionsConvertFrom, callback: (response: PiMAdResponse) => void): void {
@@ -162,7 +162,7 @@ export class MTPFreeze202001Importer extends AImporter {
      * Answers the second question of the activity {@link Importer.convertFrom} for this importer.
      *
      * @param instructions - Pass the address of the source via the source attribute of the object.
-     * @param callback - Returns a successful {@link SuccessResponse} with PEA or an {@link ErrorResponse} with
+     * @param callback - Returns a successful {@link SuccessResponse} with PEAModel or an {@link ErrorResponse} with
      * a message why this step has finally failed.
      * @private
      */
@@ -247,7 +247,7 @@ export class MTPFreeze202001Importer extends AImporter {
     }
 
     /**
-     * This method translates the interface description of the ModuleTypePackage within the CAEX file into a PEA of the
+     * This method translates the interface description of the ModuleTypePackage within the CAEX file into a PEAModel of the
      * PiMAd-core-IM. After the different MTP parts are extracted by {@link ImporterPart}s, DataAssemblies, Services
      * and Procedures are merged. The reference system of the MTP is used for this. The import of the MTP is then
      * completed.
@@ -290,9 +290,9 @@ export class MTPFreeze202001Importer extends AImporter {
      *                      endif
      *                  endif
      *              endwhile (no)
-     *              :initialize a PEA object;
+     *              :initialize a PEAModel object;
      *              if (initialization successful?) then (yes)
-     *                  :callback the PEA\nvia SuccessResponse;
+     *                  :callback the PEAModel\nvia SuccessResponse;
      *              else (no)
      *                  :callback error\nvia ErrorResponse;
      *              endif
@@ -308,7 +308,7 @@ export class MTPFreeze202001Importer extends AImporter {
      */
     private convert(data: CAEXFile, pimadIdentifier: string, callback: (response: PiMAdResponse) => void): void {
         // These variables will be continuously filled
-        let communicationInterfaceData: CommunicationInterfaceData[] = []; // TODO > link to communication interface
+        let communicationInterfaceData: DataItemModel[] = []; // TODO > link to communication interface
         let dataAssemblies: DataAssembly[] = [];
         let communicationSet: {InternalElement: object[]} = {} as {InternalElement: object[]};
         let mtpPartResponseContent: ExtractDataFromCommunicationSetResponseType = {} as ExtractDataFromCommunicationSetResponseType;
@@ -332,7 +332,7 @@ export class MTPFreeze202001Importer extends AImporter {
                     mtpImporterPart.extract({CommunicationSet: communicationSet.InternalElement, HMISet: {}, ServiceSet: {}, TextSet: {}}, mtpPartResponse => {
                         if(mtpPartResponse.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
                             mtpPartResponseContent = mtpPartResponse.getContent() as ExtractDataFromCommunicationSetResponseType;
-                            communicationInterfaceData = mtpPartResponseContent.CommunicationInterfaceData;
+                            communicationInterfaceData = mtpPartResponseContent.ServerCommunicationInterfaceData;
                             dataAssemblies = mtpPartResponseContent.DataAssemblies;
                         } else {
                           logger.warn('Could not extract CommunicationSet');
@@ -358,7 +358,7 @@ export class MTPFreeze202001Importer extends AImporter {
             callback(localResponse);
         } else {
             // data is fine -> Now merging Services and Procedures with DataAssemblies.
-            const localServices: Service[] = [];
+            const localServices: ServiceModel[] = [];
             servicePartResponseContent.forEach((service: InternalServiceType) => {
                 const localService = this.serviceFactory.create();
                 const localServiceDataAssembly: DataAssembly | undefined = dataAssemblies.find(dataAssembly => {
@@ -371,7 +371,7 @@ export class MTPFreeze202001Importer extends AImporter {
                 if(localServiceDataAssembly === undefined) {
                     logger.warn('Could not find referenced DataAssembly for service <' + service.Name + '> Skipping this service ...');
                 } else {
-                    const localServiceProcedures: Procedure[] = [];
+                    const localServiceProcedures: ProcedureModel[] = [];
                     // merging Procedures with DataAssemblies
                     service.Procedures.forEach(procedure => {
                         const localProcedureDataAssembly: DataAssembly | undefined = dataAssemblies.find(dataAssembly => {
@@ -394,6 +394,8 @@ export class MTPFreeze202001Importer extends AImporter {
                             });
                             const localProcedure = this.procedureFactory.create();
                             if(localProcedure.initialize({
+                                defaultValue: '',
+                                description: '',
                                 attributes: procedureAttributes,
                                 dataAssembly: localProcedureDataAssembly,
                                 dataSourceIdentifier: procedure.Identifier,
@@ -416,6 +418,7 @@ export class MTPFreeze202001Importer extends AImporter {
                     });
                     // initialize the new service object ...
                     if(localService.initialize({
+                        defaultValue: '', description: '',
                         attributes: serviceAttributes,
                         dataAssembly: localServiceDataAssembly,
                         dataSourceIdentifier: service.Identifier,
@@ -430,9 +433,18 @@ export class MTPFreeze202001Importer extends AImporter {
                     }
                 }
             });
+
+            this.cleanUpDataAssemblies(dataAssemblies);
+
             const localPEA = this.peaFactory.create();
             // Initializing the local pea
-            if(localPEA.initialize({DataAssemblies: dataAssemblies, DataModel: peaMetaModelRef, DataModelVersion: new BasicSemanticVersion(), FEAs: [], Name: peaName, PiMAdIdentifier: pimadIdentifier, Services: localServices})) {
+            if(localPEA.initialize({
+                DataAssemblies: dataAssemblies,
+                DataModel: peaMetaModelRef,
+                DataModelVersion: new BasicSemanticVersion(),
+                FEAs: [], Name: peaName, PiMAdIdentifier: pimadIdentifier,
+                Services: localServices, Endpoint: communicationInterfaceData})) {
+
                 // successful -> callback with successful response
                 const localSuccessResponse = this.responseVendor.buySuccessResponse();
                 localSuccessResponse.initialize('Success!', localPEA);
@@ -440,8 +452,32 @@ export class MTPFreeze202001Importer extends AImporter {
             } else {
                 // error -> callback with error response
                 const localErrorResponse = this.responseVendor.buyErrorResponse();
-                localErrorResponse.initialize('Could not extract PEA from ???. Aborting', {});
+                localErrorResponse.initialize('Could not extract PEAModel from ???. Aborting', {});
                 callback(localErrorResponse);
+            }
+        }
+    }
+
+    /**
+     * remove HealthStateView(Procedures) and ServiceControls from dataAssemblies, because subscribeToAllVariables()
+     * in backend will take this list for the variables
+     * @param dataAssemblies
+     * @private
+     */
+    private cleanUpDataAssemblies(dataAssemblies: DataAssembly[]){
+        for(const dataAssembly of dataAssemblies){
+            // at first, get metaModelRef of dataAssembly
+            let mMetaModelRef='';
+            dataAssembly.getMetaModelRef((response, metaModelRef) =>
+                mMetaModelRef = metaModelRef);
+
+            if(mMetaModelRef.includes('HealthStateView') || mMetaModelRef.includes('ServiceControl')){
+                // if DataAssembly is Procedure or Service, remove it!
+                const index = dataAssemblies.indexOf(dataAssembly);
+                dataAssemblies.splice(index, 1);
+                // the dataAssemblies has changed-> start function again, but with updated list
+                this.cleanUpDataAssemblies(dataAssemblies);
+                break;
             }
         }
     }
@@ -466,9 +502,9 @@ export class MTPFreeze202001Importer extends AImporter {
 
 export interface Importer {
     /**
-     * This method converts a set of data into a PEA of the PiMAd core IM. It first checks whether the instructions
+     * This method converts a set of data into a PEAModel of the PiMAd core IM. It first checks whether the instructions
      * given are understood. Then, whether the data source can be tapped. Then whether the information model of the data
-     * source is understood. If all responses are positive, the actual conversion into a PEA takes place. If parts of
+     * source is understood. If all responses are positive, the actual conversion into a PEAModel takes place. If parts of
      * the responses are negative, the next element in the chain of importers (Chain-of-Responsibility pattern) is
      * called.
      *
@@ -495,7 +531,7 @@ export interface Importer {
      * </uml>
      *
      * @param instructions - Pass the address of the source via the source attribute of the object.
-     * @param callback - Returns a successful {@link SuccessResponse} with PEA or an {@link ErrorResponse} with
+     * @param callback - Returns a successful {@link SuccessResponse} with PEAModel or an {@link ErrorResponse} with
      * a message why the converting has finally failed.
      */
     convertFrom(instructions: object, callback: (response: PiMAdResponse) => void): void;
