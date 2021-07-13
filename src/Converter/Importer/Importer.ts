@@ -311,6 +311,10 @@ export class MTPFreeze202001Importer extends AImporter {
         let communicationInterfaceData: DataItemModel[] = []; // TODO > link to communication interface
         let dataAssemblies: DataAssembly[] = [];
         let communicationSet: {InternalElement: object[]} = {} as {InternalElement: object[]};
+        let serviceSet: {ExternalInterface: object} = {} as {ExternalInterface: object};
+        let hmiSet: {ExternalInterface: object} = {} as {ExternalInterface: object};
+        let textSet: {ExternalInterface: object} = {} as {ExternalInterface: object};
+
         let mtpPartResponseContent: ExtractDataFromCommunicationSetResponseType = {} as ExtractDataFromCommunicationSetResponseType;
         let servicePartResponseContent: InternalServiceType[] = [];
         let peaName = 'name: undefined';
@@ -318,9 +322,7 @@ export class MTPFreeze202001Importer extends AImporter {
         // looping through the first level instance hierarchy of the CAEX-File.
         data.InstanceHierarchy.forEach((instance: InstanceHierarchy) => {
             const localInternalElement = instance.InternalElement as unknown as {Name: string; ID: string; RefBaseSystemUnitPath: string; InternalElement: object[]};
-            // TODO: Very bad style
-            switch (instance.Name) {
-                case 'ModuleTypePackage': {
+                if(instance.Name ==='ModuleTypePackage') {
                     // store characteristic pea attributes
                     peaName = localInternalElement.Name;
                     peaMetaModelRef = localInternalElement.RefBaseSystemUnitPath;
@@ -328,8 +330,48 @@ export class MTPFreeze202001Importer extends AImporter {
                     this.getSet('MTPSUCLib/CommunicationSet', localInternalElement.InternalElement, set => {
                         communicationSet = set as {InternalElement: object[]};
                     });
+                    this.getSet('MTPServiceSUCLib/ServiceSet', localInternalElement.InternalElement, set => {
+                        serviceSet = set as {ExternalInterface: object};
+                    });
+                    this.getSet('MTPHMISUCLib/HMISet', localInternalElement.InternalElement, set => {
+                        hmiSet = set as {ExternalInterface: object};
+                    });
+                    this.getSet('MTPTextSUCLib/TextSet', localInternalElement.InternalElement, set => {
+                        textSet = set as {ExternalInterface: object};
+                    });
+
+                    data.InstanceHierarchy.forEach((instance: InstanceHierarchy) => {
+                        if(Object.keys(serviceSet).length>0) {
+                            if ((serviceSet as any).ExternalInterface.Attribute.Value === instance.ID) {
+                                const serviceImporterPart = new ServicePart();
+
+                                serviceImporterPart.extract(instance as ServicePartExtractInputDataType, servicePartResponse => {
+                                    servicePartResponseContent = servicePartResponse.getContent() as InternalServiceType[];
+                                });
+                            }
+                        }
+                        if(Object.keys(hmiSet).length>0){
+                            if ((hmiSet as any).ExternalInterface.Attribute.Value === instance.ID){
+                                const hmiImporterPart = new HMIPart();
+                                //TODO not implemented yet
+                                hmiImporterPart.extract(instance , hmiPartResponse => {
+                                    hmiPartResponse.getContent();
+                                });
+                            }
+                        }
+                        if(Object.keys(textSet).length>0) {
+                            if ((textSet as any).ExternalInterface.Attribute.Value === instance.ID){
+                                const textImporterPart = new TextPart();
+                                //TODO not implemented yet
+                                textImporterPart.extract(instance , textPartResponse => {
+                                    textPartResponse.getContent();
+                                });
+                            }
+                        }
+                    });
+
                     const mtpImporterPart: MTPPart = new MTPPart();
-                    mtpImporterPart.extract({CommunicationSet: communicationSet.InternalElement, HMISet: {}, ServiceSet: {}, TextSet: {}}, mtpPartResponse => {
+                    mtpImporterPart.extract({CommunicationSet: communicationSet.InternalElement, HMISet: {}, ServiceSet: serviceSet.ExternalInterface, TextSet: {}}, mtpPartResponse => {
                         if(mtpPartResponse.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
                             mtpPartResponseContent = mtpPartResponse.getContent() as ExtractDataFromCommunicationSetResponseType;
                             communicationInterfaceData = mtpPartResponseContent.ServerCommunicationInterfaceData;
@@ -338,18 +380,7 @@ export class MTPFreeze202001Importer extends AImporter {
                           logger.warn('Could not extract CommunicationSet');
                         }
                     });
-                    break;
                 }
-                case 'Services': {
-                    const serviceImporterPart = new ServicePart();
-                    serviceImporterPart.extract(instance as ServicePartExtractInputDataType, servicePartResponse => {
-                        servicePartResponseContent = servicePartResponse.getContent() as InternalServiceType[];
-                    });
-                    break;
-                }
-                default:
-                    break;
-            }
         });
         // Checking the data for completeness
         if(JSON.stringify(mtpPartResponseContent) === JSON.stringify({}) || servicePartResponseContent.length === 0) {
