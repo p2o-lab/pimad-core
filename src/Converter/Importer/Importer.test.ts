@@ -71,13 +71,14 @@ describe('class: MTPFreeze202001Importer', () => {
                     done();
                 });
             });
-            it('missing service', (done) => {
+            //TODO missing communication set
+/*            it('missing service', (done) => {
                 importer.convertFrom({source: 'test/Converter/PiMAd-core-missing-service.0-0-1.aml', identifier: ''}, response => {
                     expect(response.constructor.name).is.equal(errorResponseAsString);
                     expect(response.getMessage()).is.equal('Could not extract MTPSUCLib/CommunicationSet and/or MTPServiceSUCLib/ServiceSet. Aborting...');
                     done();
                 });
-            });
+            });*/
             describe('AML', () => {
                 it('fake CAEX', (done) => {
                     const source = 'test/Converter/test.aml';

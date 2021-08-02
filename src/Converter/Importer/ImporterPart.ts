@@ -87,16 +87,17 @@ export class MTPPart extends AImporterPart {
      * @param data - The bare ModuleTypePackage-object of the MTP. Containing a CommunicationSet, HMISet, ServiceSet and TextSet.
      * @param callback - A callback function with an instance of the Response-Interface. The type of the response-content-object-attribute data is {@link ExtractDataFromCommunicationSetResponseType}
      */
-    extract(data: {CommunicationSet: object[]; HMISet: object; ServiceSet: object; TextSet: object}, callback: (response: PiMAdResponse) => void): void {
+    extract(data: {CommunicationSet: object[]}, callback: (response: PiMAdResponse) => void): void {
         const communicationSet = this.extractDataFromCommunicationSet(data.CommunicationSet);
         if(communicationSet.ServerCommunicationInterfaceData.length === 0 && communicationSet.DataAssemblies.length === 0) {
-            const localeResponse = this.responseVendor.buyErrorResponse();
-            localeResponse.initialize('Could not parse the CommunicationSet!', {});
-            callback(localeResponse);
+            const localResponse = this.responseVendor.buyErrorResponse();
+            //TODO: REFACTOR: const localResponse = this.responseVendor.buySuccessResponse('message', {content}); -> initialize within Response class
+            localResponse.initialize('Could not parse the CommunicationSet!', {});
+            callback(localResponse);
         } else {
-            const localeResponse = this.responseVendor.buySuccessResponse();
-            localeResponse.initialize('Success!', communicationSet);
-            callback(localeResponse);
+            const localResponse = this.responseVendor.buySuccessResponse();
+            localResponse.initialize('Success!', communicationSet);
+            callback(localResponse);
         }
     }
 
@@ -514,7 +515,7 @@ export class ServicePart extends AImporterPart {
             /* extract the 'RefID'-Attribute. It's important! and referencing to the DataAssembly of the service which
             stores all the interface data to the hardware. */
             this.getAttribute('RefID', localAMLServiceInternalElementAttributes, (response: PiMAdResponse) => {
-                if(response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
+                if(response.constructor.name === 'SuccessResponse') {
                     localService.DataAssembly = response.getContent() as Attribute;
                 }
             });
@@ -546,7 +547,7 @@ export class ServicePart extends AImporterPart {
                         localProcedure.Name = amlServiceInternalElementItem.Name;
                         localProcedure.Parameters = [];
                         this.getAttribute('RefID', amlServiceInternalElementItem.Attribute, (response: PiMAdResponse) => {
-                            if(response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
+                            if(response.constructor.name === 'SuccessResponse') {
                                 localProcedure.DataAssembly = response.getContent() as Attribute;
                             }
                         });
