@@ -413,7 +413,7 @@ export class MTPFreeze202001Importer extends AImporter {
         let localServices: ServiceModel[] = [];
         if(extractedData.extractedServiceSet.length!=0) localServices =  this.createServiceModels(extractedData.extractedServiceSet);
         //TODO:  do hmiset, textset
-        this.cleanUpDataAssemblies(extractedData.extractedCommunicationSet.DataAssemblies);
+        this.removeServicesFromDataAssemblies(extractedData.extractedCommunicationSet.DataAssemblies);
         return this.createPEAModel(extractedData, localServices);
     }
     /**
@@ -422,7 +422,7 @@ export class MTPFreeze202001Importer extends AImporter {
      * @param dataAssemblies
      * @private
      */
-    private cleanUpDataAssemblies(dataAssemblies: DataAssembly[]){
+    private removeServicesFromDataAssemblies(dataAssemblies: DataAssembly[]){
         for(const dataAssembly of dataAssemblies){
             // at first, get metaModelRef of dataAssembly
             let mMetaModelRef='';
@@ -434,7 +434,7 @@ export class MTPFreeze202001Importer extends AImporter {
                 const index = dataAssemblies.indexOf(dataAssembly);
                 dataAssemblies.splice(index, 1);
                 // the dataAssemblies has changed-> start function again, but with updated list
-                this.cleanUpDataAssemblies(dataAssemblies);
+                this.removeServicesFromDataAssemblies(dataAssemblies);
                 break;
             }
         }
