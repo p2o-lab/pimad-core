@@ -4,10 +4,10 @@ import {
     ExtractDataFromCommunicationSetResponseType,
     HMIPart,
     ImporterPart,
-    InternalServiceType,
-    MTPPart,
+    InternalServiceType, InternalTextType,
+    MTPPart, ServiceInteractionType,
     ServicePart,
-    ServicePartExtractInputDataType,
+    ServicePartExtractInputDataType, ServicePositionType,
     TextPart
 } from './ImporterPart';
 import {
@@ -413,16 +413,15 @@ export class MTPFreeze202001Importer extends AImporter {
                     const hmiImporterPart = new HMIPart();
                     //TODO not implemented yet
                     hmiImporterPart.extract(instance , hmiPartResponse => {
-                        hmiPartResponse.getContent();
+                        extractedData.extractedHMISet = hmiPartResponse.getContent() as any;
                     });
                 }
             }
             if(Object.keys(sets.TextSet).length>0) {
                 if ((sets.TextSet as any).ExternalInterface.Attribute.Value === instance.ID){
                     const textImporterPart = new TextPart();
-                    //TODO not implemented yet
                     textImporterPart.extract(instance , textPartResponse => {
-                        textPartResponse.getContent();
+                        extractedData.extractedTextSet  = textPartResponse.getContent() as any;
                     });
                 }
             }
@@ -444,7 +443,7 @@ export class MTPFreeze202001Importer extends AImporter {
     //TODO rename this
     private mergeAllAndCreatePEAModel(extractedData: ExtractedData): PiMAdResponse {
         let localServices: ServiceModel[] = [];
-        if(extractedData.extractedServiceSet.length!=0) localServices =  this.createServiceModels(extractedData.extractedServiceSet);
+        if(extractedData.extractedServiceSet.length!=0) localServices =  this.createServiceModels(extractedData);
         //TODO:  do hmiset, textset
         this.removeServicesFromDataAssemblies(extractedData.extractedCommunicationSet.DataAssemblies);
         return this.createPEAModel(extractedData, localServices);
@@ -491,9 +490,17 @@ export class MTPFreeze202001Importer extends AImporter {
             return localErrorResponse;
         }
     }
-    private createServiceModels(servicePartResponseContent: InternalServiceType[]): ServiceModel[] {
+
+    private createServiceModels(extractedData: ExtractedData): ServiceModel[] {
         const localServices: ServiceModel[] = [];
-        servicePartResponseContent.forEach((service: InternalServiceType) => {
+        let localTexts = [] as any;
+
+        if(extractedData.extractedTextSet) {
+            // if TextPart exists, assign it
+            localTexts = extractedData.extractedTextSet;
+        }
+
+        extractedData.extractedServiceSet.forEach((service: InternalServiceType) => {
             const localService = this.serviceFactory.create();
             const localServiceDataAssembly: DataAssembly | undefined = this.dataAssemblies.find(dataAssembly => {
                 let testCondition = false;
@@ -505,6 +512,8 @@ export class MTPFreeze202001Importer extends AImporter {
             if(localServiceDataAssembly === undefined) {
                 logger.warn('Could not find referenced DataAssembly for service <' + service.Name + '> Skipping this service ...');
             } else {
+                const serviceInteractions: any = [];
+                const servicePositions: any = [];
                 // merging Procedures with DataAssemblies
                 const localServiceProcedures: ProcedureModel[] = this.createProcedureModels(service);
 
@@ -516,6 +525,25 @@ export class MTPFreeze202001Importer extends AImporter {
                         serviceAttributes.push(newProcedureAttribute);
                     }
                 });
+                
+                //merge TextPart with Services
+                if(extractedData.extractedTextSet) {
+                    extractedData.extractedTextSet.ServicePositions.forEach((textInternalElement: ServiceInteractionType | ServicePositionType) => {
+                        localService.getDataSourceIdentifier((response, identifier) => {
+                            if (service.DataAssembly.Value === textInternalElement.Service.Value) {
+                                serviceInteractions.push(textInternalElement);
+                            }
+                        });
+                    });
+                    extractedData.extractedTextSet.ServiceInteractions.forEach((textInternalElement: ServiceInteractionType | ServicePositionType) => {
+                        localService.getDataSourceIdentifier((response, identifier) => {
+                            if (service.DataAssembly.Value === textInternalElement.Service.Value) {
+                                servicePositions.push(textInternalElement);
+                            }
+                        });
+                    });
+                }
+
                 // initialize the new service object ...
                 if(localService.initialize({
                     defaultValue: '', description: '',
@@ -526,7 +554,9 @@ export class MTPFreeze202001Importer extends AImporter {
                     name: service.Name,
                     parameter: service.Parameters,
                     pimadIdentifier: uuidv4(),
-                    procedure: localServiceProcedures
+                    procedures: localServiceProcedures,
+                    serviceInteractions: serviceInteractions,
+                    servicePositions: servicePositions,
                 })) {
                     localServices.push(localService);
                 }
@@ -667,7 +697,7 @@ interface ExtractedData {
     extractedCommunicationSet: ExtractDataFromCommunicationSetResponseType;
     extractedServiceSet: InternalServiceType[];
     extractedHMISet: object[];
-    extractedTextSet: object[];
+    extractedTextSet: InternalTextType;
     serviceModels: ServiceModel[];
 }
 

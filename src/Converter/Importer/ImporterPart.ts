@@ -67,9 +67,7 @@ export class MTPPart extends AImporterPart {
 
     /**
      * This method extracts data from the MTPPart of the ModuleTypePackage and converts it into different objects of the PiMAd-core-IM.
-     *
      * Attention! Currently (31.07.2020) only data from the CommunicationSet is processed!
-     *
      * <uml>
      *     skinparam shadowing false
      *     partition "extract" {
@@ -83,7 +81,6 @@ export class MTPPart extends AImporterPart {
      *          stop
      *     }
      * </uml>
-     *
      * @param data - The bare ModuleTypePackage-object of the MTP. Containing a CommunicationSet, HMISet, ServiceSet and TextSet.
      * @param callback - A callback function with an instance of the Response-Interface. The type of the response-content-object-attribute data is {@link ExtractDataFromCommunicationSetResponseType}
      */
@@ -607,7 +604,131 @@ export class ServicePart extends AImporterPart {
     }
 }
 export class TextPart extends AImporterPart {
+    extract(data: TextPartExtractInputDataType, callback: (response: PiMAdResponse) => void): void {
+        const localText: InternalTextType = {ServiceInteractions: [], ServicePositions: [], EnumDefinitions: []};
 
+        let textPartInternalElementArray = data.InternalElement as any[];
+
+        if (!(Array.isArray(textPartInternalElementArray))) {
+            textPartInternalElementArray = [textPartInternalElementArray];
+        }
+        textPartInternalElementArray.forEach((textInternalElement: any) => {
+
+            let localTextInternalElementAttributes: Attribute[] = [];
+            if (!Array.isArray(textInternalElement.Attribute)) {
+                localTextInternalElementAttributes.push(textInternalElement.Attribute as Attribute);
+            } else {
+                localTextInternalElementAttributes = textInternalElement.Attribute;
+            }
+
+            switch (textInternalElement.RefBaseSystemUnitPath) {
+                case 'MTPTextSUCLib/ServiceInteraction':
+                    // eslint-disable-next-line no-case-declarations
+                    const localServiceInteraction = this.extractServiceInteraction(textInternalElement);
+                    localText.ServiceInteractions.push(localServiceInteraction);
+                    break;
+                case 'MTPTextSUCLib/ServicePosition':
+                    // eslint-disable-next-line no-case-declarations
+                    const localServicePosition = this.extractServicePosition(textInternalElement);
+                    localText.ServicePositions.push(localServicePosition);
+                    break;
+               //TODO case 'MTPTextSUCLib/EnumDefinition':
+
+            }
+        });
+          const localResponse = this.responseVendor.buySuccessResponse();
+          localResponse.initialize('Successfully extracting the TextPart!', localText);
+          callback(localResponse);
+
+    }
+
+    private extractServiceInteraction(textInternalElement: any): ServiceInteractionType {
+        const localServiceInteraction: ServiceInteractionType = {} as any;
+
+        let internalElementArray = textInternalElement.InternalElement;
+        let localServiceInteractionInternalElementAttributes: Attribute[] = [];
+        if (!(Array.isArray(internalElementArray))) {
+            internalElementArray = [internalElementArray];
+        }
+
+        if(!Array.isArray(textInternalElement.Attribute)) {
+            localServiceInteractionInternalElementAttributes.push(textInternalElement.Attribute as Attribute);
+        } else {
+            localServiceInteractionInternalElementAttributes = textInternalElement.Attribute;
+        }
+
+        this.getAttribute('RefID', localServiceInteractionInternalElementAttributes, (response: PiMAdResponse) => {
+            if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
+                localServiceInteraction.Service = response.getContent() as Attribute;
+            }
+        });
+
+        const localQuestionArray: QuestionType[] = [];
+        internalElementArray.forEach((questionInternalElement: any) => {
+            const localQuestion = {} as QuestionType;
+            const localAnswers: AnswerType[] = [];
+            localQuestion.Attribute = questionInternalElement.Attribute;
+            localQuestion.Identifier = questionInternalElement.ID;
+            localQuestion.MetaModelRef = questionInternalElement.RefBaseSystemUnitPath;
+            localQuestion.Name = questionInternalElement.Name;
+
+            let answersInternalElementArray = questionInternalElement.InternalElement;
+            if (!(Array.isArray(answersInternalElementArray))) {
+                answersInternalElementArray = [answersInternalElementArray];
+            }
+            answersInternalElementArray.forEach((answersInternalElement: any) => {
+                const localAnswer = {} as AnswerType;
+                localAnswer.Identifier = answersInternalElement.ID;
+                localAnswer.MetaModelRef = answersInternalElement.RefBaseSystemUnitPath;
+                localAnswer.Name = answersInternalElement.Name;
+                localAnswer.Attribute = answersInternalElement.Attribute;
+                localAnswers.push(localAnswer);
+            });
+            localQuestion.Answers = localAnswers;
+            localQuestionArray.push(localQuestion);
+        });
+        localServiceInteraction.Questions = localQuestionArray;
+        this.assignStandardProperties(textInternalElement, localServiceInteraction);
+        return localServiceInteraction;
+    }
+
+    private extractServicePosition(servicePositionInternalElement: any): ServicePositionType{
+        const localServicePosition: ServicePositionType = {} as any;
+        let localServicePositionInternalElementAttributes: Attribute[] = [];
+
+        this.assignStandardProperties(servicePositionInternalElement, localServicePosition);
+
+        if(!Array.isArray(servicePositionInternalElement.Attribute)) {
+            localServicePositionInternalElementAttributes.push(servicePositionInternalElement.Attribute as Attribute);
+        } else {
+            localServicePositionInternalElementAttributes = servicePositionInternalElement.Attribute;
+        }
+        this.getAttribute('RefID', localServicePositionInternalElementAttributes, (response: PiMAdResponse) => {
+            if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
+                  localServicePosition.Service = response.getContent() as Attribute;
+            }
+        });
+
+        let internalElementArray = servicePositionInternalElement;
+        if (!(Array.isArray(internalElementArray))) {
+            internalElementArray = [internalElementArray];
+        }
+        const localPositionTextArray: PositionTextType[] = [];
+        internalElementArray.forEach((positionTextInternalElement: any) => {
+            const localPositionText = {} as PositionTextType;
+            this.assignStandardProperties(positionTextInternalElement, localPositionText);
+            localPositionTextArray.push(localPositionText);
+        });
+        localServicePosition.PositionTexts = localPositionTextArray;
+        return localServicePosition;
+    }
+
+    private assignStandardProperties(internalElement: any, localElement: any) {
+        localElement.Identifier = internalElement.ID;
+        localElement.MetaModelRef = internalElement.RefBaseSystemUnitPath;
+        localElement.Name = internalElement.Name;
+        localElement.Attribute = internalElement.Attribute;
+    }
 }
 
 /**
@@ -650,6 +771,43 @@ export type InternalProcedureType = {
     Parameters: Parameter[];
 }
 
+
+export type InternalTextType =  {
+    ServiceInteractions: ServiceInteractionType[];
+    ServicePositions: ServicePositionType[];
+    EnumDefinitions: EnumDefinitionType[];
+}
+export type ServiceInteractionType = StandardType &  {
+   Questions: QuestionType[];
+   Service: Attribute;
+}
+export type ServicePositionType= StandardType & {
+    PositionTexts: PositionTextType[];
+    Service: Attribute; //reference to service
+}
+export type EnumDefinitionType = StandardType & {
+    ServiceParameter: Attribute; //reference to service parameter
+}
+export type QuestionType = StandardType &  {
+    Attribute: Attribute;
+    Answers: AnswerType[];
+
+}
+export type AnswerType = StandardType & {
+
+}
+
+export type PositionTextType = StandardType & {
+    Service: Attribute;
+}
+
+export type StandardType = {
+    Attribute: Attribute;
+    Identifier: string;
+    MetaModelRef: string;
+    Name: string;
+}
+
 /**
  * Types the object that the method {@link ServicePart.extract} expects as input.
  */
@@ -659,3 +817,5 @@ export type ServicePartExtractInputDataType = {
     Version: string;
     InternalElement: object[];
 }
+
+type TextPartExtractInputDataType = ServicePartExtractInputDataType;
