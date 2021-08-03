@@ -305,40 +305,62 @@ export class MTPFreeze202001Importer extends AImporter {
      * @private
      */
     private convert(data: CAEXFile, pimadIdentifier: string, callback: (response: PiMAdResponse) => void): void {
-        let extractedData: ExtractedData = {} as any;
-        // looping through the first level instance hierarchy of the CAEX-File.
-        data.InstanceHierarchy.forEach((instance: InstanceHierarchy) => {
-            const localInternalElement = instance.InternalElement as unknown as {Name: string; ID: string; RefBaseSystemUnitPath: string; InternalElement: object[]};
-                if(instance.Name ==='ModuleTypePackage') {
-                    extractedData = this.getAndExtractAllSets(localInternalElement.InternalElement, data.InstanceHierarchy);
-                    extractedData.peaName = localInternalElement.Name;
-                    extractedData.metaModelRef = localInternalElement.RefBaseSystemUnitPath;
-                    extractedData.pimadIdentifier = pimadIdentifier;
-                }
-        });
-        // Checking the data for completeness
-        if(Object.keys(extractedData.extractedCommunicationSet).length === 0) {
+        try{
+            const extractedData = this.getAndExtractAllSets(data.InstanceHierarchy);
+            extractedData.pimadIdentifier = pimadIdentifier;
+            // Checking the data for completeness
+            if(Object.keys(extractedData.extractedCommunicationSet).length === 0) {
+               throw new Error('Could not extract MTPSUCLib/CommunicationSet. Aborting...');
+            } else {
+                const peaModel =this.mergeAllAndCreatePEAModel(extractedData);
+                callback(peaModel);
+            }
+        } catch (e){
             const response = this.responseVendor.buyErrorResponse();
-            response.initialize('Could not extract MTPSUCLib/CommunicationSet. Aborting...', {});
+            response.initialize(e.toString(), {});
             callback(response);
-        } else {
-            const peaModel =this.mergeAllAndCreatePEAModel(extractedData);
-            callback(peaModel);
         }
     }
-    
-    private getAndExtractAllSets(internalElement: object[], instanceHierarchy: AML.InstanceHierarchy[]): ExtractedData {
-        const sets = this.getAllSets(internalElement);
-        return this.extractAllSets(sets, instanceHierarchy);
+
+    private getAndExtractAllSets(instanceHierarchy: AML.InstanceHierarchy[]): ExtractedData {
+        const moduleTypePackageInternalElement = this.getModuleTypePackageInternalElement(instanceHierarchy);
+        const sets = this.getAllSets(moduleTypePackageInternalElement.InternalElement);
+        const extractedData: ExtractedData = this.extractAllSets(sets, instanceHierarchy);
+        extractedData.peaName = moduleTypePackageInternalElement.Name;
+        extractedData.metaModelRef = moduleTypePackageInternalElement.RefBaseSystemUnitPath;
+        return extractedData;
     }
-    
+
+    private getModuleTypePackageInternalElement(instanceHierarchy: AML.InstanceHierarchy[]): any  {
+        let localInternalElement;
+        if(!Array.isArray(instanceHierarchy)){
+            instanceHierarchy = [instanceHierarchy];
+        }
+        instanceHierarchy.forEach((instance: InstanceHierarchy) => {
+            if(instance.Name ==='ModuleTypePackage') {
+                localInternalElement = instance.InternalElement as unknown as {Name: string; ID: string; RefBaseSystemUnitPath: string; InternalElement: object[]};
+            }
+        });
+        if(!localInternalElement){
+            throw new Error('No InstanceHierarchy ModuleTypePackage was found!');
+        }
+        return localInternalElement;
+    }
+
     private getAllSets(internalElement: object[]): Sets { 
         const allSets: Sets = {CommunicationSet: {}, ServiceSet: {}, TextSet: {}, HMISet: {}};
-        this.getSet('MTPSUCLib/CommunicationSet',internalElement, set => {
+
+        this.getSet('MTPSUCLib/CommunicationSet', internalElement, set => {
             allSets.CommunicationSet = set as {InternalElement: object[]};
+            if(Object.keys(set).length === 0){
+                throw new Error('Could not extract MTPSUCLib/CommunicationSet. No CommunicationSet was found!');
+            }
         });
         this.getSet('MTPServiceSUCLib/ServiceSet', internalElement, set => {
             allSets.ServiceSet = set as {ExternalInterface: object};
+            if(Object.keys(set).length === 0) {
+                logger.warn('No ServiceSet was found.');
+            }
         });
         this.getSet('MTPHMISUCLib/HMISet', internalElement, set => {
             allSets.HMISet = set as {ExternalInterface: object};
@@ -357,11 +379,22 @@ export class MTPFreeze202001Importer extends AImporter {
      * @private
      */
     private getSet(refBaseSystemUnitPath: string, array: object[], callback: (set: object) => void): void {
+        let found = false;
+
+        if(!Array.isArray(array)){
+            array = [array];
+        }
+
         array.forEach((content: {RefBaseSystemUnitPath?: string}) => {
             if(refBaseSystemUnitPath === content.RefBaseSystemUnitPath) {
                 callback(content);
+                found = true;
             }
         });
+
+        if(!found) {
+            callback({});
+        }
     }
 
     private extractAllSets(sets: Sets, instanceHierarchy: AML.InstanceHierarchy[]): ExtractedData {

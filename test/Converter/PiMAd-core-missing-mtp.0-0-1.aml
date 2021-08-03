@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CAEXFile FileName="PiMAd-core.0-0-1.aml" SchemaVersion="2.15" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="CAEX_ClassModel_V2.15.xsd">
+  <AdditionalInformation AutomationMLVersion="2.0" />
+  <AdditionalInformation DocumentVersions="Recommendations">
+    <Document DocumentIdentifier="VDI/VDE/NAMUR 2658-1" Version="1.0.0" />
+  </AdditionalInformation>
+  <AdditionalInformation DocumentVersions="Recommendations">
+    <Document DocumentIdentifier="VDI/VDE/NAMUR 2658-2" Version="1.0.0" />
+  </AdditionalInformation>
+  <AdditionalInformation DocumentVersions="Recommendations">
+    <Document DocumentIdentifier="VDI/VDE/NAMUR 2658-3" Version="1.0.0" />
+  </AdditionalInformation>
+  <AdditionalInformation DocumentVersions="Recommendations">
+    <Document DocumentIdentifier="VDI/VDE/NAMUR 2658-4" Version="0.1.0" />
+  </AdditionalInformation>
+  <AdditionalInformation>
+    <WriterHeader>
+      <WriterName>Christoph Jesaja Heidelbach</WriterName>
+      <WriterID>CHe</WriterID>
+      <WriterVendor>PLT/SVT</WriterVendor>
+      <WriterVendorURL>https://test-vendor.com</WriterVendorURL>
+      <WriterVersion>1.0.0</WriterVersion>
+      <WriterRelease>1</WriterRelease>
+      <LastWritingDateTime>2020-07-28T15:04:20.000Z</LastWritingDateTime>
+      <WriterProjectTitle>Test PiMAd-core:0.0.1</WriterProjectTitle>
+      <WriterProjectID>Make-P2O-Lab-great-again!</WriterProjectID>
+    </WriterHeader>
+  </AdditionalInformation>
+
+  <InstanceHierarchy Name="PiMAd-core-InstanceHierarchy" ID="id-1">
+    <Version>0</Version>
+  </InstanceHierarchy>  
+</CAEXFile>
