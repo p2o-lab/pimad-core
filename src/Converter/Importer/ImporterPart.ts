@@ -7,7 +7,14 @@ import {
     ModuleAutomation,
     Parameter
 } from '../../ModuleAutomation';
-import {AML, InstanceList, SourceList} from '@p2olab/pimad-types';
+import {
+    AML,
+    InformationFlowConnector,
+    InstanceList,
+    MeasurementLine,
+    MeasurementPoint, Nozzle, Picture, Pipe,
+    SourceList, VisualObject
+} from '@p2olab/pimad-types';
 import {logger} from '../../Utils';
 import {Backbone} from '../../Backbone';
 import {CommunicationInterfaceDataEnum,} from '../../ModuleAutomation/CommunicationInterfaceData';
@@ -47,6 +54,16 @@ abstract class AImporterPart implements ImporterPart {
             }
         });
     }
+    protected getAttributeValue(attributeName: string, attributes: Attribute[]): string {
+        let value='';
+        attributes.forEach((attribute: Attribute) => {
+            if(attribute.Name === attributeName) {
+               value = attribute.Value;
+            }
+        });
+        return value;
+        //TODO handle error
+    }
 
     constructor() {
         this.responseVendor = new PiMAdResponseVendor();
@@ -54,7 +71,104 @@ abstract class AImporterPart implements ImporterPart {
 }
 
 export class HMIPart extends AImporterPart {
+    extract(data: TextPartExtractInputDataType, callback: (response: PiMAdResponse) => void): void {
+        // const localHMI;
 
+        let hmiPartInternalElementArray = data.InternalElement as any[];
+        if (!(Array.isArray(hmiPartInternalElementArray))) {
+            hmiPartInternalElementArray = [hmiPartInternalElementArray];
+        }
+        hmiPartInternalElementArray.forEach((hmiInternalElement: any) => {
+
+            let localHMIInternalElementAttributes: Attribute[] = hmiInternalElement.Attribute;
+            if (!Array.isArray(hmiInternalElement.Attribute)) {
+                localHMIInternalElementAttributes = [hmiInternalElement.Attribute as Attribute];
+            }
+            this.extractPicture(hmiInternalElement);
+
+        });
+/*        const localResponse = this.responseVendor.buySuccessResponse();
+        localResponse.initialize('Successfully extracting the TextPart!', localText);
+        callback(localResponse);*/
+
+    }
+
+    private extractPicture(hmiInternalElement: any) {
+        let hmiInternalElementArray = hmiInternalElement;
+        if (!Array.isArray(hmiInternalElement)){
+            hmiInternalElementArray = [hmiInternalElement];
+        }
+        const pictureArray: Picture[] = [];
+        hmiInternalElementArray.forEach((pictureInternalElement: any) =>{
+            const picture: Picture = {Connection:[], Height: 0, Width: 0, HierarchyLevel:0} as any;
+            picture.HierarchyLevel = this.getAttributeValue('HierarchyLevel', pictureInternalElement.Attribute);
+            picture.Height = this.getAttributeValue('Height', pictureInternalElement.Attribute) as unknown as number;
+            picture.Width = this.getAttributeValue('Width', pictureInternalElement.Attribute) as unknown as number;
+            pictureInternalElement.InternalElement.forEach((internalElement: any)=> {
+                switch (internalElement.RefBaseSystemUnitPath) {
+                    case 'MTPHMISUCLib/Connection/MeasurementLine':
+                        const measurementLine: MeasurementLine = {} as any;
+                        measurementLine.Edgepath = internalElement.Attribute.Value;
+                        internalElement.InternalElement.forEach((measurementLineInternalElement: any) => {
+                            const measurementPoint: MeasurementPoint = {} as any;
+                            const connector: InformationFlowConnector = measurementLineInternalElement.ExternalInterface.ID;
+                            measurementPoint.InformationFlowConnector = connector;
+                            measurementPoint.X = measurementLineInternalElement.Attribute[0].Value;
+                            measurementPoint.Y = measurementLineInternalElement.Attribute[1].Value;
+                            if (measurementLineInternalElement.Name === 'Start') {
+                                measurementLine.Start = measurementPoint;
+                            } else{
+                                measurementLine.End = measurementPoint;
+                            }
+                        });
+                        picture.Connection.push(measurementLine);
+                        break;
+                    case 'MTPHMISUCLib/Connection/Pipe':
+                        const pipe: Pipe = {} as any;
+                        pipe.Edgepath = this.getAttributeValue('Edgepath', internalElement.Attribute);
+                        pipe.Directed = this.getAttributeValue('Directed', internalElement.Attribute) as unknown as boolean;
+
+                        let nozzleInternalElementArray = internalElement.InternalElement;
+                        if(!Array.isArray(internalElement.InternalElement)){
+                            nozzleInternalElementArray  = [internalElement.InternalElement];
+                        }
+                        nozzleInternalElementArray.forEach((nozzleInternalElement: any)=>{
+                            const nozzle: Nozzle = {} as any;
+                            nozzle.X = this.getAttributeValue('X', nozzleInternalElement.Attribute) as unknown as number;
+                            nozzle.Y = this.getAttributeValue('Y', nozzleInternalElement.Attribute) as unknown as number;
+                            nozzle.MassFlowConnector = nozzleInternalElement.ExternalInterface.ID;
+                            if(nozzleInternalElement.Name === 'Nozzle1' ){
+                                pipe.Nozzle1 = nozzle;
+                            } else{
+                                pipe.Nozzle2 = nozzle;
+                            }
+                        });
+                        picture.Connection.push(pipe);
+                        break;
+                    case 'MTPHMISUCLib/VisualObject':
+                        const visualObject: VisualObject = {} as any;
+                        //TODO
+                        let internalElementArray = internalElement.InternalElement;
+                        if(!Array.isArray(internalElement.InternalElement)){
+                            internalElementArray  = [internalElement.InternalElement];
+                        }
+                        internalElementArray.forEach((nozzleInternalElement: any)=>{
+                     /*       const nozzle: Nozzle = {} as any;
+                            nozzle.X = this.getAttributeValue('X', nozzleInternalElement.Attribute) as unknown as number;
+                            nozzle.Y = this.getAttributeValue('Y', nozzleInternalElement.Attribute) as unknown as number;
+                            nozzle.MassFlowConnector = nozzleInternalElement.ExternalInterface.ID;
+                            if(nozzleInternalElement.Name === 'Nozzle1' ){
+                                pipe.Nozzle1 = nozzle;
+                            } else{
+                                pipe.Nozzle2 = nozzle;
+                            }*/
+                        });
+                        break;
+                }
+
+            });
+        });
+    }
 }
 
 /**

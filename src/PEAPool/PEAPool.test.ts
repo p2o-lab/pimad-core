@@ -63,7 +63,7 @@ describe('class: BasePEAPool', () => {
                 pool.getAllPEAs((response) => {
                     //list should be empty
                     expect((response.getContent() as PEAModel[]).length).equals(0);
-                    pool.addPEA( {source: 'test/Converter/PiMAd-core.0-0-1.mtp'}, (response) => {
+                    pool.addPEA( {source: 'test/local/MTP_Feed-Module.v4.0.10.zip'}, (response) => {
                         expect(response.constructor.name).is.equal(successResponseAsString);
                         expect(response.getContent().constructor.name).is.equal('BasePEA');
                         pool.getAllPEAs((response) => {

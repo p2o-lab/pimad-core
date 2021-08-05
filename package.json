@@ -39,7 +39,7 @@
     "Tuan Son Dinh <tuansondinh96@gmail.com"
   ],
   "devDependencies": {
-    "@p2olab/pimad-types": "1.0.1-alpha1.0",
+    "@p2olab/pimad-types": "1.0.1-alpha1.0.1",
     "@types/adm-zip": "^0.4.33",
     "@types/chai": "^4.2.11",
     "@types/mocha": "^7.0.2",
