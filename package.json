@@ -1,7 +1,7 @@
 {
   "name": "@p2olab/pimad-core",
   "description": "PiMAd (Process-industry-Modular-Automation-description) High level access to automation of modular plants.",
-  "version": "0.0.1-alpha12",
+  "version": "0.0.1-alpha15",
   "author": "P2O-Lab <p2o-lab@mailbox.tu-dresden.de>",
   "repository": "https://github.com/p2o-lab/pimad-core.git",
   "homepage": "https://github.com/p2o-lab/pimad-core",
@@ -42,7 +42,6 @@
     "@p2olab/pimad-types": "1.0.1-alpha1.0",
     "@types/adm-zip": "^0.4.33",
     "@types/chai": "^4.2.11",
-    "@types/express": "^4.17.6",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.13.4",
     "@types/pino": "^6.0.0",
@@ -54,22 +53,19 @@
     "adm-zip": "^0.4.14",
     "chai": "^4.2.0",
     "eslint": "^6.8.0",
-    "eslint-config-google": "^0.14.0",
-    "eslint-formatter-pretty": "^3.0.1",
     "eslint-plugin-tsdoc": "^0.2.4",
+    "eslint-formatter-pretty": "^3.0.1",
     "mocha": "^7.1.1",
     "nyc": "^15.0.1",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.1",
     "ts-node": "^8.9.0",
     "typedoc": "^0.17.8",
-    "typedoc-plantuml": "^1.4.1",
     "typescript": "3.9.7"
   },
   "dependencies": {
     "pino": "^6.2.1",
     "pino-pretty": "^4.0.0",
-    "rxjs": "^6.5.5",
     "uuid": "^8.3.0",
     "xml2json": "^0.12.0"
   }

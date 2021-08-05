@@ -23,7 +23,6 @@ import InstanceHierarchy = AML.InstanceHierarchy
 import {
     Attribute, AttributeFactoryVendor, DataItemModel, ModuleAutomation
 } from '../../ModuleAutomation';
-import {CommunicationInterfaceData} from '../../ModuleAutomation';
 import {BasePEAFactory} from '../../ModuleAutomation';
 import {ServiceModel} from '../../ModuleAutomation';
 import {BaseProcedureFactory, ProcedureModel, ProcedureFactory} from '../../ModuleAutomation';
@@ -116,18 +115,36 @@ export class MTPFreeze202001Importer extends AImporter {
     private xmlGateFactory: GateFactory;
     private zipGateFactory: GateFactory;
 
+    private communicationInterfaceData: any;
+    private dataAssemblies: DataAssembly[] =[];
+
+    constructor() {
+        super();
+        this.servicePart = new ServicePart();
+        this.hmiPart = new HMIPart();
+        this.mtpPart = new MTPPart();
+        this.textPart = new TextPart();
+        // Factories
+        this.amlGateFactory = new AMLGateFactory();
+        this.dataAssemblyVendor = new DataAssemblyVendor();
+        this.mtpGateFactory = new MTPGateFactory();
+        this.peaFactory = new BasePEAFactory();
+        this.procedureFactory = new BaseProcedureFactory();
+        this.serviceFactory = new BaseServiceFactory();
+        this.xmlGateFactory = new XMLGateFactory();
+        this.zipGateFactory = new ZIPGateFactory();
+    }
+
     /** @inheritDoc */
     convertFrom(instructions: InstructionsConvertFrom, callback: (response: PiMAdResponse) => void): void {
         if(this.initialized) {
-            //
             this.followInstructions(instructions, response => {
                 callback(response);
             });
         } else {
-            const notInitialized = this.responseVendor.buyErrorResponse();
-            logger.error('Use of a non-initialized MTPFreeze202001Importer. This one rejects the Request!');
-            notInitialized.initialize('The Importer is not initialized yet! Aborting ... ', {});
-            callback(notInitialized);
+            const response = this.responseVendor.buyErrorResponse();
+            response.initialize('The Importer is not initialized yet! Aborting ... ',{});
+            callback(response);
         }
     }
 
@@ -144,7 +161,6 @@ export class MTPFreeze202001Importer extends AImporter {
     private followInstructions(instructions: InstructionsConvertFrom, callback: (response: PiMAdResponse) => void): void {
         // Instructions
         if(instructions.source != '') {
-            // access data source
             this.accessDataSource(instructions, response => {
                 callback(response);
             });
@@ -181,19 +197,16 @@ export class MTPFreeze202001Importer extends AImporter {
             case 'zip':
                 gate = this.zipGateFactory.create();
                 break;
-            default:
-                break;
         }
 
         if(gate.constructor.name === new MockGateFactory().create().constructor.name) {
-            const unknownSourceType = this.responseVendor.buyErrorResponse();
-            unknownSourceType.initialize('Unknown source type <' + instructions.source + '>', {});
-            callback(unknownSourceType);
+            const response = this.responseVendor.buyErrorResponse();
+            response.initialize( 'Unknown source type <' + instructions.source + '>', {});
+            callback(response);
         } else {
             gate.initialize(instructions.source);
             gate.receive({}, response => {
-                //TODO > Fix gate + address issue in Gate.ts
-                //TODO > Fix that array shit.
+                //TODO > Fix gate + address issue in Gate.ts //TODO > Fix that array shit.
                 const localCAEXFile: { data?: {CAEXFile: CAEXFile}} = {} as { data: {CAEXFile: CAEXFile}};
                 const caexFile: { data?: {CAEXFile: CAEXFile}} = response.getContent();
                 if(Array.isArray(caexFile.data)) {
@@ -228,21 +241,6 @@ export class MTPFreeze202001Importer extends AImporter {
     private checkInformationModel(data: CAEXFile, pimadIdentifier: string, callback: (response: PiMAdResponse) => void): void {
         this.convert(data, pimadIdentifier,response => {
             callback(response);
-        });
-    }
-
-    /**
-     * Get a specific ModuleTypePackageSet-Set.
-     * @param refBaseSystemUnitPath - The meta model path.
-     * @param array - An array with ModuleTypePackage-Sets
-     * @param callback - ???
-     * @private
-     */
-    private getSet(refBaseSystemUnitPath: string, array: object[], callback: (set: object) => void): void {
-        array.forEach((content: {RefBaseSystemUnitPath?: string}) => {
-            if(refBaseSystemUnitPath === content.RefBaseSystemUnitPath) {
-                callback(content);
-            }
         });
     }
 
@@ -307,164 +305,157 @@ export class MTPFreeze202001Importer extends AImporter {
      * @private
      */
     private convert(data: CAEXFile, pimadIdentifier: string, callback: (response: PiMAdResponse) => void): void {
-        // These variables will be continuously filled
-        let communicationInterfaceData: DataItemModel[] = []; // TODO > link to communication interface
-        let dataAssemblies: DataAssembly[] = [];
-        let communicationSet: {InternalElement: object[]} = {} as {InternalElement: object[]};
-        let mtpPartResponseContent: ExtractDataFromCommunicationSetResponseType = {} as ExtractDataFromCommunicationSetResponseType;
-        let servicePartResponseContent: InternalServiceType[] = [];
-        let peaName = 'name: undefined';
-        let peaMetaModelRef = 'metaModelRef: undefined';
-        // looping through the first level instance hierarchy of the CAEX-File.
-        data.InstanceHierarchy.forEach((instance: InstanceHierarchy) => {
-            const localInternalElement = instance.InternalElement as unknown as {Name: string; ID: string; RefBaseSystemUnitPath: string; InternalElement: object[]};
-            // TODO: Very bad style
-            switch (instance.Name) {
-                case 'ModuleTypePackage': {
-                    // store characteristic pea attributes
-                    peaName = localInternalElement.Name;
-                    peaMetaModelRef = localInternalElement.RefBaseSystemUnitPath;
-                    // get the CommunicationSet
-                    this.getSet('MTPSUCLib/CommunicationSet', localInternalElement.InternalElement, set => {
-                        communicationSet = set as {InternalElement: object[]};
-                    });
-                    const mtpImporterPart: MTPPart = new MTPPart();
-                    mtpImporterPart.extract({CommunicationSet: communicationSet.InternalElement, HMISet: {}, ServiceSet: {}, TextSet: {}}, mtpPartResponse => {
-                        if(mtpPartResponse.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
-                            mtpPartResponseContent = mtpPartResponse.getContent() as ExtractDataFromCommunicationSetResponseType;
-                            communicationInterfaceData = mtpPartResponseContent.ServerCommunicationInterfaceData;
-                            dataAssemblies = mtpPartResponseContent.DataAssemblies;
-                        } else {
-                          logger.warn('Could not extract CommunicationSet');
-                        }
-                    });
-                    break;
-                }
-                case 'Services': {
-                    const serviceImporterPart = new ServicePart();
-                    serviceImporterPart.extract(instance as ServicePartExtractInputDataType, servicePartResponse => {
-                        servicePartResponseContent = servicePartResponse.getContent() as InternalServiceType[];
-                    });
-                    break;
-                }
-                default:
-                    break;
-            }
-        });
-        // Checking the data for completeness
-        if(JSON.stringify(mtpPartResponseContent) === JSON.stringify({}) || servicePartResponseContent.length === 0) {
-            const localResponse = this.responseVendor.buyErrorResponse();
-            localResponse.initialize('Could not extract MTPSUCLib/CommunicationSet and/or MTPServiceSUCLib/ServiceSet. Aborting...', {});
-            callback(localResponse);
-        } else {
-            // data is fine -> Now merging Services and Procedures with DataAssemblies.
-            const localServices: ServiceModel[] = [];
-            servicePartResponseContent.forEach((service: InternalServiceType) => {
-                const localService = this.serviceFactory.create();
-                const localServiceDataAssembly: DataAssembly | undefined = dataAssemblies.find(dataAssembly => {
-                    let testCondition = false;
-                    dataAssembly.getDataSourceIdentifier((response, identifier) => {
-                        testCondition = (service.DataAssembly.Value === identifier);
-                    });
-                    return testCondition;
-                });
-                if(localServiceDataAssembly === undefined) {
-                    logger.warn('Could not find referenced DataAssembly for service <' + service.Name + '> Skipping this service ...');
-                } else {
-                    const localServiceProcedures: ProcedureModel[] = [];
-                    // merging Procedures with DataAssemblies
-                    service.Procedures.forEach(procedure => {
-                        const localProcedureDataAssembly: DataAssembly | undefined = dataAssemblies.find(dataAssembly => {
-                            let testCondition = false;
-                            dataAssembly.getDataSourceIdentifier((response, identifier) => {
-                                testCondition = (procedure.DataAssembly.Value === identifier);
-                            });
-                            return testCondition;
-                        });
-                        if(localProcedureDataAssembly === undefined) {
-                            logger.warn('Could not find referenced DataAssembly for procedure <' + service.Name + '> Skipping this procedure ...');
-                        } else {
-                            const procedureAttributes: Attribute[] = [];
-                            const procedureAttributeFactory = new AttributeFactoryVendor().buyProcedureAttributeFactory();
-                            procedure.Attributes.forEach(attribute => {
-                                const newProcedureAttribute = procedureAttributeFactory.create();
-                                if(newProcedureAttribute.initialize({DataType: attribute.AttributeDataType, Name: attribute.Name, Value: attribute.Value})) {
-                                    procedureAttributes.push(newProcedureAttribute);
-                                }
-                            });
-                            const localProcedure = this.procedureFactory.create();
-                            if(localProcedure.initialize({
-                                defaultValue: '',
-                                description: '',
-                                attributes: procedureAttributes,
-                                dataAssembly: localProcedureDataAssembly,
-                                dataSourceIdentifier: procedure.Identifier,
-                                metaModelRef: procedure.MetaModelRef,
-                                name: procedure.Name,
-                                parameter: procedure.Parameters,
-                                pimadIdentifier: 'TODO'
-                            })) {
-                                localServiceProcedures.push(localProcedure);
-                            }
-                        }
-                    });
-                    const serviceAttributes: Attribute[] = [];
-                    const serviceAttributeFactory = new AttributeFactoryVendor().buyServiceAttributeFactory();
-                    service.Attributes.forEach(attribute => {
-                        const newProcedureAttribute = serviceAttributeFactory.create();
-                        if(newProcedureAttribute.initialize({DataType: attribute.AttributeDataType, Name: attribute.Name, Value: attribute.Value})) {
-                            serviceAttributes.push(newProcedureAttribute);
-                        }
-                    });
-                    // initialize the new service object ...
-                    if(localService.initialize({
-                        defaultValue: '', description: '',
-                        attributes: serviceAttributes,
-                        dataAssembly: localServiceDataAssembly,
-                        dataSourceIdentifier: service.Identifier,
-                        metaModelRef: service.MetaModelRef,
-                        name: service.Name,
-                        parameter: service.Parameters,
-                        pimadIdentifier: uuidv4(),
-                        procedure: localServiceProcedures
-                    })) {
-                        // ... and push it to the array.
-                        localServices.push(localService);
-                    }
-                }
-            });
-
-            this.cleanUpDataAssemblies(dataAssemblies);
-
-            const localPEA = this.peaFactory.create();
-            // Initializing the local pea
-            if(localPEA.initialize({
-                DataAssemblies: dataAssemblies,
-                DataModel: peaMetaModelRef,
-                DataModelVersion: new BasicSemanticVersion(),
-                FEAs: [], Name: peaName, PiMAdIdentifier: pimadIdentifier,
-                Services: localServices, Endpoint: communicationInterfaceData})) {
-
-                // successful -> callback with successful response
-                const localSuccessResponse = this.responseVendor.buySuccessResponse();
-                localSuccessResponse.initialize('Success!', localPEA);
-                callback(localSuccessResponse);
+        try{
+            const extractedData = this.getAndExtractAllSets(data.InstanceHierarchy);
+            extractedData.pimadIdentifier = pimadIdentifier;
+            // Checking the data for completeness
+            if(Object.keys(extractedData.extractedCommunicationSet).length === 0) {
+               throw new Error('Could not extract MTPSUCLib/CommunicationSet. Aborting...');
             } else {
-                // error -> callback with error response
-                const localErrorResponse = this.responseVendor.buyErrorResponse();
-                localErrorResponse.initialize('Could not extract PEAModel from ???. Aborting', {});
-                callback(localErrorResponse);
+                const peaModel =this.mergeAllAndCreatePEAModel(extractedData);
+                callback(peaModel);
             }
+        } catch (e){
+            const response = this.responseVendor.buyErrorResponse();
+            response.initialize(e.toString(), {});
+            callback(response);
         }
     }
 
+    private getAndExtractAllSets(instanceHierarchy: AML.InstanceHierarchy[]): ExtractedData {
+        const moduleTypePackageInternalElement = this.getModuleTypePackageInternalElement(instanceHierarchy);
+        const sets = this.getAllSets(moduleTypePackageInternalElement.InternalElement);
+        const extractedData: ExtractedData = this.extractAllSets(sets, instanceHierarchy);
+        extractedData.peaName = moduleTypePackageInternalElement.Name;
+        extractedData.metaModelRef = moduleTypePackageInternalElement.RefBaseSystemUnitPath;
+        return extractedData;
+    }
+
+    private getModuleTypePackageInternalElement(instanceHierarchy: AML.InstanceHierarchy[]): any  {
+        let localInternalElement;
+        if(!Array.isArray(instanceHierarchy)){
+            instanceHierarchy = [instanceHierarchy];
+        }
+        instanceHierarchy.forEach((instance: InstanceHierarchy) => {
+            if(instance.Name ==='ModuleTypePackage') {
+                localInternalElement = instance.InternalElement as unknown as {Name: string; ID: string; RefBaseSystemUnitPath: string; InternalElement: object[]};
+            }
+        });
+        if(!localInternalElement){
+            throw new Error('No InstanceHierarchy ModuleTypePackage was found!');
+        }
+        return localInternalElement;
+    }
+
+    private getAllSets(internalElement: object[]): Sets { 
+        const allSets: Sets = {CommunicationSet: {}, ServiceSet: {}, TextSet: {}, HMISet: {}};
+
+        this.getSet('MTPSUCLib/CommunicationSet', internalElement, set => {
+            allSets.CommunicationSet = set as {InternalElement: object[]};
+            if(Object.keys(set).length === 0){
+                throw new Error('Could not extract MTPSUCLib/CommunicationSet. No CommunicationSet was found!');
+            }
+        });
+        this.getSet('MTPServiceSUCLib/ServiceSet', internalElement, set => {
+            allSets.ServiceSet = set as {ExternalInterface: object};
+            if(Object.keys(set).length === 0) {
+                logger.warn('No ServiceSet was found.');
+            }
+        });
+        this.getSet('MTPHMISUCLib/HMISet', internalElement, set => {
+            allSets.HMISet = set as {ExternalInterface: object};
+        });
+        this.getSet('MTPTextSUCLib/TextSet', internalElement, set => {
+            allSets.TextSet = set as {ExternalInterface: object};
+        });
+        return allSets;
+    }
+
+    /**
+     * Get a specific ModuleTypePackageSet-Set.
+     * @param refBaseSystemUnitPath - The meta model path.
+     * @param array - An array with ModuleTypePackage-Sets
+     * @param callback - ???
+     * @private
+     */
+    private getSet(refBaseSystemUnitPath: string, array: object[], callback: (set: object) => void): void {
+        let found = false;
+
+        if(!Array.isArray(array)){
+            array = [array];
+        }
+
+        array.forEach((content: {RefBaseSystemUnitPath?: string}) => {
+            if(refBaseSystemUnitPath === content.RefBaseSystemUnitPath) {
+                callback(content);
+                found = true;
+            }
+        });
+
+        if(!found) {
+            callback({});
+        }
+    }
+
+    private extractAllSets(sets: Sets, instanceHierarchy: AML.InstanceHierarchy[]): ExtractedData {
+        const extractedData: ExtractedData = {} as any;
+        instanceHierarchy.forEach((instance: InstanceHierarchy) => {
+            if(Object.keys(sets.ServiceSet).length>0) {
+                if ((sets.ServiceSet as any).ExternalInterface.Attribute.Value === instance.ID) {
+                    const serviceImporterPart = new ServicePart();
+                    serviceImporterPart.extract(instance as ServicePartExtractInputDataType, servicePartResponse => {
+                        extractedData.extractedServiceSet = (servicePartResponse.getContent() as InternalServiceType[]);
+                    });
+                }
+            }
+            if(Object.keys(sets.HMISet).length>0){
+                if ((sets.HMISet as any).ExternalInterface.Attribute.Value === instance.ID){
+                    const hmiImporterPart = new HMIPart();
+                    //TODO not implemented yet
+                    hmiImporterPart.extract(instance , hmiPartResponse => {
+                        hmiPartResponse.getContent();
+                    });
+                }
+            }
+            if(Object.keys(sets.TextSet).length>0) {
+                if ((sets.TextSet as any).ExternalInterface.Attribute.Value === instance.ID){
+                    const textImporterPart = new TextPart();
+                    //TODO not implemented yet
+                    textImporterPart.extract(instance , textPartResponse => {
+                        textPartResponse.getContent();
+                    });
+                }
+            }
+        });
+        //communicationset
+        const mtpImporterPart: MTPPart = new MTPPart();
+        mtpImporterPart.extract({CommunicationSet: (sets.CommunicationSet as any).InternalElement}, mtpPartResponse => {
+            if(mtpPartResponse.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
+                extractedData.extractedCommunicationSet= mtpPartResponse.getContent() as ExtractDataFromCommunicationSetResponseType;
+                this.communicationInterfaceData = extractedData.extractedCommunicationSet.ServerCommunicationInterfaceData;
+                this.dataAssemblies = extractedData.extractedCommunicationSet.DataAssemblies;
+            } else {
+                logger.warn('Could not extract CommunicationSet');
+            }
+        });
+        return extractedData;
+    }
+
+    //TODO rename this
+    private mergeAllAndCreatePEAModel(extractedData: ExtractedData): PiMAdResponse {
+        let localServices: ServiceModel[] = [];
+        if(extractedData.extractedServiceSet.length!=0) localServices =  this.createServiceModels(extractedData.extractedServiceSet);
+        //TODO:  do hmiset, textset
+        this.removeServicesFromDataAssemblies(extractedData.extractedCommunicationSet.DataAssemblies);
+        return this.createPEAModel(extractedData, localServices);
+    }
     /**
      * remove HealthStateView(Procedures) and ServiceControls from dataAssemblies, because subscribeToAllVariables()
      * in backend will take this list for the variables
      * @param dataAssemblies
      * @private
      */
-    private cleanUpDataAssemblies(dataAssemblies: DataAssembly[]){
+    private removeServicesFromDataAssemblies(dataAssemblies: DataAssembly[]){
         for(const dataAssembly of dataAssemblies){
             // at first, get metaModelRef of dataAssembly
             let mMetaModelRef='';
@@ -476,28 +467,116 @@ export class MTPFreeze202001Importer extends AImporter {
                 const index = dataAssemblies.indexOf(dataAssembly);
                 dataAssemblies.splice(index, 1);
                 // the dataAssemblies has changed-> start function again, but with updated list
-                this.cleanUpDataAssemblies(dataAssemblies);
+                this.removeServicesFromDataAssemblies(dataAssemblies);
                 break;
             }
         }
     }
 
-    constructor() {
-        super();
-        this.servicePart = new ServicePart();
-        this.hmiPart = new HMIPart();
-        this.mtpPart = new MTPPart();
-        this.textPart = new TextPart();
-        // Factories
-        this.amlGateFactory = new AMLGateFactory();
-        this.dataAssemblyVendor = new DataAssemblyVendor();
-        this.mtpGateFactory = new MTPGateFactory();
-        this.peaFactory = new BasePEAFactory();
-        this.procedureFactory = new BaseProcedureFactory();
-        this.serviceFactory = new BaseServiceFactory();
-        this.xmlGateFactory = new XMLGateFactory();
-        this.zipGateFactory = new ZIPGateFactory();
+    private createPEAModel(extractedData: ExtractedData, services: ServiceModel[]): PiMAdResponse {
+        const localPEA = this.peaFactory.create();
+        if(localPEA.initialize({
+            DataAssemblies: extractedData.extractedCommunicationSet.DataAssemblies,
+            DataModel: extractedData.metaModelRef,
+            DataModelVersion: new BasicSemanticVersion(),
+            FEAs: [], Name: extractedData.peaName, PiMAdIdentifier: extractedData.pimadIdentifier,
+            Services: services, Endpoint: extractedData.extractedCommunicationSet.ServerCommunicationInterfaceData})) {
+
+            const localSuccessResponse = this.responseVendor.buySuccessResponse();
+            localSuccessResponse.initialize('Success!', localPEA);
+            return localSuccessResponse;
+        } else {
+            const localErrorResponse = this.responseVendor.buyErrorResponse();
+            localErrorResponse.initialize('Could not extract PEAModel from ???. Aborting', {});
+            return localErrorResponse;
+        }
     }
+    private createServiceModels(servicePartResponseContent: InternalServiceType[]): ServiceModel[] {
+        const localServices: ServiceModel[] = [];
+        servicePartResponseContent.forEach((service: InternalServiceType) => {
+            const localService = this.serviceFactory.create();
+            const localServiceDataAssembly: DataAssembly | undefined = this.dataAssemblies.find(dataAssembly => {
+                let testCondition = false;
+                dataAssembly.getDataSourceIdentifier((response, identifier) => {
+                    testCondition = (service.DataAssembly.Value === identifier);
+                });
+                return testCondition;
+            });
+            if(localServiceDataAssembly === undefined) {
+                logger.warn('Could not find referenced DataAssembly for service <' + service.Name + '> Skipping this service ...');
+            } else {
+                // merging Procedures with DataAssemblies
+                const localServiceProcedures: ProcedureModel[] = this.createProcedureModels(service);
+
+                const serviceAttributes: Attribute[] = [];
+                const serviceAttributeFactory = new AttributeFactoryVendor().buyServiceAttributeFactory();
+                service.Attributes.forEach(attribute => {
+                    const newProcedureAttribute = serviceAttributeFactory.create();
+                    if(newProcedureAttribute.initialize({DataType: attribute.AttributeDataType, Name: attribute.Name, Value: attribute.Value})) {
+                        serviceAttributes.push(newProcedureAttribute);
+                    }
+                });
+                // initialize the new service object ...
+                if(localService.initialize({
+                    defaultValue: '', description: '',
+                    attributes: serviceAttributes,
+                    dataAssembly: localServiceDataAssembly,
+                    dataSourceIdentifier: service.Identifier,
+                    metaModelRef: service.MetaModelRef,
+                    name: service.Name,
+                    parameter: service.Parameters,
+                    pimadIdentifier: uuidv4(),
+                    procedure: localServiceProcedures
+                })) {
+                    localServices.push(localService);
+                }
+            }
+        });
+        return localServices;
+    }
+    
+    private createProcedureModels(service: InternalServiceType): ProcedureModel[] {
+        const localServiceProcedures: ProcedureModel[] = [];
+        service.Procedures.forEach(procedure => {
+            const localProcedureDataAssembly: DataAssembly | undefined = this.dataAssemblies.find(dataAssembly => {
+                let testCondition = false;
+                dataAssembly.getDataSourceIdentifier((response, identifier) => {
+                    testCondition = (procedure.DataAssembly.Value === identifier);
+                });
+                return testCondition;
+            });
+            if(localProcedureDataAssembly === undefined) {
+                logger.warn('Could not find referenced DataAssembly for procedure <' + service.Name + '> Skipping this procedure ...');
+            }
+            else {
+                const procedureAttributes: Attribute[] = [];
+                const procedureAttributeFactory = new AttributeFactoryVendor().buyProcedureAttributeFactory();
+                procedure.Attributes.forEach(attribute => {
+                    const newProcedureAttribute = procedureAttributeFactory.create();
+                    if(newProcedureAttribute.initialize({DataType: attribute.AttributeDataType, Name: attribute.Name, Value: attribute.Value})) {
+                        procedureAttributes.push(newProcedureAttribute);
+                    }
+                });
+                const localProcedure = this.procedureFactory.create();
+                if(localProcedure.initialize({
+                    defaultValue: '',
+                    description: '',
+                    attributes: procedureAttributes,
+                    dataAssembly: localProcedureDataAssembly,
+                    dataSourceIdentifier: procedure.Identifier,
+                    metaModelRef: procedure.MetaModelRef,
+                    name: procedure.Name,
+                    parameter: procedure.Parameters,
+                    pimadIdentifier: 'TODO'
+                })) {
+                    localServiceProcedures.push(localProcedure);
+                }
+            }
+        });
+        return localServiceProcedures;
+    }
+
+
 }
 
 export interface Importer {
@@ -572,5 +651,23 @@ export interface ImporterFactory {
 type InstructionsConvertFrom = {
     source: string;
     identifier: string;
+}
+
+//TODO maybe use defined type, instead of 'object'
+interface Sets {
+    CommunicationSet: object;
+    ServiceSet: object;
+    HMISet: object;
+    TextSet: object;
+}
+interface ExtractedData {
+    peaName: string;
+    pimadIdentifier: string;
+    metaModelRef: string;
+    extractedCommunicationSet: ExtractDataFromCommunicationSetResponseType;
+    extractedServiceSet: InternalServiceType[];
+    extractedHMISet: object[];
+    extractedTextSet: object[];
+    serviceModels: ServiceModel[];
 }
 

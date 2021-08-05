@@ -224,7 +224,7 @@ export class ZIPGate extends AFileSystemGate {
                         // TODO: Coding > Generic one
                         case '.aml': {
                             const amlGate = this.amlGateFactory.create();
-                            amlGate.initialize(folderPath + '/' + entry.entryName);
+                            amlGate.initialize(folderPath + '/' + entry.entryName.replace('\\','/'));
                             amlGate.receive({}, (response: PiMAdResponse) => {
                                 if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
                                     responseData.push(response.getContent());
@@ -241,7 +241,7 @@ export class ZIPGate extends AFileSystemGate {
                         }
                         case '.xml': {
                             const xmlGate = this.xmlGateFactory.create();
-                            xmlGate.initialize(folderPath + '/' + entry.entryName);
+                            xmlGate.initialize(folderPath + '/' + entry.entryName.replace('\\','/'));
                             xmlGate.receive({}, (response: PiMAdResponse) => {
                                 if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
                                     responseData.push(response.getContent());
