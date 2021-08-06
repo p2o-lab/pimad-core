@@ -6,7 +6,6 @@ import {
     ImporterPart,
     InternalServiceType,
     MTPPart,
-    ServicePart,
     ServicePartExtractInputDataType,
     TextPart
 } from './ImporterPart';
@@ -21,7 +20,7 @@ import {
 import {AML, CAEXFile} from '@p2olab/pimad-types';
 import InstanceHierarchy = AML.InstanceHierarchy
 import {
-    Attribute, AttributeFactoryVendor, DataItemModel, ModuleAutomation
+    Attribute, AttributeFactoryVendor, DataItemModel, ModuleAutomation, Parameter
 } from '../../ModuleAutomation';
 import {BasePEAFactory} from '../../ModuleAutomation';
 import {ServiceModel} from '../../ModuleAutomation';
@@ -33,8 +32,9 @@ import DataAssemblyVendor = ModuleAutomation.DataAssemblyVendor;
 import DataAssembly = ModuleAutomation.DataAssembly;
 import { v4 as uuidv4 } from 'uuid';
 import {BaseServiceFactory} from '../../ModuleAutomation/ServiceModel';
+import {ServicePart} from "./ServicePart";
 
-abstract class AImporter implements  Importer {
+export abstract class AImporter implements  Importer {
 
     protected initialized: boolean;
     protected metaModelVersion: SemanticVersion;
@@ -524,7 +524,7 @@ export class MTPFreeze202001Importer extends AImporter {
                     dataSourceIdentifier: service.Identifier,
                     metaModelRef: service.MetaModelRef,
                     name: service.Name,
-                    parameter: service.Parameters,
+                    parameter: [],
                     pimadIdentifier: uuidv4(),
                     procedure: localServiceProcedures
                 })) {
@@ -557,7 +557,10 @@ export class MTPFreeze202001Importer extends AImporter {
                         procedureAttributes.push(newProcedureAttribute);
                     }
                 });
+
                 const localProcedure = this.procedureFactory.create();
+                const parameters: DataAssembly[] = this.findCorrespondingDataAssemblies(procedure.ParametersRefID);
+
                 if(localProcedure.initialize({
                     defaultValue: '',
                     description: '',
@@ -566,7 +569,7 @@ export class MTPFreeze202001Importer extends AImporter {
                     dataSourceIdentifier: procedure.Identifier,
                     metaModelRef: procedure.MetaModelRef,
                     name: procedure.Name,
-                    parameter: procedure.Parameters,
+                    parameter: parameters,
                     pimadIdentifier: 'TODO'
                 })) {
                     localServiceProcedures.push(localProcedure);
@@ -576,6 +579,20 @@ export class MTPFreeze202001Importer extends AImporter {
         return localServiceProcedures;
     }
 
+
+    private findCorrespondingDataAssemblies(refIDArray: string[]): DataAssembly[] {
+        const dataAssemblyArray: DataAssembly[] = [];
+        this.dataAssemblies.find(dataAssembly => {
+            dataAssembly.getDataSourceIdentifier((response, identifier) => {
+                refIDArray.forEach(refID =>{
+                    if(refID === identifier){
+                        dataAssemblyArray.push(dataAssembly);
+                    }
+                });
+            });
+        });
+        return dataAssemblyArray;
+    }
 
 }
 

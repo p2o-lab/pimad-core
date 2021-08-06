@@ -1,5 +1,5 @@
 import {
-    BaseDataItemFactory,
+    BaseDataItemFactory, BaseParameterFactory,
     BaseProcedureFactory,
     CommunicationInterfaceData,
     CommunicationInterfaceDataVendor,
@@ -23,7 +23,7 @@ import DataAssembly = ModuleAutomation.DataAssembly;
 import DataAssemblyType = ModuleAutomation.DataAssemblyType;
 import { v4 as uuidv4 } from 'uuid';
 
-abstract class AImporterPart implements ImporterPart {
+export abstract class AImporterPart implements ImporterPart {
     protected responseVendor: PiMAdResponseVendor
 
     extract(data: object, callback: (response: PiMAdResponse) => void): void {
@@ -443,169 +443,7 @@ export class MTPPart extends AImporterPart {
         this.baseDataItemFactory = new BaseDataItemFactory();
     }
 }
-/**
- * Handles the 'ServicePart' of the ModuleTypePackage file.
- */
-export class ServicePart extends AImporterPart {
-    private baseProcedureFactory: BaseProcedureFactory;
 
-    /**
-     * This method extracts data from the service part of the ModuleTypePackage and converts it into an intermediate
-     * format very similar to the {@link Service} interface of the PiMAd core IM.
-     *
-     * <uml>
-     *     skinparam shadowing false
-     *     partition "extract" {
-     *          start
-     *          while (more services?) is (yes)
-     *              :take the next service;
-     *              :extract and store\nfirst level data of\nthe service;
-     *              while (more InternalElements?) is (yes)
-     *                  :take the next element;
-     *                  if (element == ServiceProcedure) is (true)
-     *                      :extract the data\nof the service procedure;
-     *                      :push procedure to service;
-     *                  else (no)
-     *                      :Skipping this element;
-     *                  endif
-     *              endwhile (no)
-     *              :push service to storage;
-     *          endwhile (no)
-     *          :callback the extracted\nservices with a\nSuccessResponse;
-     *          stop
-     *     }
-     * </uml>
-     *
-     * @param data - All service data as object.
-     * @param callback - A callback function with an instance of the Response-Interface.
-     */
-    extract(data: ServicePartExtractInputDataType, callback: (response: PiMAdResponse) => void): void {
-        /* One big issue: In the ServicePart of the MTP are not all data to build a PiMAd-core ServiceModel. There are
-        references to DataAssemblies extracted via the MTPPart. Therefore this one extracts the data like a quasi
-        service. Later one the Importer merges the data of quasi service and the referenced DataAssembly to one
-        PiMAd-core ServiceModel. */
-        const extractedServiceData: InternalServiceType[] = []; // will be the content of the response.
-        // typing
-        let servicePartInternalElementArray = data.InternalElement as ServiceInternalElement[];
-        // looping through all elements of the array.
-        /* Easier handling of 'single' and 'multiple' attributes in one code section. Therefore a single attribute is
-        transferred to an array with one entry. */
-        if(!(Array.isArray(servicePartInternalElementArray))) {
-            servicePartInternalElementArray = [servicePartInternalElementArray];
-        }
-        servicePartInternalElementArray.forEach((amlServiceInternalElement: ServiceInternalElement) => {
-            // TODO > Better solution possible?
-            // TODO > Why no check? RefBaseSystemUnitPath
-            // Skip ServiceModel Relation in FirstPlace
-            if (amlServiceInternalElement.RefBaseSystemUnitPath.includes('ServiceRelation')) return;
-            let localAMLServiceInternalElementAttributes: Attribute[] = [];
-            if(!Array.isArray(amlServiceInternalElement.Attribute)) {
-                localAMLServiceInternalElementAttributes.push(amlServiceInternalElement.Attribute as Attribute);
-            } else {
-                localAMLServiceInternalElementAttributes = amlServiceInternalElement.Attribute;
-            }
-            // will be continuously filled while in the loop circle
-            const localService = {} as InternalServiceType;
-            localService.Attributes = [];
-            localService.Identifier = amlServiceInternalElement.ID;
-            localService.MetaModelRef = amlServiceInternalElement.RefBaseSystemUnitPath;
-            localService.Name = amlServiceInternalElement.Name;
-            localService.Parameters = [];
-            localService.Procedures = [];
-            /* extract the 'RefID'-Attribute. It's important! and referencing to the DataAssembly of the service which
-            stores all the interface data to the hardware. */
-            this.getAttribute('RefID', localAMLServiceInternalElementAttributes, (response: PiMAdResponse) => {
-                if(response.constructor.name === 'SuccessResponse') {
-                    localService.DataAssembly = response.getContent() as Attribute;
-                }
-            });
-            // extract and store all other attributes
-            this.extractAttributes(localAMLServiceInternalElementAttributes, (response => {
-                localService.Attributes = response.getContent() as Attribute[];
-            }));
-            // extract all Procedures, etc
-            // const internalElementArray = amlService.InternalElement.constructor === Object? [amlService.InternalElement as object as DataItemInstanceList] : amlService.InternalElement;
-
-            let internalElementArray = amlServiceInternalElement.InternalElement;
-            /* Easier handling of 'single' and 'multiple' attributes in one code section. Therefore a single attribute is
-            transferred to an array with one entry. */
-            if(!(Array.isArray(internalElementArray))) {
-                internalElementArray = [internalElementArray];
-            }
-            // do foreach
-            internalElementArray.forEach((amlServiceInternalElementItem: DataItemInstanceList) => {
-                if (!amlServiceInternalElementItem){return;}
-                switch (amlServiceInternalElementItem.RefBaseSystemUnitPath) {
-                    case 'MTPServiceSUCLib/ServiceProcedure': {
-                        /* like the services above the data of the procedures in the MTP-ServiceSet is insufficient.
-                        Therefore use again a quasi procedure. The importer will later merge the quasi procedure and the
-                        referenced DataAssembly. */
-                        const localProcedure = {} as InternalProcedureType;
-                        localProcedure.Attributes = [];
-                        localProcedure.Identifier = amlServiceInternalElementItem.ID;
-                        localProcedure.MetaModelRef = amlServiceInternalElementItem.RefBaseSystemUnitPath;
-                        localProcedure.Name = amlServiceInternalElementItem.Name;
-                        localProcedure.Parameters = [];
-                        this.getAttribute('RefID', amlServiceInternalElementItem.Attribute, (response: PiMAdResponse) => {
-                            if(response.constructor.name === 'SuccessResponse') {
-                                localProcedure.DataAssembly = response.getContent() as Attribute;
-                            }
-                        });
-                        // extract all the other Attributes
-                        this.extractAttributes(amlServiceInternalElementItem.Attribute, (response => {
-                            localProcedure.Attributes = response.getContent() as Attribute[];
-                        }));
-                        localService.Procedures.push(localProcedure);
-                        // TODO: Missing ProcedureModel-Parameters
-                        break;
-                    }
-                    //case 'TODO: Missing ServiceModel-Parameters'
-                    default:
-                        logger.warn('Unknown >InternalElement< in service <' + amlServiceInternalElement.Name + '> Ignoring!');
-                        break;
-                }
-
-            });
-            extractedServiceData.push(localService);
-        });
-        const localResponse = this.responseVendor.buySuccessResponse();
-        localResponse.initialize('Successfully extracting the ServicePart!', extractedServiceData);
-        callback(localResponse);
-    }
-
-    /**
-     * Transforming AML-Attributes into AML-Attributes. Ignoring specific one. f. ex. RefID. Needs a Refactor -\> PiMAd
-     * needs an attribute interface too!
-     * @param attributes - The attributes array.
-     * @param callback - A callback function with an instance of the Response-Interface.
-     */
-    private extractAttributes(attributes: Attribute[], callback: (response: PiMAdResponse) => void): void {
-        const responseAttributes: Attribute[] = [];
-        /* Easier handling of 'single' and 'multiple' attributes in one code section. Therefore a single attribute is
-            transferred to an array with one entry. */
-        if(!(Array.isArray(attributes))) {
-            attributes = [attributes];
-        }
-        attributes.forEach((attribute: Attribute) => {
-            switch (attribute.Name) {
-                case 'RefID':
-                    break;
-                default:
-                    responseAttributes.push(attribute);
-            }
-            if(JSON.stringify(attribute) === JSON.stringify(attributes[attributes.length -1])) {
-                const localeResponse = this.responseVendor.buySuccessResponse();
-                localeResponse.initialize('Success!', responseAttributes);
-                callback(localeResponse);
-            }
-        });
-    }
-
-    constructor() {
-        super();
-        this.baseProcedureFactory = new BaseProcedureFactory();
-    }
-}
 export class TextPart extends AImporterPart {
 
 }
@@ -636,6 +474,7 @@ export type ExtractDataFromCommunicationSetResponseType = {
 
 export type InternalServiceType = InternalProcedureType & {
     Procedures: InternalProcedureType[];
+    Parameters: Parameter[];
 }
 
 /**
@@ -647,7 +486,10 @@ export type InternalProcedureType = {
     Identifier: string;
     MetaModelRef: string;
     Name: string;
-    Parameters: Parameter[];
+    ParametersRefID: string[];
+    ReportParametersRefID: string[];
+    ProcessValuesInRefID: string[];
+    ProcessValuesOutID: string[];
 }
 
 /**

@@ -47,7 +47,7 @@ abstract class AService extends AProcedure implements ServiceModel {
             this.procedures = instructions.procedure;
             this.initialized = (JSON.stringify(this.attributes) === JSON.stringify(instructions.attributes)
                 && JSON.stringify(this.dataAssembly) === JSON.stringify(instructions.dataAssembly)
-                && JSON.stringify(this.parameters) === JSON.stringify(instructions.parameter)
+                && JSON.stringify(this.parametersOld) === JSON.stringify(instructions.parameter)
                 && JSON.stringify(this.procedures) === JSON.stringify(instructions.procedure)
                 && this.moduleAutomationObjectInitialize({
                     dataSourceIdentifier: instructions.dataSourceIdentifier,

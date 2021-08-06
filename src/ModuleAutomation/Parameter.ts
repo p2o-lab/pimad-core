@@ -64,8 +64,9 @@ abstract class AParameterFactory implements ParameterFactory {
     abstract create(): Parameter;
 }
 export class BaseParameterFactory extends AParameterFactory {
-    create(): Parameter{
+    create(): Parameter{ // TODO why use factory, it doesn't do much
             const parameter = new BaseParameter();
             logger.debug(this.constructor.name + ' creates a ' + parameter.constructor.name);
         return parameter;}
+
 }

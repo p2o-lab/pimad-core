@@ -60,7 +60,9 @@ export abstract class AProcedure extends AModuleAutomationObject implements Proc
 
     protected attributes: Attribute[];
     protected dataAssembly: DataAssembly;
-    protected parameters: Parameter[];
+    protected parametersOld: Parameter[];
+    protected parameters: DataAssembly[];
+
 
     constructor() {
         super();
@@ -68,7 +70,9 @@ export abstract class AProcedure extends AModuleAutomationObject implements Proc
         this.dataAssembly = {} as DataAssembly;
         this.metaModelRef = 'metaModelRef: not initialized';
         this.name = 'name: not initialized';
+        this.parametersOld = [];
         this.parameters = [];
+
         this.initialized = false;
     }
 
@@ -95,7 +99,7 @@ export abstract class AProcedure extends AModuleAutomationObject implements Proc
      * @inheritDoc {@link Parameter.getAllParameters}
      */
     getAllParameters(callback: (response: PiMAdResponse, parameters: Parameter[]) => void): void {
-        this.genericPiMAdGetter<Parameter[]>(this.parameters, callback);
+        this.genericPiMAdGetter<Parameter[]>(this.parametersOld, callback);
     }
 
     /**
@@ -109,7 +113,7 @@ export abstract class AProcedure extends AModuleAutomationObject implements Proc
      *  @inheritDoc {@link Parameter.getParameter}
      */
     getParameter(name: string, callback: (response: PiMAdResponse, parameter: Parameter) => void): void {
-        const localParameter: Parameter | undefined = this.parameters.find(parameter => name === parameter.getName());
+        const localParameter: Parameter | undefined = this.parametersOld.find(parameter => name === parameter.getName());
         if(localParameter === undefined) {
             this.genericPiMAdGetter<Parameter>({} as Parameter, callback);
         } else {
@@ -125,6 +129,7 @@ export abstract class AProcedure extends AModuleAutomationObject implements Proc
             this.attributes = instructions.attributes;
             this.dataAssembly = instructions.dataAssembly;
             this.parameters = instructions.parameter;
+            // TODO why is this check necessary
             this.initialized = (JSON.stringify(this.attributes) === JSON.stringify(instructions.attributes)
                 && JSON.stringify(this.dataAssembly) === JSON.stringify(instructions.dataAssembly)
                 && JSON.stringify(this.parameters) === JSON.stringify(instructions.parameter)
@@ -145,7 +150,7 @@ export abstract class AProcedure extends AModuleAutomationObject implements Proc
 export type InitializeProcedureType = InitializeModuleAutomationObject & {
     attributes: Attribute[];
     dataAssembly: DataAssembly;
-    parameter: Parameter[];
+    parameter: DataAssembly[];
 }
 
 class BaseProcedure extends AProcedure {
