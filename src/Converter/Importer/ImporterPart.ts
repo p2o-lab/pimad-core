@@ -7,7 +7,14 @@ import {
     ModuleAutomation,
     Parameter
 } from '../../ModuleAutomation';
-import {AML, InstanceList, SourceList} from '@p2olab/pimad-types';
+import {
+    AML,
+    InformationFlowConnector,
+    InstanceList,
+    MeasurementLine,
+    MeasurementPoint, Nozzle, Picture, Pipe,
+    SourceList, VisualObject
+} from '@p2olab/pimad-types';
 import {logger} from '../../Utils';
 import {Backbone} from '../../Backbone';
 import {CommunicationInterfaceDataEnum,} from '../../ModuleAutomation/CommunicationInterfaceData';
@@ -47,6 +54,16 @@ abstract class AImporterPart implements ImporterPart {
             }
         });
     }
+    protected getAttributeValue(attributeName: string, attributes: Attribute[]): string {
+        let value='';
+        attributes.forEach((attribute: Attribute) => {
+            if(attribute.Name === attributeName) {
+               value = attribute.Value;
+            }
+        });
+        return value;
+        //TODO handle error
+    }
 
     constructor() {
         this.responseVendor = new PiMAdResponseVendor();
@@ -54,7 +71,104 @@ abstract class AImporterPart implements ImporterPart {
 }
 
 export class HMIPart extends AImporterPart {
+    extract(data: TextPartExtractInputDataType, callback: (response: PiMAdResponse) => void): void {
+        // const localHMI;
 
+        let hmiPartInternalElementArray = data.InternalElement as any[];
+        if (!(Array.isArray(hmiPartInternalElementArray))) {
+            hmiPartInternalElementArray = [hmiPartInternalElementArray];
+        }
+        hmiPartInternalElementArray.forEach((hmiInternalElement: any) => {
+
+            let localHMIInternalElementAttributes: Attribute[] = hmiInternalElement.Attribute;
+            if (!Array.isArray(hmiInternalElement.Attribute)) {
+                localHMIInternalElementAttributes = [hmiInternalElement.Attribute as Attribute];
+            }
+            this.extractPicture(hmiInternalElement);
+
+        });
+/*        const localResponse = this.responseVendor.buySuccessResponse();
+        localResponse.initialize('Successfully extracting the TextPart!', localText);
+        callback(localResponse);*/
+
+    }
+
+    private extractPicture(hmiInternalElement: any) {
+        let hmiInternalElementArray = hmiInternalElement;
+        if (!Array.isArray(hmiInternalElement)){
+            hmiInternalElementArray = [hmiInternalElement];
+        }
+        const pictureArray: Picture[] = [];
+        hmiInternalElementArray.forEach((pictureInternalElement: any) =>{
+            const picture: Picture = {Connection:[], Height: 0, Width: 0, HierarchyLevel:0} as any;
+            picture.HierarchyLevel = this.getAttributeValue('HierarchyLevel', pictureInternalElement.Attribute);
+            picture.Height = this.getAttributeValue('Height', pictureInternalElement.Attribute) as unknown as number;
+            picture.Width = this.getAttributeValue('Width', pictureInternalElement.Attribute) as unknown as number;
+            pictureInternalElement.InternalElement.forEach((internalElement: any)=> {
+                switch (internalElement.RefBaseSystemUnitPath) {
+                    case 'MTPHMISUCLib/Connection/MeasurementLine':
+                        const measurementLine: MeasurementLine = {} as any;
+                        measurementLine.Edgepath = internalElement.Attribute.Value;
+                        internalElement.InternalElement.forEach((measurementLineInternalElement: any) => {
+                            const measurementPoint: MeasurementPoint = {} as any;
+                            const connector: InformationFlowConnector = measurementLineInternalElement.ExternalInterface.ID;
+                            measurementPoint.InformationFlowConnector = connector;
+                            measurementPoint.X = measurementLineInternalElement.Attribute[0].Value;
+                            measurementPoint.Y = measurementLineInternalElement.Attribute[1].Value;
+                            if (measurementLineInternalElement.Name === 'Start') {
+                                measurementLine.Start = measurementPoint;
+                            } else{
+                                measurementLine.End = measurementPoint;
+                            }
+                        });
+                        picture.Connection.push(measurementLine);
+                        break;
+                    case 'MTPHMISUCLib/Connection/Pipe':
+                        const pipe: Pipe = {} as any;
+                        pipe.Edgepath = this.getAttributeValue('Edgepath', internalElement.Attribute);
+                        pipe.Directed = this.getAttributeValue('Directed', internalElement.Attribute) as unknown as boolean;
+
+                        let nozzleInternalElementArray = internalElement.InternalElement;
+                        if(!Array.isArray(internalElement.InternalElement)){
+                            nozzleInternalElementArray  = [internalElement.InternalElement];
+                        }
+                        nozzleInternalElementArray.forEach((nozzleInternalElement: any)=>{
+                            const nozzle: Nozzle = {} as any;
+                            nozzle.X = this.getAttributeValue('X', nozzleInternalElement.Attribute) as unknown as number;
+                            nozzle.Y = this.getAttributeValue('Y', nozzleInternalElement.Attribute) as unknown as number;
+                            nozzle.MassFlowConnector = nozzleInternalElement.ExternalInterface.ID;
+                            if(nozzleInternalElement.Name === 'Nozzle1' ){
+                                pipe.Nozzle1 = nozzle;
+                            } else{
+                                pipe.Nozzle2 = nozzle;
+                            }
+                        });
+                        picture.Connection.push(pipe);
+                        break;
+                    case 'MTPHMISUCLib/VisualObject':
+                        const visualObject: VisualObject = {} as any;
+                        //TODO
+                        let internalElementArray = internalElement.InternalElement;
+                        if(!Array.isArray(internalElement.InternalElement)){
+                            internalElementArray  = [internalElement.InternalElement];
+                        }
+                        internalElementArray.forEach((nozzleInternalElement: any)=>{
+                     /*       const nozzle: Nozzle = {} as any;
+                            nozzle.X = this.getAttributeValue('X', nozzleInternalElement.Attribute) as unknown as number;
+                            nozzle.Y = this.getAttributeValue('Y', nozzleInternalElement.Attribute) as unknown as number;
+                            nozzle.MassFlowConnector = nozzleInternalElement.ExternalInterface.ID;
+                            if(nozzleInternalElement.Name === 'Nozzle1' ){
+                                pipe.Nozzle1 = nozzle;
+                            } else{
+                                pipe.Nozzle2 = nozzle;
+                            }*/
+                        });
+                        break;
+                }
+
+            });
+        });
+    }
 }
 
 /**
@@ -67,9 +181,7 @@ export class MTPPart extends AImporterPart {
 
     /**
      * This method extracts data from the MTPPart of the ModuleTypePackage and converts it into different objects of the PiMAd-core-IM.
-     *
      * Attention! Currently (31.07.2020) only data from the CommunicationSet is processed!
-     *
      * <uml>
      *     skinparam shadowing false
      *     partition "extract" {
@@ -83,20 +195,20 @@ export class MTPPart extends AImporterPart {
      *          stop
      *     }
      * </uml>
-     *
      * @param data - The bare ModuleTypePackage-object of the MTP. Containing a CommunicationSet, HMISet, ServiceSet and TextSet.
      * @param callback - A callback function with an instance of the Response-Interface. The type of the response-content-object-attribute data is {@link ExtractDataFromCommunicationSetResponseType}
      */
-    extract(data: {CommunicationSet: object[]; HMISet: object; ServiceSet: object; TextSet: object}, callback: (response: PiMAdResponse) => void): void {
+    extract(data: {CommunicationSet: object[]}, callback: (response: PiMAdResponse) => void): void {
         const communicationSet = this.extractDataFromCommunicationSet(data.CommunicationSet);
         if(communicationSet.ServerCommunicationInterfaceData.length === 0 && communicationSet.DataAssemblies.length === 0) {
-            const localeResponse = this.responseVendor.buyErrorResponse();
-            localeResponse.initialize('Could not parse the CommunicationSet!', {});
-            callback(localeResponse);
+            const localResponse = this.responseVendor.buyErrorResponse();
+            //TODO: REFACTOR: const localResponse = this.responseVendor.buySuccessResponse('message', {content}); -> initialize within Response class
+            localResponse.initialize('Could not parse the CommunicationSet!', {});
+            callback(localResponse);
         } else {
-            const localeResponse = this.responseVendor.buySuccessResponse();
-            localeResponse.initialize('Success!', communicationSet);
-            callback(localeResponse);
+            const localResponse = this.responseVendor.buySuccessResponse();
+            localResponse.initialize('Success!', communicationSet);
+            callback(localResponse);
         }
     }
 
@@ -514,7 +626,7 @@ export class ServicePart extends AImporterPart {
             /* extract the 'RefID'-Attribute. It's important! and referencing to the DataAssembly of the service which
             stores all the interface data to the hardware. */
             this.getAttribute('RefID', localAMLServiceInternalElementAttributes, (response: PiMAdResponse) => {
-                if(response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
+                if(response.constructor.name === 'SuccessResponse') {
                     localService.DataAssembly = response.getContent() as Attribute;
                 }
             });
@@ -546,7 +658,7 @@ export class ServicePart extends AImporterPart {
                         localProcedure.Name = amlServiceInternalElementItem.Name;
                         localProcedure.Parameters = [];
                         this.getAttribute('RefID', amlServiceInternalElementItem.Attribute, (response: PiMAdResponse) => {
-                            if(response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
+                            if(response.constructor.name === 'SuccessResponse') {
                                 localProcedure.DataAssembly = response.getContent() as Attribute;
                             }
                         });
@@ -606,7 +718,131 @@ export class ServicePart extends AImporterPart {
     }
 }
 export class TextPart extends AImporterPart {
+    extract(data: TextPartExtractInputDataType, callback: (response: PiMAdResponse) => void): void {
+        const localText: InternalTextType = {ServiceInteractions: [], ServicePositions: [], EnumDefinitions: []};
 
+        let textPartInternalElementArray = data.InternalElement as any[];
+
+        if (!(Array.isArray(textPartInternalElementArray))) {
+            textPartInternalElementArray = [textPartInternalElementArray];
+        }
+        textPartInternalElementArray.forEach((textInternalElement: any) => {
+
+            let localTextInternalElementAttributes: Attribute[] = [];
+            if (!Array.isArray(textInternalElement.Attribute)) {
+                localTextInternalElementAttributes.push(textInternalElement.Attribute as Attribute);
+            } else {
+                localTextInternalElementAttributes = textInternalElement.Attribute;
+            }
+
+            switch (textInternalElement.RefBaseSystemUnitPath) {
+                case 'MTPTextSUCLib/ServiceInteraction':
+                    // eslint-disable-next-line no-case-declarations
+                    const localServiceInteraction = this.extractServiceInteraction(textInternalElement);
+                    localText.ServiceInteractions.push(localServiceInteraction);
+                    break;
+                case 'MTPTextSUCLib/ServicePosition':
+                    // eslint-disable-next-line no-case-declarations
+                    const localServicePosition = this.extractServicePosition(textInternalElement);
+                    localText.ServicePositions.push(localServicePosition);
+                    break;
+               //TODO case 'MTPTextSUCLib/EnumDefinition':
+
+            }
+        });
+          const localResponse = this.responseVendor.buySuccessResponse();
+          localResponse.initialize('Successfully extracting the TextPart!', localText);
+          callback(localResponse);
+
+    }
+
+    private extractServiceInteraction(textInternalElement: any): ServiceInteractionType {
+        const localServiceInteraction: ServiceInteractionType = {} as any;
+
+        let internalElementArray = textInternalElement.InternalElement;
+        let localServiceInteractionInternalElementAttributes: Attribute[] = [];
+        if (!(Array.isArray(internalElementArray))) {
+            internalElementArray = [internalElementArray];
+        }
+
+        if(!Array.isArray(textInternalElement.Attribute)) {
+            localServiceInteractionInternalElementAttributes.push(textInternalElement.Attribute as Attribute);
+        } else {
+            localServiceInteractionInternalElementAttributes = textInternalElement.Attribute;
+        }
+
+        this.getAttribute('RefID', localServiceInteractionInternalElementAttributes, (response: PiMAdResponse) => {
+            if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
+                localServiceInteraction.Service = response.getContent() as Attribute;
+            }
+        });
+
+        const localQuestionArray: QuestionType[] = [];
+        internalElementArray.forEach((questionInternalElement: any) => {
+            const localQuestion = {} as QuestionType;
+            const localAnswers: AnswerType[] = [];
+            localQuestion.Attribute = questionInternalElement.Attribute;
+            localQuestion.Identifier = questionInternalElement.ID;
+            localQuestion.MetaModelRef = questionInternalElement.RefBaseSystemUnitPath;
+            localQuestion.Name = questionInternalElement.Name;
+
+            let answersInternalElementArray = questionInternalElement.InternalElement;
+            if (!(Array.isArray(answersInternalElementArray))) {
+                answersInternalElementArray = [answersInternalElementArray];
+            }
+            answersInternalElementArray.forEach((answersInternalElement: any) => {
+                const localAnswer = {} as AnswerType;
+                localAnswer.Identifier = answersInternalElement.ID;
+                localAnswer.MetaModelRef = answersInternalElement.RefBaseSystemUnitPath;
+                localAnswer.Name = answersInternalElement.Name;
+                localAnswer.Attribute = answersInternalElement.Attribute;
+                localAnswers.push(localAnswer);
+            });
+            localQuestion.Answers = localAnswers;
+            localQuestionArray.push(localQuestion);
+        });
+        localServiceInteraction.Questions = localQuestionArray;
+        this.assignStandardProperties(textInternalElement, localServiceInteraction);
+        return localServiceInteraction;
+    }
+
+    private extractServicePosition(servicePositionInternalElement: any): ServicePositionType{
+        const localServicePosition: ServicePositionType = {} as any;
+        let localServicePositionInternalElementAttributes: Attribute[] = [];
+
+        this.assignStandardProperties(servicePositionInternalElement, localServicePosition);
+
+        if(!Array.isArray(servicePositionInternalElement.Attribute)) {
+            localServicePositionInternalElementAttributes.push(servicePositionInternalElement.Attribute as Attribute);
+        } else {
+            localServicePositionInternalElementAttributes = servicePositionInternalElement.Attribute;
+        }
+        this.getAttribute('RefID', localServicePositionInternalElementAttributes, (response: PiMAdResponse) => {
+            if (response.constructor.name === this.responseVendor.buySuccessResponse().constructor.name) {
+                  localServicePosition.Service = response.getContent() as Attribute;
+            }
+        });
+
+        let internalElementArray = servicePositionInternalElement;
+        if (!(Array.isArray(internalElementArray))) {
+            internalElementArray = [internalElementArray];
+        }
+        const localPositionTextArray: PositionTextType[] = [];
+        internalElementArray.forEach((positionTextInternalElement: any) => {
+            const localPositionText = {} as PositionTextType;
+            this.assignStandardProperties(positionTextInternalElement, localPositionText);
+            localPositionTextArray.push(localPositionText);
+        });
+        localServicePosition.PositionTexts = localPositionTextArray;
+        return localServicePosition;
+    }
+
+    private assignStandardProperties(internalElement: any, localElement: any) {
+        localElement.Identifier = internalElement.ID;
+        localElement.MetaModelRef = internalElement.RefBaseSystemUnitPath;
+        localElement.Name = internalElement.Name;
+        localElement.Attribute = internalElement.Attribute;
+    }
 }
 
 /**
@@ -649,6 +885,43 @@ export type InternalProcedureType = {
     Parameters: Parameter[];
 }
 
+
+export type InternalTextType =  {
+    ServiceInteractions: ServiceInteractionType[];
+    ServicePositions: ServicePositionType[];
+    EnumDefinitions: EnumDefinitionType[];
+}
+export type ServiceInteractionType = StandardType &  {
+   Questions: QuestionType[];
+   Service: Attribute;
+}
+export type ServicePositionType= StandardType & {
+    PositionTexts: PositionTextType[];
+    Service: Attribute; //reference to service
+}
+export type EnumDefinitionType = StandardType & {
+    ServiceParameter: Attribute; //reference to service parameter
+}
+export type QuestionType = StandardType &  {
+    Attribute: Attribute;
+    Answers: AnswerType[];
+
+}
+export type AnswerType = StandardType & {
+
+}
+
+export type PositionTextType = StandardType & {
+    Service: Attribute;
+}
+
+export type StandardType = {
+    Attribute: Attribute;
+    Identifier: string;
+    MetaModelRef: string;
+    Name: string;
+}
+
 /**
  * Types the object that the method {@link ServicePart.extract} expects as input.
  */
@@ -658,3 +931,5 @@ export type ServicePartExtractInputDataType = {
     Version: string;
     InternalElement: object[];
 }
+
+type TextPartExtractInputDataType = ServicePartExtractInputDataType;

@@ -2,13 +2,18 @@ import {logger} from '../Utils';
 import {AProcedure, InitializeProcedureType, ProcedureModel} from './ProcedureModel';
 import {Backbone} from '../Backbone';
 import PiMAdResponse = Backbone.PiMAdResponse;
+import {ServiceInteractionType, ServicePositionType} from "../Converter/Importer/ImporterPart";
 
 abstract class AService extends AProcedure implements ServiceModel {
     protected procedures: ProcedureModel[];
+    private serviceInteractions: ServiceInteractionType[];
+    private servicePositions: ServicePositionType[];
 
     constructor() {
         super();
         this.procedures = [];
+        this.servicePositions = [];
+        this.serviceInteractions = [];
     }
 
     /**
@@ -44,11 +49,13 @@ abstract class AService extends AProcedure implements ServiceModel {
             this.attributes = instructions.attributes;
             this.dataAssembly = instructions.dataAssembly;
             this.parameters = instructions.parameter;
-            this.procedures = instructions.procedure;
+            this.procedures = instructions.procedures;
+            this.serviceInteractions = instructions.serviceInteractions;
+            this.servicePositions = instructions.servicePositions;
             this.initialized = (JSON.stringify(this.attributes) === JSON.stringify(instructions.attributes)
                 && JSON.stringify(this.dataAssembly) === JSON.stringify(instructions.dataAssembly)
                 && JSON.stringify(this.parameters) === JSON.stringify(instructions.parameter)
-                && JSON.stringify(this.procedures) === JSON.stringify(instructions.procedure)
+                && JSON.stringify(this.procedures) === JSON.stringify(instructions.procedures)
                 && this.moduleAutomationObjectInitialize({
                     dataSourceIdentifier: instructions.dataSourceIdentifier,
                     metaModelRef: instructions.metaModelRef,
@@ -84,7 +91,9 @@ export class BaseServiceFactory extends AServiceFactory {
 }
 
 export type InitializeServiceType = InitializeProcedureType & {
-    procedure: ProcedureModel[];
+    procedures: ProcedureModel[];
+    serviceInteractions: any[];
+    servicePositions: any[];
 }
 
 export interface ServiceModel extends ProcedureModel {
