@@ -55,7 +55,7 @@ describe('class: BaseProcedure', () => {
                 metaModelRef: 'Test-MetaModelRef',
                 name: 'Test-ProcedureName',
                 attributes: attributes,
-                parameter: [parameter, parameter2],
+                parameters: [parameter, parameter2],
                 pimadIdentifier: uuidv4()
             });
 

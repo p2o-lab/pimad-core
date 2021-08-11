@@ -3,31 +3,32 @@ import {logger} from '../Utils';
 import {Backbone} from '../Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import PiMAdResponse = Backbone.PiMAdResponse;
+import {DataItemModel} from './DataItemModel';
 
 export interface Parameter {
-    getAllCommunicationInterfaceData(): CommunicationInterfaceData[];
+    getAllCommunicationInterfaceData(): DataItemModel[];
     getName(): string;
     getInterfaceClass(): PiMAdResponse; //TODO: clarify type
     getCommunicationInterfaceData(tag: string): CommunicationInterfaceData;
-    initialize(name: string, communication: CommunicationInterfaceData[], interfaceClass: any): boolean;
+    initialize(name: string, communication: DataItemModel[], interfaceClass: any): boolean;
 }
 
 abstract class AParameter implements Parameter {
-    protected communication: CommunicationInterfaceData[];
-    protected interfaceClass: any; //TODO: clarify type
+    protected dataItems: DataItemModel[];
+    protected metaModelRef: string;
     protected name: string;
     protected initialized: boolean;
     protected responseVendor: PiMAdResponseVendor;
 
     constructor() {
-        this.communication=[];
-        this.interfaceClass= null;
+        this.dataItems=[];
+        this.metaModelRef= '';
         this.name='';
         this.initialized = false;
         this.responseVendor = new PiMAdResponseVendor();
     }
-    getAllCommunicationInterfaceData(): CommunicationInterfaceData[] {
-        return this.communication;
+    getAllCommunicationInterfaceData(): DataItemModel[] {
+        return this.dataItems;
     }
     getName(): string {
         return this.name;
@@ -40,13 +41,12 @@ abstract class AParameter implements Parameter {
         // add Operations for InterfaceData by tag : CommunicationInterfaceData
         return {} as CommunicationInterfaceData;
     }
-    initialize(name: string, communication: CommunicationInterfaceData[], interfaceClass: any): boolean {
+    initialize(name: string, communication: DataItemModel[], interfaceClass: any): boolean {
         if (!this.initialized) {
-            //TODO: much more checking
             this.name = name;
-            this.communication = communication;
-            this.interfaceClass = interfaceClass;
-            this.initialized = (this.name == name && this.communication == communication && this.interfaceClass == interfaceClass);
+            this.dataItems = communication;
+            this.metaModelRef = interfaceClass;
+            this.initialized = (this.name == name && this.dataItems == communication && this.metaModelRef == interfaceClass);
             return this.initialized;
         } else {
             return false;
@@ -64,8 +64,9 @@ abstract class AParameterFactory implements ParameterFactory {
     abstract create(): Parameter;
 }
 export class BaseParameterFactory extends AParameterFactory {
-    create(): Parameter{
+    create(): Parameter{ // TODO why use factory, it doesn't do much
             const parameter = new BaseParameter();
             logger.debug(this.constructor.name + ' creates a ' + parameter.constructor.name);
         return parameter;}
+
 }

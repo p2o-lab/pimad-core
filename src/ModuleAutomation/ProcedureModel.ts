@@ -61,6 +61,10 @@ export abstract class AProcedure extends AModuleAutomationObject implements Proc
     protected attributes: Attribute[];
     protected dataAssembly: DataAssembly;
     protected parameters: Parameter[];
+    protected reportValues?: Parameter[];
+    protected processValuesIn?: Parameter[];
+    protected processValuesOut?: Parameter[];
+
 
     constructor() {
         super();
@@ -68,7 +72,12 @@ export abstract class AProcedure extends AModuleAutomationObject implements Proc
         this.dataAssembly = {} as DataAssembly;
         this.metaModelRef = 'metaModelRef: not initialized';
         this.name = 'name: not initialized';
+
         this.parameters = [];
+        this.reportValues = [];
+        this.processValuesIn = [];
+        this.processValuesOut = [];
+
         this.initialized = false;
     }
 
@@ -124,10 +133,15 @@ export abstract class AProcedure extends AModuleAutomationObject implements Proc
         if(!this.initialized) {
             this.attributes = instructions.attributes;
             this.dataAssembly = instructions.dataAssembly;
-            this.parameters = instructions.parameter;
+            this.parameters = instructions.parameters;
+            this.reportValues = instructions.reportValues;
+            this.processValuesIn = instructions.processValuesIn;
+            this.processValuesOut = instructions.processValuesOut;
+
+            // TODO why is this check necessary
             this.initialized = (JSON.stringify(this.attributes) === JSON.stringify(instructions.attributes)
                 && JSON.stringify(this.dataAssembly) === JSON.stringify(instructions.dataAssembly)
-                && JSON.stringify(this.parameters) === JSON.stringify(instructions.parameter)
+                && JSON.stringify(this.parameters) === JSON.stringify(instructions.parameters)
                 && this.moduleAutomationObjectInitialize({
                     dataSourceIdentifier: instructions.dataSourceIdentifier,
                     metaModelRef: instructions.metaModelRef,
@@ -145,7 +159,12 @@ export abstract class AProcedure extends AModuleAutomationObject implements Proc
 export type InitializeProcedureType = InitializeModuleAutomationObject & {
     attributes: Attribute[];
     dataAssembly: DataAssembly;
-    parameter: Parameter[];
+    parameters: Parameter[];
+    reportValues?: Parameter[];
+    processValuesIn?: Parameter[];
+    processValuesOut?: Parameter[];
+
+
 }
 
 class BaseProcedure extends AProcedure {

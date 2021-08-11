@@ -56,7 +56,7 @@ describe('class: BaseService', () => {
                 dataAssembly: {} as DataAssembly,
                 dataSourceIdentifier: '',
                 metaModelRef: '',
-                name: 'Test-Procedure0', parameter: [],
+                name: 'Test-Procedure0', parameters: [],
                 attributes: [],
                 pimadIdentifier: uuidv4()
             });
@@ -65,7 +65,7 @@ describe('class: BaseService', () => {
                 dataAssembly: {} as DataAssembly,
                 dataSourceIdentifier: '',
                 metaModelRef: '',
-                name: 'Test-Procedure1', parameter: [],
+                name: 'Test-Procedure1', parameters: [],
                 attributes: [],
                 pimadIdentifier: uuidv4()
             });
@@ -75,9 +75,9 @@ describe('class: BaseService', () => {
                 dataSourceIdentifier: 'Test-Identifier',
                 metaModelRef: 'Test-MetaModelRef',
                 name: 'Test-Name',
-                parameter: [parameter, parameter2],
+                parameters: [parameter, parameter2],
                 pimadIdentifier: uuidv4(),
-                procedure: [procedure0, procedure1]
+                procedures: [procedure0, procedure1]
             });
         });
 

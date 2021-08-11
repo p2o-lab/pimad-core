@@ -4,7 +4,6 @@ import {
     HMIPart,
     InternalServiceType,
     MTPPart,
-    ServicePart,
     TextPart
 } from './ImporterPart';
 import * as communicationsSetData from '../../../test/Converter/testdata-CommunicationSet-parser-logic.json';
@@ -12,14 +11,14 @@ import * as communicationsSetDataMixingDataStructure from '../../../test/Convert
 import * as communicationsSetDataSpecial from '../../../test/Converter/testdata-CommunicationSet-special.json';
 import * as communicationsSetDataNoRefId from '../../../test/Converter/testdata-CommunicationSet-no-RefId.json';
 import * as communicationsSetDataNoCorDatatypes from '../../../test/Converter/testdata-CommunicationSet-no-corresponding-datatypes.json';
-import * as servicePartTestResult from '../../../test/Converter/Results/test-result-ServicePart.json';
+import * as servicePartTestResult from '../../../test/Converter/Results/test-result-ServicePart_new.json';
 import * as servicePartData from '../../../test/Converter/testdata-ServicePart.json';
-import { OPCUAServerCommunication } from '../../ModuleAutomation/CommunicationInterfaceData';
 import {Backbone} from '../../Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import {DataItemModel, ModuleAutomation} from '../../ModuleAutomation';
 import DataAssembly = ModuleAutomation.DataAssembly;
 import { validate as uuidValidate } from 'uuid';
+import {ServicePart} from "./ServicePart";
 
 const responseVendor = new PiMAdResponseVendor();
 const errorResponseAsString = responseVendor.buyErrorResponse().constructor.name;
@@ -77,9 +76,6 @@ describe('class: MTPPart', () => {
         it('test case: standard way', () => {
             part.extract({
                 CommunicationSet: communicationsSetData,
-                HMISet: {},
-                ServiceSet: {},
-                TextSet: {}
             }, (response) => {
                 expect(response.constructor.name).is.equal(successResponseAsString);
                 const testData: ExtractDataFromCommunicationSetResponseType =
@@ -90,9 +86,6 @@ describe('class: MTPPart', () => {
         it('test case: mixing data structure', () => {
             part.extract({
                 CommunicationSet: communicationsSetDataMixingDataStructure,
-                HMISet: {},
-                ServiceSet: {},
-                TextSet: {}
             }, (response) => {
                 expect(response.constructor.name).is.equal(successResponseAsString);
                 const testData: ExtractDataFromCommunicationSetResponseType =
@@ -106,9 +99,6 @@ describe('class: MTPPart', () => {
                     const manipulatedCommunicationSetData = [communicationsSetData[0], {}];
                     part.extract({
                         CommunicationSet: manipulatedCommunicationSetData,
-                        HMISet: {},
-                        ServiceSet: {},
-                        TextSet: {}
                     }, (response) => {
                         expect(response.constructor.name).is.equal(errorResponseAsString);
                         expect(response.getMessage()).is.equal('Could not parse the CommunicationSet!');
@@ -118,9 +108,6 @@ describe('class: MTPPart', () => {
                     const manipulatedCommunicationSetData = [{}, communicationsSetData[1]];
                     part.extract({
                         CommunicationSet: manipulatedCommunicationSetData,
-                        HMISet: {},
-                        ServiceSet: {},
-                        TextSet: {}
                     }, (response) => {
                         expect(response.constructor.name).is.equal(errorResponseAsString);
                         expect(response.getMessage()).is.equal('Could not parse the CommunicationSet!');
@@ -130,9 +117,6 @@ describe('class: MTPPart', () => {
                     const manipulatedCommunicationSetData = [{}, {}];
                     part.extract({
                         CommunicationSet: manipulatedCommunicationSetData,
-                        HMISet: {},
-                        ServiceSet: {},
-                        TextSet: {}
                     }, (response) => {
                         expect(response.constructor.name).is.equal(errorResponseAsString);
                         expect(response.getMessage()).is.equal('Could not parse the CommunicationSet!');
@@ -145,9 +129,6 @@ describe('class: MTPPart', () => {
             it('MTP has no arrays and no xs:ID', () => {
                 part.extract({
                     CommunicationSet: communicationsSetDataSpecial,
-                    HMISet: {},
-                    ServiceSet: {},
-                    TextSet: {}
                 }, (response) => {
                     expect(response.constructor.name).is.equal(successResponseAsString);
                 });
@@ -155,9 +136,6 @@ describe('class: MTPPart', () => {
             it('xs:ID available, but no RefID', () => {
                 part.extract({
                     CommunicationSet: communicationsSetDataNoRefId,
-                    HMISet: {},
-                    ServiceSet: {},
-                    TextSet: {}
                 }, (response) => {
                     expect(response.constructor.name).is.equal(successResponseAsString);
                 });
@@ -165,7 +143,7 @@ describe('class: MTPPart', () => {
             it('no corresponding datatypes', () => {
                 // initializing localDataAssembly will fail
                 part.extract({
-                    CommunicationSet: communicationsSetDataNoCorDatatypes, HMISet: {}, ServiceSet: {}, TextSet: {}
+                    CommunicationSet: communicationsSetDataNoCorDatatypes
                 }, (response) => {
                     expect(response.constructor.name).is.equal(successResponseAsString);
                 });
@@ -192,7 +170,7 @@ describe('class: MTPPart', () => {
             part = new TextPart();
         });
         it('method: extract()', () => {
-            part.extract({}, (response) => {
+            part.extract({} as any, (response) => {
                 expect(response.constructor.name).is.equal(errorResponseAsString);
                 expect(response.getMessage()).is.equal('Not implemented yet!');
             });
