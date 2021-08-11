@@ -4,7 +4,6 @@ import {
     HMIPart,
     InternalServiceType,
     MTPPart,
-    ServicePart,
     TextPart
 } from './ImporterPart';
 import * as communicationsSetData from '../../../test/Converter/testdata-CommunicationSet-parser-logic.json';
@@ -12,14 +11,14 @@ import * as communicationsSetDataMixingDataStructure from '../../../test/Convert
 import * as communicationsSetDataSpecial from '../../../test/Converter/testdata-CommunicationSet-special.json';
 import * as communicationsSetDataNoRefId from '../../../test/Converter/testdata-CommunicationSet-no-RefId.json';
 import * as communicationsSetDataNoCorDatatypes from '../../../test/Converter/testdata-CommunicationSet-no-corresponding-datatypes.json';
-import * as servicePartTestResult from '../../../test/Converter/Results/test-result-ServicePart.json';
+import * as servicePartTestResult from '../../../test/Converter/Results/test-result-ServicePart_new.json';
 import * as servicePartData from '../../../test/Converter/testdata-ServicePart.json';
-import { OPCUAServerCommunication } from '../../ModuleAutomation/CommunicationInterfaceData';
 import {Backbone} from '../../Backbone';
 import PiMAdResponseVendor = Backbone.PiMAdResponseVendor;
 import {DataItemModel, ModuleAutomation} from '../../ModuleAutomation';
 import DataAssembly = ModuleAutomation.DataAssembly;
 import { validate as uuidValidate } from 'uuid';
+import {ServicePart} from "./ServicePart";
 
 const responseVendor = new PiMAdResponseVendor();
 const errorResponseAsString = responseVendor.buyErrorResponse().constructor.name;

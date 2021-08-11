@@ -95,7 +95,7 @@ export class ServicePart extends AImporterPart {
             localService.Identifier = amlServiceInternalElement.ID;
             localService.MetaModelRef = amlServiceInternalElement.RefBaseSystemUnitPath;
             localService.Name = amlServiceInternalElement.Name;
-            localService.Parameters = [];
+            localService.ParametersRefID = [];
             localService.Procedures = [];
             /* extract the 'RefID'-Attribute. It's important! and referencing to the DataAssembly of the service which
             stores all the interface data to the hardware. */
@@ -108,8 +108,9 @@ export class ServicePart extends AImporterPart {
             this.extractAttributes(localAMLServiceInternalElementAttributes, (response => {
                 localService.Attributes = response.getContent() as Attribute[];
             }));
-            const localProcedureArray = this.extractProcedures(amlServiceInternalElement.InternalElement);
-            localService.Procedures = localProcedureArray;
+            const localProceduresAndParams = this.extractProceduresAndParameters(amlServiceInternalElement.InternalElement);
+            localService.Procedures = localProceduresAndParams.procedures;
+            localService.ParametersRefID = localProceduresAndParams.confParams;
             extractedServiceData.push(localService);
         });
         const localResponse = this.responseVendor.buySuccessResponse();
@@ -117,8 +118,10 @@ export class ServicePart extends AImporterPart {
         callback(localResponse);
     }
 
-    private extractProcedures(internalElement: AML.DataItemInstanceList[]): InternalProcedureType[] {
+    private extractProceduresAndParameters(internalElement: AML.DataItemInstanceList[]): {procedures: InternalProcedureType[]; confParams: string[]} {
         //TODO Service must have at least one procedure, do a check
+        const returnObject: {procedures: InternalProcedureType[]; confParams: string[]} = {procedures: [], confParams: []} ;
+
         const localProcedureArray: InternalProcedureType[] = [];
         let internalElementArray = internalElement;
 
@@ -141,7 +144,7 @@ export class ServicePart extends AImporterPart {
                     localProcedure.MetaModelRef = amlServiceInternalElementItem.RefBaseSystemUnitPath;
                     localProcedure.Name = amlServiceInternalElementItem.Name;
                     localProcedure.ParametersRefID = [];
-                    localProcedure.ReportParametersRefID= [];
+                    localProcedure.ReportValuesRefID= [];
                     localProcedure.ProcessValuesInRefID= [];
                     localProcedure.ProcessValuesOutID= [];
 
@@ -171,7 +174,7 @@ export class ServicePart extends AImporterPart {
                                     break;
                                 case 'MTPServiceSUCLib/ServiceParameter/ReportValue':
                                     refID = internalElement.Attribute.Value;
-                                    localProcedure.ReportParametersRefID.push(refID);
+                                    localProcedure.ReportValuesRefID.push(refID);
                                     break;
                                 case 'MTPServiceSUCLib/ServiceParameter/ProcessValueIn':
                                     refID = internalElement.Attribute.Value;
@@ -187,8 +190,9 @@ export class ServicePart extends AImporterPart {
                     }
                     break;
                 }
-                case 'MTPServiceSUCLib/ConfigurationParameter': {
+                case 'MTPServiceSUCLib/ServiceParameter/ConfigurationParameter': {
                     const refID = (amlServiceInternalElementItem.Attribute as unknown as Attribute).Value;
+                    returnObject.confParams.push(refID);
                     //TODO WIP
                     break;
                 }
@@ -199,7 +203,8 @@ export class ServicePart extends AImporterPart {
             }
 
         });
-        return localProcedureArray;
+        returnObject.procedures = localProcedureArray;
+        return returnObject;
     }
     /**
      * Transforming AML-Attributes into AML-Attributes. Ignoring specific one. f. ex. RefID. Needs a Refactor -\> PiMAd

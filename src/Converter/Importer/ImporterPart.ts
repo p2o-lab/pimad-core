@@ -474,7 +474,7 @@ export type ExtractDataFromCommunicationSetResponseType = {
 
 export type InternalServiceType = InternalProcedureType & {
     Procedures: InternalProcedureType[];
-    Parameters: Parameter[];
+    ParametersRefID: string[]; // currently only containing the RefIDs (referencing to DataAssembly)
 }
 
 /**
@@ -487,7 +487,7 @@ export type InternalProcedureType = {
     MetaModelRef: string;
     Name: string;
     ParametersRefID: string[];
-    ReportParametersRefID: string[];
+    ReportValuesRefID: string[];
     ProcessValuesInRefID: string[];
     ProcessValuesOutID: string[];
 }

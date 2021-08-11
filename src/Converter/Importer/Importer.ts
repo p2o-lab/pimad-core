@@ -20,7 +20,13 @@ import {
 import {AML, CAEXFile} from '@p2olab/pimad-types';
 import InstanceHierarchy = AML.InstanceHierarchy
 import {
-    Attribute, AttributeFactoryVendor, DataItemModel, ModuleAutomation, Parameter
+    Attribute,
+    AttributeFactoryVendor,
+    BaseParameterFactory,
+    DataItemModel,
+    ModuleAutomation,
+    Parameter,
+    ParameterFactory
 } from '../../ModuleAutomation';
 import {BasePEAFactory} from '../../ModuleAutomation';
 import {ServiceModel} from '../../ModuleAutomation';
@@ -32,7 +38,7 @@ import DataAssemblyVendor = ModuleAutomation.DataAssemblyVendor;
 import DataAssembly = ModuleAutomation.DataAssembly;
 import { v4 as uuidv4 } from 'uuid';
 import {BaseServiceFactory} from '../../ModuleAutomation/ServiceModel';
-import {ServicePart} from "./ServicePart";
+import {ServicePart} from './ServicePart';
 
 export abstract class AImporter implements  Importer {
 
@@ -114,6 +120,7 @@ export class MTPFreeze202001Importer extends AImporter {
     private serviceFactory: BaseServiceFactory;
     private xmlGateFactory: GateFactory;
     private zipGateFactory: GateFactory;
+    private parameterFactory: ParameterFactory;
 
     private communicationInterfaceData: any;
     private dataAssemblies: DataAssembly[] =[];
@@ -131,6 +138,7 @@ export class MTPFreeze202001Importer extends AImporter {
         this.peaFactory = new BasePEAFactory();
         this.procedureFactory = new BaseProcedureFactory();
         this.serviceFactory = new BaseServiceFactory();
+        this.parameterFactory = new BaseParameterFactory();
         this.xmlGateFactory = new XMLGateFactory();
         this.zipGateFactory = new ZIPGateFactory();
     }
@@ -462,7 +470,7 @@ export class MTPFreeze202001Importer extends AImporter {
             dataAssembly.getMetaModelRef((response, metaModelRef) =>
                 mMetaModelRef = metaModelRef);
 
-            if(mMetaModelRef.includes('HealthStateView') || mMetaModelRef.includes('ServiceControl')){
+            if(mMetaModelRef.includes('HealthStateView') || mMetaModelRef.includes('ServiceControl') || mMetaModelRef.includes('ServiceProcedure')){
                 // if DataAssembly is Procedure or Service, remove it!
                 const index = dataAssemblies.indexOf(dataAssembly);
                 dataAssemblies.splice(index, 1);
@@ -502,6 +510,14 @@ export class MTPFreeze202001Importer extends AImporter {
                 });
                 return testCondition;
             });
+
+            const parameterDataAssemblies: DataAssembly[] = this.findCorrespondingDataAssemblies(service.ParametersRefID);
+
+            //TODO we could also just use DataAssembly Class instead
+            const localParameterArray: Parameter[] = this.createParametersOutOfDataAssemblies(parameterDataAssemblies);
+
+            this.removeFromDataAssemblies(parameterDataAssemblies);
+
             if(localServiceDataAssembly === undefined) {
                 logger.warn('Could not find referenced DataAssembly for service <' + service.Name + '> Skipping this service ...');
             } else {
@@ -524,9 +540,9 @@ export class MTPFreeze202001Importer extends AImporter {
                     dataSourceIdentifier: service.Identifier,
                     metaModelRef: service.MetaModelRef,
                     name: service.Name,
-                    parameter: [],
+                    parameters: localParameterArray,
                     pimadIdentifier: uuidv4(),
-                    procedure: localServiceProcedures
+                    procedures: localServiceProcedures
                 })) {
                     localServices.push(localService);
                 }
@@ -557,9 +573,19 @@ export class MTPFreeze202001Importer extends AImporter {
                         procedureAttributes.push(newProcedureAttribute);
                     }
                 });
+                const parameterDAs: DataAssembly[] = this.findCorrespondingDataAssemblies(procedure.ParametersRefID);
+                const reportValueDAs: DataAssembly[] = this.findCorrespondingDataAssemblies(procedure.ReportValuesRefID);
+                const processValueInDAs: DataAssembly[] = this.findCorrespondingDataAssemblies(procedure.ProcessValuesInRefID);
+                const processValueOutDAs: DataAssembly[] = this.findCorrespondingDataAssemblies(procedure.ProcessValuesOutID);
+
+                const localParameterArray: Parameter[] = this.createParametersOutOfDataAssemblies(parameterDAs);
+                const localReportValueArray: Parameter[] = this.createParametersOutOfDataAssemblies(reportValueDAs);
+                const localProcessValueInArray: Parameter[] = this.createParametersOutOfDataAssemblies(processValueInDAs);
+                const localProcessValueOutArray: Parameter[] = this.createParametersOutOfDataAssemblies(processValueOutDAs);
+
+                this.removeFromDataAssemblies(parameterDAs.concat(reportValueDAs, processValueOutDAs, processValueInDAs));
 
                 const localProcedure = this.procedureFactory.create();
-                const parameters: DataAssembly[] = this.findCorrespondingDataAssemblies(procedure.ParametersRefID);
 
                 if(localProcedure.initialize({
                     defaultValue: '',
@@ -569,7 +595,10 @@ export class MTPFreeze202001Importer extends AImporter {
                     dataSourceIdentifier: procedure.Identifier,
                     metaModelRef: procedure.MetaModelRef,
                     name: procedure.Name,
-                    parameter: parameters,
+                    parameters: localParameterArray,
+                    reportValues: localReportValueArray,
+                    processValuesIn: localProcessValueInArray,
+                    processValuesOut: localProcessValueOutArray,
                     pimadIdentifier: 'TODO'
                 })) {
                     localServiceProcedures.push(localProcedure);
@@ -594,6 +623,29 @@ export class MTPFreeze202001Importer extends AImporter {
         return dataAssemblyArray;
     }
 
+    private removeFromDataAssemblies(dataAssemblies: ModuleAutomation.DataAssembly[]) {
+        //Remove from this.dataassemblies
+        dataAssemblies.forEach(dataAssembly=> {
+            const index = this.dataAssemblies.indexOf(dataAssembly, 0);
+            if (index > -1) {
+                this.dataAssemblies.splice(index, 1);
+            }
+        });
+    }
+
+    private createParametersOutOfDataAssemblies(dataAssemblies: ModuleAutomation.DataAssembly[]) {
+        const localParameterArray: Parameter[]= [];
+        dataAssemblies.forEach(parameter=>{
+            const localParameter = this.parameterFactory.create();
+            let communicationInterfaceData, interfaceClass, name;
+            parameter.getAllDataItems((response, dataItems) => communicationInterfaceData = dataItems);
+            parameter.getMetaModelRef((response, metaModelRef) => interfaceClass = metaModelRef);
+            parameter.getName((response, mName) => name = mName);
+            localParameter.initialize(name as any, communicationInterfaceData as any, interfaceClass);
+            localParameterArray.push(localParameter);
+        });
+        return localParameterArray;
+    }
 }
 
 export interface Importer {

@@ -69,7 +69,7 @@ describe('class: BasePEA', () => {
                 metaModelRef: '',
                 name: 'Test-Procedure0',
                 attributes: [],
-                parameter: [],
+                parameters: [],
                 pimadIdentifier: uuidv4()
             });
             const procedure1 = procedureFactory.create();
@@ -79,7 +79,7 @@ describe('class: BasePEA', () => {
                 metaModelRef: '',
                 name: 'Test-Procedure1',
                 attributes: [],
-                parameter: [],
+                parameters: [],
                 pimadIdentifier: uuidv4()
             });
             const serviceVendor = new ServiceVendor();
@@ -91,9 +91,9 @@ describe('class: BasePEA', () => {
                 dataSourceIdentifier: 'Test-DataSourceIdentifier1',
                 metaModelRef: 'Test-MetaModelRef1',
                 name: 'Test-Service1',
-                parameter: [parameter, parameter2],
+                parameters: [parameter, parameter2],
                 pimadIdentifier: 'Test-PiMAdIdentifier1',
-                procedure: [procedure0, procedure1]
+                procedures: [procedure0, procedure1]
             });
             const service2 = serviceVendor.buy(Services.BaseService);
             service2.initialize({
@@ -102,9 +102,9 @@ describe('class: BasePEA', () => {
                 dataSourceIdentifier: 'Test-DataSourceIdentifier2',
                 metaModelRef: 'Test-MetaModelRef2',
                 name: 'Test-Service2',
-                parameter: [parameter],
+                parameters: [parameter],
                 pimadIdentifier: 'Test-PiMAdIdentifier2',
-                procedure: [procedure1]
+                procedures: [procedure1]
             });
 
             pea.initialize({

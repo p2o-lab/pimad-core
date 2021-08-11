@@ -43,12 +43,12 @@ abstract class AService extends AProcedure implements ServiceModel {
         if(!this.initialized) {
             this.attributes = instructions.attributes;
             this.dataAssembly = instructions.dataAssembly;
-            this.parameters = instructions.parameter;
-            this.procedures = instructions.procedure;
+            this.parameters = instructions.parameters;
+            this.procedures = instructions.procedures;
             this.initialized = (JSON.stringify(this.attributes) === JSON.stringify(instructions.attributes)
                 && JSON.stringify(this.dataAssembly) === JSON.stringify(instructions.dataAssembly)
-                && JSON.stringify(this.parametersOld) === JSON.stringify(instructions.parameter)
-                && JSON.stringify(this.procedures) === JSON.stringify(instructions.procedure)
+                && JSON.stringify(this.parameters) === JSON.stringify(instructions.parameters)
+                && JSON.stringify(this.procedures) === JSON.stringify(instructions.procedures)
                 && this.moduleAutomationObjectInitialize({
                     dataSourceIdentifier: instructions.dataSourceIdentifier,
                     metaModelRef: instructions.metaModelRef,
@@ -84,7 +84,7 @@ export class BaseServiceFactory extends AServiceFactory {
 }
 
 export type InitializeServiceType = InitializeProcedureType & {
-    procedure: ProcedureModel[];
+    procedures: ProcedureModel[];
 }
 
 export interface ServiceModel extends ProcedureModel {
